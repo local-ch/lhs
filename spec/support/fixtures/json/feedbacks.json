@@ -1,0 +1,164 @@
+{
+  "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/?exclude_hidden=false&offset=0&limit=10",
+  "items" : [ {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
+    },
+    "source_id" : "aaa",
+    "recommended" : true,
+    "ratings" : {
+      "ambiente" : 4,
+      "service" : 2,
+      "food" : 3
+    },
+    "modified" : "2014-09-18T16:13:32.987+02:00",
+    "created_date" : "2014-09-18T16:13:31.496+02:00",
+    "average_rating" : 3.0,
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/QsUOQWNJoB-GFUNsX7z0jg",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a11f"
+    },
+    "source_id" : "abcdefghs12345",
+    "name" : "Steve",
+    "recommended" : true,
+    "ratings" : {
+      "ambiente" : 3,
+      "service" : 5,
+      "food" : 2
+    },
+    "modified" : "2014-09-18T15:43:12.134+02:00",
+    "created_date" : "2014-09-18T15:42:57.892+02:00",
+    "review_title" : "GUMMYBEARS GUMMYBEARS GUMMYBEARS",
+    "review" : "GUMMYBEARS! ... WOAH, STEVE! No, we both know how you get when you eat gummybears!",
+    "average_rating" : 3.3333333333333335,
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/QynNtmpXlsEGvUJ0ekDKVw",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56b0cf271c375c5a14d"
+    },
+    "source_id" : "abcdefghs12345",
+    "name" : "Steve",
+    "recommended" : true,
+    "ratings" : {
+      "ambiente" : 3,
+      "service" : 5,
+      "food" : 2
+    },
+    "modified" : "2014-09-17T11:17:39.660+02:00",
+    "created_date" : "2014-09-17T11:17:34.234+02:00",
+    "review_title" : "GUMMYBEARS GUMMYBEARS GUMMYBEARS",
+    "review" : "GUMMYBEARS! ... WOAH, STEVE! No, we both know how you get when you eat gummybears!",
+    "average_rating" : 3.3333333333333335,
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/INmminYWNZwW_qNFx5peJQ",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56b0cf271c375c5a153"
+    },
+    "source_id" : "abcdefghs12345",
+    "name" : "Steve",
+    "recommended" : true,
+    "ratings" : {
+      "ambiente" : 3,
+      "service" : 5,
+      "food" : 2
+    },
+    "modified" : "2014-09-16T11:20:32.600+02:00",
+    "created_date" : "2014-09-16T11:20:30.194+02:00",
+    "review_title" : "GUMMYBEARS GUMMYBEARS GUMMYBEARS",
+    "review" : "GUMMYBEARS! ... WOAH, STEVE! No, we both know how you get when you eat gummybears!",
+    "average_rating" : 3.3333333333333335,
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/ltgfr0VRYDN2nxyC119wTg",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56b0cf271c375c5a14c"
+    },
+    "source_id" : "aaa",
+    "recommended" : false,
+    "ratings" : {
+      "ambiente" : 2,
+      "service" : 1,
+      "food" : 1
+    },
+    "modified" : "2014-09-15T16:23:54.898+02:00",
+    "created_date" : "2014-09-15T16:23:40.355+02:00",
+    "average_rating" : 1.3333333333333333,
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/5dUdQP-kZ6sulN8NtpGXTw",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56b0cf271c375c5a14c"
+    },
+    "source_id" : "abcdefghs12345",
+    "name" : "Steve",
+    "recommended" : true,
+    "ratings" : {
+      "ambiente" : 3,
+      "service" : 5,
+      "food" : 2
+    },
+    "modified" : "2014-09-12T13:10:51.220+02:00",
+    "created_date" : "2014-09-12T13:10:48.813+02:00",
+    "review_title" : "GUMMYBEARS GUMMYBEARS GUMMYBEARS",
+    "review" : "GUMMYBEARS! ... WOAH, STEVE! No, we both know how you get when you eat gummybears!",
+    "average_rating" : 3.3333333333333335,
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/Z3KfWzIEQ3ZVCUj2IdrSNQ",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12e"
+    },
+    "source_id" : "abcdefghs",
+    "recommended" : true,
+    "modified" : "2014-09-10T16:57:36.255+02:00",
+    "created_date" : "2014-09-10T16:57:36.254+02:00",
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/ZUUUeiw-Stw5Zb1baHDUzQ",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
+    },
+    "source_id" : "abcdefghs",
+    "recommended" : true,
+    "modified" : "2014-09-10T16:57:32.792+02:00",
+    "created_date" : "2014-09-10T16:57:32.791+02:00",
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/GyeWvhEtU4cYN_5T2FX2UA",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/539266ec0cf2cd754583cfa0"
+    },
+    "source_id" : "abcdefghs",
+    "name" : "aa",
+    "recommended" : true,
+    "ratings" : {
+      "ambiente" : 2,
+      "service" : 4,
+      "food" : 3
+    },
+    "modified" : "2014-09-11T09:48:19.096+02:00",
+    "created_date" : "2014-09-10T16:35:39.201+02:00",
+    "review_title" : "bbb",
+    "review" : "fff",
+    "average_rating" : 3.0,
+    "comments" : [ ]
+  }, {
+    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/o-qTRqQGFS3Z_RPJm1f8SA",
+    "campaign" : {
+      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56c0cf271c375c5a160"
+    },
+    "source_id" : "abcdefghs12345",
+    "recommended" : true,
+    "modified" : "2014-09-10T16:31:52.493+02:00",
+    "created_date" : "2014-09-10T16:31:52.492+02:00",
+    "comments" : [ ]
+  } ],
+  "total" : 98,
+  "offset" : 0,
+  "limit" : 10
+}
