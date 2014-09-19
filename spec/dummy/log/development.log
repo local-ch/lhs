@@ -43,3 +43,23 @@ ETHON: performed MULTI
 ETHON: started MULTI
 ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/1234567/feedbacks response_code=500 return_code=ok total_time=0.043635
 ETHON: performed MULTI
+ETHON: Libcurl initialized
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks?has_reviews=true response_code=200 return_code=ok total_time=0.065562
+ETHON: performed MULTI
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks?has_reviews=true response_code=200 return_code=ok total_time=0.075047
+ETHON: performed MULTI
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks?has_reviews=true response_code=200 return_code=ok total_time=0.077187
+ETHON: performed MULTI
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks?has_reviews=true response_code=200 return_code=ok total_time=0.0679
+ETHON: performed MULTI
+ETHON: Libcurl initialized
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks?has_reviews=true response_code=200 return_code=ok total_time=0.072337
+ETHON: performed MULTI
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/12345/feedbacks response_code=500 return_code=ok total_time=0.034034
+ETHON: performed MULTI

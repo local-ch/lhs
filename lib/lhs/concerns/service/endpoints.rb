@@ -16,6 +16,7 @@ class LHS::Service
 
       # Adds the endpoint.
       def endpoint(endpoint)
+        instance.sanity_check(endpoint)
         instance.endpoints.push(endpoint)
       end
     end
@@ -58,6 +59,13 @@ class LHS::Service
       explicit_params = params[:params]
       params.delete(:params)
       params.merge!(explicit_params) if explicit_params
+    end
+
+    # Prevent clashing endpoints
+    # by raising as soon as you try to add one.
+    def sanity_check(endpoint)
+      injection = endpoint.scan(INJECTION)
+      fail 'Clashing endpoints.' if endpoints.any? { |e| e.scan(INJECTION) == injection }
     end
 
     private

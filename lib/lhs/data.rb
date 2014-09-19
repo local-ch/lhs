@@ -5,7 +5,7 @@ class LHS::Data
   attr_accessor :collection, :raw
 
   def initialize(data)
-    self.raw = data.is_a?(String) ? JSON.parse(data) : data
+    self.raw = (data.is_a?(String) && data.length > 0) ? JSON.parse(data) : data
     self.collection = raw['items']
   end
 
