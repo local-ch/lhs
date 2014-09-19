@@ -18,7 +18,9 @@ class LHS::Collection
   def method_missing(name, *args, &block)
     value = collection.send(name, *args, &block)
     if value.is_a? Hash
-      LHS::Data.new(value, self)
+      data = LHS::Data.new(value)
+      item = LHS::Item.new(data, self)
+      LHS::Data.new(item)
     else
       value
     end
