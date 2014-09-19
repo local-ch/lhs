@@ -61,8 +61,7 @@ class LHS::Service
       params.merge!(explicit_params) if explicit_params
     end
 
-    # Prevent clashing endpoints
-    # by raising as soon as you try to add one.
+    # Prevent clashing endpoints.
     def sanity_check(endpoint)
       injection = endpoint.scan(INJECTION)
       fail 'Clashing endpoints.' if endpoints.any? { |e| e.scan(INJECTION) == injection }

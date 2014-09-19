@@ -2,28 +2,22 @@
 # to make data from the backend accessible
 class LHS::Data
 
-  attr_accessor :collection, :raw
+  # prevent clashing with attributes of underlying data
+  attr_accessor :_proxy_, :_raw_
 
-  def initialize(data)
-    self.raw = (data.is_a?(String) && data.length > 0) ? JSON.parse(data) : data
-    self.collection = raw['items']
+  def initialize(input, parent = nil)
+    self._raw_ = (input.is_a?(String) && input.length > 0) ? JSON.parse(input) : input
+    self._proxy_ = if _raw_.is_a?(Hash) && _raw_['items']
+      LHS::Collection.new(self)
+    else
+      LHS::Item.new(self, parent)
+    end
   end
 
   protected
 
   def method_missing(name, *args, &block)
-    proxy_collection(name, *args, &block) if collection
-  end
-
-  private
-
-  def proxy_collection(name, *args, &block)
-    value = collection.send(name, *args, &block)
-    if value.is_a? Hash
-      LHS::Data.new(value)
-    else
-      value
-    end
+    _proxy_.send(name, *args, &block)
   end
 
 end
