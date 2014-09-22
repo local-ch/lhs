@@ -1,12 +1,14 @@
 LHS
 ===
 
-LocalHttpServices : Rails gem providing an easy interface to use http services here at local
+[Service](docs/service.md) |
+[Collection](docs/collection.md) |
+[Item](docs/item.md) |
+[Link](docs/link.md)
 
 ## Service
 A Service connects your application to backend endpoints providing you access to their data.
 
-![Service](docs/service.jpg)
 ### Service Example
 ```
 class LHS::Feedback < LHS::Service
@@ -18,6 +20,7 @@ end
 
 LHS::Feedback.where(has_reviews: true) // #<LHS::Data>
 ```
+![Service](docs/service.jpg)
 
 ## Data
 Data contains raw data (json) and a proxy that is used to access data.

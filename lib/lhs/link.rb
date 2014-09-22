@@ -1,7 +1,7 @@
 require File.join(__dir__, 'proxy.rb')
 
 # A link is pointing to a backend resource.
-# Sometimes a link already contains data.
+# Sometimes a link contains data already.
 class LHS::Link < LHS::Proxy
 
   # prevent clashing with attributes of underlying data

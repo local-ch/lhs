@@ -1,7 +1,7 @@
 require File.join(__dir__, 'proxy.rb')
 
 # An item is a concrete record.
-# It can be part of a collection or another item.
+# It can be part of another proxy like collection.
 class LHS::Item < LHS::Proxy
 
   # prevent clashing with attributes of underlying data
