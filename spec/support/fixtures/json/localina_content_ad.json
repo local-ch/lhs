@@ -1,0 +1,23 @@
+{
+    "href": "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d",
+    "id": "51dfc5690cf271c375c5a12d",
+    "product": "BKE",
+    "hidden": false,
+    "contract_type": "published",
+    "source_id": "123",
+    "phone_number": "0041562227764",
+    "type": "LOCALINA",
+    "feedbacks": {
+        "href": "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d/feedbacks?exclude_hidden=false&offset=0&limit=10"
+    },
+    "aggregated_feedback": {
+        "recommendation": 1,
+        "number_of_feedbacks": 2,
+        "number_of_reviews": 0,
+        "number_of_ratings": 0
+    },
+    "online_booking": {
+        "max_persons_plus_sign": true,
+        "max_persons_per_reservation": 8
+    }
+}

@@ -1,6 +1,8 @@
+require File.join(__dir__, 'proxy.rb')
+
 # A collection is a special type of data
 # that contains multiple items
-class LHS::Collection
+class LHS::Collection < LHS::Proxy
 
   attr_accessor :data, :collection
 
