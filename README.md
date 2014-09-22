@@ -1,10 +1,10 @@
 LHS
 ===
 
-[Service](docs/service.md) |
 [Collection](docs/collection.md) |
 [Item](docs/item.md) |
-[Link](docs/link.md)
+[Link](docs/link.md) |
+[Service](docs/service.md)
 
 ## Service
 A Service connects your application to backend endpoints providing you access to their data.
