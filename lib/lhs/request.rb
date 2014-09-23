@@ -17,6 +17,7 @@ class LHS::Request
       options[:url],
       method: options[:method] || :get,
       params: options[:params],
+      body: options[:body],
       headers: { 'Content-Type' => 'application/json' },
       followlocation: true
     )

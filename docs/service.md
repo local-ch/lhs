@@ -41,6 +41,16 @@ If no record is found, returns `nil`.
   LHS::Feedback.find_by(id: 'z12f-3asm3ngals') // #<LHS::Data>
 ```
 
+## Create
+
+```
+  LHS::Feedback.create(
+    recommended: true,
+    source_id: 'aaa',
+    content_ad_id: '1z-5r1fkaj'
+  ) // #<LHS::Data>
+```
+
 ## Misconfiguration
 
 If you try to setup a service with clashing endpoints it will immediately raise an exception.

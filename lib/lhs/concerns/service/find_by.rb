@@ -2,7 +2,7 @@ require 'active_support'
 
 class LHS::Service
 
-  module Find
+  module FindBy
     extend ActiveSupport::Concern
 
     module ClassMethods
