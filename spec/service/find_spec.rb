@@ -20,7 +20,6 @@ describe LHS::Service do
     end
 
     it 'returns nil if no record was found' do
-      pending
       stub_request(:get, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/something-inexistent").
       to_return(status: 404)
       expect(

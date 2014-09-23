@@ -102,3 +102,20 @@ ETHON: Libcurl initialized
 ETHON: started MULTI
 ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/asdasdasd response_code=400 return_code=ok total_time=0.092822
 ETHON: performed MULTI
+ETHON: Libcurl initialized
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/assdgadsf response_code=400 return_code=ok total_time=0.594681
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/assdgadsf response_code=400 return_code=ok total_time=0.030843
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/assdgadsf response_code=400 return_code=ok total_time=0.030428
+ETHON: Libcurl initialized
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/assdgadsf response_code=400 return_code=ok total_time=0.069214
+ETHON: Libcurl initialized
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks response_code=200 return_code=ok total_time=0.399447
+ETHON: performed MULTI
+ETHON: started MULTI
+ETHON:         performed EASY effective_url=http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d response_code=200 return_code=ok total_time=0.255611
+ETHON: performed MULTI

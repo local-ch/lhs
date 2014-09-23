@@ -15,15 +15,29 @@ class LHS::Request
   def request(options)
     request = Typhoeus::Request.new(
       options[:url],
-      method: options[:method],
+      method: options[:method] || :get,
       params: options[:params],
-      headers: { 'Content-Type' => 'application/json' }
+      headers: { 'Content-Type' => 'application/json' },
+      followlocation: true
     )
     request.on_complete { |response| on_complete(response) }
     request
   end
 
   def on_complete(response)
+    if response.code.to_s[/^(2\d\d+)/]
+      on_success(response)
+    else
+      on_error(response)
+    end
+  end
+
+  def on_success(response)
     self.data = LHS::Data.new(response.body)
+  end
+
+  def on_error(response)
+    error = LHS::Error.find(response.code)
+    fail(error, "#{response.code} #{response.body}")
   end
 end
