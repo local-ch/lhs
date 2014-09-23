@@ -31,9 +31,11 @@ In addition it would add `?has_reviews=true` to the get parameters.
 ```
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
-## Find
+## Find by
 
-If you want to fetch a single uniqe record you should use `find_by`. It returns `nil` if nothing was found.
+`find_by` finds the first record matching the specified conditions.
+
+If no record is found, returns `nil`.
 
 ```
   LHS::Feedback.find_by(id: 'z12f-3asm3ngals') // #<LHS::Data>

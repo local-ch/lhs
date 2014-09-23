@@ -9,7 +9,7 @@ describe LHS::Service do
     end
   end
 
-  context 'find' do
+  context 'find by' do
 
     it 'finds a single record' do
       stub_request(:get, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/z12f-3asm3ngals").
@@ -25,6 +25,15 @@ describe LHS::Service do
       expect(
         SomeService.find_by(id: 'something-inexistent')
       ).to eq nil
+    end
+
+    it 'return first item by parameters' do
+      json = load_json(:feedbacks)
+      stub_request(:get, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks?has_reviews=true").
+      to_return(status: 200, body: json)
+      expect(
+        SomeService.find_by(has_reviews: true).id
+      ).to eq json['items'].first['id']
     end
   end
 end
