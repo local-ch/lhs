@@ -38,10 +38,10 @@ class LHS::Item < LHS::Proxy
 
   def handle_hash(value)
     if (href = value['href'])
-      link = LHS::Link.new(href, LHS::Data.new(value))
+      link = LHS::Link.new(href, LHS::Data.new(value, _data_))
       LHS::Data.new(link, _data_)
     else
-      LHS::Data.new(value, _data_, _data_.service)
+      LHS::Data.new(value, _data_)
     end
   end
 end

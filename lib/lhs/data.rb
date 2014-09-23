@@ -18,7 +18,7 @@ class LHS::Data
   end
 
   def _root_
-    root = _parent_
+    root = self
     root = root._parent_ while root && root._parent_
     root
   end

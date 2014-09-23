@@ -31,7 +31,8 @@ class LHS::Link < LHS::Proxy
   private
 
   def fetch
-    request = LHS::Request.new(
+    service_instance = _data_._root_._service_.instance
+    request = service_instance.request(
       url: _href_,
       method: :get
     )
