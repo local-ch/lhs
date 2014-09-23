@@ -2,6 +2,14 @@ require 'rails_helper'
 
 describe LHS::Data do
 
+  before(:each) do
+    class SomeService < LHS::Service
+      endpoint ':datastore/v2/entries/:entry_id/content-ads/:campaign_id/feedbacks'
+      endpoint ':datastore/v2/:campaign_id/feedbacks'
+      endpoint ':datastore/v2/feedbacks'
+    end
+  end
+
   let(:data_from_raw) do
     LHS::Data.new(
       href: 'http://www.local.ch/v2/stuff',
@@ -10,14 +18,9 @@ describe LHS::Data do
   end
 
   let(:data_from_link) do
-    LHS::Data.new(
-      LHS::Link.new(
-        'http://www.local.ch/v2/stuff',
-        LHS::Data.new(
-          href: 'http://www.local.ch/v2/stuff'
-        )
-      )
-    )
+    raw = { href: 'http://www.local.ch/v2/stuff' }
+    link = LHS::Link.new('http://www.local.ch/v2/stuff', LHS::Data.new(raw))
+    LHS::Data.new(link)
   end
 
   context 'raw' do

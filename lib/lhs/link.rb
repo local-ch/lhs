@@ -5,12 +5,11 @@ require File.join(__dir__, 'proxy.rb')
 class LHS::Link < LHS::Proxy
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_href_, :_data_, :_parent_, :_loaded_
+  attr_accessor :_href_, :_data_, :_loaded_
 
-  def initialize(href, data, parent = nil)
+  def initialize(href, data)
     self._href_ = href
     self._data_ = data
-    self._parent_ = parent
     self._loaded_ = false
   end
 
