@@ -1,0 +1,11 @@
+{
+    "href": "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
+    "campaign": {
+        "href": "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
+    },
+    "source_id": "aaa",
+    "recommended": true,
+    "modified": "2014-09-19T14:03:35.599+02:00",
+    "created_date": "2014-09-19T14:03:35.597+02:00",
+    "comments": []
+}

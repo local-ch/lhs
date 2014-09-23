@@ -19,6 +19,16 @@ class LHS::Item < LHS::Proxy
     if value.is_a?(Hash) && (href = value['href'])
       LHS::Data.new(LHS::Link.new(href, LHS::Data.new(value), self))
     else
+      convert(value)
+    end
+  end
+
+  private
+
+  def convert(value)
+    if value.is_a?(String) && value[/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*.\d{2}:\d{2}/]
+      value = DateTime.parse(value)
+    else
       value
     end
   end

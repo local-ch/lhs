@@ -9,7 +9,7 @@ describe LHS::Service do
     end
   end
 
-  context 'instance' do
+  context 'where' do
 
     it 'is querying relevant endpoint when using where' do
       stub_request(:get, "#{LHS::Config[:datastore]}/v2/feedbacks?has_review=true").to_return(status: 200)
