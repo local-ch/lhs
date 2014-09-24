@@ -4,8 +4,8 @@ require 'singleton'
 class LHS::Service
   include Create
   include Endpoints
+  include Request
   include FindBy
   include Singleton
-  include Request
   include Where
 end

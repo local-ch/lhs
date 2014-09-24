@@ -9,12 +9,7 @@ class LHS::Service
 
       # Used to query data from the service.
       def where(params = {})
-        endpoint = instance.find_endpoint(params)
-        url = instance.inject(endpoint, params)
-        params = instance.remove_injected_params(params, endpoint)
-        instance.merge_explicit_params!(params)
-        request = instance.request(url: url, method: :get, params: params)
-        request.data
+        instance.request(params)
       end
     end
   end

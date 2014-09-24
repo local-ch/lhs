@@ -34,7 +34,7 @@ class LHS::Request
   end
 
   def on_success(response)
-    self.data = LHS::Data.new(response.body)
+    self.data = response.body
   end
 
   def on_error(response)

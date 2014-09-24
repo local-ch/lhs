@@ -2,13 +2,14 @@
 class LHS::Data
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_proxy_, :_raw_, :_parent_, :_service_
+  attr_accessor :_proxy_, :_raw_, :_parent_, :_service_, :_request_
 
-  def initialize(input, parent = nil, service = nil)
+  def initialize(input, parent = nil, service = nil, request = nil)
     self._raw_ = raw_from_input(input)
     self._proxy_ = proxy_from_input(input)
     self._service_ = service
     self._parent_ = parent
+    self._request_ = request
   end
 
   # merging data

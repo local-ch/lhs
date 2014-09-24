@@ -45,8 +45,7 @@ class LHS::Service
 
     # Removes keys from provided params hash
     # when they are used for injecting them in the provided endpoint.
-    def remove_injected_params(params, endpoint)
-      params = params.dup
+    def remove_injected_params!(params, endpoint)
       endpoint.scan(INJECTION) do |match|
         match = match.gsub(/^\:/, '')
         params.delete(match.to_sym) if find_injection(match, params)

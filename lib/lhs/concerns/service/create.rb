@@ -11,10 +11,9 @@ class LHS::Service
       def create(params = {})
         endpoint = instance.find_endpoint(params)
         url = instance.inject(endpoint, params)
-        params = instance.remove_injected_params(params, endpoint)
+        instance.remove_injected_params!(params, endpoint)
         instance.merge_explicit_params!(params)
-        request = instance.request(url: url, method: :post, body: params.to_json)
-        request.data
+        instance.request(url: url, method: :post, body: params.to_json)
       end
     end
   end
