@@ -7,15 +7,13 @@ class LHS::Service
 
     def request(params)
       params = params.dup
-      body = params.delete(:body)
       url = url_or_endpoint(params)
       merge_explicit_params!(params)
       method = params.delete(:method) || :get
       request = LHS::Request.new(
         url: url,
         method: method,
-        params: params,
-        body: body
+        params: params
       )
       LHS::Data.new(request.data, nil, self, request)
     end

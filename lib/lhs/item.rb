@@ -16,9 +16,21 @@ class LHS::Item < LHS::Proxy
     _data_._raw_
   end
 
+  def save
+    _save_
+    rescue LHS::Error => e
+      self.errors = LHS::Errors.new(e.response)
+      false
+  end
+
+  def save!
+    _save_
+  end
+
   protected
 
   def method_missing(name, *args, &block)
+    return set(name, args.try(&:first)) if name.to_s[/=$/]
     value = _data_._raw_[name.to_s]
     if value.is_a?(Hash)
       handle_hash(value)
@@ -28,6 +40,13 @@ class LHS::Item < LHS::Proxy
   end
 
   private
+
+  def _save_
+    service_instance = _data_._root_._service_.instance
+    params = _data_._raw_.merge(method: :post, url: href)
+    service_instance.request(params)
+    true
+  end
 
   def convert(value)
     if value.is_a?(String) && value[/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*.\d{2}:\d{2}/]
@@ -44,5 +63,10 @@ class LHS::Item < LHS::Proxy
     else
       LHS::Data.new(value, _data_)
     end
+  end
+
+  def set(name, value)
+    key = name.to_s.gsub(/=$/, '')
+    _data_._raw_[key] = value
   end
 end

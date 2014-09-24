@@ -21,37 +21,15 @@ end
 You can query the services by using `where`.
 
 ```
-  LHS::Feedback.where(has_reviews: true) // #<LHS::Data>
+  LHS::Feedback.where(has_reviews: true) // #<LHS::Data @_proxy_=#<LHS::Collection>>
 ```
 This uses the `:datastore/v2/feedbacks` endpoint, cause `:campaign_id` was not provided.
 In addition it would add `?has_reviews=true` to the get parameters.
 
 ```
-  LHS::Feedback.where(campaign_id: 'fq-a81ngsl1d') // #<LHS::Data>
+  LHS::Feedback.where(campaign_id: 'fq-a81ngsl1d') // #<LHS::Data @_proxy_=#<LHS::Collection>>
 ```
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
-
-## Find
-
-`find` finds a unique item by uniqe identifier (usualy id).
-
-If no record is found an error is raised.
-
-```
-  LHS::Feedback.find('z12f-3asm3ngals') // #<LHS::Data>
-```
-
-
-## Find by
-
-`find_by` finds the first record matching the specified conditions.
-
-If no record is found, returns `nil`.
-
-```
-  LHS::Feedback.find_by(id: 'z12f-3asm3ngals') // #<LHS::Data>
-  LHS::Feedback.find_by(id: 'doesntexist') // nil
-```
 
 ## Create
 
@@ -72,6 +50,32 @@ When creation fails, the object contains errors in its `errors` attribute:
   feedback.errors.include?(:ratings) // true
   feedback.errors[:ratings] // ['REQUIRED_PROPERTY_VALUE']
 ```
+
+## Find
+
+`find` finds a unique item by uniqe identifier (usualy id).
+
+If no record is found an error is raised.
+
+```
+  LHS::Feedback.find('z12f-3asm3ngals') // #<LHS::Data @_proxy_=#<LHS::Item>>
+```
+
+## Find by
+
+`find_by` finds the first record matching the specified conditions.
+
+If no record is found, returns `nil`.
+
+```
+  LHS::Feedback.find_by(id: 'z12f-3asm3ngals') // #<LHS::Data @_proxy_=#<LHS::Item>>
+  LHS::Feedback.find_by(id: 'doesntexist') // nil
+```
+
+## Item
+
+If you want to know what you can do with a single item (like update, delete etc.) please continue reading here:
+[Item Documentation](item.md).
 
 ## Misconfiguration
 

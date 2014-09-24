@@ -13,11 +13,13 @@ class LHS::Request
   private
 
   def request(options)
+    params = options[:params] unless options[:method] == :post
+    body = options[:params].to_json if options[:method] == :post
     request = Typhoeus::Request.new(
       options[:url],
       method: options[:method] || :get,
-      params: options[:params],
-      body: options[:body],
+      params: params,
+      body: body,
       headers: { 'Content-Type' => 'application/json' },
       followlocation: true
     )

@@ -62,6 +62,7 @@ class LHS::Errors
 
   def messages_from_response(response)
     messages = {}
+    return messages if !response.body.is_a?(String) || response.body.length.zero?
     json = JSON.parse(response.body)
     json['fields'].each do |field|
       name = field['name'].to_sym
