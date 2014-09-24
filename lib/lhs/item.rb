@@ -1,4 +1,5 @@
 require File.join(__dir__, 'proxy.rb')
+Dir[File.dirname(__FILE__) + '/concerns/item/*.rb'].each {|file| require file }
 
 # An item is a concrete record.
 # It can be part of another proxy like collection.

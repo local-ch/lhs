@@ -9,11 +9,12 @@ In general you can use any method that you also could call on an array (like cou
 
 `total` provides total amount of items (even if paginated).
 
-## Page
+## Offset / Limit / Pagination
 
-Access a specific page of the collection.
+You can paginate by passing offset, and limit params. They will be forwarded to the backend.
+
 ```
-data = LHS::Feedback.where()
-data.count // 10
-data.page(3) // #<LHS::Data>
+data = LHS::Feedback.where(limit: 50) // #<LHS::Data @_proxy_=#<LHS::Collection>>
+data.count // 50
+LHS::Feedback.where(limit: 50, offset: 51) // #<LHS::Data @_proxy_=#<LHS::Collection>>
 ```

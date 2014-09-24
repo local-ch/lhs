@@ -35,7 +35,7 @@ class LHS::Data
   def proxy_from_input(input)
     if input.is_a? LHS::Proxy
       input
-    elsif _raw_.is_a?(Hash) && _raw_['items']
+    elsif (_raw_.is_a?(Hash) && _raw_['items']) || input.is_a?(Array)
       LHS::Collection.new(self)
     else
       LHS::Item.new(self)

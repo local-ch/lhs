@@ -31,6 +31,18 @@ In addition it would add `?has_reviews=true` to the get parameters.
 ```
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
+## All
+
+`all` fetches all records from the backend by doing multiple requests if necessary.
+
+** Be carefull using `all`, it could result in a lot of HTTP requests **
+
+```
+data = LHS::Feedback.all // #<LHS::Data @_proxy_=#<LHS::Collection>>
+data.count // 998
+data.total // 998
+```
+
 ## Create
 
 ```

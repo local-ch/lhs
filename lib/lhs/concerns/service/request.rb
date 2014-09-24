@@ -5,7 +5,7 @@ class LHS::Service
   module Request
     extend ActiveSupport::Concern
 
-    def request(params)
+    def request(params = {})
       params = params.dup
       url = url_or_endpoint(params)
       merge_explicit_params!(params)

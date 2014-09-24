@@ -15,7 +15,11 @@ class LHS::Collection < LHS::Proxy
   end
 
   def _collection_
-    _data_._raw_['items']
+    if _data_._raw_.is_a?(Array)
+      _data_._raw_
+    else
+      _data_._raw_['items']
+    end
   end
 
   def _raw_
