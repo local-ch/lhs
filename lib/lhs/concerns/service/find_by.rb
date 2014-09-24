@@ -7,7 +7,7 @@ class LHS::Service
 
     module ClassMethods
 
-      # Use find_by to fetch a single uniqe record.
+      # Use find_by to fetch a single record.
       def find_by(params = {})
         data = instance.request(params)
         if data._proxy_.is_a?(LHS::Collection)

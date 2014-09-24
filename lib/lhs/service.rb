@@ -5,6 +5,7 @@ class LHS::Service
   include Create
   include Endpoints
   include Request
+  include Find
   include FindBy
   include Singleton
   include Where

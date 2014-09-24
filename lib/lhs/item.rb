@@ -5,10 +5,11 @@ require File.join(__dir__, 'proxy.rb')
 class LHS::Item < LHS::Proxy
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_data_
+  attr_accessor :_data_, :errors
 
-  def initialize(data)
+  def initialize(data, errors = nil)
     self._data_ = data
+    self.errors = errors
   end
 
   def _raw_

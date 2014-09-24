@@ -31,6 +31,17 @@ In addition it would add `?has_reviews=true` to the get parameters.
 ```
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
+## Find
+
+`find` finds a unique item by uniqe identifier (usualy id).
+
+If no record is found an error is raised.
+
+```
+  LHS::Feedback.find('z12f-3asm3ngals') // #<LHS::Data>
+```
+
+
 ## Find by
 
 `find_by` finds the first record matching the specified conditions.
@@ -39,6 +50,7 @@ If no record is found, returns `nil`.
 
 ```
   LHS::Feedback.find_by(id: 'z12f-3asm3ngals') // #<LHS::Data>
+  LHS::Feedback.find_by(id: 'doesntexist') // nil
 ```
 
 ## Create
@@ -48,7 +60,7 @@ If no record is found, returns `nil`.
     recommended: true,
     source_id: 'aaa',
     content_ad_id: '1z-5r1fkaj'
-  ) // #<LHS::Data>
+  ) // #<LHS::Data @_proxy_=#<LHS::Item>>
 ```
 
 ### Errors while creating

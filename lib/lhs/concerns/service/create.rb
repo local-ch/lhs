@@ -15,9 +15,10 @@ class LHS::Service
         instance.merge_explicit_params!(params)
         instance.request(url: url, method: :post, body: params.to_json)
         rescue LHS::Error => e
-          OpenStruct.new(
-            params.merge(errors: LHS::Errors.new(e.response))
-          )
+          json = JSON.parse(params.to_json)
+          data = LHS::Data.new(json, nil, self, e.response.request)
+          item = LHS::Item.new(data, LHS::Errors.new(e.response))
+          LHS::Data.new(item, data)
       end
     end
   end

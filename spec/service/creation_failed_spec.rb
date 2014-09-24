@@ -30,8 +30,9 @@ describe LHS::Service do
     it 'provides errors when creation failed' do
       stub_request(:post, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks")
       .to_return(status: 400, body: creation_error.to_json)
-      record = SomeService.create({})
+      record = SomeService.create(name: 'Steve')
       expect(record.errors).to be
+      expect(record.name).to eq 'Steve'
       expect(record.errors.include?(:ratings)).to eq true
       expect(record.errors.include?(:recommended)).to eq true
       expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE']
