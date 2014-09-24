@@ -3,6 +3,8 @@ require File.join(__dir__, 'proxy.rb')
 # An item is a concrete record.
 # It can be part of another proxy like collection.
 class LHS::Item < LHS::Proxy
+  include Destroy
+  include Save
 
   # prevent clashing with attributes of underlying data
   attr_accessor :_data_, :errors
@@ -14,17 +16,6 @@ class LHS::Item < LHS::Proxy
 
   def _raw_
     _data_._raw_
-  end
-
-  def save
-    _save_
-    rescue LHS::Error => e
-      self.errors = LHS::Errors.new(e.response)
-      false
-  end
-
-  def save!
-    _save_
   end
 
   protected
@@ -40,13 +31,6 @@ class LHS::Item < LHS::Proxy
   end
 
   private
-
-  def _save_
-    service_instance = _data_._root_._service_.instance
-    params = _data_._raw_.merge(method: :post, url: href)
-    service_instance.request(params)
-    true
-  end
 
   def convert(value)
     if value.is_a?(String) && value[/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*.\d{2}:\d{2}/]

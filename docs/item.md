@@ -28,3 +28,12 @@ You can persist changes like you would usualy do with `save`.
   feedback.recommended = false
   feedback.save
 ```
+
+## Destroy
+
+You can delete records remotely by calling `destroy` on an item.
+
+```
+  feedback = LHS::Feedback.find('1z-5r1fkaj')
+  feedback.destroy
+```
