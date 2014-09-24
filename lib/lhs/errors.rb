@@ -1,0 +1,75 @@
+# Like ActiveModel::Errors
+class LHS::Errors
+  include Enumerable
+
+  attr_reader :messages
+
+  def initialize(response)
+    @messages = messages_from_response(response)
+  end
+
+  def include?(attribute)
+    messages[attribute].present?
+  end
+
+  def get(key)
+    messages[key]
+  end
+
+  def set(key, value)
+    messages[key] = value
+  end
+
+  def delete(key)
+    messages.delete(key)
+  end
+
+  def [](attribute)
+    get(attribute.to_sym) || set(attribute.to_sym, [])
+  end
+
+  def []=(attribute, error)
+    self[attribute] << error
+  end
+
+  def each
+    messages.each_key do |attribute|
+      self[attribute].each { |error| yield attribute, error }
+    end
+  end
+
+  def size
+    values.flatten.size
+  end
+
+  def values
+    messages.values
+  end
+
+  def keys
+    messages.keys
+  end
+
+  def count
+    to_a.size
+  end
+
+  def empty?
+    all? { |k, v| v && v.empty? && !v.is_a?(String) }
+  end
+
+  private
+
+  def messages_from_response(response)
+    messages = {}
+    json = JSON.parse(response.body)
+    json['fields'].each do |field|
+      name = field['name'].to_sym
+      messages[name] ||= []
+      field['details'].each do |detail|
+        messages[name].push(detail['code'])
+      end
+    end
+    messages
+  end
+end

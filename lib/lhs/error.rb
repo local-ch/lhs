@@ -1,5 +1,7 @@
 class LHS::Error < StandardError
 
+  attr_accessor :response
+
   def self.map
     {
       400 => BadRequest,
@@ -42,6 +44,11 @@ class LHS::Error < StandardError
     error = map[status_code]
     error ||= UnknownError
     error
+  end
+
+  def initialize(message, response = nil)
+    super(message)
+    self.response = response
   end
 
 end

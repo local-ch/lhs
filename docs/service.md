@@ -44,11 +44,21 @@ If no record is found, returns `nil`.
 ## Create
 
 ```
-  LHS::Feedback.create(
+  feedback = LHS::Feedback.create(
     recommended: true,
     source_id: 'aaa',
     content_ad_id: '1z-5r1fkaj'
   ) // #<LHS::Data>
+```
+
+### Errors while creating
+
+When creation fails, the object contains errors in its `errors` attribute:
+
+```
+  feedback.errors // #<LHS::Errors>
+  feedback.errors.include?(:ratings) // true
+  feedback.errors[:ratings] // ['REQUIRED_PROPERTY_VALUE']
 ```
 
 ## Misconfiguration

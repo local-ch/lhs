@@ -14,6 +14,10 @@ class LHS::Service
         instance.remove_injected_params!(params, endpoint)
         instance.merge_explicit_params!(params)
         instance.request(url: url, method: :post, body: params.to_json)
+        rescue LHS::Error => e
+          OpenStruct.new(
+            params.merge(errors: LHS::Errors.new(e.response))
+          )
       end
     end
   end

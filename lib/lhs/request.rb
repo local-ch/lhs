@@ -39,6 +39,6 @@ class LHS::Request
 
   def on_error(response)
     error = LHS::Error.find(response.code)
-    fail(error, "#{response.code} #{response.body}")
+    fail error.new("#{response.code} #{response.body}", response)
   end
 end
