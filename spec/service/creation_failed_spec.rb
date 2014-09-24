@@ -38,5 +38,11 @@ describe LHS::Service do
       expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE']
       expect(record.errors[:recommended]).to eq ['REQUIRED_PROPERTY_VALUE']
     end
+
+    it 'doesnt fail when no fields are provided by the backend' do
+      stub_request(:post, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks")
+      .to_return(status: 400, body: {}.to_json)
+      SomeService.create(name: 'Steve')
+    end
   end
 end
