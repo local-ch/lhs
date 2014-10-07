@@ -10,7 +10,9 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
+gem 'LHC', git: 'git@github.com:local-ch/LHC.git', tag: 'v0.0.1'
+# gem 'LHC', path: '../LHC' # for testing locally
+
 gem 'rspec-rails', '>= 3.0.0'
 gem 'pry'
-gem 'lhc', git: 'git@github.com:local-ch/LHC.git', tag: 'v0.0.1'
 gem 'webmock', group: [:test]

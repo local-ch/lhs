@@ -7,7 +7,7 @@ class LHS::Item < LHS::Proxy
 
     def save
       _save_
-      rescue LHS::Error => e
+      rescue LHC::Error => e
         self.errors = LHS::Errors.new(e.response)
         false
     end

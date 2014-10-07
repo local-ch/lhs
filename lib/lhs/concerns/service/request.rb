@@ -10,7 +10,7 @@ class LHS::Service
       url = url_or_endpoint(params)
       merge_explicit_params!(params)
       method = params.delete(:method) || :get
-      request = LHS::Request.new(
+      request = LHC::Request.new(
         url: url,
         method: method,
         params: params

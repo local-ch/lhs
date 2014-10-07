@@ -23,5 +23,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', '~> 4.1.1'
   s.add_dependency 'typhoeus'
-  s.add_dependency 'lhc'
+  s.add_dependency 'LHC'
 end
