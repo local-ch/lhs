@@ -2,20 +2,20 @@ require 'active_support'
 
 class LHS::Service
 
-  # An endpoint is an url that leads to a backend service.
-  # It can contain params that have to be injected before the url can be used.
-  # An endpoint can look like ':datastore/v2/:campaign_id/feedbacks'
+  # An endpoint is an url that leads to a backend resource.
+  # A service can contain multiple endpoints.
+  # The endpoint that is used to request data is choosen
+  # based on the provided parameters.
   module Endpoints
     extend ActiveSupport::Concern
-
-    INJECTION = /\:.*?(?=\/)/
 
     attr_accessor :endpoints
 
     module ClassMethods
 
-      # Adds the endpoint.
-      def endpoint(endpoint)
+      # Adds the endpoint to the list of endpoints.
+      def endpoint(url)
+        endpoint = LHC::Endpoint.new(url)
         instance.sanity_check(endpoint)
         instance.endpoints.push(endpoint)
       end
@@ -29,9 +29,7 @@ class LHS::Service
     # It will take the data to inject first from global configuration
     # second from the provided parameters.
     def inject(endpoint, params)
-      endpoint.gsub(INJECTION) do |match|
-        find_injection(match, params) || fail("Incomplete injection. Unable to inject #{match.gsub(':', '')}.")
-      end
+      endpoint.inject(->(match){ find_injection(match, params) })
     end
 
     # Find an endpoint based on the provided parameters.
@@ -46,24 +44,13 @@ class LHS::Service
     # Removes keys from provided params hash
     # when they are used for injecting them in the provided endpoint.
     def remove_injected_params!(params, endpoint)
-      endpoint.scan(INJECTION) do |match|
-        match = match.gsub(/^\:/, '')
-        params.delete(match.to_sym) if find_injection(match, params)
-      end
-      params
-    end
-
-    # Merge explicit params nested in 'params' namespace with original hash.
-    def merge_explicit_params!(params)
-      explicit_params = params[:params]
-      params.delete(:params)
-      params.merge!(explicit_params) if explicit_params
+      endpoint.remove_injected_params!(params)
     end
 
     # Prevent clashing endpoints.
     def sanity_check(endpoint)
-      injection = endpoint.scan(INJECTION)
-      fail 'Clashing endpoints.' if endpoints.any? { |e| e.scan(INJECTION) == injection }
+      injections = endpoint.injections
+      fail 'Clashing endpoints.' if endpoints.any? { |e| e.injections == injections }
     end
 
     private
@@ -80,8 +67,7 @@ class LHS::Service
     # and doenst has any injections left empty.
     def find_best_endpoint(params)
       endpoints.find do |endpoint|
-        injections = endpoint.scan(INJECTION)
-        injections.all? { |match| find_injection(match, params) }
+        endpoint.injections.all? { |match| find_injection(match, params) }
       end
     end
 
@@ -91,7 +77,7 @@ class LHS::Service
     # because this one is used when query the service without any params.
     def find_base_endpoint
       endpoints = self.endpoints.group_by do |endpoint|
-        endpoint.scan(INJECTION).length
+        endpoint.injections.length
       end
       bases = endpoints[endpoints.keys.min]
       fail 'Multiple base endpoints found' if bases.count > 1

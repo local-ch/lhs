@@ -8,7 +8,6 @@ class LHS::Service
     def request(params = {})
       params = params.dup
       url = url_or_endpoint(params)
-      merge_explicit_params!(params)
       method = params.delete(:method) || :get
       request = LHC::Request.new(
         url: url,
