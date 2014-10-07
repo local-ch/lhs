@@ -1,6 +1,8 @@
 LHS
 ===
 
+LHS uses [LHC](//github.com/local-ch/LHC) to make http requests.
+
 [Collection](docs/collection.md) |
 [Item](docs/item.md) |
 [Link](docs/link.md) |
