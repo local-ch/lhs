@@ -1,4 +1,4 @@
-# Data provides ways to accesses information
+# Data provides functionalities to accesses information
 class LHS::Data
 
   # prevent clashing with attributes of underlying data

@@ -12,4 +12,5 @@ gemspec
 
 gem 'rspec-rails', '>= 3.0.0'
 gem 'pry'
+gem 'lhc', git: 'git@github.com:local-ch/LHC.git', tag: 'v0.0.1'
 gem 'webmock', group: [:test]
