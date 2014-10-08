@@ -9,7 +9,8 @@ class LHS::Service
 
       # Use find_by to fetch a single record.
       def find_by(params = {})
-        data = instance.request(params)
+        url = instance.compute_url!(params)
+        data = instance.request(url: url, params: params)
         if data._proxy_.is_a?(LHS::Collection)
           data.first
         else

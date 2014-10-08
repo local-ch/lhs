@@ -9,7 +9,8 @@ class LHS::Service
 
       # Use find a single uniqe record.
       def find(id)
-        instance.request(id: id)
+        url = instance.compute_url!(id: id)
+        instance.request(url: url)
       end
     end
   end

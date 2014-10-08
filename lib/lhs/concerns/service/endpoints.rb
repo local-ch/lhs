@@ -53,6 +53,17 @@ class LHS::Service
       fail 'Clashing endpoints.' if endpoints.any? { |e| e.injections == injections }
     end
 
+    # Computes the url from options
+    # by identifiying endpoint and injecting params.
+    # Id in options is threaded in a special way.
+    def compute_url!(options)
+      endpoint = find_endpoint(options)
+      url = inject(endpoint, options)
+      url +=  "/#{options.delete(:id)}" if options[:id]
+      remove_injected_params!(options, endpoint)
+      url
+    end
+
     private
 
     # Find an injection either in the global configuration
