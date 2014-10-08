@@ -21,7 +21,8 @@ class LHS::Item < LHS::Proxy
     def _save_
       service_instance = _data_._root_._service_.instance
       body = _data_._raw_.to_json
-      service_instance.request(method: :post, url: href, body: body)
+      data = service_instance.request(method: :post, url: href, body: body)
+      self._data_.merge!(data)
       true
     end
   end

@@ -15,6 +15,7 @@ class LHS::Data
   # merging data
   # e.g. when loading remote data via link
   def merge!(data)
+    return false unless data._raw_.is_a?(Hash)
     _raw_.merge! data._raw_
   end
 

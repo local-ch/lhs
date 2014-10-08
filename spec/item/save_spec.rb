@@ -36,6 +36,14 @@ describe LHS::Data do
       .to_return(status: 500)
       expect(item.save).to eq false
     end
+
+    it 'merges reponse data with object' do
+      stub_request(:post, item.href)
+      .with(body: item._raw_.to_json)
+      .to_return(status: 200, body: item._raw_.merge(name: 'Steve').to_json)
+      item.save
+      expect(item.name).to eq 'Steve'
+    end
   end
 
   context 'save!' do
