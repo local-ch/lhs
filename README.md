@@ -1,18 +1,12 @@
 LHS
 ===
 
-LHS uses [LHC](//github.com/local-ch/LHC) to make http requests.
-
-[Collection](docs/collection.md) |
-[Item](docs/item.md) |
-[Link](docs/link.md) |
-[Service](docs/service.md)
+LHS uses [LHC](//github.com/local-ch/LHC) for http requests.
 
 ## Service
 A Service connects your application to backend endpoints providing you access to their data.
 
-### Service Example
-```
+```ruby
 class LHS::Feedback < LHS::Service
 
   endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks'
@@ -22,35 +16,53 @@ end
 
 LHS::Feedback.where(has_reviews: true) // #<LHS::Data>
 ```
+
 ![Service](docs/service.jpg)
+
+→ [Read more about services](docs/service.md)
 
 ## Data
 Data contains raw data (json) and a proxy that is used to access data.
 
 ![Data](docs/data.jpg)
 
+→ [Read more about data](docs/data.md)
+
 ## Proxy
 A proxy is used to access data. It is separated in the three types: Collection, Item and Link.
 
 ![Data](docs/proxy.jpg)
-### Collection Example
-```
+
+## Collection
+A collection is a special type of data that contains multiple items.
+
+```ruby
 data = LHS::Feedback.where(has_reviews: true) // #<LHS::Data @_proxy_=#<LHS::Collection>>
 data.count // 10
 data.total // 98
 ```
 
-### Item Example
-```
+→ [Read more about collections](docs/collection.md)
+
+## Item
+An item is a concrete record. It can be part of another proxy like collection.
+
+```ruby
 data = LHS::Feedback.where(has_reviews: true).first // #<LHS::Data @_proxy_=#<LHS::Item>>
 data.recommended // true
 data.created_date // Fri, 19 Sep 2014 14:03:35 +0200
 data._raw_ // {...}
 ```
 
-### Link Example
-```
+→ [Read more about items](docs/item.md)
+
+## Link
+A link is pointing to a backend resource. Sometimes a link contains data already.
+
+```ruby
 data = LHS::Feedback.where(has_reviews: true).first.campaign // #<LHS::Data @_proxy_=#<LHS::Link>>
 data._raw_ // {"href"=>"http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"}
 data.id // "51dfc5690cf271c375c5a12d" (fetched from the backend)
 ```
+
+→ [Read more about links](docs/link.md)

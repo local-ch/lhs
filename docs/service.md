@@ -7,7 +7,7 @@ A Service makes data available using multiple endpoints.
 
 You setup a service by configure one or multiple backend endpoints that provide data for that service.
 
-```
+```ruby
 class LHS::Feedback < LHS::Service
 
   endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks'
@@ -20,13 +20,14 @@ end
 
 You can query the services by using `where`.
 
-```
+```ruby
   LHS::Feedback.where(has_reviews: true) // #<LHS::Data @_proxy_=#<LHS::Collection>>
 ```
+
 This uses the `:datastore/v2/feedbacks` endpoint, cause `:campaign_id` was not provided.
 In addition it would add `?has_reviews=true` to the get parameters.
 
-```
+```ruby
   LHS::Feedback.where(campaign_id: 'fq-a81ngsl1d') // #<LHS::Data @_proxy_=#<LHS::Collection>>
 ```
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
@@ -37,7 +38,7 @@ Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
 ** Be carefull using `all`, it could result in a lot of HTTP requests **
 
-```
+```ruby
 data = LHS::Feedback.all // #<LHS::Data @_proxy_=#<LHS::Collection>>
 data.count // 998
 data.total // 998
@@ -45,7 +46,7 @@ data.total // 998
 
 ## Create
 
-```
+```ruby
   feedback = LHS::Feedback.create(
     recommended: true,
     source_id: 'aaa',
@@ -57,7 +58,7 @@ data.total // 998
 
 When creation fails, the object contains errors in its `errors` attribute:
 
-```
+```ruby
   feedback.errors // #<LHS::Errors>
   feedback.errors.include?(:ratings) // true
   feedback.errors[:ratings] // ['REQUIRED_PROPERTY_VALUE']
@@ -69,7 +70,7 @@ When creation fails, the object contains errors in its `errors` attribute:
 
 If no record is found an error is raised.
 
-```
+```ruby
   LHS::Feedback.find('z12f-3asm3ngals') // #<LHS::Data @_proxy_=#<LHS::Item>>
 ```
 
@@ -79,21 +80,21 @@ If no record is found an error is raised.
 
 If no record is found, returns `nil`.
 
-```
+```ruby
   LHS::Feedback.find_by(id: 'z12f-3asm3ngals') // #<LHS::Data @_proxy_=#<LHS::Item>>
   LHS::Feedback.find_by(id: 'doesntexist') // nil
 ```
 
 ## Item
 
-If you want to know what you can do with a single item (like update, delete etc.) please continue reading here:
-[Item Documentation](item.md).
+An item is a concrete record. It can be part of another proxy like collection.
+→ [Read more about items](docs/item.md)
 
 ## Misconfiguration
 
 If you try to setup a service with clashing endpoints it will immediately raise an exception.
 
-```
+```ruby
 class LHS::Feedback < LHS::Service
 
   endpoint ':datastore/v2/reviews'
