@@ -4,7 +4,7 @@ LHS
 LHS uses [LHC](//github.com/local-ch/LHC) for http requests.
 
 ## Service
-A Service connects your application to backend endpoints providing you access to their data.
+A service connects your application to backend endpoints and provides you access to their data.
 
 ```ruby
 class LHS::Feedback < LHS::Service
@@ -14,24 +14,20 @@ class LHS::Feedback < LHS::Service
 
 end
 
-LHS::Feedback.where(has_reviews: true) // #<LHS::Data>
+data = LHS::Feedback.where(has_reviews: true) // #<LHS::Data>
 ```
-
-![Service](docs/service.jpg)
 
 → [Read more about services](docs/service.md)
 
 ## Data
 Data contains raw data (json) and a proxy that is used to access data.
 
-![Data](docs/data.jpg)
-
-→ [Read more about data](docs/data.md)
+```ruby
+data.first.recommended # true
+```
 
 ## Proxy
 A proxy is used to access data. It is separated in the three types: Collection, Item and Link.
-
-![Data](docs/proxy.jpg)
 
 ## Collection
 A collection is a special type of data that contains multiple items.

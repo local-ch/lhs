@@ -3,6 +3,8 @@ Service
 
 A Service makes data available using multiple endpoints.
 
+![Service](docs/service.jpg)
+
 ## Endpoints
 
 You setup a service by configure one or multiple backend endpoints that provide data for that service.
