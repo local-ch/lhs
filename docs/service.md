@@ -3,7 +3,7 @@ Service
 
 A Service makes data available using multiple endpoints.
 
-![Service](docs/service.jpg)
+![Service](service.jpg)
 
 ## Endpoints
 
