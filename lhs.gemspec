@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.files        = `git ls-files`.split("\n")
   s.test_files   = `git ls-files -- spec/*`.split("\n")
-  s.require_path = 'lib'
+  s.require_paths = ['lib']
 
   s.requirements << 'Ruby >= 1.9.2'
   s.requirements << 'Access to the local.ch network'
