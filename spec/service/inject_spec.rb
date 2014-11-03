@@ -17,7 +17,7 @@ describe LHS::Service do
     it 'removes parameters when they are use to inject them to generate url' do
       params = { entry_id: '123', campaign_id: '456', has_reviews: true }
       endpoint = LHC::Endpoint.new(':datastore/v2/entries/:entry_id/content-ads/:campaign_id/feedbacks')
-      LHS::Service.instance.remove_injected_params!(params, endpoint)
+      endpoint.remove_injected_params!(params)
       expect(params).to eq(has_reviews: true)
     end
 

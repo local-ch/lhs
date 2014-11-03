@@ -41,12 +41,6 @@ class LHS::Service
       endpoint
     end
 
-    # Removes keys from provided params hash
-    # when they are used for injecting them in the provided endpoint.
-    def remove_injected_params!(params, endpoint)
-      endpoint.remove_injected_params!(params)
-    end
-
     # Prevent clashing endpoints.
     def sanity_check(endpoint)
       injections = endpoint.injections
@@ -60,7 +54,7 @@ class LHS::Service
       endpoint = find_endpoint(options)
       url = inject(endpoint, options)
       url +=  "/#{options.delete(:id)}" if options[:id]
-      remove_injected_params!(options, endpoint)
+      endpoint.remove_injected_params!(options)
       url
     end
 
