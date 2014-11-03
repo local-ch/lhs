@@ -14,5 +14,5 @@ if [ -z "$SKIP_RVM" ]; then
   gem install bundler --no-rdoc --no-ri
 fi
 
-bundle install --local --quiet || bundle install --quiet
+bundle install --local || bundle install
 RAILS_ENV=test bundle exec rspec
