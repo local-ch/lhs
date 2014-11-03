@@ -17,7 +17,7 @@ end
 data = LHS::Feedback.where(has_reviews: true) // #<LHS::Data>
 ```
 
-→ [Read more about services](docs/service.md)
+→ [Read more about services](docs/services.md)
 
 ## Data
 Data contains raw data (json) and a proxy that is used to access data.
