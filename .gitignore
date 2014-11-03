@@ -34,3 +34,5 @@ Gemfile.lock
 /vendor/assets/bower_components
 *.bowerrc
 bower.json
+
+spec/dummy/log/test.log
