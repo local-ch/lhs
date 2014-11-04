@@ -4,10 +4,13 @@ describe LHS::Service do
 
   context 'creation failed' do
 
+    let(:datastore) { 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2' }
+
     before(:each) do
+      LHC.config.injection(:datastore, datastore)
       class SomeService < LHS::Service
-        endpoint ':datastore/v2/:campaign_id/feedbacks'
-        endpoint ':datastore/v2/feedbacks'
+        endpoint ':datastore/:campaign_id/feedbacks'
+        endpoint ':datastore/feedbacks'
       end
     end
 
@@ -28,7 +31,7 @@ describe LHS::Service do
     end
 
     it 'provides errors when creation failed' do
-      stub_request(:post, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks")
+      stub_request(:post, "#{datastore}/feedbacks")
       .to_return(status: 400, body: creation_error.to_json)
       record = SomeService.create(name: 'Steve')
       expect(record.errors).to be
@@ -40,7 +43,7 @@ describe LHS::Service do
     end
 
     it 'doesnt fail when no fields are provided by the backend' do
-      stub_request(:post, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks")
+      stub_request(:post, "#{datastore}/feedbacks")
       .to_return(status: 400, body: {}.to_json)
       SomeService.create(name: 'Steve')
     end

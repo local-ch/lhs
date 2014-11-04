@@ -1,5 +1,0 @@
-datastore:
-  production: http://datastore.lb-service
-  development: http://datastore-stg.lb-service.sunrise.intra.local.ch
-  test: http://datastore-stg.lb-service.sunrise.intra.local.ch
-  others: http://datastore-stg.lb-service

@@ -52,7 +52,7 @@ describe LHS::Data do
       stub_request(:post, item.href)
       .with(body: item._raw_.to_json)
       .to_return(status: 500)
-      expect(->{ item.save! }).to raise_error ServerError
+      expect(->{ item.save! }).to raise_error LHC::ServerError
     end
   end
 end

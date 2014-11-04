@@ -25,13 +25,6 @@ class LHS::Service
       self.endpoints = []
     end
 
-    # Injects params into url.
-    # It will take the data to inject first from global configuration
-    # second from the provided parameters.
-    def inject(endpoint, params)
-      endpoint.inject(->(match){ find_injection(match, params) })
-    end
-
     # Find an endpoint based on the provided parameters.
     # If no parameters are provided it finds the base endpoint
     # otherwise it finds the endpoint that matches the parameters best.
@@ -52,7 +45,7 @@ class LHS::Service
     # Id in options is threaded in a special way.
     def compute_url!(options)
       endpoint = find_endpoint(options)
-      url = inject(endpoint, options)
+      url = endpoint.inject(options)
       url +=  "/#{options.delete(:id)}" if options[:id]
       endpoint.remove_injected_params!(options)
       url
@@ -60,19 +53,12 @@ class LHS::Service
 
     private
 
-    # Find an injection either in the global configuration
-    # or in the provided params
-    def find_injection(match, params)
-      match = match.gsub(/^\:/, '')
-      LHS::Config[match] || params[match.to_sym]
-    end
-
     # Finds the best endpoint.
     # The best endpoint is the one that gets all parameters injected
     # and doenst has any injections left empty.
     def find_best_endpoint(params)
       endpoints.find do |endpoint|
-        endpoint.injections.all? { |match| find_injection(match, params) }
+        endpoint.injections.all? { |match| endpoint.find_injection(match, params) }
       end
     end
 

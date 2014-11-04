@@ -16,7 +16,7 @@ class LHS::Service
         else
           data
         end
-        rescue NotFound
+        rescue LHC::NotFound
           nil
       end
     end
