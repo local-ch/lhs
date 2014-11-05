@@ -7,7 +7,7 @@ describe LHS::Service do
   end
 
   before(:each) do
-    LHC.config.injection('datastore', datastore)
+    LHC.config.placeholder('datastore', datastore)
     class SomeService < LHS::Service
       endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks'
       endpoint ':datastore/v2/feedbacks'
@@ -25,7 +25,7 @@ describe LHS::Service do
       SomeService.where
     end
 
-    it 'is using params as query params explicitly when provided in params namespace to prevent clashing from injections' do
+    it 'is using params as query params explicitly when provided in params namespace' do
       stub_request(:get, "#{datastore}/v2/content-ads/123/feedbacks?campaign_id=456").to_return(status: 200)
       SomeService.where(campaign_id: '123', params: { campaign_id: '456' })
     end

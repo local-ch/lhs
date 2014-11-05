@@ -7,7 +7,7 @@ describe LHS::Service do
     let(:datastore) { 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2' }
 
     before(:each) do
-      LHC.config.injection(:datastore, datastore)
+      LHC.config.placeholder(:datastore, datastore)
       class SomeService < LHS::Service
         endpoint ':datastore/v2/entries/:entry_id/content-ads/:campaign_id/feedbacks'
         endpoint ':datastore/v2/:campaign_id/feedbacks'

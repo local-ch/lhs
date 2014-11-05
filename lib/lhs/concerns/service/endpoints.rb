@@ -36,39 +36,37 @@ class LHS::Service
 
     # Prevent clashing endpoints.
     def sanity_check(endpoint)
-      injections = endpoint.injections
-      fail 'Clashing endpoints.' if endpoints.any? { |e| e.injections == injections }
+      placeholders = endpoint.placeholders
+      fail 'Clashing endpoints.' if endpoints.any? { |e| e.placeholders == placeholders }
     end
 
     # Computes the url from options
-    # by identifiying endpoint and injecting params.
+    # by identifiying endpoint and compile if necessary.
     # Id in options is threaded in a special way.
     def compute_url!(options)
       endpoint = find_endpoint(options)
-      url = endpoint.inject(options)
+      url = endpoint.compile(options)
       url +=  "/#{options.delete(:id)}" if options[:id]
-      endpoint.remove_injected_params!(options)
+      endpoint.remove_interpolated_params!(options)
       url
     end
 
     private
 
     # Finds the best endpoint.
-    # The best endpoint is the one that gets all parameters injected
-    # and doenst has any injections left empty.
+    # The best endpoint is the one where all placeholders are interpolated.
     def find_best_endpoint(params)
       endpoints.find do |endpoint|
-        endpoint.injections.all? { |match| endpoint.find_injection(match, params) }
+        endpoint.placeholders.all? { |match| endpoint.find_value(match, params) }
       end
     end
 
     # Finds the base endpoint.
-    # A base endpoint is the one thats has the least amont of injected parameters.
-    # There cannot be multiple base endpoints,
-    # because this one is used when query the service without any params.
+    # A base endpoint is the one thats has the least amont of placeholers.
+    # There cannot be multiple base endpoints.
     def find_base_endpoint
       endpoints = self.endpoints.group_by do |endpoint|
-        endpoint.injections.length
+        endpoint.placeholders.length
       end
       bases = endpoints[endpoints.keys.min]
       fail 'Multiple base endpoints found' if bases.count > 1
