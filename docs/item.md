@@ -12,7 +12,7 @@ If no data is present for an attribute that you try to acccess `nil` is returned
 An item proxy contains setter methods, in order to set/change values.
 
 ```
-  record = LHS::Feedback.find(id: 'z12f-3asm3ngals') // #<LHS::Data @_proxy_=#<LHS::Item>>
+  record = LHS::Feedback.find(id: 'z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
   rcord.recommended = false
 ```
 
