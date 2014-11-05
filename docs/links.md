@@ -12,12 +12,3 @@ As soon as an Item contains a key called `href` its treated as link.
 
 item.load!.id
 ```
-
-You can load nested data also by using the `load!` on any proxy (like Collection, Item etc.).
-This will load all data required at once and makes it available.
-
-```ruby
-
-  Feedback.where(has_reviews: true)
-
-```
