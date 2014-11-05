@@ -16,6 +16,15 @@ An item proxy contains setter methods, in order to set/change values.
   rcord.recommended = false
 ```
 
+## Build
+
+Build and persist new items from scratch.
+
+```ruby
+  monkey = MonkeyService.build(name: 'Steve')
+  monkey.save
+```
+
 ## Save
 
 You can persist changes like you would usualy do with `save`.

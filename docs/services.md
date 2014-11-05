@@ -66,6 +66,17 @@ When creation fails, the object contains errors in its `errors` attribute:
   feedback.errors[:ratings] // ['REQUIRED_PROPERTY_VALUE']
 ```
 
+## Build
+
+Build and persist new items from scratch.
+
+```ruby
+  monkey = MonkeyService.build(name: 'Steve')
+  monkey.save
+```
+
+→ [Read more about items](item.md)
+
 ## Find
 
 `find` finds a unique item by uniqe identifier (usualy id).
@@ -86,11 +97,6 @@ If no record is found, returns `nil`.
   LHS::Feedback.find_by(id: 'z12f-3asm3ngals') // #<LHS::Data @_proxy_=#<LHS::Item>>
   LHS::Feedback.find_by(id: 'doesntexist') // nil
 ```
-
-## Item
-
-An item is a concrete record. It can be part of another proxy like collection.
-→ [Read more about items](docs/item.md)
 
 ## Misconfiguration
 

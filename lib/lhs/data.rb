@@ -50,6 +50,8 @@ class LHS::Data
       input._raw_
     elsif defined?(input._data_)
       input._data_._raw_
+    elsif input.is_a?(Hash)
+      input.deep_stringify_keys
     else
       input
     end
