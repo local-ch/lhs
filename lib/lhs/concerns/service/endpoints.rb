@@ -37,7 +37,7 @@ class LHS::Service
     # Prevent clashing endpoints.
     def sanity_check(endpoint)
       placeholders = endpoint.placeholders
-      fail 'Clashing endpoints.' if endpoints.any? { |e| e.placeholders == placeholders }
+      fail 'Clashing endpoints.' if endpoints.any? { |e| e.placeholders.sort == placeholders.sort }
     end
 
     # Computes the url from options
