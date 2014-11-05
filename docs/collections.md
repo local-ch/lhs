@@ -14,7 +14,7 @@ In general you can use any method that you also could call on an array (like cou
 You can paginate by passing offset, and limit params. They will be forwarded to the backend.
 
 ```
-data = LHS::Feedback.where(limit: 50) #<LHS::Data @_proxy_=#<LHS::Collection>>
+data = Feedback.where(limit: 50) #<LHS::Data @_proxy_=#<LHS::Collection>>
 data.count // 50
-LHS::Feedback.where(limit: 50, offset: 51) #<LHS::Data @_proxy_=#<LHS::Collection>>
+Feedback.where(limit: 50, offset: 51) #<LHS::Data @_proxy_=#<LHS::Collection>>
 ```

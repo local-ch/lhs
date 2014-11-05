@@ -37,14 +37,14 @@ describe LHS::Data do
 
     it 'is loading data remotely when not present yet' do
       stub_loading
-      link.id
+      link.load!.id
     end
 
     it 'can be reloaded' do
       expect_any_instance_of(LHS::Link).to receive(:fetch).exactly(2).times.and_call_original
       stub_loading
-      link.id
-      link.reload!
+      link.load!.id
+      link.reload!.id
     end
   end
 end

@@ -10,7 +10,7 @@ A Service makes data available using multiple endpoints.
 You setup a service by configure one or multiple backend endpoints that provide data for that service.
 
 ```ruby
-class LHS::Feedback < LHS::Service
+class Feedback < LHS::Service
 
   endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks'
   endpoint ':datastore/v2/feedbacks'
@@ -21,7 +21,7 @@ end
 If you try to setup a service with clashing endpoints it will immediately raise an exception.
 
 ```ruby
-class LHS::Feedback < LHS::Service
+class Feedback < LHS::Service
 
   endpoint ':datastore/v2/reviews'
   endpoint ':datastore/v2/feedbacks'
@@ -36,18 +36,18 @@ end
 You can query the services by using `where`.
 
 ```ruby
-  LHS::Feedback.where(has_reviews: true) #<LHS::Data @_proxy_=#<LHS::Collection>>
+  Feedback.where(has_reviews: true) #<LHS::Data @_proxy_=#<LHS::Collection>>
 ```
 
 This uses the `:datastore/v2/feedbacks` endpoint, cause `:campaign_id` was not provided.
 In addition it would add `?has_reviews=true` to the get parameters.
 
 ```ruby
-  LHS::Feedback.where(campaign_id: 'fq-a81ngsl1d') #<LHS::Data @_proxy_=#<LHS::Collection>>
+  Feedback.where(campaign_id: 'fq-a81ngsl1d') #<LHS::Data @_proxy_=#<LHS::Collection>>
 ```
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
-→ [Read more about collections](collection.md)
+→ [Read more about collections](collections.md)
 
 ## Find single records
 
@@ -56,7 +56,7 @@ Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 If no record is found an error is raised.
 
 ```ruby
-  LHS::Feedback.find('z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
+  Feedback.find('z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
 ```
 
 `find_by` finds the first record matching the specified conditions.
@@ -64,11 +64,11 @@ If no record is found an error is raised.
 If no record is found, returns `nil`.
 
 ```ruby
-  LHS::Feedback.find_by(id: 'z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
-  LHS::Feedback.find_by(id: 'doesntexist') // nil
+  Feedback.find_by(id: 'z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
+  Feedback.find_by(id: 'doesntexist') // nil
 ```
 
-→ [Read more about items](item.md)
+→ [Read more about items](items.md)
 
 ## Batch processing
 
@@ -77,17 +77,17 @@ If no record is found, returns `nil`.
 `all` fetches all records from the backend by doing multiple requests if necessary.
 
 ```ruby
-data = LHS::Feedback.all #<LHS::Data @_proxy_=#<LHS::Collection>>
+data = Feedback.all #<LHS::Data @_proxy_=#<LHS::Collection>>
 data.count // 998
 data.total // 998
 ```
 
-→ [Read more about collections](collection.md)
+→ [Read more about collections](collections.md)
 
 `find_each` is a more fine grained way to process single records that are fetched in batches.
 
 ```ruby
-LHS::Feedback.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |feedback|
+Feedback.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |feedback|
   # Iterates over each record. Starts with record nr. 50 and fetches 20 records each batch.
   feedback #<LHS::Data @_proxy_=#<LHS::Item>>
 end
@@ -95,7 +95,7 @@ end
 
 `find_in_batches` is used by `find_each` and processes batches.
 ```ruby
-LHS::Feedback.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }) do |feedbacks|
+Feedback.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }) do |feedbacks|
   # Iterates over multiple records (batch size is 20). Starts with record nr. 50 and fetches 20 records each batch.
   feedbacks #<LHS::Data @_proxy_=#<LHS::Collection>>
 end
@@ -104,7 +104,7 @@ end
 ## Create records
 
 ```ruby
-  feedback = LHS::Feedback.create(
+  feedback = Feedback.create(
     recommended: true,
     source_id: 'aaa',
     content_ad_id: '1z-5r1fkaj'
@@ -128,4 +128,4 @@ Build and persist new items from scratch.
   monkey.save
 ```
 
-→ [Read more about items](item.md)
+→ [Read more about items](items.md)

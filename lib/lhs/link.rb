@@ -13,19 +13,21 @@ class LHS::Link < LHS::Proxy
     self._loaded_ = false
   end
 
+  def load!
+    return self if _loaded_
+    fetch
+    self
+  end
+
   def reload!
     fetch
+    self
   end
 
   protected
 
   def method_missing(name, *args, &block)
-    if !_loaded_ && !_data_._raw_[name.to_s]
-      fetch
-      self.send(name, args, block)
-    else
-      _data_.send(name, args, block)
-    end
+    _data_.send(name, args, block)
   end
 
   private
