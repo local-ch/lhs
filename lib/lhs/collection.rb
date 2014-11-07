@@ -4,6 +4,28 @@ require File.join(__dir__, 'proxy.rb')
 # that contains multiple items
 class LHS::Collection < LHS::Proxy
 
+  class Collection
+    include Enumerable
+
+    attr_accessor :raw
+
+    def initialize(raw, parent, service)
+      self.raw = raw
+      @parent = parent
+      @service = service
+    end
+
+    def each(&block)
+      raw.each do |item|
+        data = LHS::Data.new(item, @parent, @service)
+        yield data
+      end
+    end
+
+    delegate :sample, to: :raw
+    delegate :[], to: :raw
+  end
+
   attr_accessor :_data_
 
   def initialize(data)
@@ -15,11 +37,9 @@ class LHS::Collection < LHS::Proxy
   end
 
   def _collection_
-    if _data_._raw_.is_a?(Array)
-      _data_._raw_
-    else
-      _data_._raw_['items']
-    end
+    raw = _data_._raw_ if _data_._raw_.is_a?(Array)
+    raw ||= _data_._raw_['items']
+    Collection.new(raw, _data_, _data_._service_)
   end
 
   def _raw_
