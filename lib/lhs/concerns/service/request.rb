@@ -70,8 +70,8 @@ class LHS::Service
           item = item[i] if item.is_a? LHS::Collection
           item._raw_[key.to_s].merge!(addition[i]._raw_)
         end
-      else
-        fail 'not yet implemented'
+      elsif data._proxy_.is_a? LHS::Item
+        data._raw_[key.to_s].merge!(addition._raw_)
       end
     end
 

@@ -7,29 +7,16 @@ describe LHS::Service do
 
   context 'includes' do
 
-    it 'links resources from two services' do
-
+    before(:each) do
       class Feedback < LHS::Service
         endpoint ':datastore/feedbacks'
       end
 
-      stub_request(:get, "#{datastore}/feedbacks?has_reviews=true")
-      .to_return(status: 200, body: {
-          items:[
-            {
-              "href" => "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
-              "campaign" => {
-                "href" => "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
-              }
-            }
-          ]
-      }.to_json)
-
       stub_request(:get, "#{datastore}/content-ads/51dfc5690cf271c375c5a12d")
       .to_return(status: 200, body: {
-         "href" => "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d",
+         "href" => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d",
          "entry" => {
-           "href" => "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/local-entries/lakj35asdflkj1203va"
+           "href" => "#{datastore}/local-entries/lakj35asdflkj1203va"
          }
       }.to_json)
 
@@ -37,9 +24,38 @@ describe LHS::Service do
       .to_return(status: 200, body: {
          "name" => 'Casa Ferlin'
       }.to_json)
+    end
+
+    it 'includes linked resources while fetching multiple resources from one service' do
+
+      stub_request(:get, "#{datastore}/feedbacks?has_reviews=true")
+      .to_return(status: 200, body: {
+          items:[
+            {
+              "href" => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
+              "campaign" => {
+                "href" => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d"
+              }
+            }
+          ]
+      }.to_json)
 
       feedbacks = Feedback.includes(campaign: :entry).where(has_reviews: true)
       expect(feedbacks.first.campaign.entry.name).to eq 'Casa Ferlin'
+    end
+
+    it 'includes linked resources while fetching a single resource from one service' do
+
+      stub_request(:get, "#{datastore}/feedbacks/123")
+      .to_return(status: 200, body: {
+        "href" => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
+        "campaign" => {
+          "href" => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d"
+        }
+      }.to_json)
+
+      feedbacks = Feedback.includes(campaign: :entry).find(123)
+      expect(feedbacks.campaign.entry.name).to eq 'Casa Ferlin'
     end
   end
 end
