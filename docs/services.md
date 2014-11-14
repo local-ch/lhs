@@ -115,8 +115,9 @@ When creation fails, the object contains errors in its `errors` attribute:
 
 ```ruby
   feedback.errors #<LHS::Errors>
-  feedback.errors.include?(:ratings) // true
-  feedback.errors[:ratings] // ['REQUIRED_PROPERTY_VALUE']
+  feedback.errors.include?(:ratings) # true
+  feedback.errors[:ratings] # ['REQUIRED_PROPERTY_VALUE']
+  record.errors.messages # {:ratings=>["REQUIRED_PROPERTY_VALUE"], :recommended=>["REQUIRED_PROPERTY_VALUE"]}
 ```
 
 ## Build new records
