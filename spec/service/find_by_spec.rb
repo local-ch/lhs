@@ -15,7 +15,7 @@ describe LHS::Service do
   context 'find by' do
 
     it 'finds a single record' do
-      stub_request(:get, "#{datastore}/feedbacks/z12f-3asm3ngals").
+      stub_request(:get, "#{datastore}/feedbacks/z12f-3asm3ngals?limit=1").
       to_return(status: 200, body: load_json(:feedback))
       expect(
         SomeService.find_by(id: 'z12f-3asm3ngals').source_id
@@ -23,7 +23,7 @@ describe LHS::Service do
     end
 
     it 'returns nil if no record was found' do
-      stub_request(:get, "#{datastore}/feedbacks/something-inexistent").
+      stub_request(:get, "#{datastore}/feedbacks/something-inexistent?limit=1").
       to_return(status: 404)
       expect(
         SomeService.find_by(id: 'something-inexistent')
@@ -32,7 +32,7 @@ describe LHS::Service do
 
     it 'return first item by parameters' do
       json = load_json(:feedbacks)
-      stub_request(:get, "#{datastore}/feedbacks?has_reviews=true").
+      stub_request(:get, "#{datastore}/feedbacks?has_reviews=true&limit=1").
       to_return(status: 200, body: json)
       expect(
         SomeService.find_by(has_reviews: true).id
