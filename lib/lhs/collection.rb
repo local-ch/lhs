@@ -36,6 +36,14 @@ class LHS::Collection < LHS::Proxy
     _data_._raw_['total']
   end
 
+  def limit
+    _data_._raw_['limit']
+  end
+
+  def offset
+    _data_._raw_['offset']
+  end
+
   def _collection_
     raw = _data_._raw_ if _data_._raw_.is_a?(Array)
     raw ||= _data_._raw_['items']

@@ -9,6 +9,14 @@ In general you can use any method that you also could call on an array (like cou
 
 `total` provides total amount of items (even if paginated).
 
+## Limit
+
+`limit` provides amount of items per page.
+
+## Offset
+
+`offset` provides how many items where skipped to start the current page.
+
 ## Offset / Limit / Pagination
 
 You can paginate by passing offset, and limit params. They will be forwarded to the backend.
