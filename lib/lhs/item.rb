@@ -25,6 +25,7 @@ class LHS::Item < LHS::Proxy
     return set(name, args.try(&:first)) if name.to_s[/=$/]
     name = args.first if name == :[]
     value = _data_._raw_[name.to_s] || _data_._raw_[name.to_sym]
+    value.extend(LHS::Nil) if value.nil?
     if value.is_a?(Hash)
       handle_hash(value)
     else
