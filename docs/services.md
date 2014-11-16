@@ -118,6 +118,7 @@ When creation fails, the object contains errors in its `errors` attribute:
   feedback.errors.include?(:ratings) # true
   feedback.errors[:ratings] # ['REQUIRED_PROPERTY_VALUE']
   record.errors.messages # {:ratings=>["REQUIRED_PROPERTY_VALUE"], :recommended=>["REQUIRED_PROPERTY_VALUE"]}
+  record.errors.message # ratings must be set when review or name or review_title is set | The property value is required; it cannot be null, empty, or blank."
 ```
 
 ## Build new records

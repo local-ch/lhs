@@ -2,10 +2,12 @@
 class LHS::Errors
   include Enumerable
 
-  attr_reader :messages
+  attr_reader :messages, :message
 
   def initialize(response)
     @messages = messages_from_response(response)
+    @message = message_from_response(response)
+    rescue JSON::ParserError
   end
 
   def include?(attribute)
@@ -73,5 +75,10 @@ class LHS::Errors
       end
     end
     messages
+  end
+
+  def message_from_response(response)
+    json = JSON.parse(response.body)
+    json['message']
   end
 end

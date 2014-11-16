@@ -14,10 +14,12 @@ describe LHS::Service do
       end
     end
 
+    let(:error_message) { "ratings must be set when review or name or review_title is set | The property value is required; it cannot be null, empty, or blank." }
+
     let(:creation_error) do
       {
         "status" => 400,
-        "message" => "ratings must be set when review or name or review_title is set | The property value is required; it cannot be null, empty, or blank.",
+        "message" => error_message,
         "fields" => [
           {
             "name" => "ratings",
@@ -39,7 +41,8 @@ describe LHS::Service do
       expect(record.errors.include?(:ratings)).to eq true
       expect(record.errors.include?(:recommended)).to eq true
       expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE']
-      expect(record.errors[:recommended]).to eq ['REQUIRED_PROPERTY_VALUE']
+      expect(record.errors.messages).to eq({:ratings=>["REQUIRED_PROPERTY_VALUE"], :recommended=>["REQUIRED_PROPERTY_VALUE"]})
+      expect(record.errors.message).to eq error_message
     end
 
     it 'doesnt fail when no fields are provided by the backend' do
