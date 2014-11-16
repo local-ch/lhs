@@ -27,7 +27,7 @@ class Feedback < LHS::Service
   endpoint ':datastore/v2/feedbacks'
 
 end
-// raises: Clashing endpoints.
+# raises: Clashing endpoints.
 
 ```
 
@@ -65,7 +65,7 @@ If no record is found, returns `nil`.
 
 ```ruby
   Feedback.find_by(id: 'z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
-  Feedback.find_by(id: 'doesntexist') // nil
+  Feedback.find_by(id: 'doesntexist') # nil
 ```
 
 → [Read more about items](items.md)
@@ -78,8 +78,8 @@ If no record is found, returns `nil`.
 
 ```ruby
 data = Feedback.all #<LHS::Data @_proxy_=#<LHS::Collection>>
-data.count // 998
-data.total // 998
+data.count # 998
+data.total # 998
 ```
 
 → [Read more about collections](collections.md)
