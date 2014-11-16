@@ -13,7 +13,7 @@ describe LHS::Data do
   end
 
   let(:data) do
-    LHS::Data.new(json, nil, SomeService)
+    LHS::Data.new(json, nil, SomeService.instance)
   end
 
   let(:item) do
