@@ -29,6 +29,10 @@ class LHS::Item < LHS::Proxy
     value.extend(LHS::Nil) if value.nil?
     if value.is_a?(Hash)
       handle_hash(value)
+    elsif value.is_a?(Array)
+      data = LHS::Data.new(value, _data_)
+      collection = LHS::Collection.new(data)
+      LHS::Data.new(collection, _data_)
     else
       convert(value)
     end

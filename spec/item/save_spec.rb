@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe LHS::Data do
+describe LHS::Item do
 
   before(:each) do
     class SomeService < LHS::Service

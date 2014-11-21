@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe LHS::Data do
+describe LHS::Item do
 
   let(:json) do
     load_json(:feedbacks)
