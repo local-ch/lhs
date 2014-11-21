@@ -22,5 +22,15 @@ describe LHS::Service do
       entry = LocalEntry.find(1)
       expect(entry.name).to eq 'Löwenzorn'
     end
+
+    it 'maps for root_item even if that item is nested in a root collection' do
+      class LocalEntry < LHS::Service
+        map :name, ->(entry){ entry.addresses.first.business.identities.first.name }
+      end
+      stub_request(:get, "#{datastore}/local-entries/1?limit=1")
+      .to_return(status: 200, body: {items: [{addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}]}.to_json)
+      entry = LocalEntry.find_by(id: 1)
+      expect(entry.name).to eq 'Löwenzorn'
+    end
   end
 end

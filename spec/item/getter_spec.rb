@@ -2,8 +2,15 @@ require 'rails_helper'
 
 describe LHS::Item do
 
+  before(:each) do
+    class SomeService < LHS::Service
+      endpoint ':datastore/v2/:campaign_id/feedbacks'
+      endpoint ':datastore/v2/feedbacks'
+    end
+  end
+
   let(:data) do
-    LHS::Data.new({addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]})
+    LHS::Data.new({addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}, nil, SomeService)
   end
 
   context 'item getter' do

@@ -27,10 +27,10 @@ class LHS::Data
 
   protected
 
-  # Use existing map to access data
+  # Use existing mapping to provide data
   # or forward to proxy
   def method_missing(name, *args, &block)
-    if root? && _service_ && mapping = _service_.instance.mapping[name]
+    if root_item? && mapping = _root_._service_.instance.mapping[name]
       mapping.call(_proxy_)
     else
       _proxy_.send(name, *args, &block)
@@ -38,6 +38,24 @@ class LHS::Data
   end
 
   private
+
+  def root_item
+    return if self._proxy_.class != LHS::Item
+    root = root_item = self
+    loop do
+      root = root._parent_
+      root_item = root if root && root._proxy_.is_a?(LHS::Item)
+      if !(root && root._parent_)
+        break
+      else
+      end
+    end
+    root_item
+  end
+
+  def root_item?
+    root_item == self
+  end
 
   def root?
     _root_ == self
