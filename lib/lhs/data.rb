@@ -27,11 +27,21 @@ class LHS::Data
 
   protected
 
+  # Use existing map to access data
+  # or forward to proxy
   def method_missing(name, *args, &block)
-    _proxy_.send(name, *args, &block)
+    if root? && _service_ && mapping = _service_.instance.mapping[name]
+      mapping.call(_proxy_)
+    else
+      _proxy_.send(name, *args, &block)
+    end
   end
 
   private
+
+  def root?
+    _root_ == self
+  end
 
   def proxy_from_input(input)
     if input.is_a? LHS::Proxy

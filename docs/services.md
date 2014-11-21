@@ -143,3 +143,16 @@ This is possible by specifying the includes method. With includes, a service ens
   feedbacks = Feedback.includes(campaign: :entry).where(has_reviews: true)
   feedbacks.first.campaign.entry.name # 'Casa Ferlin'
 ```
+
+## Map data
+
+To influence how data is accessed/provied, you can use mapping to either map deep nested data or to manipulate data when its accessed:
+
+```ruby
+class LocalEntry < LHS::Service
+  endpoint ':datastore/v2/local-entries'
+
+  map :name, ->(entry){ entry.addresses.first.business.identities.first.name }
+
+end
+```

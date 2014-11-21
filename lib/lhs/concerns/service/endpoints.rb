@@ -23,6 +23,7 @@ class LHS::Service
 
     def initialize
       self.endpoints = []
+      super
     end
 
     # Find an endpoint based on the provided parameters.
