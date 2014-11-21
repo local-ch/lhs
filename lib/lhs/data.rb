@@ -25,6 +25,10 @@ class LHS::Data
     root
   end
 
+  def class
+    _root_._service_
+  end
+
   protected
 
   # Use existing mapping to provide data

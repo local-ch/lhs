@@ -11,6 +11,7 @@ class LHS::Service
   include Find
   include FindBy
   include Mapping
+  include Model
   include Includes
   include Request
   include Singleton
