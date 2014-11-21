@@ -34,7 +34,7 @@ class LHS::Link < LHS::Proxy
 
   def fetch
     service = _data_._root_._service_
-    data = service.request(url: _href_, method: :get)
+    data = service.instance.request(url: _href_, method: :get)
     _data_.merge!(data)
     self._loaded_ = true
   end

@@ -20,8 +20,8 @@ class LHS::Service
         merge_explicit_params!(options[:params])
       end
       responses = LHC.request(options)
-      data = responses.map{ |response| LHS::Data.new(response.body, nil, self, response.request) }
-      data = LHS::Data.new(data, nil, self)
+      data = responses.map{ |response| LHS::Data.new(response.body, nil, self.class, response.request) }
+      data = LHS::Data.new(data, nil, self.class)
       handle_includes(data) if includes
       data
     end
@@ -29,7 +29,7 @@ class LHS::Service
     def single_request(options)
       merge_explicit_params!(options[:params])
       response = LHC.request(options)
-      data = LHS::Data.new(response.body , nil, self, response.request)
+      data = LHS::Data.new(response.body , nil, self.class, response.request)
       handle_includes(data) if includes
       data
     end

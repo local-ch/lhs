@@ -10,6 +10,7 @@ class LHS::Service
   include Endpoints
   include Find
   include FindBy
+  include Mapping
   include Includes
   include Request
   include Singleton

@@ -11,8 +11,8 @@ class LHS::Service
       def find_each(options = {})
         find_in_batches(options) do |data|
           data.each do |record|
-            item = LHS::Item.new(LHS::Data.new(record, data, self))
-            yield LHS::Data.new(item, data, self)
+            item = LHS::Item.new(LHS::Data.new(record, data, self.class))
+            yield LHS::Data.new(item, data, self.class)
           end
         end
       end
