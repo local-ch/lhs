@@ -20,5 +20,5 @@ Gem::Specification.new do |s|
   s.requirements << 'Ruby >= 1.9.2'
   s.required_ruby_version = '~> 1.9.2'
 
-  s.add_dependency 'lhc', '0.0.11'
+  s.add_dependency 'lhc', '0.0.12'
 end
