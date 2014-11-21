@@ -24,7 +24,8 @@ class LHS::Item < LHS::Proxy
   def method_missing(name, *args, &block)
     return set(name, args.try(&:first)) if name.to_s[/=$/]
     name = args.first if name == :[]
-    value = _data_._raw_[name.to_s] || _data_._raw_[name.to_sym]
+    value = _data_._raw_[name.to_s]
+    value = _data_._raw_[name.to_sym] if value.nil?
     value.extend(LHS::Nil) if value.nil?
     if value.is_a?(Hash)
       handle_hash(value)
