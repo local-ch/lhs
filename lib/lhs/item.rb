@@ -41,8 +41,11 @@ class LHS::Item < LHS::Proxy
   private
 
   def convert(value)
-    if value.is_a?(String) && value[/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*.\d{2}:\d{2}/]
-      value = DateTime.parse(value)
+    return value unless value.is_a?(String)
+    if date_time?(value)
+      DateTime.parse(value)
+    elsif date?(value)
+      Date.parse(value)
     else
       value
     end
@@ -60,5 +63,23 @@ class LHS::Item < LHS::Proxy
   def set(name, value)
     key = name.to_s.gsub(/=$/, '')
     _data_._raw_[key] = value
+  end
+
+  private
+
+  def date?(value)
+    value[date_time_regex, :date].presence
+  end
+
+  def time?(value)
+    value[date_time_regex, :time].presence
+  end
+
+  def date_time?(value)
+    date?(value) && time?(value)
+  end
+
+  def date_time_regex
+    /(?<date>\d{4}-\d{2}-\d{2})?(?<time>T\d{2}:\d{2}:\d{2}\.\d*.\d{2}:\d{2})?/
   end
 end
