@@ -35,7 +35,7 @@ class LHS::Data
   # or forward to proxy
   def method_missing(name, *args, &block)
     if root_item? && mapping = _root_._service_.instance.mapping[name]
-      mapping.call(_proxy_)
+      mapping.call(self)
     else
       _proxy_.send(name, *args, &block)
     end

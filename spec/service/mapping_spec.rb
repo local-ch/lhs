@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Service do
 
-  context 'map' do
+  context 'mapping' do
 
     let(:datastore) { 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2' }
 
@@ -31,6 +31,16 @@ describe LHS::Service do
       .to_return(status: 200, body: {items: [{addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}]}.to_json)
       entry = LocalEntry.find_by(id: 1)
       expect(entry.name).to eq 'Löwenzorn'
+    end
+
+    it 'return data proxy in case of item or collection' do
+      class LocalEntry < LHS::Service
+        map :business, ->(entry){ entry.addresses.first.business }
+      end
+      stub_request(:get, "#{datastore}/local-entries/1")
+      .to_return(status: 200, body: {addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}.to_json)
+      entry = LocalEntry.find(1)
+      expect(entry.business).to be_kind_of LHS::Data
     end
   end
 end
