@@ -1,4 +1,5 @@
 require 'active_support'
+require 'active_model'
 
 class LHS::Service
 
@@ -8,7 +9,7 @@ class LHS::Service
     module ClassMethods
 
       def model_name
-        ActiveModel::Name.new(self.class)
+        ActiveModel::Name.new(self)
       end
     end
   end
