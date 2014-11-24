@@ -6,6 +6,7 @@ Dir[File.dirname(__FILE__) + '/concerns/item/*.rb'].each {|file| require file }
 class LHS::Item < LHS::Proxy
   include Destroy
   include Save
+  include Update
 
   # prevent clashing with attributes of underlying data
   attr_accessor :_data_, :errors
