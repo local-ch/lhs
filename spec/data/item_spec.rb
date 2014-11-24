@@ -33,8 +33,12 @@ describe LHS::Data do
       expect(item.something).to eq nil
     end
 
-    it 'returns datetime if is string can be parsed as date time' do
+    it 'returns datetime if string can be parsed as date_time' do
       expect(item.created_date).to be_kind_of DateTime
+    end
+
+    it 'returns date if string can be parsed as date' do
+      expect(item.valid_from).to be_kind_of Date
     end
   end
 end

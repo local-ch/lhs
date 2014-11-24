@@ -12,6 +12,7 @@
       "service" : 2,
       "food" : 3
     },
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-18T16:13:32.987+02:00",
     "created_date" : "2014-09-18T16:13:31.496+02:00",
     "average_rating" : 3.0,
@@ -29,6 +30,7 @@
       "service" : 5,
       "food" : 2
     },
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-18T15:43:12.134+02:00",
     "created_date" : "2014-09-18T15:42:57.892+02:00",
     "review_title" : "GUMMYBEARS GUMMYBEARS GUMMYBEARS",
@@ -48,6 +50,7 @@
       "service" : 5,
       "food" : 2
     },
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-17T11:17:39.660+02:00",
     "created_date" : "2014-09-17T11:17:34.234+02:00",
     "review_title" : "GUMMYBEARS GUMMYBEARS GUMMYBEARS",
@@ -67,6 +70,7 @@
       "service" : 5,
       "food" : 2
     },
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-16T11:20:32.600+02:00",
     "created_date" : "2014-09-16T11:20:30.194+02:00",
     "review_title" : "GUMMYBEARS GUMMYBEARS GUMMYBEARS",
@@ -85,6 +89,7 @@
       "service" : 1,
       "food" : 1
     },
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-15T16:23:54.898+02:00",
     "created_date" : "2014-09-15T16:23:40.355+02:00",
     "average_rating" : 1.3333333333333333,
@@ -102,6 +107,7 @@
       "service" : 5,
       "food" : 2
     },
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-12T13:10:51.220+02:00",
     "created_date" : "2014-09-12T13:10:48.813+02:00",
     "review_title" : "GUMMYBEARS GUMMYBEARS GUMMYBEARS",
@@ -115,6 +121,7 @@
     },
     "source_id" : "abcdefghs",
     "recommended" : true,
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-10T16:57:36.255+02:00",
     "created_date" : "2014-09-10T16:57:36.254+02:00",
     "comments" : [ ]
@@ -125,6 +132,7 @@
     },
     "source_id" : "abcdefghs",
     "recommended" : true,
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-10T16:57:32.792+02:00",
     "created_date" : "2014-09-10T16:57:32.791+02:00",
     "comments" : [ ]
@@ -141,6 +149,7 @@
       "service" : 4,
       "food" : 3
     },
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-11T09:48:19.096+02:00",
     "created_date" : "2014-09-10T16:35:39.201+02:00",
     "review_title" : "bbb",
@@ -154,6 +163,7 @@
     },
     "source_id" : "abcdefghs12345",
     "recommended" : true,
+    "valid_from" : "2014-10-01",
     "modified" : "2014-09-10T16:31:52.493+02:00",
     "created_date" : "2014-09-10T16:31:52.492+02:00",
     "comments" : [ ]
