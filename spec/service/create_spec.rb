@@ -8,7 +8,7 @@ describe LHS::Service do
 
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
-      class SomeService < LHS::Service
+      class Feedback < LHS::Service
         endpoint ':datastore/content-ads/:campaign_id/feedbacks'
         endpoint ':datastore/feedbacks'
       end
@@ -25,7 +25,7 @@ describe LHS::Service do
       stub_request(:post, "#{datastore}/feedbacks")
       .with(body: object.to_json)
       .to_return(status: 200, body: object.to_json)
-      record = SomeService.create(object)
+      record = Feedback.create(object)
       expect(record.recommended).to eq true
       expect(record.errors).to eq nil
     end
@@ -34,7 +34,7 @@ describe LHS::Service do
       stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
       .with(body: object.to_json)
       .to_return(status: 200, body: object.to_json)
-      SomeService.create(object.merge(campaign_id: '12345'))
+      Feedback.create(object.merge(campaign_id: '12345'))
     end
 
     it 'merges backend response object with object' do
@@ -42,8 +42,40 @@ describe LHS::Service do
       stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
       .with(body: object.to_json)
       .to_return(status: 200, body: body.to_json)
-      data = SomeService.create(object.merge(campaign_id: '12345'))
+      data = Feedback.create(object.merge(campaign_id: '12345'))
       expect(data.additional_key).to eq 1
+    end
+
+    context 'creation errors' do
+      let(:creation_error) do
+        {
+          "status" => 400,
+          "fields" => [
+            {
+              "name" => "ratings",
+              "details" => [{ "code" => "REQUIRED_PROPERTY_VALUE" }]
+              },{
+              "name" => "recommended",
+              "details" => [{"code" => "REQUIRED_PROPERTY_VALUE"}]
+            }
+          ]
+        }
+      end
+
+      it 'provides errors accessor on the record when creation failed using create' do
+        stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
+        .to_return(status: 400, body: creation_error.to_json)
+        feedback = Feedback.create(object.merge(campaign_id: '12345'))
+        expect(feedback.errors).to be_kind_of LHS::Errors
+      end
+
+      it 'raises an exception when creation failed using create!' do
+        stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
+        .to_return(status: 400, body: creation_error.to_json)
+        expect(->{
+          Feedback.create!(object.merge(campaign_id: '12345'))
+        }).to raise_error
+      end
     end
   end
 end

@@ -15,5 +15,5 @@ gem 'lhc', git: 'git@github.com:local-ch/lhc.git', tag: 'v0.0.12'
 
 gem 'rspec-rails', '>= 3.0.0'
 gem 'rails', '~> 4.1.1'
-gem 'pry-byebug'
+gem 'pry'
 gem 'webmock', group: [:test]
