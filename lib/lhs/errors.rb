@@ -13,6 +13,8 @@ class LHS::Errors
   def include?(attribute)
     messages[attribute].present?
   end
+  alias :has_key? :include?
+  alias :key? :include?
 
   def get(key)
     messages[key]
