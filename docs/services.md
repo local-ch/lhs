@@ -167,7 +167,7 @@ class TermsAndConditions < LHS::Service
   endpoint ':datastore/v2/agbs'
 end
 
-TermsAndConditions.find(:active)
-TermsAndConditions.where(:active, valid_from: '2014-01-01')
+TermsAndConditions.find(:active) # find the currently active AGB
+TermsAndConditions.where(:inactive, after: '2014-01-01') # find all inactive AGBS with a create_date after '2014-01-01'
 
 ```
