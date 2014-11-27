@@ -170,7 +170,4 @@ end
 TermsAndConditions.find(:active)
 TermsAndConditions.where(:active, valid_from: '2014-01-01')
 
-```:
-
-
 ```
