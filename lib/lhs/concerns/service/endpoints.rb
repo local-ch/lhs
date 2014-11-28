@@ -45,12 +45,12 @@ class LHS::Service
     # by identifiying endpoint and compile if necessary.
     # Id in params is handled in a special way.
     def compute_url!(params)
-      bookmark = params.delete(:__bookmark__)
+      bookmarks = params.delete(:__bookmarks__)
       endpoint = find_endpoint(params)
       url = endpoint.compile(params)
       endpoint.remove_interpolated_params!(params)
       url +=  "/#{params.delete(:id)}" if params[:id]
-      url +=  "/#{bookmark}" if bookmark
+      url += "/#{bookmarks.join('/')}" if bookmarks.present?
       url
     end
 

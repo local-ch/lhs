@@ -23,9 +23,9 @@ class LHS::Service
           merged_hash.merge!(p)
         end
 
-        # add bookmark to hash
-        bookmark = params.find { |p| p.is_a?(Symbol) }
-        merged_hash[:__bookmark__] = bookmark if bookmark
+        # add bookmarks to hash
+        bookmarks = params.select { |p| p.is_a?(Symbol) }
+        merged_hash[:__bookmarks__] = bookmarks if bookmarks.present?
         merged_hash
       end
     end
