@@ -23,11 +23,17 @@ describe LHS::Service do
       SomeService.where(campaign_id: '123', has_review: true)
       stub_request(:get, "#{datastore}/feedbacks").to_return(status: 200, body: '')
       SomeService.where
+      # should still work the same with a bookmark
+      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/bad?has_review=true").to_return(status: 200)
+      SomeService.where(:bad, campaign_id: '123', has_review: true)
     end
 
     it 'is using params as query params explicitly when provided in params namespace' do
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks?campaign_id=456").to_return(status: 200)
       SomeService.where(campaign_id: '123', params: { campaign_id: '456' })
+      # should still work the same with a bookmark
+      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/bad?campaign_id=456").to_return(status: 200)
+      SomeService.where(:bad, campaign_id: '123', params: { campaign_id: '456' })
     end
   end
 end
