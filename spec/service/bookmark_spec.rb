@@ -12,23 +12,16 @@ describe LHS::Service do
       end
     end
 
-    it 'returns the active AGB' do
-      stub_request(:get, "#{datastore}/v2/agbs/active").to_return(
-        status: 200,
-        body: { 'dummy' => 'dummy' }.to_json
-      )
+    context 'calls the correct stub' do
+      it 'works without params' do
+        stub_request(:get, "#{datastore}/v2/agbs/active")
+        TermsAndConditions.where(:active)
+      end
 
-      expect(TermsAndConditions.where(:active).dummy).to be == 'dummy'
+      it 'works with parameters' do
+        stub_request(:get, "#{datastore}/v2/agbs/inactive?after=2014-01-01")
+        TermsAndConditions.where(:inactive, after: '2014-01-01')
+      end
     end
-
-    it 'returns the inactive AGBs with a create_date before "2014-01-01"' do
-      stub_request(:get, "#{datastore}/v2/agbs/inactive?after=2014-01-01").to_return(
-        status: 200,
-        body: { 'dummy' => 'dummy' }.to_json
-      )
-
-      expect(TermsAndConditions.where(:inactive, after: '2014-01-01').dummy).to be == 'dummy'
-    end
-
   end
 end
