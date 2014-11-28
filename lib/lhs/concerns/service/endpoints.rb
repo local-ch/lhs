@@ -41,14 +41,16 @@ class LHS::Service
       fail 'Clashing endpoints.' if endpoints.any? { |e| e.placeholders.sort == placeholders.sort }
     end
 
-    # Computes the url from options
+    # Computes the url from params
     # by identifiying endpoint and compile if necessary.
-    # Id in options is threaded in a special way.
-    def compute_url!(options)
-      endpoint = find_endpoint(options)
-      url = endpoint.compile(options)
-      url +=  "/#{options.delete(:id)}" if options[:id]
-      endpoint.remove_interpolated_params!(options)
+    # Id in params is handled in a special way.
+    def compute_url!(params)
+      bookmark = params.delete(:__bookmark__)
+      endpoint = find_endpoint(params)
+      url = endpoint.compile(params)
+      endpoint.remove_interpolated_params!(params)
+      url +=  "/#{params.delete(:id)}" if params[:id]
+      url +=  "/#{params.delete(:__bookmark__)}" if bookmark
       url
     end
 
@@ -63,7 +65,7 @@ class LHS::Service
     end
 
     # Finds the base endpoint.
-    # A base endpoint is the one thats has the least amont of placeholers.
+    # A base endpoint is the one thats has the least amount of placeholders.
     # There cannot be multiple base endpoints.
     def find_base_endpoint
       endpoints = self.endpoints.group_by do |endpoint|
