@@ -50,7 +50,7 @@ class LHS::Service
       url = endpoint.compile(params)
       endpoint.remove_interpolated_params!(params)
       url +=  "/#{params.delete(:id)}" if params[:id]
-      url +=  "/#{params.delete(:__bookmark__)}" if bookmark
+      url +=  "/#{bookmark}" if bookmark
       url
     end
 
