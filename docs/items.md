@@ -38,6 +38,15 @@ You can persist changes like you would usualy do with `save`.
   feedback.save
 ```
 
+## Update
+
+`update` will return false if persting failed, but `update!` instead will raise exception.
+
+```
+feedback = Feedback.find('1z-5r1fkaj')
+feedback.update(recommended: false)
+```
+
 ## Destroy
 
 You can delete records remotely by calling `destroy` on an item.
