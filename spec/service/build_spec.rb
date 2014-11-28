@@ -8,18 +8,18 @@ describe LHS::Service do
 
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
-      class SomeService < LHS::Service
+      class Feedback < LHS::Service
         endpoint ':datastore/content-ads/:campaign_id/feedbacks'
         endpoint ':datastore/feedbacks'
       end
     end
 
     it 'builds a new item from scratch' do
-      monkey = SomeService.build name: 'Steve'
-      expect(monkey.name).to eq 'Steve'
+      feedback = Feedback.build recommended: true
+      expect(feedback.recommended).to eq true
       stub_request(:post, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks")
-      .with(body: "{\"name\":\"Steve\"}")
-      monkey.save
+      .with(body: "{\"recommended\":true}")
+      feedback.save
     end
   end
 end

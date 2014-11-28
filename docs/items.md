@@ -21,8 +21,8 @@ An item proxy contains setter methods, in order to set/change values.
 Build and persist new items from scratch.
 
 ```ruby
-  monkey = MonkeyService.build(name: 'Steve')
-  monkey.save
+feedback = Feedback.build(recommended: true)
+feedback.save
 ```
 
 ## Save

@@ -126,8 +126,8 @@ When creation fails, the object contains errors in its `errors` attribute:
 Build and persist new items from scratch.
 
 ```ruby
-  monkey = MonkeyService.build(name: 'Steve')
-  monkey.save
+  feedback = Feedback.build(recommended: true)
+  feedback.save
 ```
 
 → [Read more about items](items.md)
