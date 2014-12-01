@@ -29,8 +29,7 @@ class LHS::Service
     # Find an endpoint based on the provided parameters.
     # If no parameters are provided it finds the base endpoint
     # otherwise it finds the endpoint that matches the parameters best.
-    def find_endpoint(params)
-      params = {} if params.blank?
+    def find_endpoint(params = {})
       endpoint = find_best_endpoint(params) if params.keys.count > 0
       endpoint ||= find_base_endpoint
       endpoint
