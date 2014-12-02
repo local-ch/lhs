@@ -10,7 +10,7 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-gem 'lhc', git: 'git@github.com:local-ch/lhc.git', tag: 'v0.0.12'
+gem 'lhc', git: 'git@github.com:local-ch/lhc.git', tag: 'v0.0.13'
 # gem 'lhc', path: '../lhc' # for testing locally
 
 gem 'rspec-rails', '>= 3.0.0'
