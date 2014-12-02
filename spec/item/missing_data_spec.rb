@@ -20,18 +20,17 @@ describe LHS::Item do
     data[0]
   end
 
-  it 'returns LHS::NilClass if some navigated nested data is not existing' do
+  it 'behaves like nil if some navigated nested data is not existing' do
     expect(item.foo.bar.nil?).to eq true
     expect(item.foo.bar.present?).to eq false
     expect(item.foo.bar == nil).to eq true
     expect(item.foo.bar).to eq nil
     expect(item.foo.bar.blank?).to eq true
     expect(item.foo.bar.duplicable?).to eq false
-    expect(item.foo.bar.as_json?).to be_kind_of(LHS::NilMock)
-    expect(item.foo.bar.to_param).to be_kind_of(LHS::NilMock)
-    expect(item.foo.bar.try(:asd)).to be_kind_of(LHS::NilMock)
-    expect(item.foo.bar.try!(:asd)).to be_kind_of(LHS::NilMock)
-    expect(item.foo.bar && false).to eq false
+    expect(item.foo.bar.as_json?).to be_kind_of(NilClass)
+    expect(item.foo.bar.to_param).to be_kind_of(NilClass)
+    expect(item.foo.bar.try(:asd)).to be_kind_of(NilClass)
+    expect(item.foo.bar.try!(:asd)).to be_kind_of(NilClass)
     expect(item.foo.bar.inspect).to eq 'nil'
     expect(item.foo.bar.to_a).to eq []
     expect(item.foo.bar.rationalize([])).to eq (0+0i)
@@ -41,12 +40,9 @@ describe LHS::Item do
     expect(item.foo.bar.to_i).to eq (0)
     expect(item.foo.bar.to_r).to eq (0)
     expect(item.foo.bar.to_s).to eq ('')
-  end
-
-  it 'is not extending/touching the global nil' do
-    expect(item.foo.bar.nil?).to eq true
-    expect(->{
-      nil.something
-    }).to raise_error
+    expect(item.foo.bar | true).to be true
+    expect(item.foo.bar & true).to be false
+    expect(item.foo.bar || true).to be true
+    expect(item.foo.bar && true).to be nil
   end
 end
