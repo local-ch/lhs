@@ -10,6 +10,10 @@ describe LHS::Service do
       endpoint ':datastore/content-ads/:campaign_id/feedbacks'
       endpoint ':datastore/feedbacks'
     end
+
+    class NilService < LHS::Service
+      endpoint ':datastore/feedbacks/nil'
+    end
   end
 
   context 'find by' do
@@ -37,6 +41,22 @@ describe LHS::Service do
       expect(
         SomeService.find_by(has_reviews: true).id
       ).to eq json['items'].first['id']
+    end
+  end
+
+  context 'first' do
+
+    it 'finds a single record' do
+      stub_request(:get, "#{datastore}/feedbacks?limit=1").
+      to_return(status: 200, body: load_json(:feedback))
+
+      SomeService.first.source_id
+    end
+
+    it 'returns nil if no record was found' do
+      stub_request(:get, "#{datastore}/feedbacks/nil?limit=1").
+      to_return(status: 404)
+      expect(NilService.first).to be_nil
     end
   end
 end
