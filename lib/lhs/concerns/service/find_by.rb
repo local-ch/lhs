@@ -2,7 +2,7 @@ require 'active_support'
 
 class LHS::Service
 
-  module FindByAndFirst
+  module FindBy
     extend ActiveSupport::Concern
 
     module ClassMethods
@@ -20,7 +20,6 @@ class LHS::Service
         rescue LHC::NotFound
           nil
       end
-      alias_method :first, :find_by
     end
   end
 end
