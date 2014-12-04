@@ -24,8 +24,7 @@ describe LHS::Service do
     it 'raises if nothing was found' do
       stub_request(:get, "#{datastore}/feedbacks/not-existing").
       to_return(status: 404)
-      expect(->{ SomeService.find('not-existing') })
-      .to raise_error LHC::NotFound
+      expect { SomeService.find('not-existing') }.to raise_error LHC::NotFound
     end
   end
 end
