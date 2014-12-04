@@ -49,9 +49,7 @@ describe LHS::Service do
         map :pdf_url, ->(agb) { agb['binary_url_pdf_de'] }
       end
 
-      stub_request(:get, "#{datastore}/agbs/547f0b461c266c4830ea6cea").
-      to_return(status: 200, body: '{}', headers: {})
-
+      # initial request
       stub_request(:get, "#{datastore}/agbs/active?agb_type=CC_TOU&limit=1").
       to_return(status: 200, body: {
         'href' => "#{datastore}/agbs/547f02c61c266c4830ea6ce7",
@@ -60,6 +58,9 @@ describe LHS::Service do
         },
         'binary_url_pdf_de' => 'de'
       })
+      # includes request
+      stub_request(:get, "#{datastore}/agbs/547f0b461c266c4830ea6cea").
+      to_return(status: 200, body: '{}', headers: {})
 
       agb = Agb.includes(:preceding_agb).first!
       expect(agb.pdf_url).to be == 'de'
