@@ -58,9 +58,12 @@ describe LHS::Service do
           'href' => "#{datastore}/agbs/547f02c61c266c4830ea6ce7",
           'preceding_agb' => { 'href' => preceding_agb_url },
           'binary_url_pdf_de' => 'de'
-        })
+        }.to_json)
+
       # includes request
-      stub_request(:get, preceding_agb_url).to_return(status: 200, body: '{}', headers: {})
+      stub_request(:get, preceding_agb_url).to_return(
+        status: 200, body: { 'href' => preceding_agb_url }.to_json, headers: {}
+      )
 
       agb = Agb.includes(:preceding_agb).first!
       expect(agb.pdf_url).to be == 'de'
