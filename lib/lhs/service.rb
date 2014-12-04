@@ -10,6 +10,7 @@ class LHS::Service
   include Endpoints
   include Find
   include FindBy
+  include First
   include Mapping
   include Model
   include Includes
