@@ -42,5 +42,31 @@ describe LHS::Service do
       entry = LocalEntry.find(1)
       expect(entry.business).to be_kind_of LHS::Data
     end
+
+    it 'clones mappings when using include' do
+      class Agb < LHS::Service
+        endpoint ":datastore/agbs/active?agb_type=CC_TOU"
+        map :pdf_url, ->(agb) { agb['binary_url_pdf_de'] }
+      end
+
+      preceding_agb_url = "#{datastore}/agbs/547f0b461c266c4830ea6cea"
+      # initial request
+      stub_request(:get, "#{datastore}/agbs/active?agb_type=CC_TOU&limit=1").
+      to_return(
+        status: 200,
+        body: {
+          'href' => "#{datastore}/agbs/547f02c61c266c4830ea6ce7",
+          'preceding_agb' => { 'href' => preceding_agb_url },
+          'binary_url_pdf_de' => 'de'
+        }.to_json)
+
+      # includes request
+      stub_request(:get, preceding_agb_url).to_return(
+        status: 200, body: { 'href' => preceding_agb_url }.to_json, headers: {}
+      )
+
+      agb = Agb.includes(:preceding_agb).first!
+      expect(agb.pdf_url).to be == 'de'
+    end
   end
 end

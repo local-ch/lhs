@@ -12,6 +12,7 @@ class LHS::Service
       def includes(args)
         class_clone = clone
         class_clone.instance.endpoints = instance.endpoints
+        class_clone.instance.mapping = instance.mapping
         class_clone.instance.includes = args
         class_clone
       end
