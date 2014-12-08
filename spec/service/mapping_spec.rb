@@ -43,7 +43,7 @@ describe LHS::Service do
       expect(entry.business).to be_kind_of LHS::Data
     end
 
-    it 'mapping works with include' do
+    it 'clones mappings when using include' do
       class Agb < LHS::Service
         endpoint ":datastore/agbs/active?agb_type=CC_TOU"
         map :pdf_url, ->(agb) { agb['binary_url_pdf_de'] }
