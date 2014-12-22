@@ -135,8 +135,7 @@ Build and persist new items from scratch.
 
 ## Include linked resources
 
-A service lets you specify in advance all the linked resources that you want to inlcude in the results.
-This is possible by specifying the includes method. With includes, a service ensures that all matching explicitly linked resources are loaded and merged.
+A service lets you specify in advance all the linked resources that you want to include in the results. With includes, a service ensures that all matching and explicitly linked resources are loaded and merged.
 
 ```ruby
   # Feedbacks are linked with campaigns (content_ads) that are linked with entries.
