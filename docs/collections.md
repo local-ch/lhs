@@ -3,7 +3,7 @@ Collection
 
 A collection contains multiple items.
 
-In general you can use any method that you also could call on an array (like count, [0], first etc.).
+You can use any method that you also could call on an array (like count, [0], first etc.).
 
 ## Total
 
