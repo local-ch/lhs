@@ -1,7 +1,7 @@
 Services
 ===
 
-A Service makes data available using multiple endpoints.
+A LHS::Service makes data available using multiple endpoints.
 
 ![Service](service.jpg)
 
@@ -61,7 +61,7 @@ If no record is found an error is raised.
 
 `find_by` finds the first record matching the specified conditions.
 
-If no record is found, returns `nil`.
+If no record is found, `nil` is returned.
 
 ```ruby
   Feedback.find_by(id: 'z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
