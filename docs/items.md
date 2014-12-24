@@ -4,7 +4,7 @@ Item
 An item is a concrete record. It can be part of another proxy like collection.
 
 You can access data by using dot operator `item.name_of_attribte_you_wanna_access`.
-Sometimes data gets converted when accessed. For example in case of parsable dates you will receive a Date or DateTime rather than a useless string.
+Sometimes data gets converted when accessed. For example in case of parsable dates you will receive a Date or DateTime.
 
 ## Setter
 
@@ -29,9 +29,7 @@ feedback.save
 You can persist changes like you would usualy do with `save`.
 `save` will return false if persting failed, but `save!` instead will raise exception.
 
-**Persisting only works if item has `href` set.**
-
-```
+```ruby
   feedback = Feedback.find('1z-5r1fkaj')
   feedback.recommended = false
   feedback.save
@@ -41,7 +39,7 @@ You can persist changes like you would usualy do with `save`.
 
 `update` will return false if persting failed, but `update!` instead will raise exception.
 
-```
+```ruby
 feedback = Feedback.find('1z-5r1fkaj')
 feedback.update(recommended: false)
 ```
@@ -50,7 +48,7 @@ feedback.update(recommended: false)
 
 You can delete records remotely by calling `destroy` on an item.
 
-```
+```ruby
   feedback = Feedback.find('1z-5r1fkaj')
   feedback.destroy
 ```
