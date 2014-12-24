@@ -30,7 +30,7 @@ data.first.recommended # true
 A proxy is used to access data. It is divided in Collection, Item and Link.
 
 ## Collection
-A collection is a special type of data that contains multiple items.
+A collection contains multiple items.
 
 ```ruby
 data = Feedback.where(has_reviews: true) #<LHS::Data @_proxy_=#<LHS::Collection>>
