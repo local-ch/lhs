@@ -26,8 +26,8 @@ feedback.save
 
 ## Save
 
-You can persist changes like you would usualy do with `save`.
-`save` will return false if persting failed, but `save!` instead will raise exception.
+You can persist changes like you would usually do with `save`.
+`save` will return false if persisting failed, but `save!` instead will raise exception.
 
 ```ruby
   feedback = Feedback.find('1z-5r1fkaj')
