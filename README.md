@@ -27,7 +27,7 @@ data.first.recommended # true
 ```
 
 ## Proxy
-A proxy is used to access data. It is separated in the three types: Collection, Item and Link.
+A proxy is used to access data. It is divided in Collection, Item and Link.
 
 ## Collection
 A collection is a special type of data that contains multiple items.
