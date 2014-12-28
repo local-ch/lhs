@@ -15,8 +15,7 @@ class LHS::Link < LHS::Proxy
 
   def load!
     return self if _loaded_
-    fetch
-    self
+    reload!
   end
 
   def reload!
