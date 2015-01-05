@@ -7,7 +7,7 @@ A LHS::Service makes data available using multiple endpoints.
 
 ## Endpoints
 
-You setup a service by configure one or multiple backend endpoints that provide data for that service.
+You setup a service by configure one or multiple backend endpoints.
 
 ```ruby
 class Feedback < LHS::Service
