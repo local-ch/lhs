@@ -57,9 +57,14 @@ class LHS::Service
     # Finds the best endpoint.
     # The best endpoint is the one where all placeholders are interpolated.
     def find_best_endpoint(params)
-      endpoints.find do |endpoint|
+      sorted_endpoints.find do |endpoint|
         endpoint.placeholders.all? { |match| endpoint.find_value(match, params) }
       end
+    end
+
+    # Sort endpoints by number of placeholders, heighest first
+    def sorted_endpoints
+      endpoints.sort{|a, b| b.placeholders.count <=> a.placeholders.count }
     end
 
     # Finds the base endpoint.
