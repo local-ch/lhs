@@ -24,9 +24,16 @@ describe LHS::Item do
   context 'destroy' do
 
     it 'destroys the item on the backend' do
-      stub_request(:delete, "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ")
+      stub_request(:delete, 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ')
       .to_return(status: 200)
       expect(item.destroy._raw_).to eq item._raw_
+    end
+
+    it 'updates the request information on the item' do
+      no_content = 204
+      stub_request(:delete, 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ')
+      .to_return(status: no_content)
+      expect(item.destroy._request_.response.code).to eq no_content
     end
   end
 end
