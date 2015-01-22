@@ -38,8 +38,8 @@ A collection contains multiple items.
 
 ```ruby
 data = Feedback.where(has_reviews: true) #<LHS::Data @_proxy_=#<LHS::Collection>>
-data.count // 10
-data.total // 98
+data.count # 10
+data.total # 98
 ```
 
 → [Read more about collections](docs/collections.md)
@@ -49,9 +49,9 @@ An item is a concrete record. It can be part of another proxy like collection.
 
 ```ruby
 data = Feedback.where(has_reviews: true).first #<LHS::Data @_proxy_=#<LHS::Item>>
-data.recommended // true
-data.created_date // Fri, 19 Sep 2014 14:03:35 +0200
-data._raw_ // {...}
+data.recommended # true
+data.created_date # Fri, 19 Sep 2014 14:03:35 +0200
+data._raw_ # {...}
 ```
 
 → [Read more about items](docs/items.md)
@@ -61,8 +61,8 @@ A link is pointing to a backend resource. Sometimes a link contains data already
 
 ```ruby
 data = Feedback.where(has_reviews: true).first.campaign #<LHS::Data @_proxy_=#<LHS::Link>>
-data._raw_ // {"href"=>"http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"}
-data.load!.id // "51dfc5690cf271c375c5a12d" (fetched from the backend)
+data._raw_ # {"href"=>"http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"}
+data.load!.id # "51dfc5690cf271c375c5a12d" (fetched from the backend)
 ```
 
 → [Read more about links](docs/links.md)
