@@ -59,6 +59,13 @@ If no record is found an error is raised.
   Feedback.find('z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
 ```
 
+`find` can also be used to find a single uniqe item with parameters:
+
+```ruby
+  Feedback.find(campaign_id: 123, id: 456)
+```
+
+
 `find_by` finds the first record matching the specified conditions.
 
 If no record is found, `nil` is returned.
