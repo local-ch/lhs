@@ -20,11 +20,15 @@ data = Feedback.where(has_reviews: true) #<LHS::Data>
 → [Read more about services](docs/services.md)
 
 ## Data
-Data contains raw data (json) and a proxy that is used to access data.
+An instance of LHS::Data contains raw data (json) and a proxy that is used to access data.
 
 ```ruby
-data.first.recommended # true
+Service.where #<LHS::Data @_proxy_=#<LHS::Collection>>
+Service.find(123) #<LHS::Data @_proxy_=#<LHS::Item>>
+Service.find(123).liked_item #<LHS::Data @_proxy_=#<LHS::Link>>
 ```
+
+→ [Read more about data](docs/data.md)
 
 ## Proxy
 A proxy is used to access data. It is divided in Collection, Item and Link.
