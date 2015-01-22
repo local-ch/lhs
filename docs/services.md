@@ -137,8 +137,23 @@ Build and persist new items from scratch.
 
 A service lets you specify in advance all the linked resources that you want to include in the results. With includes, a service ensures that all matching and explicitly linked resources are loaded and merged.
 
+The implementation is heavily influenced by [http://guides.rubyonrails.org/active_record_querying](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations)
+and you should read it to understand this feature in all its glory.
+
+### One-Level `includes`
+
 ```ruby
-  # Feedbacks are linked with campaigns (content_ads) that are linked with entries.
+  # a claim has a localch_account
+  claims = Claims.includes(:localch_account).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
+  claims.first.localch_account.email # 'test@email.com'
+```
+* [see the JSON without include](examples/claim_no_include.json)
+* [see the JSON with include](examples/claim_with_include.json)
+
+### Two-Level `includes`
+
+```ruby
+  # a feedback has a campaign, which has an entry
   feedbacks = Feedback.includes(campaign: :entry).where(has_reviews: true)
   feedbacks.first.campaign.entry.name # 'Casa Ferlin'
 ```

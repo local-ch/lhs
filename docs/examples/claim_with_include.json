@@ -1,0 +1,47 @@
+{
+  "href" : "http://silo2:8082/v2/places/huU90mB_6vAfUdVz_uDoyA/claims",
+  "items" : [
+    {
+      "href" : "http://silo2:8082/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg/claims/huU90mB_6vAfUdVz_uDoyA",
+      "localch_account" : {
+        "href" : "http://silo2:8082/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg",
+        "id" : "6bSss0y93lK0MrVsgdNNdg",
+        "name" : "Myriam",
+        "phone" : "0791994817",
+        "email" : "myriam.salm@gmail.com",
+        "language" : "en",
+        "created_date" : "2014-05-06T14:15:58.809+02:00",
+        "claims" : {
+          "href" : "http://silo2:8082/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg/claims",
+          "items" : [
+            {
+              "href" : "http://silo2:8082/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg/claims/huU90mB_6vAfUdVz_uDoyA",
+              "localch_account" : {
+                "href" : "http://silo2:8082/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg"
+              },
+              "place" : {
+                "href" : "http://silo2:8082/v2/places/huU90mB_6vAfUdVz_uDoyA"
+              },
+              "created_date" : "2014-05-06T14:15:59.115+02:00",
+              "method" : "MBA"
+            }
+          ],
+          "total" : 1
+        },
+        "password_hash" : "$2a$10$LFb8IhUSK/0GBZoXRQE/2euRkIdQpTqI8Cw4OFkStPf5XvItvlhJK",
+        "accepted_agbs" : {
+          "href" : "http://silo2:8082/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg/accepted-agbs",
+          "items" : [],
+          "total" : 0
+        },
+        "enabled" : true,
+        "non_locked" : true
+      },
+      "place" : {
+        "href" : "http://silo2:8082/v2/places/huU90mB_6vAfUdVz_uDoyA"
+      },
+      "created_date" : "2014-05-06T14:15:59.115+02:00",
+      "method" : "MBA"
+    }
+  ]
+}
