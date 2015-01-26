@@ -22,8 +22,8 @@ class LHS::Service
         url = instance.compute_url!(params)
         data = instance.request(url: url, params: params)
         if data._proxy_.is_a?(LHS::Collection)
-          raise LHC::NotFound.new('Requested unique item. Multiple were found.', data._request_.response) if data.count > 1
-          data.first
+          fail LHC::NotFound.new('Requested unique item. Multiple were found.', data._request_.response) if data.count > 1
+          data.first || fail(LHC::NotFound.new('No item was found.', data._request_.response))
         else
           data
         end

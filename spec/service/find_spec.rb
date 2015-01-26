@@ -51,6 +51,16 @@ describe LHS::Service do
       }).to raise_error LHC::NotFound
     end
 
+    it 'fails when no item as found by parameters' do
+      data = JSON.parse(load_json(:feedbacks))
+      data['items'] = []
+      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
+      .to_return(body: data.to_json)
+      expect(->{
+        SomeService.find(campaign_id: '123', id: '123')
+      }).to raise_error LHC::NotFound
+    end
+
     it 'raises if nothing was found with parameters' do
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
       .to_return(status: 404)
