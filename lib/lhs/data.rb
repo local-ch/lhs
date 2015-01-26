@@ -1,5 +1,9 @@
+require File.join(__dir__, 'proxy.rb')
+Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each {|file| require file }
+
 # Data provides functionalities to accesses information
 class LHS::Data
+  include Json
 
   # prevent clashing with attributes of underlying data
   attr_accessor :_proxy_, :_raw_, :_parent_, :_service_, :_request_
