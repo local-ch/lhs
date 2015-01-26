@@ -20,7 +20,13 @@ class LHS::Service
 
       def find_with_parameters(params)
         url = instance.compute_url!(params)
-        instance.request(url: url, params: params)
+        data = instance.request(url: url, params: params)
+        if data._proxy_.is_a?(LHS::Collection)
+          raise LHC::NotFound.new('Requested unique item. Multiple were found.', data._request_.response) if data.count > 1
+          data.first
+        else
+          data
+        end
       end
 
       def find_by_id(id)

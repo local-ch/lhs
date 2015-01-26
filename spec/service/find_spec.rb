@@ -30,7 +30,25 @@ describe LHS::Service do
     it 'finds unique item by providing parameters' do
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
       .to_return(body: "{}")
-      SomeService.find(campaign_id: '123', id: '123')
+      data = SomeService.find(campaign_id: '123', id: '123')
+      expect(data._proxy_).to be_kind_of LHS::Item
+    end
+
+    it 'returns item in case of backend returning collection' do
+      data = JSON.parse(load_json(:feedbacks))
+      data['items'] = [data['items'].first]
+      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
+      .to_return(body: data.to_json)
+      data = SomeService.find(campaign_id: '123', id: '123')
+      expect(data._proxy_).to be_kind_of LHS::Item
+    end
+
+    it 'fails when multiple items where found by parameters' do
+      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
+      .to_return(body: load_json(:feedbacks))
+      expect(->{
+        SomeService.find(campaign_id: '123', id: '123')
+      }).to raise_error LHC::NotFound
     end
 
     it 'raises if nothing was found with parameters' do
