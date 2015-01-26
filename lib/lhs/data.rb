@@ -1,3 +1,4 @@
+require File.join(__dir__, 'proxy.rb')
 Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each {|file| require file }
 
 # Data provides functionalities to accesses information
