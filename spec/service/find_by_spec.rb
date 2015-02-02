@@ -30,6 +30,23 @@ describe LHS::Service do
       ).to eq nil
     end
 
+    it 'returns nil if no record was found' do
+      stub_request(:get, "#{datastore}/feedbacks/something-inexistent?limit=1").
+      to_return(status: 404)
+      expect(
+        SomeService.find_by(id: 'something-inexistent', raise_not_found: false)
+      ).to eq nil
+    end
+
+    it 'reraises LHC::NotFound if raise_not_found: true' do
+      stub_request(:get, "#{datastore}/feedbacks/something-inexistent?limit=1").
+      to_return(status: 404)
+
+      expect {
+        SomeService.find_by(id: 'something-inexistent', raise_not_found: true)
+      }.to raise_error LHC::NotFound
+    end
+
     it 'return first item by parameters' do
       json = load_json(:feedbacks)
       stub_request(:get, "#{datastore}/feedbacks?has_reviews=true&limit=1").

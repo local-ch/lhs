@@ -12,7 +12,7 @@ class LHS::Service
       end
 
       def first!
-        result = first
+        result = find_by(raise_not_found: true)
         fail LHC::NotFound unless result
         result
       end
