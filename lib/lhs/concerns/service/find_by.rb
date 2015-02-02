@@ -1,5 +1,4 @@
 require 'active_support'
-
 class LHS::Service
 
   module FindBy
