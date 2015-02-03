@@ -177,3 +177,18 @@ class LocalEntry < LHS::Service
 
 end
 ```
+
+## Bookmarks
+
+When you look at a normal REST call, there is normally an identifier when calling a resource, otherwise you'd get a list of all resources.
+For us it is important that we provide a way of having 'special' identifiers. One such a case is `:datastore/v2/agbs/active`, which will return the currently active agb. You can't map this cleanly to pure REST so we call this approach a bookmark on a resource.
+
+```ruby
+class TermsAndConditions < LHS::Service
+  endpoint ':datastore/v2/agbs'
+end
+
+TermsAndConditions.find(:active) # find the currently active AGB
+TermsAndConditions.where(:inactive, after: '2014-01-01') # find all inactive AGBS with a create_date after '2014-01-01'
+
+```
