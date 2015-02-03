@@ -3,8 +3,6 @@ Data
 
 Everytime you interact with back-end data you will get an instance of LHS::Data.
 
-![Data](data.jpg)
-
 ```ruby
 Service.where #<LHS::Data @_proxy_=#<LHS::Collection>>
 Service.find(123) #<LHS::Data @_proxy_=#<LHS::Item>>
