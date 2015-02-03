@@ -15,16 +15,25 @@ describe LHS::Service do
   context 'first' do
 
     it 'finds a single record' do
-      stub_request(:get, "#{datastore}/feedbacks?limit=1").
-      to_return(status: 200, body: load_json(:feedback))
+      stub_request(:get, "#{datastore}/feedbacks?limit=1")
+        .to_return(status: 200, body: load_json(:feedback))
 
       SomeService.first.source_id
     end
 
     it 'returns nil if no record was found' do
-      stub_request(:get, "#{datastore}/feedbacks?limit=1").
-      to_return(status: 404)
+      stub_request(:get, "#{datastore}/feedbacks?limit=1")
+        .to_return(status: 404)
       expect(SomeService.first).to be_nil
+    end
+  end
+
+  context 'first!' do
+
+    it 'raises if nothing was found with parameters' do
+      stub_request(:get, "#{datastore}/feedbacks?limit=1")
+        .to_return(status: 404)
+      expect { SomeService.first! }.to raise_error LHC::NotFound
     end
   end
 end

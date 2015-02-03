@@ -65,15 +65,26 @@ If no record is found an error is raised.
   Feedback.find(campaign_id: 123, id: 456)
 ```
 
-
 `find_by` finds the first record matching the specified conditions.
 
 If no record is found, `nil` is returned.
+
+`find_by!` raises LHC::NotFound if nothing was found.
 
 ```ruby
   Feedback.find_by(id: 'z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
   Feedback.find_by(id: 'doesntexist') # nil
 ```
+
+`first` is a alias for finding the first of a service without parameters.
+
+```ruby
+  Feedback.first
+```
+
+If no record is found, `nil` is returned.
+
+`first!` raises LHC::NotFound if nothing was found.
 
 → [Read more about items](items.md)
 
