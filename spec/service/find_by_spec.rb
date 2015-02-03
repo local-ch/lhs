@@ -42,7 +42,7 @@ describe LHS::Service do
     it 'raises if nothing was found with parameters' do
       stub_request(:get, "#{datastore}/feedbacks?has_reviews=true&limit=1")
         .to_return(status: 200, body: { items: [] }.to_json)
-      expect(-> { SomeService.find_by!(has_reviews: true) })
+      expect { SomeService.find_by!(has_reviews: true) }
         .to raise_error LHC::NotFound
     end
   end
