@@ -1,6 +1,6 @@
 require 'active_support'
 
-class LHS::Data < LHS::Proxy
+class LHS::Data
 
   module Json
     extend ActiveSupport::Concern

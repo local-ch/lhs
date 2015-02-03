@@ -17,10 +17,10 @@ describe LHS::Data do
     )
   end
 
-  let(:data_from_link) do
+  let(:data_from_item) do
     raw = { href: 'http://www.local.ch/v2/stuff' }
-    link = LHS::Link.new('http://www.local.ch/v2/stuff', LHS::Data.new(raw))
-    LHS::Data.new(link)
+    item = LHS::Item.new(LHS::Data.new(raw))
+    LHS::Data.new(item)
   end
 
   context 'raw' do
@@ -30,8 +30,8 @@ describe LHS::Data do
     end
 
     it 'forwards raw when you feed data with some LHS object' do
-      expect(data_from_link._raw_).to be_kind_of Hash
-      expect(data_from_link._raw_).to eq(
+      expect(data_from_item._raw_).to be_kind_of Hash
+      expect(data_from_item._raw_).to eq(
         href: 'http://www.local.ch/v2/stuff'
       )
     end

@@ -9,12 +9,7 @@ class LHS::Item < LHS::Proxy
   include Update
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_data_, :errors
-
-  def initialize(data, errors = nil)
-    self._data_ = data
-    self.errors = errors
-  end
+  attr_accessor :errors
 
   def _raw_
     _data_._raw_
@@ -52,12 +47,7 @@ class LHS::Item < LHS::Proxy
   end
 
   def handle_hash(value)
-    if (href = value['href'])
-      link = LHS::Link.new(href, LHS::Data.new(value, _data_))
-      LHS::Data.new(link, _data_)
-    else
-      LHS::Data.new(value, _data_)
-    end
+    LHS::Data.new(value, _data_)
   end
 
   def set(name, value)

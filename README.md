@@ -25,13 +25,24 @@ An instance of LHS::Data contains raw data (json) and a proxy that is used to ac
 ```ruby
 Service.where #<LHS::Data @_proxy_=#<LHS::Collection>>
 Service.find(123) #<LHS::Data @_proxy_=#<LHS::Item>>
-Service.find(123).liked_item #<LHS::Data @_proxy_=#<LHS::Link>>
 ```
 
 → [Read more about data](docs/data.md)
 
 ## Proxy
-A proxy is used to access data. It is divided in Collection, Item and Link.
+A proxy is used to access data. It is divided in Collection and Item.
+
+For every proxy that contains an `href` you can use `load!` or `reload!` to receive latest backend data.
+
+```ruby
+{
+  "href" => "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
+}
+
+item.load!.id
+item.reload! # loads it again
+item.load! # wont load it again, because its already arround
+```
 
 ## Collection
 A collection contains multiple items.
@@ -55,14 +66,3 @@ data._raw_ # {...}
 ```
 
 → [Read more about items](docs/items.md)
-
-## Link
-A link is pointing to a backend resource. Sometimes a link contains data already.
-
-```ruby
-data = Feedback.where(has_reviews: true).first.campaign #<LHS::Data @_proxy_=#<LHS::Link>>
-data._raw_ # {"href"=>"http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"}
-data.load!.id # "51dfc5690cf271c375c5a12d" (fetched from the backend)
-```
-
-→ [Read more about links](docs/links.md)

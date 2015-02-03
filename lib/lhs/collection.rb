@@ -4,34 +4,6 @@ require File.join(__dir__, 'proxy.rb')
 # that contains multiple items
 class LHS::Collection < LHS::Proxy
 
-  class Collection
-    include Enumerable
-
-    attr_accessor :raw
-
-    def initialize(raw, parent, service)
-      self.raw = raw
-      @parent = parent
-      @service = service
-    end
-
-    def each(&block)
-      raw.each do |item|
-        data = LHS::Data.new(item, @parent, @service)
-        yield data
-      end
-    end
-
-    delegate :sample, to: :raw
-    delegate :[], to: :raw
-  end
-
-  attr_accessor :_data_
-
-  def initialize(data)
-    self._data_ = data
-  end
-
   def total
     _data_._raw_['total']
   end
@@ -69,5 +41,31 @@ class LHS::Collection < LHS::Proxy
     else
       value
     end
+  end
+
+  private
+
+  # The internal collection class that includes enumerable
+  # and insures to return LHS::Items in case of iterating items
+  class Collection
+    include Enumerable
+
+    attr_accessor :raw
+
+    def initialize(raw, parent, service)
+      self.raw = raw
+      @parent = parent
+      @service = service
+    end
+
+    def each(&block)
+      raw.each do |item|
+        data = LHS::Data.new(item, @parent, @service)
+        yield data
+      end
+    end
+
+    delegate :sample, to: :raw
+    delegate :[], to: :raw
   end
 end
