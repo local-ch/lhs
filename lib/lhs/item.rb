@@ -14,6 +14,7 @@ class LHS::Item < LHS::Proxy
   def initialize(data, errors = nil)
     self._data_ = data
     self.errors = errors
+    super
   end
 
   def _raw_

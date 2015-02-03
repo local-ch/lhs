@@ -8,14 +8,21 @@ describe LHS::Collection do
 
   let(:offset) { 0 }
 
-  let(:response) do
+  let(:collection) do
     {
-      href: datastore,
+      href: "#{datastore}/feedbacks",
       items: [],
       total: total,
       limit: limit,
       offset: offset
-    }.to_json
+    }
+  end
+
+  let(:item) do
+    {
+      href: "#{datastore}/users/1",
+      feedbacks: collection
+    }
   end
 
   let(:datastore) { 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2' }
@@ -25,14 +32,23 @@ describe LHS::Collection do
     class Feedback < LHS::Service
       endpoint ':datastore/feedbacks'
     end
+    class User < LHS::Service
+      endpoint ':datastore/users'
+    end
   end
 
   it 'provides meta data for collections' do
-    stub_request(:get, "#{datastore}/feedbacks").to_return(status: 200, body: response)
+    stub_request(:get, "#{datastore}/feedbacks").to_return(status: 200, body: collection.to_json)
     feedbacks = Feedback.where
     expect(feedbacks.total).to eq total
     expect(feedbacks.limit).to eq limit
     expect(feedbacks.offset).to eq offset
-    expect(feedbacks.href).to eq datastore
+    expect(feedbacks.href).to eq "#{datastore}/feedbacks"
+  end
+
+  it 'provides meta data also when navigating' do
+    stub_request(:get, "#{datastore}/users/1").to_return(status: 200, body: item.to_json)
+    user = User.find(1)
+    binding.pry
   end
 end
