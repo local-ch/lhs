@@ -10,6 +10,7 @@ describe LHS::Collection do
 
   let(:response) do
     {
+      href: datastore,
       items: [],
       total: total,
       limit: limit,
@@ -32,5 +33,6 @@ describe LHS::Collection do
     expect(feedbacks.total).to eq total
     expect(feedbacks.limit).to eq limit
     expect(feedbacks.offset).to eq offset
+    expect(feedbacks.href).to eq datastore
   end
 end

@@ -44,6 +44,10 @@ class LHS::Collection < LHS::Proxy
     _data_._raw_['offset']
   end
 
+  def href
+    _data_._raw_['href']
+  end
+
   def _collection_
     raw = _data_._raw_ if _data_._raw_.is_a?(Array)
     raw ||= _data_._raw_['items']
