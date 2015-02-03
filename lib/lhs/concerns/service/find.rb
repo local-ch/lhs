@@ -19,7 +19,6 @@ class LHS::Service
       private
 
       def find_with_parameters(params)
-        params = params.dup.merge(limit: 1)
         url = instance.compute_url!(params)
         data = instance.request(url: url, params: params)
         if data._proxy_.is_a?(LHS::Collection)
