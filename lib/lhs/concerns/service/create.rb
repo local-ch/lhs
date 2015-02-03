@@ -12,7 +12,7 @@ class LHS::Service
         rescue LHC::Error => e
           json = JSON.parse(data.to_json)
           data = LHS::Data.new(json, nil, self.class, e.response.request)
-          item = LHS::Item.new(data, LHS::Errors.new(e.response))
+          item = LHS::Item.new(data)
           item.errors = LHS::Errors.new(e.response)
           LHS::Data.new(item, data)
       end

@@ -49,6 +49,6 @@ describe LHS::Collection do
   it 'provides meta data also when navigating' do
     stub_request(:get, "#{datastore}/users/1").to_return(status: 200, body: item.to_json)
     user = User.find(1)
-    binding.pry
+    expect(user.feedbacks.href).to eq "#{datastore}/feedbacks"
   end
 end
