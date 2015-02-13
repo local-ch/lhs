@@ -23,8 +23,7 @@ class LHS::Service
 
       def _find_by(params)
         params = params.dup.merge(limit: 1)
-        url = instance.compute_url!(params)
-        data = instance.request(url: url, params: params)
+        data = instance.request(params: params)
         if data._proxy_.is_a?(LHS::Collection)
           data.first || fail(LHC::NotFound.new('No item was found.', data._request_.response))
         else

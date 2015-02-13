@@ -14,8 +14,8 @@ class LHS::Service
     module ClassMethods
 
       # Adds the endpoint to the list of endpoints.
-      def endpoint(url)
-        endpoint = LHC::Endpoint.new(url)
+      def endpoint(url, options = nil)
+        endpoint = LHC::Endpoint.new(url, options)
         instance.sanity_check(endpoint)
         instance.endpoints.push(endpoint)
       end
@@ -30,7 +30,7 @@ class LHS::Service
     # If no parameters are provided it finds the base endpoint
     # otherwise it finds the endpoint that matches the parameters best.
     def find_endpoint(params = {})
-      endpoint = find_best_endpoint(params) if params.keys.count > 0
+      endpoint = find_best_endpoint(params) if params && params.keys.count > 0
       endpoint ||= find_base_endpoint
       endpoint
     end
@@ -41,14 +41,14 @@ class LHS::Service
       fail 'Clashing endpoints.' if endpoints.any? { |e| e.placeholders.sort == placeholders.sort }
     end
 
-    # Computes the url from options
-    # by identifiying endpoint and compile if necessary.
-    # Id in options is threaded in a special way.
-    def compute_url!(options)
-      endpoint = find_endpoint(options)
-      url = endpoint.compile(options)
-      url +=  "/#{options.delete(:id)}" if options[:id]
-      endpoint.remove_interpolated_params!(options)
+    # Computes the url from params
+    # by identifiying endpoint and compiles it if necessary.
+    # Id in params is threaded in a special way.
+    def compute_url!(params)
+      endpoint = find_endpoint(params)
+      url = endpoint.compile(params)
+      url +=  "/#{params.delete(:id)}" if params && params[:id]
+      endpoint.remove_interpolated_params!(params)
       url
     end
 

@@ -16,9 +16,7 @@ class LHS::Service
     private
 
     def multiple_requests(options)
-      options.each do |options|
-        merge_explicit_params!(options[:params])
-      end
+      options.map { |options| process_options(options) }
       responses = LHC.request(options)
       data = responses.map{ |response| LHS::Data.new(response.body, nil, self.class, response.request) }
       data = LHS::Data.new(data, nil, self.class)
@@ -27,11 +25,20 @@ class LHS::Service
     end
 
     def single_request(options)
-      merge_explicit_params!(options[:params])
-      response = LHC.request(options)
-      data = LHS::Data.new(response.body , nil, self.class, response.request)
+      response = LHC.request(process_options(options))
+      data = LHS::Data.new(response.body, nil, self.class, response.request)
       handle_includes(data) if includes
       data
+    end
+
+    # Merge explicit params and take configured endpoints options as base
+    def process_options(options)
+      endpoint = find_endpoint(options[:params])
+      options = (endpoint.options || {}).merge(options)
+      options[:url] = compute_url!(options[:params]) unless options.key?(:url)
+      merge_explicit_params!(options[:params])
+      options.delete(:params) if options[:params] && options[:params].empty?
+      options
     end
 
     # Merge explicit params nested in 'params' namespace with original hash.

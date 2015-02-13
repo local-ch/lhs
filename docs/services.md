@@ -8,12 +8,13 @@ A LHS::Service makes data available using multiple endpoints.
 ## Endpoints
 
 You setup a service by configure one or multiple backend endpoints.
+Adding request options that will be used for the endpoint is possible (see following example).
 
 ```ruby
 class Feedback < LHS::Service
 
   endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks'
-  endpoint ':datastore/v2/feedbacks'
+  endpoint ':datastore/v2/feedbacks', cache: true, cache_expires_in: 1.day
 
 end
 ```
