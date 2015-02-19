@@ -23,9 +23,8 @@ class LHS::Service
         start = options[:start] || 1
         batch_size = options[:batch_size] || 100
         params = options[:params] || {}
-        url = instance.compute_url!(params)
         loop do # as suggested by Matz
-          data = instance.request(url: url, params: params.merge(limit: batch_size, offset: start))
+          data = instance.request(params: params.merge(limit: batch_size, offset: start))
           batch_size = data._raw_['limit']
           left = data._raw_['total'].to_i - data._raw_['offset'].to_i - data._raw_['limit'].to_i
           yield data
