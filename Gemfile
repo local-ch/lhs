@@ -13,7 +13,7 @@ gemspec
 gem 'lhc', git: 'git@github.com:local-ch/lhc.git', tag: 'v0.1.2'
 # gem 'lhc', path: '../lhc' # for testing locally
 
-gem 'lhc-core-interceptors', git: 'git@github.com:local-ch/lhc-core-interceptors.git', tag: 'v0.0.1'
+gem 'lhc-core-interceptors', git: 'git@github.com:local-ch/lhc-core-interceptors.git', tag: 'v0.0.2'
 # gem 'lhc-core-interceptors', path: '../lhc-core-interceptors' # for testing locally
 
 gem 'rspec-rails', '>= 3.0.0'
