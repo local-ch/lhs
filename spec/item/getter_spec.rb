@@ -17,7 +17,7 @@ describe LHS::Item do
 
     it 'returns a collection if you access an array' do
       expect(data.addresses).to be_kind_of(LHS::Data)
-      expect(data.addresses._proxy_).to be_kind_of(LHS::Collection)
+      expect(data.addresses._proxy).to be_kind_of(LHS::Collection)
       expect(data.addresses.first.business.identities.first.name).to eq 'Löwenzorn'
     end
   end

@@ -12,7 +12,7 @@ Sometimes data gets converted when accessed. For example parseable dates will be
 An item proxy contains setter methods, in order to set/change values.
 
 ```
-  record = Feedback.find(id: 'z12f-3asm3ngals') #<LHS::Data @_proxy_=#<LHS::Item>>
+  record = Feedback.find(id: 'z12f-3asm3ngals') #<LHS::Data @_proxy=#<LHS::Item>>
   rcord.recommended = false
 ```
 

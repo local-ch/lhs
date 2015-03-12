@@ -39,7 +39,7 @@ describe LHS::Collection do
         count += 1
         expect(record.id).to eq(count)
         expect(record).to be_kind_of LHS::Data
-        expect(record._proxy_).to be_kind_of LHS::Item
+        expect(record._proxy).to be_kind_of LHS::Item
       end
       expect(count).to eq total
     end    

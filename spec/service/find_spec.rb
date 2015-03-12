@@ -31,7 +31,7 @@ describe LHS::Service do
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
       .to_return(body: "{}")
       data = SomeService.find(campaign_id: '123', id: '123')
-      expect(data._proxy_).to be_kind_of LHS::Item
+      expect(data._proxy).to be_kind_of LHS::Item
     end
 
     it 'returns item in case of backend returning collection' do
@@ -40,7 +40,7 @@ describe LHS::Service do
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
       .to_return(body: data.to_json)
       data = SomeService.find(campaign_id: '123', id: '123')
-      expect(data._proxy_).to be_kind_of LHS::Item
+      expect(data._proxy).to be_kind_of LHS::Item
     end
 
     it 'fails when multiple items where found by parameters' do

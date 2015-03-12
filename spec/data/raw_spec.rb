@@ -26,12 +26,12 @@ describe LHS::Data do
   context 'raw' do
 
     it 'you can access raw data that is underlying' do
-      expect(data_from_raw._raw_).to be_kind_of Hash
+      expect(data_from_raw._raw).to be_kind_of Hash
     end
 
     it 'forwards raw when you feed data with some LHS object' do
-      expect(data_from_item._raw_).to be_kind_of Hash
-      expect(data_from_item._raw_).to eq(
+      expect(data_from_item._raw).to be_kind_of Hash
+      expect(data_from_item._raw).to eq(
         href: 'http://www.local.ch/v2/stuff'
       )
     end

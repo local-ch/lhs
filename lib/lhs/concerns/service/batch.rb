@@ -25,8 +25,8 @@ class LHS::Service
         params = options[:params] || {}
         loop do # as suggested by Matz
           data = instance.request(params: params.merge(limit: batch_size, offset: start))
-          batch_size = data._raw_['limit']
-          left = data._raw_['total'].to_i - data._raw_['offset'].to_i - data._raw_['limit'].to_i
+          batch_size = data._raw['limit']
+          left = data._raw['total'].to_i - data._raw['offset'].to_i - data._raw['limit'].to_i
           yield data
           break if left <= 0
           start += batch_size

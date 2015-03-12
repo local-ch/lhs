@@ -14,10 +14,10 @@ class LHS::Item < LHS::Proxy
     end
 
     def update!(params)
-      service = _data_._root_._service_
-      data = _data_._raw_.dup
+      service = _data._root._service
+      data = _data._raw.dup
       response = service.instance.request(method: :post, url: href, body: data.merge(params).to_json, headers: {'Content-Type' => 'application/json'})
-      self._data_.merge!(response)
+      self._data.merge!(response)
       true
     end
   end

@@ -5,39 +5,39 @@ require File.join(__dir__, 'proxy.rb')
 class LHS::Collection < LHS::Proxy
 
   def total
-    _data_._raw_['total']
+    _data._raw['total']
   end
 
   def limit
-    _data_._raw_['limit']
+    _data._raw['limit']
   end
 
   def offset
-    _data_._raw_['offset']
+    _data._raw['offset']
   end
 
   def href
-    _data_._raw_['href']
+    _data._raw['href']
   end
 
-  def _collection_
-    raw = _data_._raw_ if _data_._raw_.is_a?(Array)
-    raw ||= _data_._raw_['items']
-    Collection.new(raw, _data_, _data_._service_)
+  def _collection
+    raw = _data._raw if _data._raw.is_a?(Array)
+    raw ||= _data._raw['items']
+    Collection.new(raw, _data, _data._service)
   end
 
-  def _raw_
-    _data_._raw_
+  def _raw
+    _data._raw
   end
 
   protected
 
   def method_missing(name, *args, &block)
-    value = _collection_.send(name, *args, &block)
+    value = _collection.send(name, *args, &block)
     if value.is_a? Hash
-      data = LHS::Data.new(value, _data_)
+      data = LHS::Data.new(value, _data)
       item = LHS::Item.new(data)
-      LHS::Data.new(item, _data_)
+      LHS::Data.new(item, _data)
     else
       value
     end

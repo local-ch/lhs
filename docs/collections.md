@@ -22,7 +22,7 @@ You can use any method that you also could call on an array (like count, [0], fi
 You can paginate by passing offset, and limit params. They will be forwarded to the backend.
 
 ```ruby
-data = Feedback.where(limit: 50) #<LHS::Data @_proxy_=#<LHS::Collection>>
+data = Feedback.where(limit: 50) #<LHS::Data @_proxy=#<LHS::Collection>>
 data.count // 50
-Feedback.where(limit: 50, offset: 51) #<LHS::Data @_proxy_=#<LHS::Collection>>
+Feedback.where(limit: 50, offset: 51) #<LHS::Data @_proxy=#<LHS::Collection>>
 ```

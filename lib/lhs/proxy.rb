@@ -3,24 +3,24 @@
 class LHS::Proxy
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_data_, :_loaded_
+  attr_accessor :_data, :_loaded
 
   def initialize(data)
-    self._data_ = data
-    self._loaded_ = false
+    self._data = data
+    self._loaded = false
   end
 
   def load!
-    return self if _loaded_
+    return self if _loaded
     reload!
   end
 
   def reload!
-    fail 'No href found' unless _data_.href
-    service = _data_._root_._service_
-    data = service.instance.request(url: _data_.href, method: :get)
+    fail 'No href found' unless _data.href
+    service = _data._root._service
+    data = service.instance.request(url: _data.href, method: :get)
     merge!(data)
-    self._loaded_ = true
+    self._loaded = true
     self
   end
 end

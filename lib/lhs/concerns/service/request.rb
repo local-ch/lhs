@@ -58,7 +58,7 @@ class LHS::Service
     end
 
     def handle_include(data, key)
-      options = if data._proxy_.is_a? LHS::Collection
+      options = if data._proxy.is_a? LHS::Collection
         include_multiple(data, key)
       else
         include_single(data, key)
@@ -72,13 +72,13 @@ class LHS::Service
     end
 
     def extend(data, addition, key)
-      if data._proxy_.is_a? LHS::Collection
+      if data._proxy.is_a? LHS::Collection
         data.each_with_index do |item, i|
           item = item[i] if item.is_a? LHS::Collection
-          item._raw_[key.to_s].merge!(addition[i]._raw_)
+          item._raw[key.to_s].merge!(addition[i]._raw)
         end
-      elsif data._proxy_.is_a? LHS::Item
-        data._raw_[key.to_s].merge!(addition._raw_)
+      elsif data._proxy.is_a? LHS::Item
+        data._raw[key.to_s].merge!(addition._raw)
       end
     end
 

@@ -33,7 +33,7 @@ describe LHS::Data do
 
   it 'converts link to json' do
     expect(item.campaign.to_json)
-    .to eq item.campaign._raw_.to_json
+    .to eq item.campaign._raw.to_json
   end  
 
 end

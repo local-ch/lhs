@@ -16,10 +16,10 @@ describe LHS::Data do
       root = LHS::Data.new({'items' => [{'campaign' => {'id' => 123}}]}, nil, SomeService)
       child = root.first
       leafe = child.campaign
-      expect(leafe._root_).to eq root
-      expect(leafe._parent_).to be_kind_of LHS::Data
-      expect(leafe._parent_._parent_).to be_kind_of LHS::Data
-      expect(leafe._parent_._parent_).to eq root
+      expect(leafe._root).to eq root
+      expect(leafe._parent).to be_kind_of LHS::Data
+      expect(leafe._parent._parent).to be_kind_of LHS::Data
+      expect(leafe._parent._parent).to eq root
     end
   end
 end

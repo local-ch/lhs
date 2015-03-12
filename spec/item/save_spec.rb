@@ -25,22 +25,22 @@ describe LHS::Item do
 
     it 'persists changes on the backend' do
       stub_request(:post, item.href)
-      .with(body: item._raw_.merge(name: 'Steve').to_json)
+      .with(body: item._raw.merge(name: 'Steve').to_json)
       item.name = 'Steve'
       expect(item.save).to eq true
     end
 
     it 'returns false if persting goes wrong' do
       stub_request(:post, item.href)
-      .with(body: item._raw_.to_json)
+      .with(body: item._raw.to_json)
       .to_return(status: 500)
       expect(item.save).to eq false
     end
 
     it 'merges reponse data with object' do
       stub_request(:post, item.href)
-      .with(body: item._raw_.to_json)
-      .to_return(status: 200, body: item._raw_.merge(name: 'Steve').to_json)
+      .with(body: item._raw.to_json)
+      .to_return(status: 200, body: item._raw.merge(name: 'Steve').to_json)
       item.save
       expect(item.name).to eq 'Steve'
     end
@@ -50,7 +50,7 @@ describe LHS::Item do
 
     it 'raises if something goes wrong' do
       stub_request(:post, item.href)
-      .with(body: item._raw_.to_json)
+      .with(body: item._raw.to_json)
       .to_return(status: 500)
       expect(->{ item.save! }).to raise_error LHC::ServerError
     end

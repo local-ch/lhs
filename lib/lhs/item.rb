@@ -11,8 +11,8 @@ class LHS::Item < LHS::Proxy
   # prevent clashing with attributes of underlying data
   attr_accessor :errors
 
-  def _raw_
-    _data_._raw_
+  def _raw
+    _data._raw
   end
 
   protected
@@ -20,14 +20,14 @@ class LHS::Item < LHS::Proxy
   def method_missing(name, *args, &block)
     return set(name, args.try(&:first)) if name.to_s[/=$/]
     name = args.first if name == :[]
-    value = _data_._raw_[name.to_s]
-    value = _data_._raw_[name.to_sym] if value.nil?
+    value = _data._raw[name.to_s]
+    value = _data._raw[name.to_sym] if value.nil?
     if value.is_a?(Hash)
       handle_hash(value)
     elsif value.is_a?(Array)
-      data = LHS::Data.new(value, _data_)
+      data = LHS::Data.new(value, _data)
       collection = LHS::Collection.new(data)
-      LHS::Data.new(collection, _data_)
+      LHS::Data.new(collection, _data)
     else
       convert(value)
     end
@@ -47,12 +47,12 @@ class LHS::Item < LHS::Proxy
   end
 
   def handle_hash(value)
-    LHS::Data.new(value, _data_)
+    LHS::Data.new(value, _data)
   end
 
   def set(name, value)
     key = name.to_s.gsub(/=$/, '')
-    _data_._raw_[key] = value
+    _data._raw[key] = value
   end
 
   private
