@@ -60,8 +60,11 @@ class LHS::Collection < LHS::Proxy
 
     def each(&block)
       raw.each do |item|
-        data = LHS::Data.new(item, @parent, @service)
-        yield data
+        if item.is_a? Hash
+          yield LHS::Data.new(item, @parent, @service)
+        else
+          yield item
+        end
       end
     end
 
