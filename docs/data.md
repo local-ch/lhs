@@ -9,6 +9,8 @@ Service.find(123) #<LHS::Data @_proxy=#<LHS::Item>>
 ```
 
 ## Internals
+** You shold not use LHS internals as consumer. 
+The following explanations are for developing LHS itself! **
 
 ```ruby
 data = Service.where(entry_id: 123)

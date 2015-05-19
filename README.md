@@ -62,7 +62,6 @@ An item is a concrete record. It can be part of another proxy like collection.
 data = Feedback.where(has_reviews: true).first #<LHS::Data @_proxy_=#<LHS::Item>>
 data.recommended # true
 data.created_date # Fri, 19 Sep 2014 14:03:35 +0200
-data._raw_ # {...}
 ```
 
 → [Read more about items](docs/items.md)
