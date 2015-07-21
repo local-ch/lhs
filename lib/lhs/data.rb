@@ -45,6 +45,11 @@ class LHS::Data
     end
   end
 
+  def respond_to_missing?(name, include_all = false)
+    (root_item? && _root._service.instance.mapping.keys.map(&:to_s).include?(name.to_s)) ||
+    _proxy.respond_to?(name, include_all)
+  end
+
   private
 
   def root_item
