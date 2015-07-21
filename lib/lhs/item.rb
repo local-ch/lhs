@@ -33,6 +33,11 @@ class LHS::Item < LHS::Proxy
     end
   end
 
+  def respond_to_missing?(name, include_all = false)
+    # We accept every method and forward it to inner hash as key
+    true
+  end
+
   private
 
   def convert(value)
