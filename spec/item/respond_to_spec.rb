@@ -17,5 +17,13 @@ describe LHS::Item do
     it 'is true for brackets' do
       expect(item.respond_to?(:[])).to be(true)
     end
+
+    it 'is false for new' do
+      expect(item.respond_to?(:new)).to be(false)
+    end
+
+    it 'is false for proxy_association' do
+      expect(item.respond_to?(:proxy_association)).to be(false)
+    end
   end
 end
