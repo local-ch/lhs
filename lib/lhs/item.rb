@@ -33,7 +33,15 @@ class LHS::Item < LHS::Proxy
     end
   end
 
+  def respond_to_missing?(name, include_all = false)
+    # We accept every message that does not belong to set of keywords
+    BLACKLISTED_KEYWORDS.exclude?(name.to_s)
+  end
+
   private
+
+  # FIXME: Extend the set of keywords
+  BLACKLISTED_KEYWORDS = %w( new proxy_association )
 
   def convert(value)
     return value unless value.is_a?(String)

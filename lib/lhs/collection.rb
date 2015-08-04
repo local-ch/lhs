@@ -43,6 +43,10 @@ class LHS::Collection < LHS::Proxy
     end
   end
 
+  def respond_to_missing?(name, include_all = false)
+    _collection.respond_to?(name, include_all)
+  end
+
   private
 
   # The internal collection class that includes enumerable
