@@ -22,4 +22,15 @@ describe LHS::Data do
       expect(data.total).to be_kind_of Fixnum
     end
   end
+
+  context 'collections from arrays' do
+
+    let(:data) do
+      LHS::Data.new([1,2,3,4])
+    end
+
+    it 'uses collection as proxy for arrays' do
+      expect(data._proxy).to be_kind_of LHS::Collection
+    end
+  end
 end
