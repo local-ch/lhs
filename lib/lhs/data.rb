@@ -52,6 +52,11 @@ class LHS::Data
 
   private
 
+  def collection_proxy?(input)
+    (_raw.is_a?(Hash) && _raw['items']) || 
+      input.is_a?(Array) || _raw.is_a?(Array)
+  end
+
   def root_item
     return if self._proxy.class != LHS::Item
     root = root_item = self
@@ -77,7 +82,7 @@ class LHS::Data
   def proxy_from_input(input)
     if input.is_a? LHS::Proxy
       input
-    elsif (_raw.is_a?(Hash) && _raw['items']) || input.is_a?(Array)
+    elsif collection_proxy?(input)
       LHS::Collection.new(self)
     else
       LHS::Item.new(self)
