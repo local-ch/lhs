@@ -20,10 +20,12 @@ Gem::Specification.new do |s|
   s.requirements << 'Ruby >= 1.9.2'
   s.required_ruby_version = '>= 1.9.2'
 
-  s.add_dependency 'lhc', '~> 0.1.2'
-  s.add_dependency 'lhc-core-interceptors', '~> 0.0.3'
+  s.add_dependency 'lhc', '>= 0.2.0'
+  s.add_dependency 'lhc-core-interceptors', '>= 0.1.0'
 
   s.add_development_dependency 'rspec-rails', '>= 3.0.0'
-  s.add_development_dependency 'rails', '~> 4.1.1'
-  s.add_development_dependency 'webmock', '~> 1.20.0'
+  s.add_development_dependency 'rails', '>= 4.0.0'
+  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'geminabox'
+  s.add_development_dependency 'pry'
 end
