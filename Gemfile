@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://GemInAbox:e3XRBgVJRNUmwJ5y@gembox-vm-inx01.intra.local.ch/'
 
 # Declare your gem's dependencies in lhs.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
@@ -10,13 +10,5 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-gem 'lhc', git: 'git@github.com:local-ch/lhc.git', tag: 'v0.1.2'
-# gem 'lhc', path: '../lhc' # for testing locally
-
-gem 'lhc-core-interceptors', git: 'git@github.com:local-ch/lhc-core-interceptors.git', tag: 'v0.0.3'
-# gem 'lhc-core-interceptors', path: '../lhc-core-interceptors' # for testing locally
-
-gem 'rspec-rails', '>= 3.0.0'
-gem 'rails', '~> 4.1.1'
-gem 'pry'
-gem 'webmock', '~> 1.20.0', group: [:test]
+gem 'geminabox', group: [:development]
+gem 'pry', group: [:development, :test]
