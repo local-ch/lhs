@@ -5,6 +5,10 @@ A LHS::Service makes data available using multiple endpoints.
 
 ![Service](service.jpg)
 
+## Convention
+
+Please store all defined services in `app/services` as they are autoloaded from this directory.
+
 ## Endpoints
 
 You setup a service by configure one or multiple backend endpoints.
