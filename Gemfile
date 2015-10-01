@@ -1,4 +1,4 @@
-source 'https://rubygems.intra.local.ch/'
+source 'https://rubygems.org/'
 
 # Declare your gem's dependencies in lhs.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
