@@ -187,6 +187,26 @@ When including linked resources with `includes`, known/defined services and endp
 That also means that options for endpoints of linked resources are applied when requesting those in addition.
 This enables you to include protected resources (e.g. OAuth) as endpoint options for oauth authentication get applied.
 
+The (Auth Inteceptor)[https://github.com/local-ch/lhc-core-interceptors#auth-interceptor] from (lhc-core-interceptors)[https://github.com/local-ch/lhc-core-interceptors] is used to configure the following endpoints.
+```ruby
+class Favorite < LHS::Service
+
+  endpoint ':datastore/:user_id/favorites', auth: { bearer: -> { bearer_token } }
+  endpoint ':datastore/:user_id/favorites/:id', auth: { bearer: -> { bearer_token } }
+
+end
+
+class Place < LHS::Service
+
+  endpoint ':datastore/v2/places', auth: { bearer: -> { bearer_token } }
+  endpoint ':datastore/v2/places/:id', auth: { bearer: -> { bearer_token } }
+
+end
+
+Favorite.includes(:place).where(user_id: current_user.id) 
+# Will include places and applies endpoint options to authenticate the request.
+```
+
 ## Map data
 
 To influence how data is accessed/provied, you can use mapping to either map deep nested data or to manipulate data when its accessed:
