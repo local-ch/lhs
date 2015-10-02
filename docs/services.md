@@ -187,7 +187,7 @@ When including linked resources with `includes`, known/defined services and endp
 That also means that options for endpoints of linked resources are applied when requesting those in addition.
 This enables you to include protected resources (e.g. OAuth) as endpoint options for oauth authentication get applied.
 
-The (Auth Inteceptor)[https://github.com/local-ch/lhc-core-interceptors#auth-interceptor] from (lhc-core-interceptors)[https://github.com/local-ch/lhc-core-interceptors] is used to configure the following endpoints.
+The [Auth Inteceptor](https://github.com/local-ch/lhc-core-interceptors#auth-interceptor) from [lhc-core-interceptors](https://github.com/local-ch/lhc-core-interceptors) is used to configure the following endpoints.
 ```ruby
 class Favorite < LHS::Service
 
