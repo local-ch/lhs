@@ -25,7 +25,7 @@ class LHS::Service
     end
 
     def convert_option_to_endpoints(option)
-      new_options = {}
+      new_options = option.dup
       url = option[:url]
       return unless endpoint = LHS::Endpoint.for_url(url)
       template = endpoint.url
@@ -60,7 +60,7 @@ class LHS::Service
         url_option_for(data, key)
       end
       service = service_for_options(options) || self
-      options = convert_options_to_endpoints(options) if service
+      options = convert_options_to_endpoints(options) if service_for_options(options)
       addition = if (further_keys = includes.fetch(key, nil) if includes.is_a? Hash)
         service.class.includes(further_keys).instance.request(options)
       else
@@ -111,7 +111,7 @@ class LHS::Service
           next unless service = LHS::Service.for_url(option[:url])
           services.push(service)
         end
-        fail 'Found more then one service that could be used to do the request' if services.uniq.count > 1
+        fail 'Found more than one service that could be used to do the request' if services.uniq.count > 1
         services.uniq.first
       else # Hash
         LHS::Service.for_url(options[:url])
