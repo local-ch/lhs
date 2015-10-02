@@ -181,6 +181,12 @@ and you should read it to understand this feature in all its glory.
   feedbacks.first.campaign.entry.name # 'Casa Ferlin'
 ```
 
+### Known services are used to request linked resources
+
+When including linked resources with `includes`, known/defined services and endpoints are used to make those requests. 
+That also means that options for endpoints of linked resources are applied when requesting those in addition.
+This enables you to include protected resources (e.g. OAuth) as endpoint options for oauth authentication get applied.
+
 ## Map data
 
 To influence how data is accessed/provied, you can use mapping to either map deep nested data or to manipulate data when its accessed:
