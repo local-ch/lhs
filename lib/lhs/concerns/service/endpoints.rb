@@ -10,6 +10,7 @@ class LHS::Service
     extend ActiveSupport::Concern
 
     attr_accessor :endpoints
+    mattr_accessor :all
 
     module ClassMethods
 
@@ -18,6 +19,15 @@ class LHS::Service
         endpoint = LHC::Endpoint.new(url, options)
         instance.sanity_check(endpoint)
         instance.endpoints.push(endpoint)
+        LHS::Service::Endpoints.all ||= {}
+        LHS::Service::Endpoints.all[url] = instance
+      end
+
+      def for_url(url)
+        template, service = LHS::Service::Endpoints.all.detect do |template, _service|
+          LHC::Endpoint.match?(url, template)
+        end
+        service
       end
     end
 

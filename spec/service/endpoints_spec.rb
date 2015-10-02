@@ -15,6 +15,12 @@ describe LHS::Service do
       end
     end
 
+    it 'stores all the endpoints by url' do
+      expect(LHS::Service::Endpoints.all[':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks']).to be 
+      expect(LHS::Service::Endpoints.all[':datastore/:campaign_id/feedbacks']).to be
+      expect(LHS::Service::Endpoints.all[':datastore/feedbacks']).to be
+    end
+
     it 'stores the endpoints of the service' do
       expect(SomeService.instance.endpoints.count).to eq 3
       expect(SomeService.instance.endpoints[0].url).to eq ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
