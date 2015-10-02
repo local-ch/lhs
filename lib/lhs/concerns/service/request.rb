@@ -17,8 +17,8 @@ class LHS::Service
 
     # Convert URLs in options to endpoint templates
     def convert_options_to_endpoints(options)
-      if options.is_a? Array
-        options.map{ |option| convert_option_to_endpoints(option) }
+      if options.respond_to?(:map)
+        options.map { |option| convert_option_to_endpoints(option) }
       else
         convert_option_to_endpoints(options)
       end
