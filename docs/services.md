@@ -221,3 +221,23 @@ class LocalEntry < LHS::Service
 
 end
 ```
+
+### Known services when accessing mapped data from nested data
+
+As LHS detects services from available service definitions as soon as a link is present, mappings will also be applied on nested data:
+
+```
+class Place < LHS::Service
+  endpoint ':datastore/v2/places'
+
+  map :name, ->{ addresses.first.business.identities.first.name }
+
+end
+
+class Favorite < LHS::Service
+  endpoint ':datastore/v2/favorites'
+end
+
+favorite = Favorite.includes(:place).find(1)
+favorite.place.name # local.ch AG
+```

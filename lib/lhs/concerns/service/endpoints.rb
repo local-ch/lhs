@@ -24,6 +24,7 @@ class LHS::Service
       end
 
       def for_url(url)
+        return unless url
         template, service = LHS::Service::Endpoints.all.detect do |template, _service|
           LHC::Endpoint.match?(url, template)
         end

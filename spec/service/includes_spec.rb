@@ -18,7 +18,29 @@ describe LHS::Service do
       .to_return(body: { 'name' => 'Casa Ferlin' }.to_json)
   end
 
-  context 'includes' do
+  context 'singlelevel includes' do
+    before(:each) do
+     class LocalEntry < LHS::Service
+        endpoint ':datastore/local-entries'
+        endpoint ':datastore/local-entries/:id'
+      end
+      class Favorite < LHS::Service
+        endpoint ':datastore/favorites'
+        endpoint ':datastore/favorites/:id'
+      end
+      stub_request(:get, "#{datastore}/local-entries/1")
+        .to_return(body: {company_name: 'local.ch'}.to_json)
+      stub_request(:get, "#{datastore}/favorites/1")
+        .to_return(body: {local_entry: {href: "#{datastore}/local-entries/1"}}.to_json)
+    end
+
+    it 'does single level includes' do
+      favorite = Favorite.includes(:local_entry).find(1)
+      expect(favorite.local_entry.company_name).to eq 'local.ch'
+    end
+  end
+
+  context 'multilevel includes' do
 
     before(:each) do
       class Feedback < LHS::Service
