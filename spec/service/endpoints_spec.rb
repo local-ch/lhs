@@ -43,6 +43,21 @@ describe LHS::Service do
       ).to eq ':datastore/feedbacks'
     end
 
+    context 'compute url from endpoint' do
+
+      before(:each) do
+        class Feedback < LHS::Service
+          endpoint ':datastore/feedbacks'
+          endpoint ':datastore/feedbacks/:id'
+        end
+      end
+
+      it 'computes urls WITHOUT handling id separate' do
+        stub_request(:get, "#{datastore}/feedbacks/1").to_return(status: 200)
+        Feedback.find(1)
+      end
+    end
+
     context 'unsorted endpoints' do
 
       before(:each) do
