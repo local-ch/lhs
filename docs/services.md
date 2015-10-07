@@ -215,7 +215,7 @@ To influence how data is accessed/provied, you can use mapping to either map dee
 class LocalEntry < LHS::Service
   endpoint ':datastore/v2/local-entries'
 
-  map :name, ->(entry){ entry.addresses.first.business.identities.first.name }
+  map :name, ->{ addresses.first.business.identities.first.name }
 
 end
 ```

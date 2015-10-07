@@ -15,7 +15,7 @@ describe LHS::Service do
 
     it 'maps some attr accessors to another target (proxy)' do
       class LocalEntry < LHS::Service
-        map :name, ->(entry){ entry.addresses.first.business.identities.first.name }
+        map :name, ->{ addresses.first.business.identities.first.name }
       end
       stub_request(:get, "#{datastore}/local-entries/1")
       .to_return(status: 200, body: {addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}.to_json)
@@ -25,7 +25,7 @@ describe LHS::Service do
 
     it 'maps for root_item even if that item is nested in a root collection' do
       class LocalEntry < LHS::Service
-        map :name, ->(entry){ entry.addresses.first.business.identities.first.name }
+        map :name, ->{ addresses.first.business.identities.first.name }
       end
       stub_request(:get, "#{datastore}/local-entries/1?limit=1")
       .to_return(status: 200, body: {items: [{addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}]}.to_json)
@@ -35,7 +35,7 @@ describe LHS::Service do
 
     it 'return data proxy in case of item or collection' do
       class LocalEntry < LHS::Service
-        map :business, ->(entry){ entry.addresses.first.business }
+        map :business, ->{ addresses.first.business }
       end
       stub_request(:get, "#{datastore}/local-entries/1")
       .to_return(status: 200, body: {addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}.to_json)
@@ -46,7 +46,7 @@ describe LHS::Service do
     it 'clones mappings when using include' do
       class Agb < LHS::Service
         endpoint ":datastore/agbs/active?agb_type=CC_TOU"
-        map :pdf_url, ->(agb) { agb['binary_url_pdf_de'] }
+        map :pdf_url, -> { self['binary_url_pdf_de'] }
       end
 
       preceding_agb_url = "#{datastore}/agbs/547f0b461c266c4830ea6cea"
