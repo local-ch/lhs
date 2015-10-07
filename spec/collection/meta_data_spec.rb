@@ -31,9 +31,11 @@ describe LHS::Collection do
     LHC.config.placeholder('datastore', datastore)
     class Feedback < LHS::Service
       endpoint ':datastore/feedbacks'
+      endpoint ':datastore/feedbacks/:id'
     end
     class User < LHS::Service
       endpoint ':datastore/users'
+      endpoint ':datastore/users/:id'
     end
   end
 

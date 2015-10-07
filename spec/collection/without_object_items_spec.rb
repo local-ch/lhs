@@ -7,7 +7,7 @@ describe LHS::Collection do
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
     class Account < LHS::Service
-      endpoint ':datastore/accounts'
+      endpoint ':datastore/accounts/:id'
     end
   end
 

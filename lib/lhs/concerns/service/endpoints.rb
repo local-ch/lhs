@@ -57,7 +57,6 @@ class LHS::Service
     def compute_url!(params)
       endpoint = find_endpoint(params)
       url = endpoint.compile(params)
-      url +=  "/#{params.delete(:id)}" if params && params[:id]
       endpoint.remove_interpolated_params!(params)
       url
     end

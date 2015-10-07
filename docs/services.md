@@ -18,7 +18,9 @@ You can also add request options for an endpoint (see following example).
 class Feedback < LHS::Service
 
   endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks'
+  endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks/:id'
   endpoint ':datastore/v2/feedbacks', cache: true, cache_expires_in: 1.day
+  endpoint ':datastore/v2/feedbacks/:id', cache: true, cache_expires_in: 1.day
 
 end
 ```
