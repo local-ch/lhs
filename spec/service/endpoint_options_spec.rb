@@ -6,7 +6,7 @@ describe LHS::Service do
 
     before(:each) do
       class SomeService < LHS::Service
-        endpoint 'backend/v2/feedbacks', cache_expires_in: 1.day, retry: 2, cache: true
+        endpoint 'backend/v2/feedbacks/:id', cache_expires_in: 1.day, retry: 2, cache: true
       end
     end
 

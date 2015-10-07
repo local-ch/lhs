@@ -8,7 +8,9 @@ describe LHS::Service do
     LHC.config.placeholder(:datastore, datastore)
     class SomeService < LHS::Service
       endpoint ':datastore/content-ads/:campaign_id/feedbacks'
+      endpoint ':datastore/content-ads/:campaign_id/feedbacks/:id'
       endpoint ':datastore/feedbacks'
+      endpoint ':datastore/feedbacks/:id'
     end
   end
 

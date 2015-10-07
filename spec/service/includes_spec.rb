@@ -23,6 +23,7 @@ describe LHS::Service do
     before(:each) do
       class Feedback < LHS::Service
         endpoint ':datastore/feedbacks'
+        endpoint ':datastore/feedbacks/:id'
       end
       stub_campaign_request
       stub_entry_request

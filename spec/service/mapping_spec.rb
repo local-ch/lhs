@@ -10,6 +10,7 @@ describe LHS::Service do
       LHC.config.placeholder('datastore', datastore)
       class LocalEntry < LHS::Service
         endpoint ':datastore/local-entries'
+        endpoint ':datastore/local-entries/:id'
       end
     end
 
