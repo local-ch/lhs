@@ -38,7 +38,7 @@ class LHS::Data
   # Use existing mapping to provide data
   # or forward to proxy
   def method_missing(name, *args, &block)
-    if root_item? && mapping = _root._service.instance.mapping[name]
+    if mapping = mapping_for(name)
       self.instance_exec(&mapping)
     else
       _proxy.send(name, *args, &block)
@@ -55,6 +55,13 @@ class LHS::Data
   def collection_proxy?(input)
     (_raw.is_a?(Hash) && _raw['items']) || 
       input.is_a?(Array) || _raw.is_a?(Array)
+  end
+
+  def mapping_for(name)
+    service_instance = LHS::Service.for_url(_raw['href']) if _raw.is_a?(Hash)
+    service_instance ||= _root._service.instance if root_item?
+    return unless service_instance
+    service_instance.mapping[name]
   end
 
   def root_item
