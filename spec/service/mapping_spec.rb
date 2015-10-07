@@ -69,5 +69,22 @@ describe LHS::Service do
       agb = Agb.includes(:preceding_agb).first!
       expect(agb.pdf_url).to be == 'de'
     end
+
+    it 'makes mappings available even for nested data' do
+      class LocalEntry < LHS::Service
+        map :name, ->{ company_name }
+      end
+      class Favorite < LHS::Service
+        endpoint ':datastore/favorites'
+        endpoint ':datastore/favorites/:id'
+      end
+      stub_request(:get, "#{datastore}/local-entries/1")
+        .to_return(body: {company_name: 'local.ch'}.to_json)
+      stub_request(:get, "#{datastore}/favorites/1")
+        .to_return(body: {local_entry: {href: "#{datastore}/local-entries/1"}}.to_json)
+
+      favorite = Favorite.includes(:local_entry).find(1)
+      expect(favorite.local_entry.name).to eq 'local.ch'
+    end
   end
 end
