@@ -25,7 +25,7 @@ describe LHS::Data do
   context 'merging' do
 
     it 'merges data' do
-      data.merge!(loaded_data)
+      data.merge_raw!(loaded_data)
       expect(data.id).to eq loaded_data.id
     end
   end
