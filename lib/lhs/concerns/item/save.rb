@@ -21,8 +21,8 @@ class LHS::Item < LHS::Proxy
       else
         service.instance.find_endpoint(data).compile(data)
       end
-      response = service.instance.request(method: :post, url: url, body: data.to_json, headers: {'Content-Type' => 'application/json'})
-      self._data.merge!(response)
+      data = service.instance.request(method: :post, url: url, body: data.to_json, headers: {'Content-Type' => 'application/json'})
+      self._data.merge_raw!(data)
       true
     end
   end

@@ -16,8 +16,8 @@ class LHS::Item < LHS::Proxy
     def update!(params)
       service = _data._root._service
       data = _data._raw.dup
-      response = service.instance.request(method: :post, url: href, body: data.merge(params).to_json, headers: {'Content-Type' => 'application/json'})
-      self._data.merge!(response)
+      data = service.instance.request(method: :post, url: href, body: data.merge(params).to_json, headers: {'Content-Type' => 'application/json'})
+      self._data.merge_raw!(data)
       true
     end
   end
