@@ -25,7 +25,7 @@ describe LHS::Collection do
       expect(all).to be_kind_of LHS::Data
       expect(all._proxy).to be_kind_of LHS::Collection
       expect(all.count).to eq 300
-      expect(all[299]).to eq 300
+      expect(all.last).to eq 300
     end
 
     it 'also fetches all when there is not meta information for limit' do
@@ -39,7 +39,7 @@ describe LHS::Collection do
       expect(all).to be_kind_of LHS::Data
       expect(all._proxy).to be_kind_of LHS::Collection
       expect(all.count).to eq 300
-      expect(all[299]).to eq 300
+      expect(all.last).to eq 300
     end
 
     it 'also works when there is no item in the first response' do

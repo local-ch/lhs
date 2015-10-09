@@ -72,6 +72,7 @@ class LHS::Collection < LHS::Proxy
       end
     end
 
+    delegate :last, to: :raw
     delegate :sample, to: :raw
     delegate :[], to: :raw
   end
