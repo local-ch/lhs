@@ -7,9 +7,15 @@ class LHS::Service
 
     module ClassMethods
 
+      # Should be an edge case but sometimes all objects from a certain resource
+      # are required. In this case we load the first page with the default max limit,
+      # compute the amount of left over requests, do all the the left over requests
+      # for the following pages and concatenate all the results in order to return
+      # all the objects for a given resource.
       def all(params = {})
         all = []
-        data = instance.request(params: params.merge(limit: 100))
+        default_max_limit = 100
+        data = instance.request(params: params.merge(limit: default_max_limit))
         all.concat(data._raw['items'])
         total_left = data._raw['total'] - data.count
         limit = data._raw['limit'] || data.count
