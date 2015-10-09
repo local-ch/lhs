@@ -41,5 +41,14 @@ describe LHS::Collection do
       expect(all.count).to eq 300
       expect(all[299]).to eq 300
     end
+
+    it 'also works when there is no item in the first response' do
+      stub_request(:get, "#{datastore}/feedbacks?limit=100")
+        .to_return(status: 200, body: {items: [], total: 300, offset: 0}.to_json)
+      all = SomeService.all
+      expect(all).to be_kind_of LHS::Data
+      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 0
+    end
   end
 end

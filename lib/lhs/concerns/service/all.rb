@@ -19,10 +19,12 @@ class LHS::Service
         all.concat(data._raw['items'])
         total_left = data._raw['total'] - data.count
         limit = data._raw['limit'] || data.count
-        requests = total_left / limit
-        requests.times do |i|
-          offset = limit * (i+1) + 1
-          all.concat instance.request(params: params.merge(limit: limit, offset: offset))._raw['items']
+        if limit > 0
+          requests = total_left / limit
+          requests.times do |i|
+            offset = limit * (i+1) + 1
+            all.concat instance.request(params: params.merge(limit: limit, offset: offset))._raw['items']
+          end
         end
         LHS::Data.new(all, nil, self)
       end
