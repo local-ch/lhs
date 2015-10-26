@@ -8,9 +8,7 @@ class LHS::Item < LHS::Proxy
   include Save
   include Update
 
-  delegate :present?, to: :_raw
-  delegate :blank?, to: :_raw
-  delegate :empty?, to: :_raw
+  delegate :present?, :blank?, :empty?, to: :_raw
 
   # prevent clashing with attributes of underlying data
   attr_accessor :errors
