@@ -54,6 +54,7 @@ class LHS::Service
     end
 
     def handle_include(data, key)
+      return unless data.present?
       options = if data._proxy.is_a? LHS::Collection
         options_for_multiple(data, key)
       else
