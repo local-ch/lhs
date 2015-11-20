@@ -64,19 +64,38 @@ class LHS::Errors
 
   private
 
-  def messages_from_response(response)
-    messages = {}
-    return messages if !response.body.is_a?(String) || response.body.length.zero?
-    json = JSON.parse(response.body)
-    return messages unless json['fields']
-    json['fields'].each do |field|
+  def parse_old_errors(errors):
+    parsed = {}
+    errors.each do |field|
       name = field['name'].to_sym
-      messages[name] ||= []
+      parsed[name] ||= []
       field['details'].each do |detail|
-        messages[name].push(detail['code'])
+        parsed[name].push(detail['code'])
       end
     end
-    messages
+    parsed
+  end
+
+  def parse_errors(errors):
+    parsed = {}
+    errors.each do |field|
+      name = field['path'][0].to_sym
+      parsed[name] ||= []
+      parsed[name].push(field['code'])
+    end
+    parsed
+  end
+
+  def messages_from_response(response)
+    return {} if !response.body.is_a?(String) || response.body.length.zero?
+    json = JSON.parse(response.body)
+    if json['fields']
+      return parse_old_errors(json['fields'])
+    end
+    if json['field_errors']
+      return parse_old_errors(json['field_errors'])
+    end
+    {}
   end
 
   def message_from_response(response)

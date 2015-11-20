@@ -14,7 +14,7 @@ describe LHS::Item do
       end
     end
 
-    let(:save_error) do
+    let(:old_save_error) do
       {
         "status" => 400,
         "message" => "ratings must be set when review or name or review_title is set | The property value is required; it cannot be null, empty, or blank.",
@@ -30,9 +30,19 @@ describe LHS::Item do
       }
     end
 
-    it 'provides errors when creation failed' do
-      stub_request(:post, "#{datastore}/feedbacks")
-      .to_return(status: 400, body: save_error.to_json)
+    let(:new_save_error) do
+      {
+        "status" => 400,
+        "message" => "Some data in the request body failed validation. Inspect the field errors for details.",
+        "field_errors" : [ {
+          "code" => "UNSUPPORTED_PROPERTY_VALUE",
+          "path" => [ "gender" ],
+          "message" => "The property value is unsupported. Supported values are: FEMALE, MALE"
+        } ]
+      }
+    end 
+
+    def test_error
       record = SomeService.build
       record.name = 'Steve'
       result = record.save
@@ -44,5 +54,18 @@ describe LHS::Item do
       expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE']
       expect(record.errors[:recommended]).to eq ['REQUIRED_PROPERTY_VALUE']
     end
+
+    it 'provides errors when creation failed' do
+      stub_request(:post, "#{datastore}/feedbacks")
+      .to_return(status: 400, body: old_save_error.to_json)
+      test_error
+    end
+
+    it 'provides errors when creation failed' do
+      stub_request(:post, "#{datastore}/feedbacks")
+      .to_return(status: 400, body: new_save_error.to_json)
+      test_error
+    end
+
   end
 end
