@@ -64,7 +64,7 @@ class LHS::Errors
 
   private
 
-  def parse_old_errors(errors):
+  def parse_old_errors(errors)
     parsed = {}
     errors.each do |field|
       name = field['name'].to_sym
@@ -76,7 +76,7 @@ class LHS::Errors
     parsed
   end
 
-  def parse_errors(errors):
+  def parse_errors(errors)
     parsed = {}
     errors.each do |field|
       name = field['path'][0].to_sym
