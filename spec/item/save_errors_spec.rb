@@ -42,7 +42,7 @@ describe LHS::Item do
       }
     end 
 
-    it 'parses old errors corretcly when creation failed' do
+    it 'parses old errors correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
       .to_return(status: 400, body: old_save_error.to_json)
       record = SomeService.build
@@ -57,7 +57,7 @@ describe LHS::Item do
       expect(record.errors[:recommended]).to eq ['REQUIRED_PROPERTY_VALUE']
     end
 
-    it 'parses new errors corretcly when creation failed' do
+    it 'parses new errors correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
       .to_return(status: 400, body: new_save_error.to_json)
       record = SomeService.build

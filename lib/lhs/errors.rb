@@ -79,7 +79,7 @@ class LHS::Errors
   def parse_errors(errors)
     parsed = {}
     errors.each do |field|
-      name = field['path'][0].to_sym
+      name = field['path'].first.to_sym
       parsed[name] ||= []
       parsed[name].push(field['code'])
     end
@@ -93,7 +93,7 @@ class LHS::Errors
       return parse_old_errors(json['fields'])
     end
     if json['field_errors']
-      return parse_old_errors(json['field_errors'])
+      return parse_errors(json['field_errors'])
     end
     {}
   end
