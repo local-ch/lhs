@@ -34,7 +34,7 @@ describe LHS::Item do
       {
         "status" => 400,
         "message" => "Some data in the request body failed validation. Inspect the field errors for details.",
-        "field_errors" : [ {
+        "field_errors" => [ {
           "code" => "UNSUPPORTED_PROPERTY_VALUE",
           "path" => [ "gender" ],
           "message" => "The property value is unsupported. Supported values are: FEMALE, MALE"
