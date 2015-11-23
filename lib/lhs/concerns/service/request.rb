@@ -60,14 +60,25 @@ class LHS::Service
       else
         url_option_for(data, key)
       end
+      addition = load_includes(includes, options, key, data)
+      extend(data, addition, key)
+    end
+
+    # Load additional resources that are requested with include
+    def load_includes(includes, options, key, data)
       service = service_for_options(options) || self
       options = convert_options_to_endpoints(options) if service_for_options(options)
-      addition = if (further_keys = includes.fetch(key, nil) if includes.is_a? Hash)
-        service.class.includes(further_keys).instance.request(options)
+      further_keys = includes.fetch(key, nil) if includes.is_a? Hash
+      service_class = if further_keys
+        service.class.includes(further_keys)
       else
-        service.class.includes(nil).instance.request(options)
+        service.class.includes(nil)
       end
-      extend(data, addition, key)
+      begin
+        service_class.instance.request(options)
+      rescue LHC::NotFound
+        LHS::Data.new({}, data, service)
+      end
     end
 
     # Merge explicit params nested in 'params' namespace with original hash.
