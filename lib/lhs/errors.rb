@@ -64,37 +64,32 @@ class LHS::Errors
 
   private
 
-  def parse_fields(errors)
-    parsed = {}
-    errors.each do |field|
-      name = field['name'].to_sym
-      parsed[name] ||= []
-      field['details'].each do |detail|
-        parsed[name].push(detail['code'])
-      end
-    end
-    parsed
+  def add_error(messages, key, value)
+    messages[key] ||= []
+    messages[key].push(value)
   end
 
-  def parse_field_errors(errors)
-    parsed = {}
-    errors.each do |field|
-      name = field['path'].first.to_sym
-      parsed[name] ||= []
-      parsed[name].push(field['code'])
+  def parse_messages(json)
+    messages = {}
+    if json['fields']
+      json['fields'].each do |field|
+        field['details'].each do |detail|
+          add_error(messages, field['name'].to_sym, detail['code'])
+        end
+      end
     end
-    parsed
+    if json['field_errors']
+      json['field_errors'].each do |field_error|
+        add_error(messages, field_error['path'].join('.').to_sym, field_error['code'])
+      end
+    end
+    messages
   end
 
   def messages_from_response(response)
     return {} if !response.body.is_a?(String) || response.body.length.zero?
     json = JSON.parse(response.body)
-    %w(fields field_errors).each do |key|
-      if json[key]
-        return self.method('parse_' + key).call(json[key])
-      end
-    end
-    {}
+    parse_messages(json)
   end
 
   def message_from_response(response)

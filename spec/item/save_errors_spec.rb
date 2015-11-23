@@ -21,7 +21,7 @@ describe LHS::Item do
         "fields" => [
           {
             "name" => "ratings",
-            "details" => [{ "code" => "REQUIRED_PROPERTY_VALUE" }]
+            "details" => [{ "code" => "REQUIRED_PROPERTY_VALUE" }, { "code" => "UNSUPPORTED_PROPERTY_VALUE" }]
           },{
             "name" => "recommended",
             "details" => [{"code" => "REQUIRED_PROPERTY_VALUE"}]
@@ -38,7 +38,15 @@ describe LHS::Item do
           "code" => "UNSUPPORTED_PROPERTY_VALUE",
           "path" => [ "gender" ],
           "message" => "The property value is unsupported. Supported values are: FEMALE, MALE"
-        } ]
+        }, {
+          "code" => "INCOMPLETE_PROPERTY_VALUE",
+          "path" => [ "gender" ],
+          "message" => "The property value is incomplete. It misses some data"
+        }, {
+          "code" => "INCOMPLETE_PROPERTY_VALUE",
+          "path" => [ "contract", "entry_id" ],
+          "message" => "The property value is incomplete. It misses some data"
+        }  ]
       }
     end 
 
@@ -53,7 +61,7 @@ describe LHS::Item do
       expect(record.name).to eq 'Steve'
       expect(record.errors.include?(:ratings)).to eq true
       expect(record.errors.include?(:recommended)).to eq true
-      expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE']
+      expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE', 'UNSUPPORTED_PROPERTY_VALUE']
       expect(record.errors[:recommended]).to eq ['REQUIRED_PROPERTY_VALUE']
     end
 
@@ -66,8 +74,9 @@ describe LHS::Item do
       expect(result).to eq false
       expect(record.errors).to be
       expect(record.errors.include?(:gender)).to eq true
-      expect(record.errors[:gender]).to eq ['UNSUPPORTED_PROPERTY_VALUE']
+      expect(record.errors.include?(:"contract.entry_id")).to eq true
+      expect(record.errors[:gender]).to eq ['UNSUPPORTED_PROPERTY_VALUE', 'INCOMPLETE_PROPERTY_VALUE']
+      expect(record.errors[:"contract.entry_id"]).to eq ['INCOMPLETE_PROPERTY_VALUE']
     end
-
   end
 end
