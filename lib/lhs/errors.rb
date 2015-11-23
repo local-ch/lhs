@@ -91,7 +91,7 @@ class LHS::Errors
     json = JSON.parse(response.body)
     %w(fields field_errors).each do |key|
       if json[key]
-        return self.method(key).call(json[key])
+        return self.method('parse_' + key).call(json[key])
       end
     end
     {}
