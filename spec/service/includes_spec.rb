@@ -115,4 +115,27 @@ describe LHS::Service do
       end
     end
   end
+
+  context 'links pointing to nowhere' do
+
+    it 'sets nil for links that cannot be included' do
+      class Feedback < LHS::Service
+        endpoint ':datastore/feedbacks'
+        endpoint ':datastore/feedbacks/:id'
+      end
+
+      stub_request(:get, "#{datastore}/feedbacks/123")
+        .to_return(status: 200, body: {
+          'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
+          'campaign' => { 'href' => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d" }
+        }.to_json)
+
+      stub_request(:get, "#{datastore}/content-ads/51dfc5690cf271c375c5a12d")
+        .to_return(status: 404)
+
+      feedback = Feedback.includes(campaign: :entry).find(123)
+      expect(feedback.campaign._raw.keys.count).to eq 1
+      expect(feedback.campaign.href).to be
+    end
+  end
 end
