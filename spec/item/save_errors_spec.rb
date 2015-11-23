@@ -14,7 +14,7 @@ describe LHS::Item do
       end
     end
 
-    let(:old_save_error) do
+    let(:error_format_fields) do
       {
         "status" => 400,
         "message" => "ratings must be set when review or name or review_title is set | The property value is required; it cannot be null, empty, or blank.",
@@ -30,7 +30,7 @@ describe LHS::Item do
       }
     end
 
-    let(:new_save_error) do
+    let(:error_format_field_errors) do
       {
         "status" => 400,
         "message" => "Some data in the request body failed validation. Inspect the field errors for details.",
@@ -42,9 +42,9 @@ describe LHS::Item do
       }
     end 
 
-    it 'parses old errors correctly when creation failed' do
+    it 'parses fields correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
-      .to_return(status: 400, body: old_save_error.to_json)
+      .to_return(status: 400, body: error_format_fields.to_json)
       record = SomeService.build
       record.name = 'Steve'
       result = record.save
@@ -57,9 +57,9 @@ describe LHS::Item do
       expect(record.errors[:recommended]).to eq ['REQUIRED_PROPERTY_VALUE']
     end
 
-    it 'parses new errors correctly when creation failed' do
+    it 'parses field errors correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
-      .to_return(status: 400, body: new_save_error.to_json)
+      .to_return(status: 400, body: error_format_field_errors.to_json)
       record = SomeService.build
       record.name = 'Steve'
       result = record.save

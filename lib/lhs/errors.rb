@@ -64,7 +64,7 @@ class LHS::Errors
 
   private
 
-  def parse_old_errors(errors)
+  def parse_fields(errors)
     parsed = {}
     errors.each do |field|
       name = field['name'].to_sym
@@ -76,7 +76,7 @@ class LHS::Errors
     parsed
   end
 
-  def parse_errors(errors)
+  def parse_field_errors(errors)
     parsed = {}
     errors.each do |field|
       name = field['path'].first.to_sym
@@ -89,11 +89,10 @@ class LHS::Errors
   def messages_from_response(response)
     return {} if !response.body.is_a?(String) || response.body.length.zero?
     json = JSON.parse(response.body)
-    if json['fields']
-      return parse_old_errors(json['fields'])
-    end
-    if json['field_errors']
-      return parse_errors(json['field_errors'])
+    %w(fields field_errors).each do |key|
+      if json[key]
+        return self.method(key).call(json[key])
+      end
     end
     {}
   end
