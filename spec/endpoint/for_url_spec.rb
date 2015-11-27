@@ -14,13 +14,13 @@ describe LHS::Endpoint do
 
     it 'provides the endpoint for a given url' do
       expect(
-        LHS::Endpoint.for_url('http://datastore.local.ch/v2/entries/123/content-ads/456/feedbacks').url
+        LHS::Endpoint.for_url('http://local.ch/v2/entries/123/content-ads/456/feedbacks').url
       ).to eq ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
       expect(
-        LHS::Endpoint.for_url('http://datastore.local.ch/123/feedbacks').url
+        LHS::Endpoint.for_url('http://local.ch/123/feedbacks').url
       ).to eq ':datastore/:campaign_id/feedbacks'
       expect(
-        LHS::Endpoint.for_url('http://datastore.local.ch/feedbacks').url
+        LHS::Endpoint.for_url('http://local.ch/feedbacks').url
       ).to eq ':datastore/feedbacks'
     end
   end

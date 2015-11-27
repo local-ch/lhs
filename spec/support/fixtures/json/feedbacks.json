@@ -1,9 +1,9 @@
 {
-  "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/?exclude_hidden=false&offset=0&limit=10",
+  "href" : "http://local.ch/v2/feedbacks/?exclude_hidden=false&offset=0&limit=10",
   "items" : [ {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ",
+    "href" : "http://local.ch/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
+      "href" : "http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
     },
     "source_id" : "aaa",
     "recommended" : true,
@@ -18,9 +18,9 @@
     "average_rating" : 3.0,
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/QsUOQWNJoB-GFUNsX7z0jg",
+    "href" : "http://local.ch/v2/feedbacks/QsUOQWNJoB-GFUNsX7z0jg",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a11f"
+      "href" : "http://local.ch/v2/content-ads/51dfc5690cf271c375c5a11f"
     },
     "source_id" : "abcdefghs12345",
     "name" : "Steve",
@@ -38,9 +38,9 @@
     "average_rating" : 3.3333333333333335,
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/QynNtmpXlsEGvUJ0ekDKVw",
+    "href" : "http://local.ch/v2/feedbacks/QynNtmpXlsEGvUJ0ekDKVw",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56b0cf271c375c5a14d"
+      "href" : "http://local.ch/v2/content-ads/51dfc56b0cf271c375c5a14d"
     },
     "source_id" : "abcdefghs12345",
     "name" : "Steve",
@@ -58,9 +58,9 @@
     "average_rating" : 3.3333333333333335,
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/INmminYWNZwW_qNFx5peJQ",
+    "href" : "http://local.ch/v2/feedbacks/INmminYWNZwW_qNFx5peJQ",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56b0cf271c375c5a153"
+      "href" : "http://local.ch/v2/content-ads/51dfc56b0cf271c375c5a153"
     },
     "source_id" : "abcdefghs12345",
     "name" : "Steve",
@@ -78,9 +78,9 @@
     "average_rating" : 3.3333333333333335,
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/ltgfr0VRYDN2nxyC119wTg",
+    "href" : "http://local.ch/v2/feedbacks/ltgfr0VRYDN2nxyC119wTg",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56b0cf271c375c5a14c"
+      "href" : "http://local.ch/v2/content-ads/51dfc56b0cf271c375c5a14c"
     },
     "source_id" : "aaa",
     "recommended" : false,
@@ -95,9 +95,9 @@
     "average_rating" : 1.3333333333333333,
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/5dUdQP-kZ6sulN8NtpGXTw",
+    "href" : "http://local.ch/v2/feedbacks/5dUdQP-kZ6sulN8NtpGXTw",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56b0cf271c375c5a14c"
+      "href" : "http://local.ch/v2/content-ads/51dfc56b0cf271c375c5a14c"
     },
     "source_id" : "abcdefghs12345",
     "name" : "Steve",
@@ -115,9 +115,9 @@
     "average_rating" : 3.3333333333333335,
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/Z3KfWzIEQ3ZVCUj2IdrSNQ",
+    "href" : "http://local.ch/v2/feedbacks/Z3KfWzIEQ3ZVCUj2IdrSNQ",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12e"
+      "href" : "http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12e"
     },
     "source_id" : "abcdefghs",
     "recommended" : true,
@@ -126,9 +126,9 @@
     "created_date" : "2014-09-10T16:57:36.254+02:00",
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/ZUUUeiw-Stw5Zb1baHDUzQ",
+    "href" : "http://local.ch/v2/feedbacks/ZUUUeiw-Stw5Zb1baHDUzQ",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
+      "href" : "http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
     },
     "source_id" : "abcdefghs",
     "recommended" : true,
@@ -137,9 +137,9 @@
     "created_date" : "2014-09-10T16:57:32.791+02:00",
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/GyeWvhEtU4cYN_5T2FX2UA",
+    "href" : "http://local.ch/v2/feedbacks/GyeWvhEtU4cYN_5T2FX2UA",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/539266ec0cf2cd754583cfa0"
+      "href" : "http://local.ch/v2/content-ads/539266ec0cf2cd754583cfa0"
     },
     "source_id" : "abcdefghs",
     "name" : "aa",
@@ -157,9 +157,9 @@
     "average_rating" : 3.0,
     "comments" : [ ]
   }, {
-    "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/o-qTRqQGFS3Z_RPJm1f8SA",
+    "href" : "http://local.ch/v2/feedbacks/o-qTRqQGFS3Z_RPJm1f8SA",
     "campaign" : {
-      "href" : "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc56c0cf271c375c5a160"
+      "href" : "http://local.ch/v2/content-ads/51dfc56c0cf271c375c5a160"
     },
     "source_id" : "abcdefghs12345",
     "recommended" : true,

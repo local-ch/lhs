@@ -25,7 +25,7 @@ describe LHS::Proxy do
   end
 
   before(:each) do
-    stub_request(:get, 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d')
+    stub_request(:get, 'http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12d')
       .to_return(status: 200, body: load_json(:localina_content_ad))
   end
 
@@ -38,7 +38,7 @@ describe LHS::Proxy do
 
     it 'can be reloaded' do
       expect(link.load!.id).to be
-      stub_request(:get, 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d')
+      stub_request(:get, 'http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12d')
         .to_return(status: 404)
       expect(-> { link.reload!.id })
         .to raise_error LHC::NotFound

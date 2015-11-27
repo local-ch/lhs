@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Service do
 
   let(:datastore) do
-    'http://datastore.lb-service/v2'
+    'http://datastore/v2'
   end
 
   before(:each) do

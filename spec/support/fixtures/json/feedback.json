@@ -1,7 +1,7 @@
 {
-    "href": "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
+    "href": "http://local.ch/v2/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
     "campaign": {
-        "href": "http://datastore-stg.lb-service.sunrise.intra.local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
+        "href": "http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12d"
     },
     "source_id": "aaa",
     "recommended": true,

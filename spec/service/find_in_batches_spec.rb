@@ -16,7 +16,7 @@ describe LHS::Collection do
     }.to_json
   end
 
-  let(:datastore) { 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2' }
+  let(:datastore) { 'http://local.ch/v2' }
 
   before(:each) do
     LHC.config.placeholder('datastore', datastore)

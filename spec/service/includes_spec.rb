@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Service do
 
-  let(:datastore) { 'http://datastore-stg.lb-service.sunrise.intra.local.ch/v2' }
+  let(:datastore) { 'http://local.ch/v2' }
   before(:each) { LHC.config.placeholder('datastore', datastore) }
 
   let(:stub_campaign_request) do

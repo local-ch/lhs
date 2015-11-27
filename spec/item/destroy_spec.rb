@@ -11,7 +11,7 @@ describe LHS::Item do
   end
 
   let(:datastore) do
-    'http://datastore-stg.lb-service.sunrise.intra.local.ch'
+    'http://local.ch'
   end
 
   let(:json) do
