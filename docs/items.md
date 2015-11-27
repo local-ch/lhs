@@ -53,3 +53,20 @@ You can delete records remotely by calling `destroy` on an item.
   feedback = Feedback.find('1z-5r1fkaj')
   feedback.destroy
 ```
+
+## Validation
+
+In order to validate objects before persisting them, you can use the `valid?` (`validate` alias) method.
+The specific endpoint has to support validations with the `persist=false` parameter. 
+The endpoint has to be enabled (opt-in) for validations in the service configuration.
+
+```
+class User < LHS::Service
+  endpoint ':datastore/v2/users', validates: true
+end
+
+user = User.build(email: 'im not an email address')
+unless user.valid?
+  fail(user.errors[:email])
+end
+```
