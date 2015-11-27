@@ -12,6 +12,10 @@ describe LHS::Item do
     mock_validation
   end
 
+  let(:mock_validation) do
+      successful_validation
+    end
+
   let(:successful_validation) do
     stub_request(:post, "#{datastore}/v2/users?persist=false").to_return(body: '{}')
   end
@@ -28,10 +32,6 @@ describe LHS::Item do
   context 'valid data' do
     let(:user) do
       User.build(email: 'steve@local.ch')
-    end
-
-    let(:mock_validation) do
-      successful_validation
     end
 
     it 'validates' do
@@ -68,6 +68,20 @@ describe LHS::Item do
       successful_validation
       expect(user.valid?).to eq true
       expect(user.errors).to be_nil
+    end
+  end
+
+  context 'endpoint does not support validations' do
+    before(:each) do
+      class Favorite < LHS::Service
+        endpoint ':datastore/v2/favorites'
+      end
+    end
+
+    it 'fails when trying to use an endpoint for validations that does not support it' do
+      expect(->{
+        Favorite.build.valid?
+      }).to raise_error('Endpoint does not support validations!')
     end
   end
 end
