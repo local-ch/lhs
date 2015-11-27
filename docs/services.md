@@ -241,3 +241,7 @@ end
 favorite = Favorite.includes(:place).find(1)
 favorite.place.name # local.ch AG
 ```
+
+## Validation
+
+See: [Item Validation](../item.md).
