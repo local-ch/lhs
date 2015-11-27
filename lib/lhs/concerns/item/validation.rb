@@ -10,13 +10,14 @@ class LHS::Item < LHS::Proxy
       fail 'No validation endpoint found!' unless validation_endpoint
       service = LHS::Service.for_url(validation_endpoint.url)
       begin
-        !! service.request(
+        service.request(
           url: validation_endpoint.url,
           method: :post,
           params: validation_endpoint.options.fetch(:params, {}).merge(persist: false),
           body: _data.to_json,
           headers: {'Content-Type' => 'application/json'}
         )
+        true
       rescue LHC::Error => e
         self.errors = LHS::Errors.new(e.response)
         false
