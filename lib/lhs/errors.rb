@@ -2,11 +2,12 @@
 class LHS::Errors
   include Enumerable
 
-  attr_reader :messages, :message
+  attr_reader :messages, :message, :raw
 
   def initialize(response)
     @messages = messages_from_response(response)
     @message = message_from_response(response)
+    @raw = response.body
     rescue JSON::ParserError
   end
 
