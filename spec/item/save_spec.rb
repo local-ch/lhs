@@ -44,10 +44,6 @@ describe LHS::Item do
       item.save
       expect(item.name).to eq 'Steve'
     end
-
-    it 'does not take backend values if perstiting fales' do
-      
-    end
   end
 
   context 'save!' do
