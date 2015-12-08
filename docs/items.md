@@ -39,6 +39,7 @@ You can persist changes like you would usually do with `save`.
 ## Update
 
 `update` will return false if persisting fails. `update!` instead will an raise exception.
+Update always updates the data of the local object first, before it tries to sync with an endpoint.
 
 ```ruby
 feedback = Feedback.find('1z-5r1fkaj')
