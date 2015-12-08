@@ -38,9 +38,17 @@ describe LHS::Item do
 
     it 'merges reponse data with object' do
       stub_request(:post, item.href)
-      .to_return(status: 200, body: item._raw.merge(likes: 'Banana').to_json)
+        .to_return(status: 200, body: item._raw.merge(likes: 'Banana').to_json)
       item.update(name: 'Steve')
       expect(item.likes).to eq 'Banana'
+    end
+
+    it 'updates local version of an object even if BE request fails' do
+      stub_request(:post, item.href)
+        .to_return(status: 400, body: item._raw.merge(likes: 'Banana').to_json)
+      item.update(name: 'Andrea')
+      expect(item.name).to eq 'Andrea'
+      expect(item.likes).to_not eq 'Banana'
     end
   end
 
