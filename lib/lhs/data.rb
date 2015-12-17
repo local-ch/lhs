@@ -10,7 +10,7 @@ class LHS::Data
 
   def initialize(input, parent = nil, service = nil, request = nil)
     self._raw = raw_from_input(input)
-    self._proxy = proxy_from_input(input)
+    self._proxy = proxy_from_input(self._raw)
     self._service = service
     self._parent = parent
     self._request = request
@@ -35,7 +35,7 @@ class LHS::Data
 
   # enforce internal data structure to have deep symbolized keys
   def _raw=(raw)
-    raw = raw.to_hash.deep_symbolize_keys if raw
+    raw = raw.to_hash.deep_symbolize_keys if raw && raw.respond_to?(:to_hash)
     @_raw = raw
   end
 
@@ -59,12 +59,11 @@ class LHS::Data
   private
 
   def collection_proxy?(input)
-    (_raw.is_a?(Hash) && _raw['items']) || 
-      input.is_a?(Array) || _raw.is_a?(Array)
+    !! (input.is_a?(Hash) && input[:items]) || input.is_a?(Array) || _raw.is_a?(Array)
   end
 
   def mapping_for(name)
-    service_instance = LHS::Service.for_url(_raw['href']) if _raw.is_a?(Hash)
+    service_instance = LHS::Service.for_url(_raw[:href]) if _raw.is_a?(Hash)
     service_instance ||= _root._service.instance if root_item?
     return unless service_instance
     service_instance.mapping[name]

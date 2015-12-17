@@ -9,7 +9,7 @@ class LHS::Item < LHS::Proxy
       self.errors = nil
       fail 'No validation endpoint found!' unless validation_endpoint
       service = LHS::Service.for_url(validation_endpoint.url)
-      params = validation_endpoint.options.fetch(:params, {}).merge(_data.as_json).merge(persist: false)
+      params = validation_endpoint.options.fetch(:params, {}).merge(persist: false)
       begin
         service.request(
           url: validation_endpoint.url,

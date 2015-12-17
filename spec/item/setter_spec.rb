@@ -26,7 +26,7 @@ describe LHS::Item do
     it 'sets the value for an existing attribute' do
       expect(item.name = 'Steve').to eq 'Steve'
       expect(item.name).to eq 'Steve'
-      expect(item._raw['name']).to eq 'Steve'
+      expect(item._raw[:name]).to eq 'Steve'
     end
 
     it 'sets things to nil' do
