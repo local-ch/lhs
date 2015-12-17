@@ -33,6 +33,12 @@ class LHS::Data
     _root._service
   end
 
+  # enforce internal data structure to have deep symbolized keys
+  def _raw=(raw)
+    raw = raw.to_hash.deep_symbolize_keys if raw
+    @_raw = raw
+  end
+
   protected
 
   # Use existing mapping to provide data

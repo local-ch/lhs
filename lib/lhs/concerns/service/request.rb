@@ -108,6 +108,7 @@ class LHS::Service
     def process_options(options)
       options ||= {}
       options = options.dup
+      options[:params].deep_symbolize_keys! if options[:params]
       endpoint = find_endpoint(options[:params])
       options = (endpoint.options || {}).merge(options)
       options[:url] = compute_url!(options[:params]) unless options.key?(:url)
