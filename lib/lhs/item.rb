@@ -62,7 +62,6 @@ class LHS::Item < LHS::Proxy
   end
 
   def set(name, value)
-    binding.pry
     key = name.to_s.gsub(/=$/, '')
     _data._raw[key.to_sym] = value
   end

@@ -35,7 +35,7 @@ class LHS::Data
 
   # enforce internal data structure to have deep symbolized keys
   def _raw=(raw)
-    raw = raw.to_hash.deep_symbolize_keys if raw && raw.respond_to?(:to_hash)
+    raw.to_hash.deep_symbolize_keys! if raw && raw.respond_to?(:to_hash)
     @_raw = raw
   end
 
