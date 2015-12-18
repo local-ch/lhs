@@ -16,14 +16,14 @@ class LHS::Service
         all = []
         default_max_limit = 100
         data = instance.request(params: params.merge(limit: default_max_limit))
-        all.concat(data._raw['items'])
-        total_left = data._raw['total'] - data.count
-        limit = data._raw['limit'] || data.count
+        all.concat(data._raw[:items])
+        total_left = data._raw[:total] - data.count
+        limit = data._raw[:limit] || data.count
         if limit > 0
           requests = total_left / limit
           requests.times do |i|
             offset = limit * (i+1) + 1
-            all.concat instance.request(params: params.merge(limit: limit, offset: offset))._raw['items']
+            all.concat instance.request(params: params.merge(limit: limit, offset: offset))._raw[:items]
           end
         end
         LHS::Data.new(all, nil, self)

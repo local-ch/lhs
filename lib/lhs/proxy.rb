@@ -23,4 +23,5 @@ class LHS::Proxy
     self._loaded = true
     self
   end
+
 end

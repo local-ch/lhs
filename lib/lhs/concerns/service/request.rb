@@ -38,10 +38,10 @@ class LHS::Service
       if data._proxy.is_a? LHS::Collection
         data.each_with_index do |item, i|
           item = item[i] if item.is_a? LHS::Collection
-          item._raw[key.to_s].merge!(addition[i]._raw)
+          item._raw[key.to_sym].merge!(addition[i]._raw)
         end
       elsif data._proxy.is_a? LHS::Item
-        data._raw[key.to_s].merge!(addition._raw)
+        data._raw[key.to_sym].merge!(addition._raw)
       end
     end
 
@@ -108,6 +108,7 @@ class LHS::Service
     def process_options(options)
       options ||= {}
       options = options.dup
+      options[:params].deep_symbolize_keys! if options[:params]
       endpoint = find_endpoint(options[:params])
       options = (endpoint.options || {}).merge(options)
       options[:url] = compute_url!(options[:params]) unless options.key?(:url)

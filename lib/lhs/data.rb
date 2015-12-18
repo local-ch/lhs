@@ -33,6 +33,12 @@ class LHS::Data
     _root._service
   end
 
+  # enforce internal data structure to have deep symbolized keys
+  def _raw=(raw)
+    raw.to_hash.deep_symbolize_keys! if raw && raw.respond_to?(:to_hash)
+    @_raw = raw
+  end
+
   protected
 
   # Use existing mapping to provide data
@@ -53,13 +59,12 @@ class LHS::Data
   private
 
   def collection_proxy?(input)
-    (_raw.is_a?(Hash) && _raw['items']) || 
-      input.is_a?(Array) || _raw.is_a?(Array)
+    !! (input.is_a?(Hash) && input[:items]) || input.is_a?(Array) || _raw.is_a?(Array)
   end
 
   def mapping_for(name)
-    service_instance = LHS::Service.for_url(_raw['href']) if _raw.is_a?(Hash)
-    service_instance ||= _root._service.instance if root_item?
+    service_instance = LHS::Service.for_url(_raw[:href]) if _raw.is_a?(Hash)
+    service_instance ||= _root._service.instance if root_item? && _root._service
     return unless service_instance
     service_instance.mapping[name]
   end
@@ -89,7 +94,7 @@ class LHS::Data
   def proxy_from_input(input)
     if input.is_a? LHS::Proxy
       input
-    elsif collection_proxy?(input)
+    elsif collection_proxy?(raw_from_input(input))
       LHS::Collection.new(self)
     else
       LHS::Item.new(self)
@@ -98,12 +103,13 @@ class LHS::Data
 
   def raw_from_input(input)
     if input.is_a?(String) && input.length > 0
-      JSON.parse(input)
+      JSON.parse(input).deep_symbolize_keys
     elsif defined?(input._raw)
       input._raw
     elsif defined?(input._data)
       input._data._raw
     else
+      input.deep_symbolize_keys! if input.is_a?(Hash)
       input
     end
   end

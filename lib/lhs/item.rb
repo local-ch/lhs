@@ -63,7 +63,7 @@ class LHS::Item < LHS::Proxy
 
   def set(name, value)
     key = name.to_s.gsub(/=$/, '')
-    _data._raw[key] = value
+    _data._raw[key.to_sym] = value
   end
 
   private
