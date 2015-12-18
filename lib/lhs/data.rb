@@ -10,7 +10,7 @@ class LHS::Data
 
   def initialize(input, parent = nil, service = nil, request = nil)
     self._raw = raw_from_input(input)
-    self._proxy = proxy_from_input(self._raw)
+    self._proxy = proxy_from_input(input)
     self._service = service
     self._parent = parent
     self._request = request
@@ -64,7 +64,7 @@ class LHS::Data
 
   def mapping_for(name)
     service_instance = LHS::Service.for_url(_raw[:href]) if _raw.is_a?(Hash)
-    service_instance ||= _root._service.instance if root_item?
+    service_instance ||= _root._service.instance if root_item? && _root._service
     return unless service_instance
     service_instance.mapping[name]
   end
@@ -94,7 +94,7 @@ class LHS::Data
   def proxy_from_input(input)
     if input.is_a? LHS::Proxy
       input
-    elsif collection_proxy?(input)
+    elsif collection_proxy?(raw_from_input(input))
       LHS::Collection.new(self)
     else
       LHS::Item.new(self)
@@ -103,12 +103,13 @@ class LHS::Data
 
   def raw_from_input(input)
     if input.is_a?(String) && input.length > 0
-      JSON.parse(input)
+      JSON.parse(input).deep_symbolize_keys
     elsif defined?(input._raw)
       input._raw
     elsif defined?(input._data)
       input._data._raw
     else
+      input.deep_symbolize_keys! if input.is_a?(Hash)
       input
     end
   end
