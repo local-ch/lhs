@@ -109,7 +109,8 @@ class LHS::Data
     elsif defined?(input._data)
       input._data._raw
     else
-      input.deep_symbolize_keys! if input.is_a?(Hash) && input.respond_to?(:deep_symbolize_keys)
+      input = input.to_hash if input.class != Hash && input.respond_to?(:to_hash)
+      input.deep_symbolize_keys! if input.is_a?(Hash)
       input
     end
   end

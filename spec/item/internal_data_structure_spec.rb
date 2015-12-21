@@ -33,4 +33,10 @@ describe LHS::Item do
     feedback = Feedback.build('name' => 'BB8')
     expect(feedback._data._raw.keys).to include(:name)
   end 
+
+  it 'can handle ActionController::Parameters' do
+    params = ActionController::Parameters.new('name' => 'Han')
+    feedback = Feedback.build(params)
+    expect(feedback._data._raw.keys).to include(:name)
+  end
 end
