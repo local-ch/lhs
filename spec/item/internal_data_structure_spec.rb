@@ -28,4 +28,9 @@ describe LHS::Item do
     expect(feedback._raw.keys).to include(:addresses)
     expect(feedback._raw[:addresses].first[:businesses][:identities].first[:name]).to eq 'Löwenzorn'
   end
+
+  it 'deep symbolizes internal data when building new objects' do
+    feedback = Feedback.build('name' => 'BB8')
+    expect(feedback._data._raw.keys).to include(:name)
+  end 
 end
