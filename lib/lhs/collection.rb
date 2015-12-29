@@ -4,6 +4,8 @@ require File.join(__dir__, 'proxy.rb')
 # that contains multiple items
 class LHS::Collection < LHS::Proxy
 
+  delegate :select, to: :_collection
+
   def total
     _data._raw[:total]
   end
