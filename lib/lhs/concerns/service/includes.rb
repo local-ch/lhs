@@ -9,11 +9,11 @@ class LHS::Service
 
     module ClassMethods
 
-      def includes(args)
+      def includes(*args)
         class_clone = clone
         class_clone.instance.endpoints = instance.endpoints
         class_clone.instance.mapping = instance.mapping
-        class_clone.instance.includes = args
+        class_clone.instance.includes = args.size == 1 ? args[0] : args
         class_clone
       end
     end

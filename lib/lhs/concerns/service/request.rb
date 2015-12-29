@@ -48,6 +48,8 @@ class LHS::Service
     def handle_includes(data)
       if includes.is_a? Hash
         includes.keys.each { |key| handle_include(data, key) }
+      elsif includes.is_a? Array
+        includes.each { |key| handle_include(data, key) }
       else
         handle_include(data, includes)
       end
@@ -60,12 +62,12 @@ class LHS::Service
       else
         url_option_for(data, key)
       end
-      addition = load_includes(includes, options, key, data)
+      addition = load_include(includes, options, key, data)
       extend(data, addition, key)
     end
 
     # Load additional resources that are requested with include
-    def load_includes(includes, options, key, data)
+    def load_include(includes, options, key, data)
       service = service_for_options(options) || self
       options = convert_options_to_endpoints(options) if service_for_options(options)
       further_keys = includes.fetch(key, nil) if includes.is_a? Hash

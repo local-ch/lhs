@@ -183,6 +183,19 @@ and you should read it to understand this feature in all its glory.
   feedbacks.first.campaign.entry.name # 'Casa Ferlin'
 ```
 
+### Multiple `includes`
+
+```ruby
+  # list of includes
+  claims = Claims.includes(:localch_account, :entry).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
+  
+  # array of includes
+  claims = Claims.includes([:localch_account, :entry]).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
+  
+  # Two-level with array of includes
+  feedbacks = Feedback.includes(campaign: [:entry, :user]).where(has_reviews: true)
+```
+
 ### Known services are used to request linked resources
 
 When including linked resources with `includes`, known/defined services and endpoints are used to make those requests. 
