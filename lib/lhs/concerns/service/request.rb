@@ -45,39 +45,33 @@ class LHS::Service
       end
     end
 
-    def handle_includes(data)
+    def handle_includes(includes, data)
       if includes.is_a? Hash
-        includes.keys.each { |key| handle_include(data, key) }
+        includes.each { |_include, sub_includes| handle_include(_include, data, sub_includes) }
       elsif includes.is_a? Array
-        includes.each { |key| handle_include(data, key) }
+        includes.each { |_include| handle_includes(_include, data) }
       else
-        handle_include(data, includes)
+        handle_include(includes, data)
       end
     end
 
-    def handle_include(data, key)
+    def handle_include(_include, data, sub_includes = nil)
       return unless data.present?
       options = if data._proxy.is_a? LHS::Collection
-        options_for_multiple(data, key)
+        options_for_multiple(data, _include)
       else
-        url_option_for(data, key)
+        url_option_for(data, _include)
       end
-      addition = load_include(includes, options, key, data)
-      extend(data, addition, key)
+      addition = load_include(options, data, sub_includes)
+      extend(data, addition, _include)
     end
 
     # Load additional resources that are requested with include
-    def load_include(includes, options, key, data)
+    def load_include(options, data, sub_includes)
       service = service_for_options(options) || self
       options = convert_options_to_endpoints(options) if service_for_options(options)
-      further_keys = includes.fetch(key, nil) if includes.is_a? Hash
-      service_class = if further_keys
-        service.class.includes(further_keys)
-      else
-        service.class.includes(nil)
-      end
       begin
-        service_class.instance.request(options)
+        service.class.includes(sub_includes).instance.request(options)
       rescue LHC::NotFound
         LHS::Data.new({}, data, service)
       end
@@ -96,7 +90,7 @@ class LHS::Service
       responses = LHC.request(options)
       data = responses.map{ |response| LHS::Data.new(response.body, nil, self.class, response.request) }
       data = LHS::Data.new(data, nil, self.class)
-      handle_includes(data) if includes
+      handle_includes(includes, data) if includes
       data
     end
 
@@ -136,7 +130,7 @@ class LHS::Service
     def single_request(options)
       response = LHC.request(process_options(options))
       data = LHS::Data.new(response.body, nil, self.class, response.request)
-      handle_includes(data) if includes
+      handle_includes(includes, data) if includes
       data
     end
 

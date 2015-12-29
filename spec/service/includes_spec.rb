@@ -120,6 +120,21 @@ describe LHS::Service do
       expect(feedbacks.campaign.user.name).to eq 'Mario'
     end
 
+    it 'includes list of linked resources while fetching a single resource from one service' do
+
+      stub_request(:get, "#{datastore}/feedbacks/123")
+        .to_return(status: 200, body: {
+          'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
+          'campaign' => { 'href' => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d" },
+          'user' => { 'href' => "#{datastore}/users/lakj35asdflkj1203va" }
+        }.to_json)
+
+      feedbacks = Feedback.includes(:user, campaign: [:entry, :user]).find(123)
+      expect(feedbacks.campaign.entry.name).to eq 'Casa Ferlin'
+      expect(feedbacks.campaign.user.name).to eq 'Mario'
+      expect(feedbacks.user.name).to eq 'Mario'
+    end
+
     context 'include objects from known services' do
 
       let(:stub_feedback_request) do
