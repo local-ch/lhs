@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email       = ['ws-operations@local.ch']
   s.homepage    = 'https://github.com/local-ch/lhs'
   s.summary     = 'LocalHttpServices'
-  s.description = 'Rails gem providing an easy interface to use http services here at local'
+  s.description = 'Rails gem providing an easy, active-record-like interface to use http backend services'
 
   s.files        = `git ls-files`.split("\n")
   s.test_files   = `git ls-files -- spec/*`.split("\n")
