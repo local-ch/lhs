@@ -30,7 +30,7 @@ Service.find(123) #<LHS::Data @_proxy_=#<LHS::Item>>
 → [Read more about data](docs/data.md)
 
 ## Proxy
-A proxy is used to access data. It is divided in Collection and Item.
+Instead of mapping data when it arrives from the backend, the proxy makes data accessible when you access it, not when you fetch it. The proxy is used to access data and it is divided in `Collection` and `Item`. 
 
 For every proxy that contains an `href` you can use `load!` or `reload!` to receive latest backend data.
 
