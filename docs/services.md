@@ -155,6 +155,12 @@ Build and persist new items from scratch.
   feedback.save
 ```
 
+`new` is an alias for `build`:
+
+```ruby
+Feedback.new(recommended: true)
+```
+
 → [Read more about items](items.md)
 
 

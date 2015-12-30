@@ -6,18 +6,19 @@ class LHS::Service
   module Mapping
     extend ActiveSupport::Concern
 
-    attr_accessor :mapping
-
     module ClassMethods
+      
+      def mapping
+        @mapping ||= {}
+      end
+
+      def mapping=(mapping)
+        @mapping = mapping
+      end
 
       def map(name, block)
-        instance.mapping[name] = block
+        mapping[name] = block
       end
-    end
-
-    def initialize
-      self.mapping = {}
-      super
     end
   end
 end

@@ -19,9 +19,9 @@ class LHS::Item < LHS::Proxy
       url = if href.present?
        href
       else
-        service.instance.find_endpoint(data).compile(data)
+        service.find_endpoint(data).compile(data)
       end
-      data = service.instance.request(method: :post, url: url, body: data.to_json, headers: {'Content-Type' => 'application/json'})
+      data = service.request(method: :post, url: url, body: data.to_json, headers: {'Content-Type' => 'application/json'})
       self._data.merge_raw!(data)
       true
     end

@@ -22,24 +22,24 @@ describe LHS::Service do
     end
 
     it 'stores the endpoints of the service' do
-      expect(SomeService.instance.endpoints.count).to eq 3
-      expect(SomeService.instance.endpoints[0].url).to eq ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
-      expect(SomeService.instance.endpoints[1].url).to eq ':datastore/:campaign_id/feedbacks'
-      expect(SomeService.instance.endpoints[2].url).to eq ':datastore/feedbacks'
+      expect(SomeService.endpoints.count).to eq 3
+      expect(SomeService.endpoints[0].url).to eq ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
+      expect(SomeService.endpoints[1].url).to eq ':datastore/:campaign_id/feedbacks'
+      expect(SomeService.endpoints[2].url).to eq ':datastore/feedbacks'
     end
 
     it 'finds the endpoint by the one with the most route param hits' do
       expect(
-        SomeService.instance.find_endpoint(campaign_id: '12345').url
+        SomeService.find_endpoint(campaign_id: '12345').url
       ).to eq ':datastore/:campaign_id/feedbacks'
       expect(
-        SomeService.instance.find_endpoint(campaign_id: '12345', entry_id: '123').url
+        SomeService.find_endpoint(campaign_id: '12345', entry_id: '123').url
       ).to eq ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
     end
 
     it 'finds the base endpoint (endpoint with least amount of route params)' do
       expect(
-        SomeService.instance.find_endpoint.url
+        SomeService.find_endpoint.url
       ).to eq ':datastore/feedbacks'
     end
 

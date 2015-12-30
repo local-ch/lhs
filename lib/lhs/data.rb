@@ -52,7 +52,7 @@ class LHS::Data
   end
 
   def respond_to_missing?(name, include_all = false)
-    (root_item? && _root._service.instance.mapping.keys.map(&:to_s).include?(name.to_s)) ||
+    (root_item? && _root._service.mapping.keys.map(&:to_s).include?(name.to_s)) ||
     _proxy.respond_to?(name, include_all)
   end
 
@@ -63,10 +63,10 @@ class LHS::Data
   end
 
   def mapping_for(name)
-    service_instance = LHS::Service.for_url(_raw[:href]) if _raw.is_a?(Hash)
-    service_instance ||= _root._service.instance if root_item? && _root._service
-    return unless service_instance
-    service_instance.mapping[name]
+    service = LHS::Service.for_url(_raw[:href]) if _raw.is_a?(Hash)
+    service ||= _root._service if root_item? && _root._service
+    return unless service
+    service.mapping[name]
   end
 
   def root_item

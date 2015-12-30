@@ -11,7 +11,7 @@ describe LHS::Service do
     end
 
     it 'stores endpoints with options' do
-      expect(SomeService.instance.endpoints[0].options).to eq(cache_expires_in: 86400, retry: 2, cache: true)
+      expect(SomeService.endpoints[0].options).to eq(cache_expires_in: 86400, retry: 2, cache: true)
     end
 
     it 'uses the options that are configured for an endpoint' do

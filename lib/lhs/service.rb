@@ -1,7 +1,6 @@
-require 'singleton'
 Dir[File.dirname(__FILE__) + '/concerns/service/*.rb'].each {|file| require file }
 
-# A Service makes data available using multiple endpoints.
+# A Service makes data available by using backend endpoints.
 class LHS::Service
   include All
   include Batch
@@ -15,6 +14,5 @@ class LHS::Service
   include Model
   include Includes
   include Request
-  include Singleton
   include Where
 end

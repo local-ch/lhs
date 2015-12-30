@@ -7,8 +7,8 @@ class LHS::Item < LHS::Proxy
     extend ActiveSupport::Concern
 
     def destroy
-      service_instance = _data._root._service.instance
-      _data._request = service_instance.request(method: :delete, url: href)._request
+      service = _data._root._service
+      _data._request = service.request(method: :delete, url: href)._request
       _data
     end
   end
