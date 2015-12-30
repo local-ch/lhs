@@ -9,7 +9,7 @@ class LHS::Service
 
       # Used to query data from the service.
       def where(params = {})
-        instance.request(params: params)
+        request(params: params)
       end
     end
   end
