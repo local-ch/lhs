@@ -16,13 +16,19 @@ An item proxy contains setter methods, in order to set/change values.
   rcord.recommended = false
 ```
 
-## Build
+## Build (new)
 
 Build and persist new items from scratch.
 
 ```ruby
 feedback = Feedback.build(recommended: true)
 feedback.save
+```
+
+`new` is an alias for `build`:
+
+```ruby
+Feedback.new(recommended: true)
 ```
 
 ## Save
