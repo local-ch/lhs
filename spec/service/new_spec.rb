@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Service do
 
-  context 'build' do
+  context 'new' do
 
     let(:datastore) { 'http://local.ch/v2' }
 
@@ -14,8 +14,8 @@ describe LHS::Service do
       end
     end
 
-    it 'builds a new item from scratch' do
-      feedback = Feedback.build recommended: true
+    it 'builds a new item from scratch (like build)' do
+      feedback = Feedback.new recommended: true
       expect(feedback.recommended).to eq true
       stub_request(:post, "http://local.ch/v2/feedbacks")
       .with(body: "{\"recommended\":true}")

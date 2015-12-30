@@ -12,6 +12,8 @@ class LHS::Service
         item = LHS::Item.new(data)
         LHS::Data.new(item, nil, self)
       end
+      alias_method :new, :build
+      
     end
   end
 end
