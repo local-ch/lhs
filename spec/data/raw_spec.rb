@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Data do
 
   before(:each) do
-    class SomeService < LHS::Service
+    class Record < LHS::Record
       endpoint ':datastore/v2/entries/:entry_id/content-ads/:campaign_id/feedbacks'
       endpoint ':datastore/v2/:campaign_id/feedbacks'
       endpoint ':datastore/v2/feedbacks'

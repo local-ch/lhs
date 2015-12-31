@@ -14,9 +14,9 @@ class LHS::Item < LHS::Proxy
     end
 
     def update!(params)
-      service = _data._root._service
+      record = _data._root._record_class
       _data.merge_raw!(LHS::Data.new(params))
-      response_data = service.request(
+      response_data = record.request(
         method: :post,
         url: href,
         body: _data.to_json,

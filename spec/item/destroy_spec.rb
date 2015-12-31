@@ -4,7 +4,7 @@ describe LHS::Item do
 
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
-    class SomeService < LHS::Service
+    class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
       endpoint ':datastore/v2/feedbacks'
     end
@@ -19,7 +19,7 @@ describe LHS::Item do
   end
 
   let(:data) do
-    LHS::Data.new(json, nil, SomeService)
+    LHS::Data.new(json, nil, Record)
   end
 
   let(:item) do
@@ -43,7 +43,7 @@ describe LHS::Item do
 
     context 'includes and empty response' do
       before(:each) do
-        class AnotherService < LHS::Service
+        class AnotherRecord < LHS::Record
           endpoint ':datastore/v2/:campaign_id/restaurants'
         end
       end
@@ -56,7 +56,7 @@ describe LHS::Item do
           .to_return(status: 200, body: data.to_json)
         stub_request(:get, "#{datastore}/v2/restaurants/1")
           .to_return(status: 200, body: {name: 'Casa Ferlin'}.to_json)
-        item = SomeService.includes(:restaurant).find(1)
+        item = Record.includes(:restaurant).find(1)
         item.destroy
       end
     end

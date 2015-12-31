@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Data do
 
   before(:each) do
-    class SomeService < LHS::Service
+    class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
       endpoint ':datastore/v2/feedbacks'
     end
@@ -12,14 +12,14 @@ describe LHS::Data do
   let(:data) do
     LHS::Data.new({
       href: 'http://www.local.ch/v2/stuff'
-    }, nil, SomeService)
+    }, nil, Record)
   end
 
   let(:loaded_data) do
     LHS::Data.new({
       href: 'http://www.local.ch/v2/stuff',
       id: '123123123'
-    }, nil, SomeService)
+    }, nil, Record)
   end
 
   context 'merging' do

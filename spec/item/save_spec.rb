@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Item do
 
   before(:each) do
-    class SomeService < LHS::Service
+    class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
       endpoint ':datastore/v2/feedbacks'
     end
@@ -14,7 +14,7 @@ describe LHS::Item do
   end
 
   let(:data) do
-    LHS::Data.new(json, nil, SomeService)
+    LHS::Data.new(json, nil, Record)
   end
 
   let(:item) do
@@ -24,8 +24,7 @@ describe LHS::Item do
   context 'save' do
 
     it 'persists changes on the backend' do
-      stub_request(:post, item.href)
-      .with(body: item._raw.merge(name: 'Steve').to_json)
+      stub_request(:post, item.href).with(body: item._raw.merge(name: 'Steve').to_json)
       item.name = 'Steve'
       expect(item.save).to eq true
     end

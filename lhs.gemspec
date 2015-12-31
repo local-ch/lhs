@@ -7,11 +7,11 @@ require "lhs/version"
 Gem::Specification.new do |s|
   s.name        = "lhs"
   s.version     = LHS::VERSION
-  s.authors     = ['local.ch']
+  s.authors     = ['https://github.com/local-ch/lhs/graphs/contributors']
   s.email       = ['ws-operations@local.ch']
   s.homepage    = 'https://github.com/local-ch/lhs'
-  s.summary     = 'LocalHttpServices'
-  s.description = 'Rails gem providing an easy interface to use http services here at local'
+  s.summary     = 'Rails gem providing an easy, active-record-like interface to use http backend services'
+  s.description = s.summary
 
   s.files        = `git ls-files`.split("\n")
   s.test_files   = `git ls-files -- spec/*`.split("\n")

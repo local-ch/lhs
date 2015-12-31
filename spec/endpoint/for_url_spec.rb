@@ -5,7 +5,7 @@ describe LHS::Endpoint do
   context 'for url' do
 
     before(:each) do
-      class SomeService < LHS::Service
+      class Record < LHS::Record
         endpoint ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
         endpoint ':datastore/:campaign_id/feedbacks'
         endpoint ':datastore/feedbacks'

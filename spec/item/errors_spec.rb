@@ -42,7 +42,7 @@ describe LHS::Item do
 
   before(:each) do
     LHC.config.placeholder(:datastore, datastore)
-    class SomeService < LHS::Service
+    class Record < LHS::Record
       endpoint ':datastore/:campaign_id/feedbacks'
       endpoint ':datastore/feedbacks'
     end
@@ -53,7 +53,7 @@ describe LHS::Item do
     it 'parses fields correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_fields.to_json)
-      record = SomeService.build
+      record = Record.build
       record.name = 'Steve'
       result = record.save
       expect(result).to eq false
@@ -68,7 +68,7 @@ describe LHS::Item do
     it 'parses field errors correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_field_errors.to_json)
-      record = SomeService.build
+      record = Record.build
       record.name = 'Steve'
       result = record.save
       expect(result).to eq false
@@ -85,7 +85,7 @@ describe LHS::Item do
     it 'provides access to raw error data' do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_field_errors.to_json)
-      record = SomeService.build
+      record = Record.build
       record.save
       expect(record.errors.raw).to be
       json = JSON.parse(record.errors.raw)

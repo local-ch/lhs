@@ -6,12 +6,12 @@ class LHS::Data
   include Json
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_proxy, :_raw, :_parent, :_service, :_request
+  attr_accessor :_proxy, :_raw, :_parent, :_record_class, :_request
 
-  def initialize(input, parent = nil, service = nil, request = nil)
+  def initialize(input, parent = nil, record = nil, request = nil)
     self._raw = raw_from_input(input)
     self._proxy = proxy_from_input(input)
-    self._service = service
+    self._record_class = record
     self._parent = parent
     self._request = request
   end
@@ -30,7 +30,7 @@ class LHS::Data
   end
 
   def class
-    _root._service
+    _root._record_class
   end
 
   # enforce internal data structure to have deep symbolized keys
@@ -41,18 +41,12 @@ class LHS::Data
 
   protected
 
-  # Use existing mapping to provide data
-  # or forward to proxy
   def method_missing(name, *args, &block)
-    if mapping = mapping_for(name)
-      self.instance_exec(&mapping)
-    else
-      _proxy.send(name, *args, &block)
-    end
+    _proxy.send(name, *args, &block)
   end
 
   def respond_to_missing?(name, include_all = false)
-    (root_item? && _root._service.mapping.keys.map(&:to_s).include?(name.to_s)) ||
+    (root_item? && _root._record_class.instance_methods.include?(name)) ||
     _proxy.respond_to?(name, include_all)
   end
 
@@ -60,13 +54,6 @@ class LHS::Data
 
   def collection_proxy?(input)
     !! (input.is_a?(Hash) && input[:items]) || input.is_a?(Array) || _raw.is_a?(Array)
-  end
-
-  def mapping_for(name)
-    service = LHS::Service.for_url(_raw[:href]) if _raw.is_a?(Hash)
-    service ||= _root._service if root_item? && _root._service
-    return unless service
-    service.mapping[name]
   end
 
   def root_item
