@@ -52,7 +52,7 @@ describe LHS::Collection do
       count = 0
       Record.find_in_batches(batch_size: 230) do |records|
         count += records.count
-        expect(records).to be_kind_of LHS::Data
+        expect(records).to be_kind_of Record
         expect(records._proxy).to be_kind_of LHS::Collection
       end
       expect(count).to eq total

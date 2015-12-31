@@ -12,7 +12,7 @@ class LHS::Record
         find_in_batches(options) do |data|
           data.each do |record|
             item = LHS::Item.new(LHS::Data.new(record, data, self))
-            yield LHS::Data.new(item, data, self)
+            yield self.new(LHS::Data.new(item, data, self))
           end
         end
       end
@@ -27,7 +27,7 @@ class LHS::Record
           data = request(params: params.merge(limit: batch_size, offset: start))
           batch_size = data._raw[:limit]
           left = data._raw[:total].to_i - data._raw[:offset].to_i - data._raw[:limit].to_i
-          yield data
+          yield self.new(data)
           break if left <= 0
           start += batch_size
         end

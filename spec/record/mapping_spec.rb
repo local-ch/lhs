@@ -94,6 +94,7 @@ describe LHS::Record do
         .to_return(body: {local_entry: {href: "#{datastore}/local-entries/1"}}.to_json)
 
       favorite = Favorite.includes(:local_entry).find(1)
+      expect(favorite.local_entry).to be_kind_of LocalEntry
       expect(favorite.local_entry.name).to eq 'local.ch'
     end
   end

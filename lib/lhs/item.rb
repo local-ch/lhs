@@ -58,7 +58,13 @@ class LHS::Item < LHS::Proxy
   end
 
   def handle_hash(value)
-    LHS::Data.new(value, _data)
+    record = LHS::Record.for_url(value[:href]) if value[:href]
+    data = LHS::Data.new(value, _data)
+    if record
+      record.new(data)
+    else
+      data
+    end
   end
 
   def set(name, value)
