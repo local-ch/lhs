@@ -90,15 +90,28 @@ class LHS::Data
 
   def raw_from_input(input)
     if input.is_a?(String) && input.length > 0
-      JSON.parse(input).deep_symbolize_keys
+      raw_from_json_string(input)
     elsif defined?(input._raw)
       input._raw
     elsif defined?(input._data)
       input._data._raw
     else
-      input = input.to_hash if input.class != Hash && input.respond_to?(:to_hash)
-      input.deep_symbolize_keys! if input.is_a?(Hash)
-      input
+      raw_from_anything_else(input)
     end
+  end
+
+  def raw_from_json_string(input)
+    json = JSON.parse(input)
+    if json.is_a?(Hash)
+      json.deep_symbolize_keys
+    else
+      json
+    end
+  end
+
+  def raw_from_anything_else(input)
+    input = input.to_hash if input.class != Hash && input.respond_to?(:to_hash)
+    input.deep_symbolize_keys! if input.is_a?(Hash)
+    input
   end
 end
