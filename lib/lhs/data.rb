@@ -39,6 +39,10 @@ class LHS::Data
     @_raw = raw
   end
 
+  def root_item?
+    root_item == self
+  end
+
   protected
 
   def method_missing(name, *args, &block)
@@ -68,10 +72,6 @@ class LHS::Data
       end
     end
     root_item
-  end
-
-  def root_item?
-    root_item == self
   end
 
   def root?
