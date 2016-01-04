@@ -8,10 +8,10 @@ class LHS::Item < LHS::Proxy
     def valid?
       self.errors = nil
       fail 'No validation endpoint found!' unless validation_endpoint
-      service = LHS::Service.for_url(validation_endpoint.url)
+      record = LHS::Record.for_url(validation_endpoint.url)
       params = validation_endpoint.options.fetch(:params, {}).merge(persist: false)
       begin
-        service.request(
+        record.request(
           url: validation_endpoint.url,
           method: :post,
           params: params,
@@ -29,7 +29,7 @@ class LHS::Item < LHS::Proxy
     private
 
     def validation_endpoint
-      endpoint = _data._service.find_endpoint(_data._raw)
+      endpoint = _data._record_class.find_endpoint(_data._raw)
       endpoint ||= LHS::Endpoint.for_url(_data.href) if _data.href
       validates = endpoint.options && endpoint.options.fetch(:validates, false)
       fail 'Endpoint does not support validations!' unless validates

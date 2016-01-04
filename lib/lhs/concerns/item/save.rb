@@ -14,14 +14,14 @@ class LHS::Item < LHS::Proxy
     end
 
     def save!
-      service = _data._root._service
+      record = _data._root._record_class
       data = _data._raw.dup
       url = if href.present?
        href
       else
-        service.find_endpoint(data).compile(data)
+        record.find_endpoint(data).compile(data)
       end
-      data = service.request(method: :post, url: url, body: data.to_json, headers: {'Content-Type' => 'application/json'})
+      data = record.request(method: :post, url: url, body: data.to_json, headers: {'Content-Type' => 'application/json'})
       self._data.merge_raw!(data)
       true
     end

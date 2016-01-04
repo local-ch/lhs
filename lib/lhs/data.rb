@@ -6,12 +6,12 @@ class LHS::Data
   include Json
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_proxy, :_raw, :_parent, :_service, :_request
+  attr_accessor :_proxy, :_raw, :_parent, :_record_class, :_request
 
-  def initialize(input, parent = nil, service = nil, request = nil)
+  def initialize(input, parent = nil, record = nil, request = nil)
     self._raw = raw_from_input(input)
     self._proxy = proxy_from_input(input)
-    self._service = service
+    self._record_class = record
     self._parent = parent
     self._request = request
   end
@@ -30,7 +30,7 @@ class LHS::Data
   end
 
   def class
-    _root._service
+    _root._record_class
   end
 
   # enforce internal data structure to have deep symbolized keys
@@ -39,20 +39,18 @@ class LHS::Data
     @_raw = raw
   end
 
+  def root_item?
+    root_item == self
+  end
+
   protected
 
-  # Use existing mapping to provide data
-  # or forward to proxy
   def method_missing(name, *args, &block)
-    if mapping = mapping_for(name)
-      self.instance_exec(&mapping)
-    else
-      _proxy.send(name, *args, &block)
-    end
+    _proxy.send(name, *args, &block)
   end
 
   def respond_to_missing?(name, include_all = false)
-    (root_item? && _root._service.mapping.keys.map(&:to_s).include?(name.to_s)) ||
+    (root_item? && _root._record_class.instance_methods.include?(name)) ||
     _proxy.respond_to?(name, include_all)
   end
 
@@ -60,13 +58,6 @@ class LHS::Data
 
   def collection_proxy?(input)
     !! (input.is_a?(Hash) && input[:items]) || input.is_a?(Array) || _raw.is_a?(Array)
-  end
-
-  def mapping_for(name)
-    service = LHS::Service.for_url(_raw[:href]) if _raw.is_a?(Hash)
-    service ||= _root._service if root_item? && _root._service
-    return unless service
-    service.mapping[name]
   end
 
   def root_item
@@ -81,10 +72,6 @@ class LHS::Data
       end
     end
     root_item
-  end
-
-  def root_item?
-    root_item == self
   end
 
   def root?
@@ -103,15 +90,28 @@ class LHS::Data
 
   def raw_from_input(input)
     if input.is_a?(String) && input.length > 0
-      JSON.parse(input).deep_symbolize_keys
+      raw_from_json_string(input)
     elsif defined?(input._raw)
       input._raw
     elsif defined?(input._data)
       input._data._raw
     else
-      input = input.to_hash if input.class != Hash && input.respond_to?(:to_hash)
-      input.deep_symbolize_keys! if input.is_a?(Hash)
-      input
+      raw_from_anything_else(input)
     end
+  end
+
+  def raw_from_json_string(input)
+    json = JSON.parse(input)
+    if json.is_a?(Hash)
+      json.deep_symbolize_keys
+    else
+      json
+    end
+  end
+
+  def raw_from_anything_else(input)
+    input = input.to_hash if input.class != Hash && input.respond_to?(:to_hash)
+    input.deep_symbolize_keys! if input.is_a?(Hash)
+    input
   end
 end

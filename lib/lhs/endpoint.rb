@@ -2,10 +2,10 @@
 class LHS::Endpoint
   
   def self.for_url(url)
-    template, service = LHS::Service::Endpoints.all.detect do |template, _service|
+    template, record = LHS::Record::Endpoints.all.detect do |template, _record_class|
       LHC::Endpoint.match?(url, template)
     end
-    service.endpoints.detect { |endpoint| endpoint.url == template } if service
+    record.endpoints.detect { |endpoint| endpoint.url == template } if record
   end
 end
 

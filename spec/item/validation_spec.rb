@@ -6,7 +6,7 @@ describe LHS::Item do
 
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
-    class User < LHS::Service
+    class User < LHS::Record
       endpoint ':datastore/v2/users', validates: true
     end
     mock_validation
@@ -73,7 +73,7 @@ describe LHS::Item do
 
   context 'endpoint does not support validations' do
     before(:each) do
-      class Favorite < LHS::Service
+      class Favorite < LHS::Record
         endpoint ':datastore/v2/favorites'
       end
     end

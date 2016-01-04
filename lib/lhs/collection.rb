@@ -25,7 +25,7 @@ class LHS::Collection < LHS::Proxy
   def _collection
     raw = _data._raw if _data._raw.is_a?(Array)
     raw ||= _data._raw[:items]
-    Collection.new(raw, _data, _data._service)
+    Collection.new(raw, _data, _data._record_class)
   end
 
   def _raw
@@ -59,16 +59,16 @@ class LHS::Collection < LHS::Proxy
     attr_accessor :raw
     delegate :last, :sample, :[], :present?, :blank?, :empty?, to: :raw
 
-    def initialize(raw, parent, service)
+    def initialize(raw, parent, record)
       self.raw = raw
       @parent = parent
-      @service = service
+      @record = record
     end
 
     def each(&block)
       raw.each do |item|
         if item.is_a? Hash
-          yield LHS::Data.new(item, @parent, @service)
+          yield LHS::Data.new(item, @parent, @record)
         else
           yield item
         end

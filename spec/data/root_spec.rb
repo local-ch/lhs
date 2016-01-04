@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Data do
 
   before(:each) do
-    class SomeService < LHS::Service
+    class Record < LHS::Record
       endpoint ':datastore/v2/entries/:entry_id/content-ads/:campaign_id/feedbacks'
       endpoint ':datastore/v2/:campaign_id/feedbacks'
       endpoint ':datastore/v2/feedbacks'
@@ -13,7 +13,7 @@ describe LHS::Data do
   context 'root' do
 
     it 'is navigateable from nested data' do
-      root = LHS::Data.new({'items' => [{'campaign' => {'id' => 123}}]}, nil, SomeService)
+      root = LHS::Data.new({'items' => [{'campaign' => {'id' => 123}}]}, nil, Record)
       child = root.first
       leafe = child.campaign
       expect(leafe._root).to eq root

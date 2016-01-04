@@ -1,6 +1,6 @@
 RSpec.configure do |config|
 
   config.before(:each) do
-    LHS::Service::Endpoints.all = {}
+    LHS::Record::Endpoints.all = {}
   end
 end

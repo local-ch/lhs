@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Proxy do
 
   before(:each) do
-    class SomeService < LHS::Service
+    class Record < LHS::Record
       endpoint ':datastore/v2/feedbacks'
     end
   end
@@ -13,7 +13,7 @@ describe LHS::Proxy do
   end
 
   let(:data) do
-    LHS::Data.new(json, nil, SomeService)
+    LHS::Data.new(json, nil, Record)
   end
 
   let(:item) do
