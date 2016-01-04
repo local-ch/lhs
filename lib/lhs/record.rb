@@ -18,7 +18,7 @@ class LHS::Record
     data = LHS::Data.new({}, nil, self.class) unless data
     data = LHS::Data.new(data, nil, self.class) unless data.is_a?(LHS::Data)
     define_singleton_method(:_data) { data }
-    if data._proxy.is_a? LHS::Item
+    if data._proxy.is_a?(LHS::Item) and data._raw.is_a?(Hash)
       data._raw.each { |k, v| instance_variable_set("@#{k}", v) }
     elsif data._proxy.is_a? LHS::Collection
       instance_variable_set('@collection', data._collection.raw)
