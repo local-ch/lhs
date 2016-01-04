@@ -72,9 +72,8 @@ Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
 If no record is found an error is raised.
 
-```ruby
-  Feedback.find('z12f-3asm3ngals')
-```
+## Proxy
+Instead of mapping data when it arrives from the backend, the proxy makes data accessible when you access it, not when you fetch it. The proxy is used to access data and it is divided in `Collection` and `Item`. 
 
 `find` can also be used to find a single uniqe record with parameters:
 
