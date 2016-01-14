@@ -56,6 +56,7 @@ describe LHS::Record do
 
     it 'includes a list of resources' do
       favorite = Favorite.includes(:local_entry, :user).find(1)
+      expect(favorite.local_entry).to be_kind_of LocalEntry
       expect(favorite.local_entry.company_name).to eq 'local.ch'
       expect(favorite.user.name).to eq 'Mario'
     end
