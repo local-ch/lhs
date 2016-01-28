@@ -1,3 +1,4 @@
 jobs:
   _cider-ci_include:
-    - cider-ci/jobs/tests.yml
+    - cider-ci/jobs/rubocop.yml
+    - cider-ci/jobs/rspec.yml

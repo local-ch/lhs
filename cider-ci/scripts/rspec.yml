@@ -1,0 +1,4 @@
+rspec:
+  body: |
+    #!/usr/bin/env bash
+    bundle exec rspec $CIDER_CI_TASK_FILE

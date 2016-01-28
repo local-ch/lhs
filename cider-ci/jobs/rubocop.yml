@@ -1,0 +1,55 @@
+rubocop:
+  name: 'Rubocop analysis'
+
+  run-on:
+    - type: branch
+      include-match: ^.*$
+
+  context:
+    task-defaults:
+      environment-variables:
+        GIT_REPOSITORY: local-ch/location-app
+        RESULT_PATH: 'tmp/checkstyle.json'
+
+      scripts:
+        rubocop:
+          start-when:
+            - script: bundle
+            - script: ruby-version
+            - script: tmp-cache
+
+        
+        github_comment:
+          start-when:
+            - script: rubocop
+              states: [failed]
+        
+
+        _cider-ci_include:
+          - cider-ci/scripts/bundle.yml
+          - cider-ci/scripts/tmp-cache.yml
+          - cider-ci/scripts/ruby-version.yml
+          - cider-ci/scripts/rubocop.yml
+          
+          - cider-ci/scripts/github_comment.yml
+          
+
+      max-auto-trials: 1
+
+      trial-attachments:
+        logs:
+          include-match: tmp\/checkstyle.json$
+          content-type: application/json
+
+      tree-attachments:
+        logs:
+          include-match: tmp\/checkstyle.json$
+          content-type: application/json
+
+    tasks:
+      rubocop:
+        scripts:
+          rubocop: {}
+          
+          github_comment: {}
+          

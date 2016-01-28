@@ -1,0 +1,7 @@
+# This is project specific rubocop configuration file.
+# You can tweak project settings here
+inherit_from:
+  - ./.rubocop.localch.yml
+
+Lint/IneffectiveAccessModifier:
+  Enabled: false

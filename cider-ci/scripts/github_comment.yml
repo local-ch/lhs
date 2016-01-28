@@ -1,0 +1,6 @@
+github_comment:
+  ignore-state: true
+  body: |
+    #!/usr/bin/env bash
+
+    bundle exec rake checkstyle
