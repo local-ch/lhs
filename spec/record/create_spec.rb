@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'create' do
-
     let(:datastore) { 'http://local.ch/v2' }
 
     before(:each) do
@@ -33,16 +31,16 @@ describe LHS::Record do
 
     it 'uses proper endpoint when creating data' do
       stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
-      .with(body: object.to_json)
-      .to_return(status: 200, body: object.to_json)
+        .with(body: object.to_json)
+        .to_return(status: 200, body: object.to_json)
       Feedback.create(object.merge(campaign_id: '12345'))
     end
 
     it 'merges backend response object with object' do
       body = object.merge(additional_key: 1)
       stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
-      .with(body: object.to_json)
-      .to_return(status: 200, body: body.to_json)
+        .with(body: object.to_json)
+        .to_return(status: 200, body: body.to_json)
       data = Feedback.create(object.merge(campaign_id: '12345'))
       expect(data.additional_key).to eq 1
     end
@@ -55,9 +53,9 @@ describe LHS::Record do
             {
               "name" => "ratings",
               "details" => [{ "code" => "REQUIRED_PROPERTY_VALUE" }]
-              },{
+            }, {
               "name" => "recommended",
-              "details" => [{"code" => "REQUIRED_PROPERTY_VALUE"}]
+              "details" => [{ "code" => "REQUIRED_PROPERTY_VALUE" }]
             }
           ]
         }
@@ -72,8 +70,8 @@ describe LHS::Record do
 
       it 'raises an exception when creation failed using create!' do
         stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
-        .to_return(status: 400, body: creation_error.to_json)
-        expect(->{
+          .to_return(status: 400, body: creation_error.to_json)
+        expect(lambda {
           Feedback.create!(object.merge(campaign_id: '12345'))
         }).to raise_error
       end

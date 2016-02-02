@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'endpoints' do
-
     let(:datastore) { 'http://local.ch/v2' }
 
     before(:each) do
@@ -16,7 +14,7 @@ describe LHS::Record do
     end
 
     it 'stores all the endpoints by url' do
-      expect(LHS::Record::Endpoints.all[':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks']).to be 
+      expect(LHS::Record::Endpoints.all[':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks']).to be
       expect(LHS::Record::Endpoints.all[':datastore/:campaign_id/feedbacks']).to be
       expect(LHS::Record::Endpoints.all[':datastore/feedbacks']).to be
     end
@@ -44,7 +42,6 @@ describe LHS::Record do
     end
 
     context 'compute url from endpoint' do
-
       before(:each) do
         class Feedback < LHS::Record
           endpoint ':datastore/feedbacks'
@@ -59,7 +56,6 @@ describe LHS::Record do
     end
 
     context 'unsorted endpoints' do
-
       before(:each) do
         class AnotherRecord < LHS::Record
           endpoint ':datastore/feedbacks'
@@ -72,7 +68,6 @@ describe LHS::Record do
         stub_request(:get, "#{datastore}/entries/123/content-ads/123/feedbacks").to_return(status: 200)
         AnotherRecord.where(campaign_id: 123, entry_id: 123)
       end
-
     end
   end
 end

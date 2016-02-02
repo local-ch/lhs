@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Item do
-
   before(:each) do
     class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
@@ -22,7 +21,6 @@ describe LHS::Item do
   end
 
   context 'delegates methods to raw' do
-
     %w(present? blank? empty?).each do |method|
       it "delegates #{method} to raw" do
         expect(item.send(method.to_sym)).not_to be_nil

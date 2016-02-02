@@ -1,5 +1,5 @@
 require File.join(__dir__, 'proxy.rb')
-Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each { |file| require file }
 
 # Data provides functionalities to accesses information
 class LHS::Data
@@ -51,7 +51,7 @@ class LHS::Data
 
   def respond_to_missing?(name, include_all = false)
     (root_item? && _root._record_class.instance_methods.include?(name)) ||
-    _proxy.respond_to?(name, include_all)
+      _proxy.respond_to?(name, include_all)
   end
 
   private
@@ -61,14 +61,13 @@ class LHS::Data
   end
 
   def root_item
-    return if self._proxy.class != LHS::Item
+    return if _proxy.class != LHS::Item
     root = root_item = self
     loop do
       root = root._parent
       root_item = root if root && root._proxy.is_a?(LHS::Item)
       if !(root && root._parent)
         break
-      else
       end
     end
     root_item

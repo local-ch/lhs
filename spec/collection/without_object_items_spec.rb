@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-
   let(:datastore) { 'http://local.ch/v2' }
 
   before(:each) do

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-
   let(:total) { 0 }
 
   let(:limit) { 50 }

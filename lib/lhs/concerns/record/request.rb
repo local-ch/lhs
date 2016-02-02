@@ -6,7 +6,6 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       def request(options)
         if options.is_a? Array
           multiple_requests(options)
@@ -29,7 +28,8 @@ class LHS::Record
       def convert_option_to_endpoints(option)
         new_options = option.dup
         url = option[:url]
-        return unless endpoint = LHS::Endpoint.for_url(url)
+        endpoint = LHS::Endpoint.for_url(url)
+        return unless endpoint
         template = endpoint.url
         new_options = new_options.merge(params: LHC::Endpoint.values_as_params(template, url))
         new_options[:url] = template
@@ -50,23 +50,26 @@ class LHS::Record
 
       def handle_includes(includes, data)
         if includes.is_a? Hash
-          includes.each { |_include, sub_includes| handle_include(_include, data, sub_includes) }
+          includes.each { |included, sub_includes| handle_include(included, data, sub_includes) }
         elsif includes.is_a? Array
-          includes.each { |_include| handle_includes(_include, data) }
+          includes.each { |included| handle_includes(included, data) }
         else
           handle_include(includes, data)
         end
       end
 
-      def handle_include(_include, data, sub_includes = nil)
+      def handle_include(included, data, sub_includes = nil)
         return unless data.present?
-        options = if data._proxy.is_a? LHS::Collection
-          options_for_multiple(data, _include)
-        else
-          url_option_for(data, _include)
-        end
+        options =
+          if data._proxy.is_a? LHS::Collection
+            options_for_multiple(data, included)
+            options_for_multiple(data, included)
+          else
+            url_option_for(data, included)
+            url_option_for(data, included)
+          end
         addition = load_include(options, data, sub_includes)
-        extend_raw_data(data, addition, _include)
+        extend_raw_data(data, addition, included)
       end
 
       # Load additional resources that are requested with include
@@ -89,9 +92,9 @@ class LHS::Record
       end
 
       def multiple_requests(options)
-        options = options.map { |options| process_options(options) }
+        options = options.map { |option| process_options(option) }
         responses = LHC.request(options)
-        data = responses.map{ |response| LHS::Data.new(response.body, nil, self, response.request) }
+        data = responses.map { |response| LHS::Data.new(response.body, nil, self, response.request) }
         data = LHS::Data.new(data, nil, self)
         handle_includes(including, data) if including
         data
@@ -120,7 +123,8 @@ class LHS::Record
         records = []
         if options.is_a?(Array)
           options.each do |option|
-            next unless record = LHS::Record.for_url(option[:url])
+            record = LHS::Record.for_url(option[:url])
+            next unless record
             records.push(record)
           end
           fail 'Found more than one record that could be used to do the request' if records.uniq.count > 1

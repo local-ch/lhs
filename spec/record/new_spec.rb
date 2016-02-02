@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'new' do
-
     let(:datastore) { 'http://local.ch/v2' }
 
     before(:each) do

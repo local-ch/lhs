@@ -1,5 +1,5 @@
 require File.join(__dir__, 'proxy.rb')
-Dir[File.dirname(__FILE__) + '/concerns/item/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/concerns/item/*.rb'].each { |file| require file }
 
 # An item is a concrete record.
 # It can be part of another proxy like collection.
@@ -14,13 +14,11 @@ class LHS::Item < LHS::Proxy
   # prevent clashing with attributes of underlying data
   attr_accessor :errors
 
-  def _raw
-    _data._raw
-  end
+  delegate :_raw, to: :_data
 
   protected
 
-  def method_missing(name, *args, &block)
+  def method_missing(name, *args, &_block)
     return set(name, args.try(&:first)) if name.to_s[/=$/]
     name = args.first if name == :[]
     value = _data._raw[name.to_s]
@@ -36,7 +34,7 @@ class LHS::Item < LHS::Proxy
     end
   end
 
-  def respond_to_missing?(name, include_all = false)
+  def respond_to_missing?(name, _include_all = false)
     # We accept every message that does not belong to set of keywords
     BLACKLISTED_KEYWORDS.exclude?(name.to_s)
   end
@@ -49,7 +47,7 @@ class LHS::Item < LHS::Proxy
   def convert(value)
     return value unless value.is_a?(String)
     if date_time?(value)
-      DateTime.parse(value)
+      Time.zone.parse(value)
     elsif date?(value)
       Date.parse(value)
     else
@@ -71,8 +69,6 @@ class LHS::Item < LHS::Proxy
     key = name.to_s.gsub(/=$/, '')
     _data._raw[key.to_sym] = value
   end
-
-  private
 
   def date?(value)
     value[date_time_regex, :date].presence

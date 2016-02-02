@@ -1,4 +1,4 @@
-Dir[File.dirname(__FILE__) + '/concerns/record/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/concerns/record/*.rb'].each { |file| require file }
 
 class LHS::Record
   include All
@@ -18,7 +18,7 @@ class LHS::Record
     data = LHS::Data.new({}, nil, self.class) unless data
     data = LHS::Data.new(data, nil, self.class) unless data.is_a?(LHS::Data)
     define_singleton_method(:_data) { data }
-    if data._proxy.is_a?(LHS::Item) and data._raw.is_a?(Hash)
+    if data._proxy.is_a?(LHS::Item) && data._raw.is_a?(Hash)
       data._raw.each { |k, v| instance_variable_set("@#{k}", v) }
     elsif data._proxy.is_a? LHS::Collection
       instance_variable_set('@collection', data._collection.raw)
@@ -26,7 +26,7 @@ class LHS::Record
   end
 
   def self.build(data = nil)
-    self.new(data)
+    new(data)
   end
 
   protected
@@ -37,6 +37,6 @@ class LHS::Record
 
   def respond_to_missing?(name, include_all = false)
     (_data.root_item? && _data._root._record_class.instance_methods.include?(name)) ||
-    _data._proxy.respond_to?(name, include_all)
+      _data._proxy.respond_to?(name, include_all)
   end
 end

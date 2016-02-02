@@ -20,7 +20,7 @@ class LHS::Item < LHS::Proxy
         method: :post,
         url: href,
         body: _data.to_json,
-        headers: {'Content-Type' => 'application/json'}
+        headers: { 'Content-Type' => 'application/json' }
       )
       _data.merge_raw!(response_data)
       true

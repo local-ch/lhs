@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'creation failed' do
-
     let(:datastore) { 'http://local.ch/v2' }
 
     before(:each) do
@@ -24,9 +22,9 @@ describe LHS::Record do
           {
             "name" => "ratings",
             "details" => [{ "code" => "REQUIRED_PROPERTY_VALUE" }]
-          },{
+          }, {
             "name" => "recommended",
-            "details" => [{"code" => "REQUIRED_PROPERTY_VALUE"}]
+            "details" => [{ "code" => "REQUIRED_PROPERTY_VALUE" }]
           }
         ]
       }
@@ -42,13 +40,13 @@ describe LHS::Record do
       expect(record.errors.include?(:ratings)).to eq true
       expect(record.errors.include?(:recommended)).to eq true
       expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE']
-      expect(record.errors.messages).to eq({:ratings=>["REQUIRED_PROPERTY_VALUE"], :recommended=>["REQUIRED_PROPERTY_VALUE"]})
+      expect(record.errors.messages).to eq(ratings: ["REQUIRED_PROPERTY_VALUE"], recommended: ["REQUIRED_PROPERTY_VALUE"])
       expect(record.errors.message).to eq error_message
     end
 
     it 'doesnt fail when no fields are provided by the backend' do
       stub_request(:post, "#{datastore}/feedbacks")
-      .to_return(status: 400, body: {}.to_json)
+        .to_return(status: 400, body: {}.to_json)
       Record.create(name: 'Steve')
     end
   end

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   let(:datastore) do
     'http://datastore/v2'
   end
@@ -15,9 +14,8 @@ describe LHS::Record do
   end
 
   context 'where' do
-
     it 'is querying relevant endpoint when using where' do
-      stub_request(:get, "#{datastore}/feedbacks?has_review=true").to_return(status: 200, body: {items: []}.to_json)
+      stub_request(:get, "#{datastore}/feedbacks?has_review=true").to_return(status: 200, body: { items: [] }.to_json)
       Record.where(has_review: true)
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks?has_review=true").to_return(status: 200, body: [].to_json)
       Record.where(campaign_id: '123', has_review: true)

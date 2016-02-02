@@ -16,7 +16,7 @@ class LHS::Item < LHS::Proxy
           method: :post,
           params: params,
           body: _data.to_json,
-          headers: {'Content-Type' => 'application/json'}
+          headers: { 'Content-Type' => 'application/json' }
         )
         true
       rescue LHC::Error => e
@@ -24,7 +24,7 @@ class LHS::Item < LHS::Proxy
         false
       end
     end
-    alias_method :validate, :valid?
+    alias validate valid?
 
     private
 

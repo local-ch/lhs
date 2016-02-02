@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   let(:datastore) { 'http://local.ch/v2' }
 
   before(:each) do
@@ -13,7 +12,6 @@ describe LHS::Record do
   end
 
   context 'first' do
-
     it 'finds a single record' do
       stub_request(:get, "#{datastore}/feedbacks?limit=1")
         .to_return(status: 200, body: load_json(:feedback))
@@ -30,7 +28,6 @@ describe LHS::Record do
   end
 
   context 'first!' do
-
     it 'raises if nothing was found with parameters' do
       stub_request(:get, "#{datastore}/feedbacks?limit=1")
         .to_return(status: 404)

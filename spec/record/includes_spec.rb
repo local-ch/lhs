@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   let(:datastore) { 'http://local.ch/v2' }
   before(:each) { LHC.config.placeholder('datastore', datastore) }
 
@@ -39,14 +38,14 @@ describe LHS::Record do
         endpoint ':datastore/favorites/:id'
       end
       stub_request(:get, "#{datastore}/local-entries/1")
-        .to_return(body: {company_name: 'local.ch'}.to_json)
+        .to_return(body: { company_name: 'local.ch' }.to_json)
       stub_request(:get, "#{datastore}/users/1")
-        .to_return(body: {name: 'Mario'}.to_json)
+        .to_return(body: { name: 'Mario' }.to_json)
       stub_request(:get, "#{datastore}/favorites/1")
         .to_return(body: {
-          local_entry: {href: "#{datastore}/local-entries/1"},
-          user: {href: "#{datastore}/users/1"}
-          }.to_json)
+          local_entry: { href: "#{datastore}/local-entries/1" },
+          user: { href: "#{datastore}/users/1" }
+        }.to_json)
     end
 
     it 'includes a resource' do
@@ -69,7 +68,6 @@ describe LHS::Record do
   end
 
   context 'multilevel includes' do
-
     before(:each) do
       class Feedback < LHS::Record
         endpoint ':datastore/feedbacks'
@@ -81,7 +79,6 @@ describe LHS::Record do
     end
 
     it 'includes linked resources while fetching multiple resources from one service' do
-
       stub_request(:get, "#{datastore}/feedbacks?has_reviews=true")
         .to_return(status: 200, body: {
           items: [
@@ -97,7 +94,6 @@ describe LHS::Record do
     end
 
     it 'includes linked resources while fetching a single resource from one service' do
-
       stub_request(:get, "#{datastore}/feedbacks/123")
         .to_return(status: 200, body: {
           'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
@@ -109,7 +105,6 @@ describe LHS::Record do
     end
 
     it 'includes linked resources with array while fetching a single resource from one service' do
-
       stub_request(:get, "#{datastore}/feedbacks/123")
         .to_return(status: 200, body: {
           'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
@@ -122,7 +117,6 @@ describe LHS::Record do
     end
 
     it 'includes list of linked resources while fetching a single resource from one service' do
-
       stub_request(:get, "#{datastore}/feedbacks/123")
         .to_return(status: 200, body: {
           'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
@@ -137,18 +131,17 @@ describe LHS::Record do
     end
 
     context 'include objects from known services' do
-
       let(:stub_feedback_request) do
         stub_request(:get, "#{datastore}/feedbacks")
           .to_return(status: 200, body: {
-              items: [
-                {
-                  'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
-                  'entry' => {
-                    'href' => "#{datastore}/local-entries/lakj35asdflkj1203va"
-                  }
+            items: [
+              {
+                'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
+                'entry' => {
+                  'href' => "#{datastore}/local-entries/lakj35asdflkj1203va"
                 }
-              ]
+              }
+            ]
           }.to_json)
       end
 
@@ -161,6 +154,7 @@ describe LHS::Record do
       end
 
       it 'uses interceptors for included links from known services' do
+        # rubocop:disable RSpec/InstanceVariable
         stub_feedback_request
         stub_entry_request
 
@@ -169,12 +163,12 @@ describe LHS::Record do
 
         expect(Feedback.includes(:entry).where.first.entry.name).to eq 'Casa Ferlin'
         expect(@called).to eq 2
+        # rubocop:enable RSpec/InstanceVariable
       end
     end
   end
 
   context 'links pointing to nowhere' do
-
     it 'sets nil for links that cannot be included' do
       class Feedback < LHS::Record
         endpoint ':datastore/feedbacks'

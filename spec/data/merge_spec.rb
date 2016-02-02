@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Data do
-
   before(:each) do
     class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
@@ -10,20 +9,19 @@ describe LHS::Data do
   end
 
   let(:data) do
-    LHS::Data.new({
-      href: 'http://www.local.ch/v2/stuff'
-    }, nil, Record)
+    described_class.new({
+                          href: 'http://www.local.ch/v2/stuff'
+                        }, nil, Record)
   end
 
   let(:loaded_data) do
-    LHS::Data.new({
-      href: 'http://www.local.ch/v2/stuff',
-      id: '123123123'
-    }, nil, Record)
+    described_class.new({
+                          href: 'http://www.local.ch/v2/stuff',
+                          id: '123123123'
+                        }, nil, Record)
   end
 
   context 'merging' do
-
     it 'merges data' do
       data.merge_raw!(loaded_data)
       expect(data.id).to eq loaded_data.id

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Proxy do
-
   before(:each) do
     class Record < LHS::Record
       endpoint ':datastore/v2/feedbacks'
@@ -30,7 +29,6 @@ describe LHS::Proxy do
   end
 
   context 'load' do
-
     it 'is loading data remotely when not present yet' do
       expect(link.load!.id).to be
       expect(link.id).to be

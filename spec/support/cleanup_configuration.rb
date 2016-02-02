@@ -9,9 +9,7 @@ class LHC::Config
 end
 
 RSpec.configure do |config|
-
   config.before(:each) do
     LHC::Config.instance._cleanup
   end
-
 end

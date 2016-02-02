@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'definitions' do
-
     let(:datastore) { 'http://local.ch/v2' }
 
     before(:each) do
@@ -21,7 +19,7 @@ describe LHS::Record do
         end
       end
       stub_request(:get, "#{datastore}/local-entries/1")
-        .to_return(status: 200, body: {addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}.to_json)
+        .to_return(status: 200, body: { addresses: [{ business: { identities: [{ name: 'Löwenzorn' }] } }] }.to_json)
       entry = LocalEntry.find(1)
       expect(entry.name).to eq 'Löwenzorn'
     end

@@ -7,7 +7,6 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       def model_name
         ActiveModel::Name.new(self)
       end

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Data do
-
   before(:each) do
     class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
@@ -14,7 +13,7 @@ describe LHS::Data do
   end
 
   let(:data) do
-    LHS::Data.new(json, nil, Record)
+    described_class.new(json, nil, Record)
   end
 
   let(:item) do
@@ -22,7 +21,6 @@ describe LHS::Data do
   end
 
   context 'item' do
-
     it 'makes data accessible' do
       expect(item.href).to be_kind_of String
       expect(item.recommended).to be_kind_of TrueClass
@@ -33,8 +31,8 @@ describe LHS::Data do
       expect(item.something).to eq nil
     end
 
-    it 'returns datetime if string can be parsed as date_time' do
-      expect(item.created_date).to be_kind_of DateTime
+    it 'returns TimeWithZone if string can be parsed as date_time' do
+      expect(item.created_date).to be_kind_of ActiveSupport::TimeWithZone
     end
 
     it 'returns date if string can be parsed as date' do

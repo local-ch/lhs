@@ -6,7 +6,6 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       # Should be an edge case but sometimes all objects from a certain resource
       # are required. In this case we load the first page with the default max limit,
       # compute the amount of left over requests, do all the the left over requests
@@ -22,7 +21,7 @@ class LHS::Record
         if limit > 0
           requests = total_left / limit
           requests.times do |i|
-            offset = limit * (i+1) + 1
+            offset = limit * (i + 1) + 1
             all.concat request(params: params.merge(limit: limit, offset: offset))._raw[:items]
           end
         end

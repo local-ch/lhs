@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Item do
-
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
@@ -27,10 +26,9 @@ describe LHS::Item do
   end
 
   context 'destroy' do
-
     it 'destroys the item on the backend' do
       stub_request(:delete, "#{datastore}/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ")
-      .to_return(status: 200)
+        .to_return(status: 200)
       expect(item.destroy._raw).to eq item._raw
     end
 
@@ -51,11 +49,11 @@ describe LHS::Item do
       it 'destroys an item even though it includes additonal services and an empty response body' do
         stub_request(:delete, "#{datastore}/v2/feedbacks/1")
           .to_return(status: 204, body: '')
-        data = { href: "#{datastore}/v2/feedbacks/1", restaurant: {href: "#{datastore}/v2/restaurants/1"} }
+        data = { href: "#{datastore}/v2/feedbacks/1", restaurant: { href: "#{datastore}/v2/restaurants/1" } }
         stub_request(:get, "#{datastore}/v2/feedbacks?id=1")
           .to_return(status: 200, body: data.to_json)
         stub_request(:get, "#{datastore}/v2/restaurants/1")
-          .to_return(status: 200, body: {name: 'Casa Ferlin'}.to_json)
+          .to_return(status: 200, body: { name: 'Casa Ferlin' }.to_json)
         item = Record.includes(:restaurant).find(1)
         item.destroy
       end

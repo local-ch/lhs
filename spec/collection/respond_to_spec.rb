@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-
   let(:data) {
     ['ROLE_USER', 'ROLE_LOCALCH_ACCOUNT']
   }
