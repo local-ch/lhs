@@ -28,9 +28,7 @@ class LHS::Collection < LHS::Proxy
     Collection.new(raw, _data, _data._record_class)
   end
 
-  def _raw
-    _data._raw
-  end
+  delegate :_raw, to: :_data
 
   protected
 
@@ -49,8 +47,6 @@ class LHS::Collection < LHS::Proxy
     _collection.respond_to?(name, include_all)
   end
 
-  private
-
   # The internal collection class that includes enumerable
   # and insures to return LHS::Items in case of iterating items
   class Collection
@@ -65,7 +61,7 @@ class LHS::Collection < LHS::Proxy
       @record = record
     end
 
-    def each(&block)
+    def each(&_block)
       raw.each do |item|
         if item.is_a? Hash
           yield LHS::Data.new(item, @parent, @record)

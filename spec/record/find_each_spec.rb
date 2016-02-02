@@ -1,13 +1,12 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-
   let(:total) { 443 }
 
   let(:limit) { 100 }
 
   def api_response(ids, offset)
-    records = ids.map{|i| {id: i}}
+    records = ids.map { |i| { id: i } }
     {
       items: records,
       total: total,
@@ -27,7 +26,6 @@ describe LHS::Collection do
   end
 
   context 'find_each' do
-
     it 'processes each record by fetching records in batches' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=1").to_return(status: 200, body: api_response((1..100).to_a, 1))
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101").to_return(status: 200, body: api_response((101..200).to_a, 101))
@@ -42,6 +40,6 @@ describe LHS::Collection do
         expect(record._proxy).to be_kind_of LHS::Item
       end
       expect(count).to eq total
-    end    
+    end
   end
 end

@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'set options for an endpoint' do
-
     before(:each) do
       class Record < LHS::Record
         endpoint 'backend/v2/feedbacks/:id', cache_expires_in: 1.day, retry: 2, cache: true

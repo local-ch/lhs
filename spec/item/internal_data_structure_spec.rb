@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Item do
-
   before(:each) do
     class Feedback < LHS::Record
       endpoint ':datastore/v2/feedbacks'
@@ -10,7 +9,7 @@ describe LHS::Item do
   end
 
   let(:hash) do
-    {'addresses' => [{'businesses' => {'identities' => [{'name' => 'Löwenzorn'}]}}]}
+    { 'addresses' => [{ 'businesses' => { 'identities' => [{ 'name' => 'Löwenzorn' }] } }] }
   end
 
   let(:data) do
@@ -32,7 +31,7 @@ describe LHS::Item do
   it 'deep symbolizes internal data when building new objects' do
     feedback = Feedback.build('name' => 'BB8')
     expect(feedback._data._raw.keys).to include(:name)
-  end 
+  end
 
   it 'can handle ActionController::Parameters' do
     params = ActionController::Parameters.new('name' => 'Han')

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Item do
-
   let(:datastore) { 'http://local.ch' }
 
   before(:each) do
@@ -13,8 +12,8 @@ describe LHS::Item do
   end
 
   let(:mock_validation) do
-      successful_validation
-    end
+    successful_validation
+  end
 
   let(:successful_validation) do
     stub_request(:post, "#{datastore}/v2/users?persist=false").to_return(body: '{}')
@@ -23,10 +22,10 @@ describe LHS::Item do
   let(:failing_validation) do
     stub_request(:post, "#{datastore}/v2/users?persist=false")
       .to_return(status: 400,
-        body: {
-          field_errors: [{code: "UNSUPPORTED_PROPERTY_VALUE", "path" => [ "email" ]}] 
-        }.to_json
-      )
+                 body: {
+                   field_errors: [{ code: "UNSUPPORTED_PROPERTY_VALUE", "path" => ["email"] }]
+                 }.to_json
+                )
   end
 
   context 'valid data' do
@@ -48,7 +47,6 @@ describe LHS::Item do
   end
 
   context 'invalid data' do
-
     let(:user) do
       User.build(email: 'im not an email address')
     end
@@ -79,7 +77,7 @@ describe LHS::Item do
     end
 
     it 'fails when trying to use an endpoint for validations that does not support it' do
-      expect(->{
+      expect(lambda {
         Favorite.build.valid?
       }).to raise_error('Endpoint does not support validations!')
     end

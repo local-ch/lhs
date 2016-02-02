@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Item do
-
   before(:each) do
     class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
@@ -22,16 +21,15 @@ describe LHS::Item do
   end
 
   context 'item setter' do
-
     it 'sets the value for an existing attribute' do
-      expect(item.name = 'Steve').to eq 'Steve'
+      expect((item.name = 'Steve')).to eq 'Steve'
       expect(item.name).to eq 'Steve'
       expect(item._raw[:name]).to eq 'Steve'
     end
 
     it 'sets things to nil' do
       item.name = 'Steve'
-      expect(item.name = nil).to eq nil
+      expect((item.name = nil)).to eq nil
       expect(item.name).to eq nil
     end
   end

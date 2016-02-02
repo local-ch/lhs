@@ -6,7 +6,6 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       # Used to query data from the service.
       def where(params = {})
         data = request(params: params)

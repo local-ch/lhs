@@ -6,14 +6,14 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       # Find a single uniqe record
       def find(args)
-        data = if args.is_a? Hash
-          find_with_parameters(args)
-        else
-          find_by_id(args)
-        end
+        data =
+          if args.is_a? Hash
+            find_with_parameters(args)
+          else
+            find_by_id(args)
+          end
         data._record_class.new(data)
       end
 

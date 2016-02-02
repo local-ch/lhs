@@ -1,0 +1,48 @@
+rspec:
+  name: 'RSPec tests'
+
+  run-on:
+    - type: branch
+      include-match: ^.*$
+
+  context:
+    task-defaults:
+      ports:
+        CAPYBARA_PORT:
+          inet_address: "localhost"
+          min: 8000
+          max: 8999
+        PHANTOMJS_PORT:
+          inet_address: "localhost"
+          min: 44600
+          max: 44999
+
+      scripts:
+        rspec:
+          start-when:
+            - script: bundle
+            - script: ruby-version
+            - script: tmp-cache
+
+
+        _cider-ci_include:
+          - cider-ci/scripts/bundle.yml
+          - cider-ci/scripts/tmp-cache.yml
+          - cider-ci/scripts/ruby-version.yml
+          - cider-ci/scripts/rspec.yml
+
+
+      trial-attachments:
+        logs:
+          include-match: log\/.*\.log$
+          content-type: text/plain
+        image-screenshots:
+          include-match: tmp\/capybara\/.*\.png$
+          content-type: image/png
+        html-screenshots:
+          include-match: tmp\/capybara\/.*\.html$
+          content-type: text/html
+
+    _cider-ci_generate-tasks:
+      include-match: spec/.*_spec.rb
+      exclude-match: spec/support/shared/*

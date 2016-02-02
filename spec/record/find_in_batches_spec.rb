@@ -1,13 +1,12 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-
   let(:total) { 443 }
 
   let(:limit) { 100 }
 
   def api_response(ids, offset)
-    records = ids.map{|i| {id: i}}
+    records = ids.map { |i| { id: i } }
     {
       items: records,
       total: total,
@@ -27,7 +26,6 @@ describe LHS::Collection do
   end
 
   context 'find_batches' do
-
     it 'processes records in batches' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=1").to_return(status: 200, body: api_response((1..100).to_a, 1))
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101").to_return(status: 200, body: api_response((101..200).to_a, 101))
@@ -38,7 +36,7 @@ describe LHS::Collection do
       Record.find_in_batches do |records|
         count += records.count
         expect(records).to be_kind_of Record
-        expect(records._proxy).to be_kind_of LHS::Collection
+        expect(records._proxy).to be_kind_of described_class
       end
       expect(count).to eq total
     end
@@ -53,7 +51,7 @@ describe LHS::Collection do
       Record.find_in_batches(batch_size: 230) do |records|
         count += records.count
         expect(records).to be_kind_of Record
-        expect(records._proxy).to be_kind_of LHS::Collection
+        expect(records._proxy).to be_kind_of described_class
       end
       expect(count).to eq total
     end
@@ -61,7 +59,7 @@ describe LHS::Collection do
     it 'forwards offset' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=401").to_return(status: 200, body: api_response((401..total).to_a, 401))
       Record.find_in_batches(start: 401) do |records|
-        expect(records.count).to eq(total-400)
+        expect(records.count).to eq(total - 400)
       end
     end
   end

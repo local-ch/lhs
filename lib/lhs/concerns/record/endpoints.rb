@@ -12,7 +12,6 @@ class LHS::Record
     mattr_accessor :all
 
     module ClassMethods
-
       def endpoints
         @endpoints ||= []
       end
@@ -32,7 +31,7 @@ class LHS::Record
 
       def for_url(url)
         return unless url
-        template, record = LHS::Record::Endpoints.all.detect do |template, _record_class|
+        _template, record = LHS::Record::Endpoints.all.detect do |template, _record_class|
           LHC::Endpoint.match?(url, template)
         end
         record
@@ -75,7 +74,7 @@ class LHS::Record
 
       # Sort endpoints by number of placeholders, heighest first
       def sorted_endpoints
-        endpoints.sort{|a, b| b.placeholders.count <=> a.placeholders.count }
+        endpoints.sort { |a, b| b.placeholders.count <=> a.placeholders.count }
       end
 
       # Finds the base endpoint.

@@ -6,7 +6,6 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       def including
         @including
       end

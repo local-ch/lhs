@@ -9,9 +9,7 @@ class LHS::Record
 
 end
 
-
 RSpec.configure do |config|
-
   config.before(:each) do
     LHS::Record::CHILDREN.each do |child|
       child.endpoints = [] if !child.name['LHS']

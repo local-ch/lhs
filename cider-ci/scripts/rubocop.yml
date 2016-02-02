@@ -1,0 +1,5 @@
+rubocop:
+  body: |
+    #!/usr/bin/env bash
+
+    bundle exec rubocop  --config .rubocop.yml --format json --out $RESULT_PATH --format progress

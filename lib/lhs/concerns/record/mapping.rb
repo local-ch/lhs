@@ -7,7 +7,6 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-      
       def mapping
         @mapping ||= {}
       end

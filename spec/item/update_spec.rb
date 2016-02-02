@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Item do
-
   before(:each) do
     class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
@@ -22,10 +21,9 @@ describe LHS::Item do
   end
 
   context 'update' do
-
     it 'persists changes on the backend' do
       stub_request(:post, item.href)
-      .with(body: item._raw.merge(name: 'Steve').to_json)
+        .with(body: item._raw.merge(name: 'Steve').to_json)
       result = item.update(name: 'Steve')
       expect(result).to eq true
     end
@@ -53,12 +51,11 @@ describe LHS::Item do
   end
 
   context 'update!' do
-
     it 'raises if something goes wrong' do
       stub_request(:post, item.href)
-      .with(body: item._raw.merge(name: 'Steve').to_json)
-      .to_return(status: 500)
-      expect(->{ item.update!(name: 'Steve') }).to raise_error LHC::ServerError
+        .with(body: item._raw.merge(name: 'Steve').to_json)
+        .to_return(status: 500)
+      expect(-> { item.update!(name: 'Steve') }).to raise_error LHC::ServerError
     end
   end
 end

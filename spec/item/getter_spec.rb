@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Item do
-
   before(:each) do
     class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'
@@ -10,11 +9,10 @@ describe LHS::Item do
   end
 
   let(:data) do
-    LHS::Data.new({addresses: [{business: {identities: [{name: 'Löwenzorn'}]}}]}, nil, Record)
+    LHS::Data.new({ addresses: [{ business: { identities: [{ name: 'Löwenzorn' }] } }] }, nil, Record)
   end
 
   context 'item getter' do
-
     it 'returns a collection if you access an array' do
       expect(data.addresses).to be_kind_of(LHS::Data)
       expect(data.addresses._proxy).to be_kind_of(LHS::Collection)

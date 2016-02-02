@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-
   let(:datastore) { 'http://local.ch/v2' }
 
   before(:each) do
@@ -13,41 +12,40 @@ describe LHS::Collection do
   end
 
   context 'all' do
-
     it 'fetches all records from the backend' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
-      .to_return(status: 200, body: {items: (1..100).to_a, total: 300, limit: 100, offset: 0}.to_json)
+        .to_return(status: 200, body: { items: (1..100).to_a, total: 300, limit: 100, offset: 0 }.to_json)
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101")
-      .to_return(status: 200, body: {items: (101..200).to_a, total: 300, limit: 100, offset: 101}.to_json)
+        .to_return(status: 200, body: { items: (101..200).to_a, total: 300, limit: 100, offset: 101 }.to_json)
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201")
-      .to_return(status: 200, body: {items: (201..300).to_a, total: 300, limit: 100, offset: 201}.to_json)
+        .to_return(status: 200, body: { items: (201..300).to_a, total: 300, limit: 100, offset: 201 }.to_json)
       all = Record.all
       expect(all).to be_kind_of Record
-      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all._proxy).to be_kind_of described_class
       expect(all.count).to eq 300
       expect(all.last).to eq 300
     end
 
     it 'also fetches all when there is not meta information for limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
-      .to_return(status: 200, body: {items: (1..100).to_a, total: 300, offset: 0}.to_json)
+        .to_return(status: 200, body: { items: (1..100).to_a, total: 300, offset: 0 }.to_json)
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101")
-      .to_return(status: 200, body: {items: (101..200).to_a, total: 300, offset: 101}.to_json)
+        .to_return(status: 200, body: { items: (101..200).to_a, total: 300, offset: 101 }.to_json)
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201")
-      .to_return(status: 200, body: {items: (201..300).to_a, total: 300, offset: 201}.to_json)
+        .to_return(status: 200, body: { items: (201..300).to_a, total: 300, offset: 201 }.to_json)
       all = Record.all
       expect(all).to be_kind_of Record
-      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all._proxy).to be_kind_of described_class
       expect(all.count).to eq 300
       expect(all.last).to eq 300
     end
 
     it 'also works when there is no item in the first response' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
-        .to_return(status: 200, body: {items: [], total: 300, offset: 0}.to_json)
+        .to_return(status: 200, body: { items: [], total: 300, offset: 0 }.to_json)
       all = Record.all
       expect(all).to be_kind_of Record
-      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all._proxy).to be_kind_of described_class
       expect(all.count).to eq 0
     end
   end

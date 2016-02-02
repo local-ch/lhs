@@ -8,14 +8,14 @@ class LHS::Errors
     @messages = messages_from_response(response)
     @message = message_from_response(response)
     @raw = response.body
-    rescue JSON::ParserError
+  rescue JSON::ParserError # rubocop:disable Lint/HandleExceptions
   end
 
   def include?(attribute)
     messages[attribute].present?
   end
-  alias :has_key? :include?
-  alias :key? :include?
+  alias has_key? include?
+  alias key? include?
 
   def get(key)
     messages[key]
@@ -25,9 +25,7 @@ class LHS::Errors
     messages[key] = value
   end
 
-  def delete(key)
-    messages.delete(key)
-  end
+  delegate :delete, to: :messages
 
   def [](attribute)
     get(attribute.to_sym) || set(attribute.to_sym, [])
@@ -47,20 +45,16 @@ class LHS::Errors
     values.flatten.size
   end
 
-  def values
-    messages.values
-  end
+  delegate :values, to: :messages
 
-  def keys
-    messages.keys
-  end
+  delegate :keys, to: :messages
 
   def count
     to_a.size
   end
 
   def empty?
-    all? { |k, v| v && v.empty? && !v.is_a?(String) }
+    all? { |_k, v| v && v.empty? && !v.is_a?(String) }
   end
 
   private
