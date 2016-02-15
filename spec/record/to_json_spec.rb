@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'to_json' do
     let(:datastore) { 'http://local.ch/v2' }
 
