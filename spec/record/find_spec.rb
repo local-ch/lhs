@@ -36,7 +36,7 @@ describe LHS::Record do
     end
 
     it 'returns item in case of backend returning collection' do
-      data = JSON.parse(load_json(:feedbacks))
+      data = ::JSON.parse(load_json(:feedbacks))
       data['items'] = [data['items'].first]
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
         .to_return(body: data.to_json)
@@ -53,7 +53,7 @@ describe LHS::Record do
     end
 
     it 'fails when no item as found by parameters' do
-      data = JSON.parse(load_json(:feedbacks))
+      data = ::JSON.parse(load_json(:feedbacks))
       data['items'] = []
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
         .to_return(body: data.to_json)

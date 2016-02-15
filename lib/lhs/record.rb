@@ -8,6 +8,7 @@ class LHS::Record
   include Find
   include FindBy
   include First
+  include JSON
   include Mapping
   include Model
   include Includes

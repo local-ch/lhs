@@ -9,7 +9,7 @@ class LHS::Record
       def create(data = {})
         create!(data)
       rescue LHC::Error => e
-        json = JSON.parse(data.to_json)
+        json = ::JSON.parse(data.to_json)
         data = LHS::Data.new(json, nil, self, e.response.request)
         item = LHS::Item.new(data)
         item.errors = LHS::Errors.new(e.response)

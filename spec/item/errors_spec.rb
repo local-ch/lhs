@@ -85,7 +85,7 @@ describe LHS::Item do
       record = Record.build
       record.save
       expect(record.errors.raw).to be
-      json = JSON.parse(record.errors.raw)
+      json = ::JSON.parse(record.errors.raw)
       expect(json['status']).to be
       expect(json['message']).to be
       expect(json['field_errors']).to be
