@@ -18,7 +18,6 @@ describe LHS::Item do
   end
 
   context 'custom validation parameter' do
-
     let(:validation_parameter) { 'publish' }
 
     let(:user) do
@@ -35,11 +34,9 @@ describe LHS::Item do
     it 'validates' do
       expect(user.valid?).to eq true
     end
-
   end
 
   context 'default parameter' do
-
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
       class User < LHS::Record
@@ -105,9 +102,9 @@ describe LHS::Item do
       end
 
       it 'fails when trying to use an endpoint for validations that does not support it' do
-        expect(lambda {
+        expect(lambda do
           Favorite.build.valid?
-        }).to raise_error('Endpoint does not support validations!')
+        end).to raise_error('Endpoint does not support validations!')
       end
     end
   end
