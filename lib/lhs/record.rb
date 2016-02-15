@@ -29,6 +29,10 @@ class LHS::Record
     instance_variable_set('@data', instance_data)
   end
 
+  def as_json(options = nil)
+    _data.as_json(options)
+  end
+
   def self.build(data = nil)
     new(data)
   end
