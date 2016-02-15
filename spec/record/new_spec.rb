@@ -22,7 +22,7 @@ describe LHS::Record do
     end
 
     it 'builds new items also with keys containing dashes' do
-      Feedback.new({'some-key' => []})
+      Feedback.new('some-key' => [])
     end
   end
 end
