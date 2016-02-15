@@ -18,11 +18,15 @@ class LHS::Record
     data = LHS::Data.new({}, nil, self.class) unless data
     data = LHS::Data.new(data, nil, self.class) unless data.is_a?(LHS::Data)
     define_singleton_method(:_data) { data }
-    if data._proxy.is_a?(LHS::Item) && data._raw.is_a?(Hash)
-      data._raw.each { |k, v| instance_variable_set("@#{k}", v) }
-    elsif data._proxy.is_a? LHS::Collection
-      instance_variable_set('@collection', data._collection.raw)
-    end
+    instance_data =
+      if data._proxy.is_a?(LHS::Item) && data._raw.is_a?(Hash)
+        data._raw
+      elsif data._proxy.is_a?(LHS::Collection) && data._raw.is_a?(Hash)
+        data._raw.fetch(:items, [])
+      else
+        data._raw
+      end
+    instance_variable_set('@data', instance_data)
   end
 
   def self.build(data = nil)
