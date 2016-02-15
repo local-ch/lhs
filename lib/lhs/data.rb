@@ -100,7 +100,7 @@ class LHS::Data
   end
 
   def raw_from_json_string(input)
-    json = ::JSON.parse(input)
+    json = JSON.parse(input)
     if json.is_a?(Hash)
       json.deep_symbolize_keys
     else

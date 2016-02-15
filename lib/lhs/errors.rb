@@ -83,12 +83,12 @@ class LHS::Errors
 
   def messages_from_response(response)
     return {} if !response.body.is_a?(String) || response.body.length.zero?
-    json = ::JSON.parse(response.body)
+    json = JSON.parse(response.body)
     parse_messages(json)
   end
 
   def message_from_response(response)
-    json = ::JSON.parse(response.body)
+    json = JSON.parse(response.body)
     json['message']
   end
 end

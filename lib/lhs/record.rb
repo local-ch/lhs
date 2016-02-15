@@ -8,7 +8,6 @@ class LHS::Record
   include Find
   include FindBy
   include First
-  include JSON
   include Mapping
   include Model
   include Includes
@@ -28,6 +27,10 @@ class LHS::Record
         data._raw
       end
     instance_variable_set('@data', instance_data)
+  end
+
+  def as_json(options = nil)
+    _data.as_json(options)
   end
 
   def self.build(data = nil)

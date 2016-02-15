@@ -14,7 +14,7 @@ describe LHS::Record do
 
     it 'converts to json' do
       feedback = Feedback.new recommended: true
-      expect(feedback.as_json).to eq(recommended: true)
+      expect(feedback.as_json).to eq('recommended' => true)
       expect(feedback.to_json).to eq("{\"recommended\":true}")
     end
   end
