@@ -20,5 +20,9 @@ describe LHS::Record do
         .with(body: "{\"recommended\":true}")
       feedback.save
     end
+
+    it 'builds new items also with keys containing dashes' do
+      Feedback.new({'some-key' => []})
+    end
   end
 end
