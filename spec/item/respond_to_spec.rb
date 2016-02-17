@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Item do
   let(:item){
-    described_class.new(id: 1234)
+    LHS::Item.new(id: 1234)
   }
 
   context '#respond_to?' do

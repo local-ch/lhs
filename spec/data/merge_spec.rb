@@ -9,16 +9,11 @@ describe LHS::Data do
   end
 
   let(:data) do
-    described_class.new({
-                          href: 'http://www.local.ch/v2/stuff'
-                        }, nil, Record)
+    LHS::Data.new({ href: 'http://www.local.ch/v2/stuff' }, nil, Record)
   end
 
   let(:loaded_data) do
-    described_class.new({
-                          href: 'http://www.local.ch/v2/stuff',
-                          id: '123123123'
-                        }, nil, Record)
+    LHS::Data.new({ href: 'http://www.local.ch/v2/stuff', id: '123123123' }, nil, Record)
   end
 
   context 'merging' do

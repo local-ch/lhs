@@ -6,7 +6,7 @@ describe LHS::Collection do
   }
 
   let(:collection){
-    described_class.new(LHS::Data.new(data))
+    LHS::Data.new(LHS::Data.new(data))
   }
 
   context '#respond_to?' do
