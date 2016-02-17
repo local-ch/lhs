@@ -40,11 +40,10 @@ class LHS::Record
   protected
 
   def method_missing(name, *args, &block)
-    _data.send(name, *args, &block)
+    _data._proxy.send(name, *args, &block)
   end
 
   def respond_to_missing?(name, include_all = false)
-    (_data.root_item? && _data._root._record_class.instance_methods.include?(name)) ||
-      _data._proxy.respond_to?(name, include_all)
+    _data.respond_to_missing?(name, include_all)
   end
 end

@@ -21,7 +21,7 @@ describe LHS::Collection do
         .to_return(status: 200, body: { items: (201..300).to_a, total: 300, limit: 100, offset: 201 }.to_json)
       all = Record.all
       expect(all).to be_kind_of Record
-      expect(all._proxy).to be_kind_of described_class
+      expect(all._data._proxy).to be_kind_of described_class
       expect(all.count).to eq 300
       expect(all.last).to eq 300
     end
