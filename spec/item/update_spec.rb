@@ -46,7 +46,7 @@ describe LHS::Item do
         .to_return(status: 400, body: item._raw.merge(likes: 'Banana').to_json)
       item.update(name: 'Andrea')
       expect(item.name).to eq 'Andrea'
-      expect(item.likes).to_not eq 'Banana'
+      expect(item.likes).not_to eq 'Banana'
     end
   end
 

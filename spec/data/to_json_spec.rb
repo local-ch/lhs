@@ -13,7 +13,7 @@ describe LHS::Data do
   end
 
   let(:collection) do
-    described_class.new(json, nil, Record)
+    LHS::Data.new(json, nil, Record)
   end
 
   let(:item) do

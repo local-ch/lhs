@@ -6,7 +6,7 @@ describe LHS::Collection do
   }
 
   let(:collection){
-    described_class.new(LHS::Data.new(data))
+    LHS::Collection.new(LHS::Data.new(data))
   }
 
   context 'delegates methods to raw' do
