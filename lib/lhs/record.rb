@@ -14,6 +14,8 @@ class LHS::Record
   include Request
   include Where
 
+  delegate :_proxy, to: :_data
+
   def initialize(data = nil)
     data = LHS::Data.new({}, nil, self.class) unless data
     data = LHS::Data.new(data, nil, self.class) unless data.is_a?(LHS::Data)
