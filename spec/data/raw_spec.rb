@@ -10,7 +10,7 @@ describe LHS::Data do
   end
 
   let(:data_from_raw) do
-    described_class.new(
+    LHS::Data.new(
       href: 'http://www.local.ch/v2/stuff',
       id: '123123123'
     )
@@ -18,8 +18,8 @@ describe LHS::Data do
 
   let(:data_from_item) do
     raw = { href: 'http://www.local.ch/v2/stuff' }
-    item = LHS::Item.new(described_class.new(raw))
-    described_class.new(item)
+    item = LHS::Item.new(LHS::Data.new(raw))
+    LHS::Data.new(item)
   end
 
   context 'raw' do
