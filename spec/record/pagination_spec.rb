@@ -26,7 +26,7 @@ describe LHS::Record do
         endpoint ':datastore/feedbacks'
       end
       stub_request(:get, 'http://local.ch/v2/feedbacks?entry_id=1')
-        .and_return(body: body_json)
+        .to_return(body: body_json)
     end
 
     it 'responds to limit_value' do
