@@ -331,3 +331,19 @@ Feedback.where(limit: 50, offset: 51)
 `total` provides total amount of items (even if paginated).
 `limit` provides amount of items per page.
 `offset` provides how many items where skipped to start the current page.
+
+## Partial Kaminari support
+
+LHS implements an interface that makes it partially working with Kaminari.
+
+For example, you can use kaminari to render paginations based on LHS Records:
+
+```ruby
+# controller
+@items = Record.where(offset: offset, limit: limit)
+```
+
+```ruby
+# view
+= paginate @items
+```
