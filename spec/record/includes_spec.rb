@@ -206,7 +206,7 @@ describe LHS::Record do
     end
 
     it 'works with modules' do
-      feedback = Services::Feedback.includes(campaign: :entry).find(123)
+      Services::Feedback.includes(campaign: :entry).find(123)
     end
   end
 end
