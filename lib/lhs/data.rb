@@ -37,6 +37,7 @@ class LHS::Data
   def _raw=(raw)
     raw.to_hash.deep_symbolize_keys! if raw && raw.respond_to?(:to_hash)
     @_raw = raw
+  end
 
   def current_page
     offset + 1
