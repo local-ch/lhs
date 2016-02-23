@@ -189,4 +189,24 @@ describe LHS::Record do
       expect(feedback.campaign.href).to be
     end
   end
+
+  context 'modules' do
+    before(:each) do
+      module Services
+        class LocalEntry < LHS::Record
+          endpoint ':datastore/local-entries'
+        end
+
+        class Feedback < LHS::Record
+          endpoint ':datastore/feedbacks'
+        end
+      end
+      stub_request(:get, "http://local.ch/v2/feedbacks?id=123")
+        .to_return(body: [].to_json)
+    end
+
+    it 'works with modules' do
+      Services::Feedback.includes(campaign: :entry).find(123)
+    end
+  end
 end
