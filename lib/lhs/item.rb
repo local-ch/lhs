@@ -83,6 +83,6 @@ class LHS::Item < LHS::Proxy
   end
 
   def date_time_regex
-    /(?<date>\d{4}-\d{2}-\d{2})?(?<time>T\d{2}:\d{2}:\d{2}\.\d*.\d{2}:\d{2})?/
+    /(?<date>\d{4}-\d{2}-\d{2})?(?<time>T\d{2}:\d{2}:\d{2}(\.\d*.\d{2}:\d{2})*)?/
   end
 end
