@@ -2,7 +2,6 @@ require "rails_helper"
 require 'capybara/rspec'
 
 describe 'form_for helper' do
-  
   class Feedback < LHS::Record
     endpoint ':datastore/v2/feedbacks'
   end

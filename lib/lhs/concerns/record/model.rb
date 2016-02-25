@@ -10,10 +10,12 @@ class LHS::Record
       self
     end
 
-    module ClassMethods
-      def model_name
-        ActiveModel::Name.new(self)
-      end
+    def persisted?
+      !_raw[:id].nil?
+    end
+
+    included do
+      extend ActiveModel::Naming
     end
   end
 end
