@@ -29,7 +29,8 @@ class LHS::Record
       else
         data._raw
       end
-    instance_variable_set('@data', instance_data)
+
+    send(:data=, instance_data)
   end
 
   def as_json(options = nil)
@@ -48,5 +49,20 @@ class LHS::Record
 
   def respond_to_missing?(name, include_all = false)
     _data.respond_to_missing?(name, include_all)
+  end
+
+  private
+
+  def data=(instance_data)
+    instance_variable_set('@data', instance_data) if !instance_data.is_a?(Hash)
+
+    instance_variable_set('@data', {})
+    instance_data.each do |k, v|
+      if respond_to?("#{k}=")
+        send("#{k}=", v)
+      else
+        @data[k] = v
+      end
+    end
   end
 end
