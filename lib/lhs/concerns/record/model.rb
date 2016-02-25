@@ -11,7 +11,7 @@ class LHS::Record
     end
 
     def persisted?
-      !_raw[:id].nil?
+      !_raw[:href].nil?
     end
 
     included do
