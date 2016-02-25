@@ -54,7 +54,7 @@ class LHS::Record
   private
 
   def data=(instance_data)
-    instance_variable_set('@data', instance_data) if !instance_data.is_a?(Hash)
+    return instance_variable_set('@data', instance_data) if !instance_data.is_a?(Hash)
 
     instance_variable_set('@data', {})
     instance_data.each do |k, v|
