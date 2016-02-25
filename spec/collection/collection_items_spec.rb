@@ -22,6 +22,10 @@ describe LHS::Collection do
     it 'initalises a collection' do
       expect(collection.first.name).to eq 'Steve'
     end
+
+    it 'casts items to be instance of defined LHS::Record' do
+      expect(collection.first).to be_kind_of Account
+    end
   end
 
   context 'items key' do

@@ -34,13 +34,8 @@ class LHS::Collection < LHS::Proxy
 
   def method_missing(name, *args, &block)
     value = _collection.send(name, *args, &block)
-    if value.is_a? Hash
-      data = LHS::Data.new(value, _data)
-      item = LHS::Item.new(data)
-      LHS::Data.new(item, _data)
-    else
-      value
-    end
+    return enclose_in_data(value) if value.is_a? Hash
+    value
   end
 
   def respond_to_missing?(name, include_all = false)
@@ -64,11 +59,27 @@ class LHS::Collection < LHS::Proxy
     def each(&_block)
       raw.each do |item|
         if item.is_a? Hash
-          yield LHS::Data.new(item, @parent, @record)
+          yield cast_item(item)
         else
           yield item
         end
       end
     end
+
+    private
+
+    def cast_item(item)
+      data = LHS::Data.new(item, @parent, @record)
+      return @record.new(data) if @record
+      data
+    end
+  end
+
+  private
+
+  def enclose_in_data(value)
+    data = LHS::Data.new(value, _data)
+    item = LHS::Item.new(data)
+    LHS::Data.new(item, _data)
   end
 end
