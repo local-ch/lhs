@@ -35,7 +35,7 @@ describe LHS::Record do
       end
 
       it 'are used by initializer' do
-        feedback = Feedback.new(ratings: {a: 1, b: 2})
+        feedback = Feedback.new(ratings: { a: 1, b: 2 })
         expect(feedback.ratings.raw).to eq([1, 2])
       end
     end
