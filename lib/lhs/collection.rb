@@ -1,8 +1,10 @@
 require File.join(__dir__, 'proxy.rb')
+Dir[File.dirname(__FILE__) + '/concerns/collection/*.rb'].each { |file| require file }
 
 # A collection is a special type of data
 # that contains multiple items
 class LHS::Collection < LHS::Proxy
+  include InternalCollection
 
   delegate :select, to: :_collection
 
@@ -34,41 +36,19 @@ class LHS::Collection < LHS::Proxy
 
   def method_missing(name, *args, &block)
     value = _collection.send(name, *args, &block)
-    if value.is_a? Hash
-      data = LHS::Data.new(value, _data)
-      item = LHS::Item.new(data)
-      LHS::Data.new(item, _data)
-    else
-      value
-    end
+    return enclose_in_data(value) if value.is_a? Hash
+    value
   end
 
   def respond_to_missing?(name, include_all = false)
     _collection.respond_to?(name, include_all)
   end
 
-  # The internal collection class that includes enumerable
-  # and insures to return LHS::Items in case of iterating items
-  class Collection
-    include Enumerable
+  private
 
-    attr_accessor :raw
-    delegate :last, :sample, :[], :present?, :blank?, :empty?, to: :raw
-
-    def initialize(raw, parent, record)
-      self.raw = raw
-      @parent = parent
-      @record = record
-    end
-
-    def each(&_block)
-      raw.each do |item|
-        if item.is_a? Hash
-          yield LHS::Data.new(item, @parent, @record)
-        else
-          yield item
-        end
-      end
-    end
+  def enclose_in_data(value)
+    data = LHS::Data.new(value, _data)
+    item = LHS::Item.new(data)
+    LHS::Data.new(item, _data)
   end
 end
