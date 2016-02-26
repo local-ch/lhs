@@ -13,7 +13,7 @@ describe LHS::Data do
   end
 
   let(:data) do
-    described_class.new(json, nil, Record)
+    LHS::Data.new(json, nil, Record)
   end
 
   let(:item) do
@@ -37,6 +37,18 @@ describe LHS::Data do
 
     it 'returns date if string can be parsed as date' do
       expect(item.valid_from).to be_kind_of Date
+    end
+  end
+
+  context 'different date time formats' do
+    let(:item) do
+      item = data[0]
+      item._raw[:created_date] = '2016-07-09T13:45:00+00:00'
+      item
+    end
+
+    it 'returns TimeWithZone if string can be parsed as date_time' do
+      expect(item.created_date).to be_kind_of ActiveSupport::TimeWithZone
     end
   end
 end

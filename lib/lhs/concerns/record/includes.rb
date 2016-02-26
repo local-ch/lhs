@@ -16,7 +16,7 @@ class LHS::Record
 
       def includes(*args)
         name = "#{self}#{args.object_id}"
-        constant = Object.const_set(name, self)
+        constant = Object.const_set(name.demodulize, self)
         class_clone = constant
         class_clone.endpoints = endpoints
         class_clone.mapping = mapping

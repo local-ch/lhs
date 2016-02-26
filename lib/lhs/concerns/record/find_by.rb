@@ -23,13 +23,11 @@ class LHS::Record
       def _find_by(params)
         params = params.dup.merge(limit: 1)
         data = request(params: params)
-        data =
-          if data._proxy.is_a?(LHS::Collection)
-            data.first || fail(LHC::NotFound.new('No item was found.', data._request.response))
-          else
-            data
-          end
-        data._record_class.new(data)
+        if data._proxy.is_a?(LHS::Collection)
+          data.first || fail(LHC::NotFound.new('No item was found.', data._request.response))
+        else
+          data._record_class.new(data)
+        end
       end
     end
   end

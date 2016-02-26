@@ -6,7 +6,7 @@ describe LHS::Data do
   end
 
   let(:data) do
-    described_class.new(raw)
+    LHS::Data.new(raw)
   end
 
   context 'select' do

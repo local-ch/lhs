@@ -6,5 +6,8 @@ inherit_from:
 Lint/IneffectiveAccessModifier:
   Enabled: false
 
+RSpec/DescribedClass:
+  Enabled: false
+
 RSpec/AnyInstance:
   Enabled: false
