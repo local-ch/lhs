@@ -60,7 +60,9 @@ class LHS::Record
     instance_data.each do |k, v|
       if public_methods.include?("#{k}=".to_sym)
         send("#{k}=", v)
-        @data[k] = send(k)._raw
+        raw_value_set = send(k)
+        raw_value_set = raw_value_set._raw if raw_value_set.respond_to?(:_raw)
+        @data[k] = raw_value_set
       else
         @data[k] = v
       end

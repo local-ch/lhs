@@ -36,15 +36,31 @@ describe LHS::Record do
       before(:each) do
         class Feedback
           def ratings=(ratings)
-            _raw[:ratings] = ratings.map { |_, v| v }
+            _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
           end
         end
       end
 
       it 'are used by initializer' do
         feedback = Feedback.new(ratings: { a: 1, b: 2 })
-        expect(feedback.instance_values['data'][:ratings]).to eq(a: 1, b: 2)
-        expect(feedback.ratings.raw).to eq([1, 2])
+        expect(feedback.instance_values['data'][:ratings]).to eq([{ name: :a, value: 1 }, { name: :b, value: 2 }])
+        expect(feedback.ratings.raw).to eq([{ name: :a, value: 1 }, { name: :b, value: 2 }])
+      end
+
+      context 'and custom getters' do
+        before(:each) do
+          class Feedback
+            def ratings
+              Hash[_raw[:ratings].map { |r| [r[:name], r[:value]] }]
+            end
+          end
+        end
+
+        it 'uses custom getters to show data for exploration' do
+          feedback = Feedback.new(ratings: { a: 1, b: 2 })
+          expect(feedback.instance_values['data'][:ratings]).to eq(a: 1, b: 2)
+          expect(feedback.ratings).to eq(a: 1, b: 2)
+        end
       end
     end
   end
