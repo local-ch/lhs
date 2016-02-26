@@ -162,6 +162,38 @@ Build and persist new items from scratch are done either with `new` or it's alia
   feedback.save
 ```
 
+## Custom setters and getters
+
+Sometimes it is the case that you want to have your custom getters and setters and convert the data to backend processable format behind the scenes. It is now supported by the initializer.
+
+```ruby
+class Feedback < LHS::Record
+  def ratings=(ratings)
+    _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
+  end
+end
+
+feedback = Feedback.new(ratings: { quality: 3 }) # #<Feedback:0x007fc8f9a43598 @data={:ratings=>[{:name=>:quality, :value=>3}]}>
+feedback.ratings # #<LHS::Data:0x007fc8fa6d4050 ... @_raw=[{:name=>:quality, :value=>3}]>
+
+```
+
+If you have an accompanying getter the whole data manipulation would be internal only.
+
+```ruby
+class Feedback < LHS::Record
+  ...
+
+  def ratings
+    Hash[_raw[:ratings].map { |r| [r[:name], r[:value]] }]
+  end
+end
+
+feedback = Feedback.new(ratings: { quality: 3 }) # #<Feedback:0x007fc8f9a43598 @data={:ratings=>{:quality=>3}}>
+feedback.ratings # {:quality=>3}
+
+```
+
 ## Include linked resources
 
 When fetching records, you can specify in advance all the linked resources that you want to include in the results. With `includes`, LHS ensures that all matching and explicitly linked resources are loaded and merged.
@@ -201,7 +233,7 @@ The implementation is heavily influenced by [http://guides.rubyonrails.org/activ
 
 ### Known LHS::Records are used to request linked resources
 
-When including linked resources with `includes`, known/defined services and endpoints are used to make those requests. 
+When including linked resources with `includes`, known/defined services and endpoints are used to make those requests.
 That also means that options for endpoints of linked resources are applied when requesting those in addition.
 This allows you to include protected resources (e.g. OAuth) as endpoint options for oauth authentication get applied.
 
@@ -222,7 +254,7 @@ class Place < LHS::Record
 
 end
 
-Favorite.includes(:place).where(user_id: current_user.id) 
+Favorite.includes(:place).where(user_id: current_user.id)
 # Will include places and applies endpoint options to authenticate the request.
 ```
 
