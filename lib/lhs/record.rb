@@ -60,6 +60,7 @@ class LHS::Record
     instance_data.each do |k, v|
       if respond_to?("#{k}=")
         send("#{k}=", v)
+        @data[k] = send(k)
       else
         @data[k] = v
       end
