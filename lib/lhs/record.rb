@@ -58,9 +58,9 @@ class LHS::Record
 
     instance_variable_set('@data', {})
     instance_data.each do |k, v|
-      if respond_to?("#{k}=")
+      if public_methods.include?("#{k}=".to_sym)
         send("#{k}=", v)
-        @data[k] = send(k)
+        @data[k] = send(k)._raw
       else
         @data[k] = v
       end
