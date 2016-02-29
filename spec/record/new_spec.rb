@@ -47,6 +47,13 @@ describe LHS::Record do
         expect(feedback.ratings.raw).to eq([{ name: :a, value: 1 }, { name: :b, value: 2 }])
       end
 
+      it 'can be used directly to change raw data' do
+        feedback = Feedback.new(ratings: { a: 1 })
+        feedback.ratings = { z: 3 }
+        expect(feedback.ratings.first.name).to eq :z
+        expect(feedback.instance_values['data'][:ratings].first[:name]).to eq :z
+      end
+
       context 'and custom getters' do
         before(:each) do
           class Feedback
