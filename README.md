@@ -73,7 +73,7 @@ Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 If no record is found an error is raised.
 
 ## Proxy
-Instead of mapping data when it arrives from the backend, the proxy makes data accessible when you access it, not when you fetch it. The proxy is used to access data and it is divided in `Collection` and `Item`. 
+Instead of mapping data when it arrives from the backend, the proxy makes data accessible when you access it, not when you fetch it. The proxy is used to access data and it is divided in `Collection` and `Item`.
 
 `find` can also be used to find a single uniqe record with parameters:
 
@@ -119,7 +119,7 @@ data.total # 998
 ```ruby
 Feedback.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |feedback|
   # Iterates over each record. Starts with record nr. 50 and fetches 20 records each batch.
-  feedback 
+  feedback
   break if feedback.some_attribute == some_value
 end
 ```
@@ -223,10 +223,10 @@ The implementation is heavily influenced by [http://guides.rubyonrails.org/activ
 ```ruby
   # list of includes
   claims = Claims.includes(:localch_account, :entry).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
-  
+
   # array of includes
   claims = Claims.includes([:localch_account, :entry]).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
-  
+
   # Two-level with array of includes
   feedbacks = Feedback.includes(campaign: [:entry, :user]).where(has_reviews: true)
 ```
