@@ -37,7 +37,6 @@ describe LHS::Record do
 
       it 'is true' do
         subject.save
-
         expect(subject.persisted?).to be(true)
       end
     end
