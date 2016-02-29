@@ -347,3 +347,13 @@ For example, you can use kaminari to render paginations based on LHS Records:
 # view
 = paginate @items
 ```
+
+## form_for Helper
+Rails `form_for` view-helper can be used in combination with instances of LHS::Record to autogenerate forms:
+```
+<%= form_for(@instance, url: '/create') do |f| %>
+  <%= f.text_field :name %>
+  <%= f.text_area :text %>
+  <%= f.submit "Create" %>
+<% end %>
+```

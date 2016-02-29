@@ -1,0 +1,5 @@
+<%= form_for(@instance, url: '/create') do |f| %>
+  <%= f.text_field :name %>
+  <%= f.text_area :text %>
+  <%= f.submit "Create" %>
+<% end %>

@@ -6,10 +6,16 @@ class LHS::Record
   module Model
     extend ActiveSupport::Concern
 
-    module ClassMethods
-      def model_name
-        ActiveModel::Name.new(self)
-      end
+    def to_model
+      self
+    end
+
+    def persisted?
+      !href.nil?
+    end
+
+    included do
+      extend ActiveModel::Naming
     end
   end
 end
