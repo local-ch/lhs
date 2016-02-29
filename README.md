@@ -164,7 +164,7 @@ Build and persist new items from scratch are done either with `new` or it's alia
 
 ## Custom setters and getters
 
-Sometimes it is the case that you want to have your custom getters and setters and convert the data to backend processable format behind the scenes. It is now supported by the initializer.
+Sometimes it is the case that you want to have your custom getters and setters and convert the data to backend processable format behind the scenes. The initializer will now use custom setter if one is defined
 
 ```ruby
 class Feedback < LHS::Record
