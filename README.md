@@ -104,7 +104,7 @@ If no record is found, `nil` is returned.
 
 ## Batch processing
 
-**Be carefull using methods for batch processing. They could result in a lot of HTTP requests!**
+**Be careful using methods for batch processing. They could result in a lot of HTTP requests!**
 
 `all` fetches all records from the backend by doing multiple requests if necessary.
 
