@@ -173,7 +173,7 @@ class Feedback < LHS::Record
   end
 end
 
-feedback = Feedback.new(ratings: { quality: 3 }) # #<Feedback:0x007fc8f9a43598 @data={:ratings=>[{:name=>:quality, :value=>3}]}>
+feedback = Feedback.new(ratings: { quality: 3 }) # <Feedback{:ratings=>[{:name=>:quality, :value=>3}]}>
 feedback.ratings # #<LHS::Data:0x007fc8fa6d4050 ... @_raw=[{:name=>:quality, :value=>3}]>
 
 ```
@@ -189,7 +189,7 @@ class Feedback < LHS::Record
   end
 end
 
-feedback = Feedback.new(ratings: { quality: 3 }) # #<Feedback:0x007fc8f9a43598 @data={:ratings=>{:quality=>3}}>
+feedback = Feedback.new(ratings: { quality: 3 }) # <Feedback{:ratings=>[{:name=>:quality, :value=>3}]}>
 feedback.ratings # {:quality=>3}
 
 ```
