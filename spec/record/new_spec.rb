@@ -15,7 +15,6 @@ describe LHS::Record do
     it 'builds a new item from scratch (like build)' do
       feedback = Feedback.new recommended: true
       expect(feedback).to be_kind_of Feedback
-      expect(feedback.instance_values['data'][:recommended]).to eq true
       expect(feedback.recommended).to eq true
       stub_request(:post, "http://local.ch/v2/feedbacks")
         .with(body: "{\"recommended\":true}")
@@ -24,12 +23,10 @@ describe LHS::Record do
 
     it 'builds new items also with keys containing dashes' do
       feedback = Feedback.new('some-key' => [])
-      expect(feedback.instance_values['data'][:'some-key']).to eq []
     end
 
     it 'shows array in instance data' do
       feedback = Feedback.new([1, 2, 3])
-      expect(feedback.instance_values['data']).to eq [1, 2, 3]
     end
 
     context 'custom setters' do
@@ -43,7 +40,6 @@ describe LHS::Record do
 
       it 'are used by initializer' do
         feedback = Feedback.new(ratings: { a: 1, b: 2 })
-        expect(feedback.instance_values['data'][:ratings]).to eq([{ name: :a, value: 1 }, { name: :b, value: 2 }])
         expect(feedback.ratings.raw).to eq([{ name: :a, value: 1 }, { name: :b, value: 2 }])
       end
 
@@ -51,7 +47,6 @@ describe LHS::Record do
         feedback = Feedback.new(ratings: { a: 1 })
         feedback.ratings = { z: 3 }
         expect(feedback.ratings.first.name).to eq :z
-        expect(feedback.instance_values['data'][:ratings].first[:name]).to eq :z
       end
 
       context 'and custom getters' do
@@ -65,7 +60,6 @@ describe LHS::Record do
 
         it 'uses custom getters to show data for exploration' do
           feedback = Feedback.new(ratings: { a: 1, b: 2 })
-          expect(feedback.instance_values['data'][:ratings]).to eq(a: 1, b: 2)
           expect(feedback.ratings).to eq(a: 1, b: 2)
         end
       end

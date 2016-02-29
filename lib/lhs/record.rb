@@ -21,16 +21,7 @@ class LHS::Record
     data = LHS::Data.new({}, nil, self.class) unless data
     data = LHS::Data.new(data, nil, self.class) unless data.is_a?(LHS::Data)
     define_singleton_method(:_data) { data }
-    instance_data =
-      if data._proxy.is_a?(LHS::Item) && data._raw.is_a?(Hash)
-        data._raw
-      elsif data._proxy.is_a?(LHS::Collection) && data._raw.is_a?(Hash)
-        data._raw.fetch(:items, [])
-      else
-        data._raw
-      end
-
-    send(:data=, instance_data)
+    consider_custom_setters
   end
 
   def as_json(options = nil)
@@ -39,6 +30,10 @@ class LHS::Record
 
   def self.build(data = nil)
     new(data)
+  end
+
+  def inspect
+    "<#{self.class}#{_data._raw}>"
   end
 
   protected
@@ -53,19 +48,20 @@ class LHS::Record
 
   private
 
-  def data=(instance_data)
-    return instance_variable_set('@data', instance_data) if !instance_data.is_a?(Hash)
-
-    instance_variable_set('@data', {})
+  def consider_custom_setters
+    return if !instance_data.is_a?(Hash)
     instance_data.each do |k, v|
       if public_methods.include?("#{k}=".to_sym)
         send("#{k}=", v)
-        raw_value_set = send(k)
-        raw_value_set = raw_value_set._raw if raw_value_set.respond_to?(:_raw)
-        @data[k] = raw_value_set
-      else
-        @data[k] = v
       end
+    end
+  end
+
+  def instance_data
+    if _data._proxy.is_a?(LHS::Collection) && _data._raw.is_a?(Hash)
+      _data._raw.fetch(:items, [])
+    else
+      _data._raw
     end
   end
 end
