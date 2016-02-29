@@ -275,9 +275,9 @@ class LocalEntry < LHS::Record
 end
 ```
 
-### Known LHS::Records when accessing mapped data from nested data
+### Nested records
 
-As LHS detects LHS::Records as soon as a link is present, mappings will also be applied on nested data:
+Nested records (in nested data) are automaticaly casted when the href matches any defined endpoint of any LHS::Record.
 
 ```
 class Place < LHS::Record
@@ -295,6 +295,8 @@ end
 favorite = Favorite.includes(:place).find(1)
 favorite.place.name # local.ch AG
 ```
+
+If automatic-detection of nested records does not work, make sure your LHS::Records are stored in `app/models`!
 
 ## Setters
 
