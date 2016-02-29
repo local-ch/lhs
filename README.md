@@ -73,7 +73,7 @@ Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 If no record is found an error is raised.
 
 ## Proxy
-Instead of mapping data when it arrives from the backend, the proxy makes data accessible when you access it, not when you fetch it. The proxy is used to access data and it is divided in `Collection` and `Item`. 
+Instead of mapping data when it arrives from the backend, the proxy makes data accessible when you access it, not when you fetch it. The proxy is used to access data and it is divided in `Collection` and `Item`.
 
 `find` can also be used to find a single uniqe record with parameters:
 
@@ -104,7 +104,7 @@ If no record is found, `nil` is returned.
 
 ## Batch processing
 
-**Be carefull using methods for batch processing. They could result in a lot of HTTP requests!**
+**Be careful using methods for batch processing. They could result in a lot of HTTP requests!**
 
 `all` fetches all records from the backend by doing multiple requests if necessary.
 
@@ -119,7 +119,7 @@ data.total # 998
 ```ruby
 Feedback.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |feedback|
   # Iterates over each record. Starts with record nr. 50 and fetches 20 records each batch.
-  feedback 
+  feedback
   break if feedback.some_attribute == some_value
 end
 ```
@@ -162,6 +162,40 @@ Build and persist new items from scratch are done either with `new` or it's alia
   feedback.save
 ```
 
+## Custom setters and getters
+
+Sometimes it is the case that you want to have your custom getters and setters and convert the data to backend processable format behind the scenes. The initializer will now use custom setter if one is defined
+
+```ruby
+class Feedback < LHS::Record
+  def ratings=(ratings)
+    _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
+  end
+end
+
+feedback = Feedback.new(ratings: { quality: 3 }) # <Feedback{:ratings=>[{:name=>:quality, :value=>3}]}>
+feedback.ratings # #<LHS::Data:0x007fc8fa6d4050 ... @_raw=[{:name=>:quality, :value=>3}]>
+
+```
+
+If you have an accompanying getter the whole data manipulation would be internal only.
+
+```ruby
+class Feedback < LHS::Record
+  def ratings=(ratings)
+    _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
+  end
+
+  def ratings
+    Hash[_raw[:ratings].map { |r| [r[:name], r[:value]] }]
+  end
+end
+
+feedback = Feedback.new(ratings: { quality: 3 }) # <Feedback{:ratings=>[{:name=>:quality, :value=>3}]}>
+feedback.ratings # {:quality=>3}
+
+```
+
 ## Include linked resources
 
 When fetching records, you can specify in advance all the linked resources that you want to include in the results. With `includes`, LHS ensures that all matching and explicitly linked resources are loaded and merged.
@@ -191,17 +225,17 @@ The implementation is heavily influenced by [http://guides.rubyonrails.org/activ
 ```ruby
   # list of includes
   claims = Claims.includes(:localch_account, :entry).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
-  
+
   # array of includes
   claims = Claims.includes([:localch_account, :entry]).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
-  
+
   # Two-level with array of includes
   feedbacks = Feedback.includes(campaign: [:entry, :user]).where(has_reviews: true)
 ```
 
 ### Known LHS::Records are used to request linked resources
 
-When including linked resources with `includes`, known/defined services and endpoints are used to make those requests. 
+When including linked resources with `includes`, known/defined services and endpoints are used to make those requests.
 That also means that options for endpoints of linked resources are applied when requesting those in addition.
 This allows you to include protected resources (e.g. OAuth) as endpoint options for oauth authentication get applied.
 
@@ -222,7 +256,7 @@ class Place < LHS::Record
 
 end
 
-Favorite.includes(:place).where(user_id: current_user.id) 
+Favorite.includes(:place).where(user_id: current_user.id)
 # Will include places and applies endpoint options to authenticate the request.
 ```
 
