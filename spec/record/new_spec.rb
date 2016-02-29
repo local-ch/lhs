@@ -23,10 +23,7 @@ describe LHS::Record do
 
     it 'builds new items also with keys containing dashes' do
       feedback = Feedback.new('some-key' => [])
-    end
-
-    it 'shows array in instance data' do
-      feedback = Feedback.new([1, 2, 3])
+      expect(feedback._raw[:'some-key']).to eq([])
     end
 
     context 'custom setters' do
