@@ -182,7 +182,9 @@ If you have an accompanying getter the whole data manipulation would be internal
 
 ```ruby
 class Feedback < LHS::Record
-  ...
+  def ratings=(ratings)
+    _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
+  end
 
   def ratings
     Hash[_raw[:ratings].map { |r| [r[:name], r[:value]] }]
