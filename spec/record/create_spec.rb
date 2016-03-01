@@ -76,5 +76,59 @@ describe LHS::Record do
         }).to raise_error
       end
     end
+
+    context 'custom setters' do
+      before(:each) do
+        class Feedback
+          def ratings=(ratings)
+            _raw[:ratings] = ratings.map { |k, v| { name: k.to_s, value: v } }
+          end
+        end
+
+        stub_request(:post, "#{datastore}/feedbacks")
+          .with(body: { ratings: converted_ratings }.to_json)
+          .to_return(status: 200, body: { ratings: converted_ratings }.to_json)
+      end
+
+      let(:ratings) do
+        {
+          a: 1,
+          b: 2
+        }
+      end
+
+      let(:converted_ratings) do
+        [
+          { name: 'a', value: 1 },
+          { name: 'b', value: 2 }
+        ]
+      end
+
+      it 'are used by create' do
+        feedback = Feedback.create(ratings: ratings)
+        expect(feedback.ratings.raw).to eq(converted_ratings)
+      end
+
+      it 'can be used directly to change raw data' do
+        feedback = Feedback.create(ratings: ratings)
+        feedback.ratings = { z: 3 }
+        expect(feedback.ratings.first.name).to eq 'z'
+      end
+
+      context 'and custom getters' do
+        before(:each) do
+          class Feedback
+            def ratings
+              Hash[_raw[:ratings].map { |r| [r[:name].to_sym, r[:value]] }]
+            end
+          end
+        end
+
+        it 'uses custom getters to show data for exploration' do
+          feedback = Feedback.create(ratings: ratings)
+          expect(feedback.ratings).to eq(ratings)
+        end
+      end
+    end
   end
 end
