@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'geminabox'
   s.add_development_dependency 'pry'
+  s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'ciderizer'
   s.add_development_dependency 'capybara'
 end
