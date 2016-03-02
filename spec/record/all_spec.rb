@@ -48,5 +48,21 @@ describe LHS::Collection do
       expect(all._proxy).to be_kind_of LHS::Collection
       expect(all.count).to eq 0
     end
+
+    it 'alsow works when there is no total in the stubbing' do
+      stub_request(:get, %r{/feedbacks}).to_return(body: { items: (1..100).to_a }.to_json)
+      all = Record.all
+      expect(all).to be_kind_of Record
+      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 0
+    end
+
+    it 'alsow works when there is no key "items" in the stubbing' do
+      stub_request(:get, %r{/feedbacks}).to_return(body: (1..100).to_a.to_json)
+      all = Record.all
+      expect(all).to be_kind_of Record
+      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 0
+    end
   end
 end
