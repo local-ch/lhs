@@ -1,4 +1,5 @@
 require 'active_support'
+require File.dirname(__FILE__) + '/../../proxy'
 
 class LHS::Collection < LHS::Proxy
 
