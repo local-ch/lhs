@@ -53,6 +53,10 @@ describe LHS::Record do
       expect(favorite.local_entry.company_name).to eq 'local.ch'
     end
 
+    it 'duplicates a class' do
+      expect(Favorite.object_id).not_to eq(Favorite.includes(:local_entry).object_id)
+    end
+
     it 'includes a list of resources' do
       favorite = Favorite.includes(:local_entry, :user).find(1)
       expect(favorite.local_entry).to be_kind_of LocalEntry
