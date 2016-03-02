@@ -7,15 +7,15 @@ class LHS::Record
 
     module ClassMethods
       def create(data = {})
-        object = new(data)
-        object.save
-        object
+        record = new(data)
+        record.save
+        record
       end
 
       def create!(data = {})
-        object = new(data)
-        object.save!
-        object
+        record = new(data)
+        record.save!
+        record
       end
     end
   end
