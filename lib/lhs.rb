@@ -3,7 +3,7 @@ require 'lhc'
 module LHS
 end
 
-Gem.find_files('lhs/**/*.rb').each { |path| require path }
+Gem.find_files('lhs/**/*.rb').sort.each { |path| require path }
 
 # Preload all the LHS::Records that are defined in app/models
 class Engine < Rails::Engine
