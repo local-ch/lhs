@@ -1,3 +1,4 @@
+require File.join(__dir__, 'proxy.rb')
 require 'active_support'
 
 class LHS::Collection < LHS::Proxy
