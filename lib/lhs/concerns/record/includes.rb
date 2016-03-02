@@ -16,7 +16,7 @@ class LHS::Record
 
       def includes(*args)
         name = "#{self}#{args.object_id}"
-        constant = Object.const_set(name.demodulize, self)
+        constant = Object.const_set(name.demodulize, self.dup) # rubocop:disable Style/RedundantSelf
         class_clone = constant
         class_clone.endpoints = endpoints
         class_clone.mapping = mapping
