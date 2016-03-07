@@ -15,7 +15,22 @@ class LHS::Record
         all = []
         default_max_limit = 100
         data = request(params: params.merge(limit: default_max_limit))
-        all.concat(data._raw[:items])
+        all.concat(all_items_from(data))
+        request_all_the_rest(data, all, params) if data._raw.is_a?(Hash) && data._raw[:total]
+        data._record_class.new(LHS::Data.new(all, nil, self))
+      end
+
+      private
+
+      def all_items_from(data)
+        if data._raw.is_a?(Array)
+          data._raw
+        else
+          data._raw[:items]
+        end
+      end
+
+      def request_all_the_rest(data, all, params)
         total_left = data._raw[:total] - data.count
         limit = data._raw[:limit] || data.count
         if limit > 0
@@ -25,7 +40,6 @@ class LHS::Record
             all.concat request(params: params.merge(limit: limit, offset: offset))._raw[:items]
           end
         end
-        data._record_class.new(LHS::Data.new(all, nil, self))
       end
     end
   end
