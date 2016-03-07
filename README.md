@@ -368,7 +368,24 @@ Feedback.where(limit: 50, offset: 51)
 `limit` provides amount of items per page.
 `offset` provides how many items where skipped to start the current page.
 
-## Partial Kaminari support
+### Configure the name of the keys for offset, limit, total and name of items
+
+Endpoints provide different interfaces to deal with paginated resources.
+They differ for example for the key that is used for providing the current page items, the total amount of items, the current page size etc.
+In order to have `LHS::Record` deal with those different interfaces you can configure it:
+
+```ruby
+class Search < LHS::Record
+  configuration items: :docs, limit: :size, offset: :start, total: :totalResults
+  endpoint ':search/:type'
+end
+```
+`items` key used to determine items of the current page.
+`limit` key used to work with page limits.
+`offset` key used to paginate multiple pages.
+`total` key used to determine the total amount of items.
+
+### Partial Kaminari support
 
 LHS implements an interface that makes it partially working with Kaminari.
 
@@ -384,7 +401,7 @@ For example, you can use kaminari to render paginations based on LHS Records:
 = paginate @items
 ```
 
-## form_for Helper
+### form_for Helper
 Rails `form_for` view-helper can be used in combination with instances of LHS::Record to autogenerate forms:
 ```
 <%= form_for(@instance, url: '/create') do |f| %>

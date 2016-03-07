@@ -10,15 +10,12 @@ describe LHS::Data do
   end
 
   let(:data_from_raw) do
-    LHS::Data.new(
-      href: 'http://www.local.ch/v2/stuff',
-      id: '123123123'
-    )
+    LHS::Data.new({href: 'http://www.local.ch/v2/stuff', id: '123123123'}, nil, Record)
   end
 
   let(:data_from_item) do
     raw = { href: 'http://www.local.ch/v2/stuff' }
-    item = LHS::Item.new(LHS::Data.new(raw))
+    item = LHS::Item.new(LHS::Data.new(raw, nil, Record))
     LHS::Data.new(item)
   end
 

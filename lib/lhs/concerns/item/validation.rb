@@ -30,7 +30,7 @@ class LHS::Item < LHS::Proxy
     private
 
     def validation_endpoint
-      endpoint = _data._record_class.find_endpoint(_data._raw)
+      endpoint = _data._record.find_endpoint(_data._raw)
       endpoint ||= LHS::Endpoint.for_url(_data.href) if _data.href
       validates = endpoint.options && endpoint.options.fetch(:validates, false)
       fail 'Endpoint does not support validations!' unless validates

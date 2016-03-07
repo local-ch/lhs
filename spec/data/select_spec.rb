@@ -6,7 +6,13 @@ describe LHS::Data do
   end
 
   let(:data) do
-    LHS::Data.new(raw)
+    LHS::Data.new(raw, nil, Record)
+  end
+
+  before(:each) do
+    class Record < LHS::Record
+      endpoint ':datastore/v2/data'
+    end
   end
 
   context 'select' do

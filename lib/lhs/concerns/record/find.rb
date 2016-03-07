@@ -14,8 +14,8 @@ class LHS::Record
           else
             find_by_id(args)
           end
-        return data unless data._record_class
-        data._record_class.new(data)
+        return data unless data._record
+        data._record.new(data)
       end
 
       private

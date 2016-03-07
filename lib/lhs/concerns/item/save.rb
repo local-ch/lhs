@@ -14,7 +14,7 @@ class LHS::Item < LHS::Proxy
     end
 
     def save!
-      record = _data._root._record_class
+      record = _data.class
       data = _data._raw.dup
       url =
         if href.present?

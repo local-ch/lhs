@@ -6,7 +6,13 @@ describe LHS::Data do
   end
 
   let(:data) do
-    LHS::Data.new(json)
+    LHS::Data.new(json, nil, Record)
+  end
+
+  before(:each) do
+    class Record < LHS::Record
+      endpoint ':datastore/v2/data'
+    end
   end
 
   context 'collections' do
