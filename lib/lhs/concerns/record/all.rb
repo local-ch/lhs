@@ -21,7 +21,7 @@ class LHS::Record
       end
 
       private
-      
+
       def all_items_from(data)
         if data._raw.is_a?(Array)
           data._raw
