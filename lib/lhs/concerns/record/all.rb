@@ -16,7 +16,7 @@ class LHS::Record
         default_max_limit = 100
         data = request(params: params.merge(limit: default_max_limit))
         all.concat(all_items_from(data))
-        request_all_the_rest(data, all, params) if data._raw.is_a?(Hash) && data._raw[:total] && data._raw[:limit]
+        request_all_the_rest(data, all, params) if data._raw.is_a?(Hash) && data._raw[:total]
         data._record_class.new(LHS::Data.new(all, nil, self))
       end
 
