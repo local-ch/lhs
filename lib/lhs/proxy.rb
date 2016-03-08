@@ -17,8 +17,7 @@ class LHS::Proxy
 
   def reload!
     fail 'No href found' unless _data.href
-    record = _data._root._record_class
-    data = record.request(url: _data.href, method: :get)
+    data = _data.class.request(url: _data.href, method: :get)
     _data.merge_raw!(data)
     self._loaded = true
     self

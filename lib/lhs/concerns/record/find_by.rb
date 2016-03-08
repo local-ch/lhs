@@ -26,7 +26,7 @@ class LHS::Record
         if data._proxy.is_a?(LHS::Collection)
           data.first || fail(LHC::NotFound.new('No item was found.', data._request.response))
         else
-          data._record_class.new(data)
+          data._record.new(data)
         end
       end
     end

@@ -13,13 +13,13 @@ class LHS::Record
         data = LHS::Data.new(json, nil, self, e.response.request)
         item = LHS::Item.new(data)
         item.errors = LHS::Errors.new(e.response)
-        data._record_class.new(LHS::Data.new(item, data))
+        data._record.new(LHS::Data.new(item, data))
       end
 
       def create!(data = {})
         url = compute_url!(data)
         data = request(url: url, method: :post, body: data.to_json, headers: { 'Content-Type' => 'application/json' })
-        data._record_class.new(data)
+        data._record.new(data)
       end
     end
   end

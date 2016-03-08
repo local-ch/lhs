@@ -9,7 +9,7 @@ class LHS::Record
       # Used to query data from the service.
       def where(params = {})
         data = request(params: params)
-        data._record_class.new(data)
+        data._record.new(data)
       end
     end
   end

@@ -8,10 +8,10 @@ class LHS::Record
     module ClassMethods
       # Process single entries fetched in batches
       def find_each(options = {})
-        find_in_batches(options) do |data|
-          data.each do |record|
-            item = LHS::Item.new(LHS::Data.new(record, data, self))
-            yield new(LHS::Data.new(item, data, self))
+        find_in_batches(options) do |records|
+          records.each do |record|
+            item = LHS::Item.new(record)
+            yield new(LHS::Data.new(item, records._data, self))
           end
         end
       end

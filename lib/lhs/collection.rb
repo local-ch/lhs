@@ -7,17 +7,18 @@ class LHS::Collection < LHS::Proxy
   include InternalCollection
 
   delegate :select, to: :_collection
+  delegate :_record, to: :_data
 
   def total
-    _data._raw[:total]
+    _data._raw[_record.total_key]
   end
 
   def limit
-    _data._raw[:limit]
+    _data._raw[_record.limit_key]
   end
 
   def offset
-    _data._raw[:offset]
+    _data._raw[_record.offset_key]
   end
 
   def href
@@ -26,8 +27,8 @@ class LHS::Collection < LHS::Proxy
 
   def _collection
     raw = _data._raw if _data._raw.is_a?(Array)
-    raw ||= _data._raw[:items]
-    Collection.new(raw, _data, _data._record_class)
+    raw ||= _data._raw[_record.items_key]
+    Collection.new(raw, _data, _record)
   end
 
   delegate :_raw, to: :_data
