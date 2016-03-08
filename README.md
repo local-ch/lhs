@@ -5,7 +5,7 @@ LHS uses [LHC](//github.com/local-ch/LHC) for http requests.
 
 ## Very Short Introduction
 
-A LHS::Record makes data available using backend services and one or multiple endpoints.
+A LHS::Record makes data available using http json services and one or multiple endpoints.
 
 ```ruby
 class Feedback < LHS::Record
@@ -25,7 +25,7 @@ Please store all defined LHS::Records in `app/models` as they are not autoloaded
 
 ## Endpoints
 
-You setup a LHS::Record by configuring one or multiple backend endpoints. You can also add request options for an endpoint (see following example).
+You setup a LHS::Record by configuring one or multiple endpoints. You can also add request options for an endpoint (see following example).
 
 ```ruby
 class Feedback < LHS::Record
@@ -52,7 +52,7 @@ end
 
 ## Find multiple records
 
-You can query a backend service to provide records by using `where`.
+You can query a service for records by using `where`.
 
 ```ruby
   Feedback.where(has_reviews: true)
@@ -73,7 +73,7 @@ Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 If no record is found an error is raised.
 
 ## Proxy
-Instead of mapping data when it arrives from the backend, the proxy makes data accessible when you access it, not when you fetch it. The proxy is used to access data and it is divided in `Collection` and `Item`.
+Instead of mapping data when it arrives from the service, the proxy makes data accessible when you access it, not when you fetch it. The proxy is used to access data and it is divided in `Collection` and `Item`.
 
 `find` can also be used to find a single uniqe record with parameters:
 
@@ -106,7 +106,7 @@ If no record is found, `nil` is returned.
 
 **Be careful using methods for batch processing. They could result in a lot of HTTP requests!**
 
-`all` fetches all records from the backend by doing multiple requests if necessary.
+`all` fetches all records from the service by doing multiple requests if necessary.
 
 ```ruby
 data = Feedback.all
@@ -164,7 +164,8 @@ Build and persist new items from scratch are done either with `new` or it's alia
 
 ## Custom setters and getters
 
-Sometimes it is the case that you want to have your custom getters and setters and convert the data to backend processable format behind the scenes. The initializer will now use custom setter if one is defined
+Sometimes it is the case that you want to have your custom getters and setters and convert the data to a processable format behind the scenes. 
+The initializer will now use custom setter if one is defined:
 
 ```ruby
 class Feedback < LHS::Record
@@ -356,7 +357,7 @@ end
 
 ## Collections: Offset / Limit / Pagination
 
-You can paginate by passing offset, and limit params. They will be forwarded to the backend.
+You can paginate by passing offset, and limit params. They will be forwarded to the service.
 
 ```ruby
 data = Feedback.where(limit: 50)
