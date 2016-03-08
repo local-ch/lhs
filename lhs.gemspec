@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.authors     = ['https://github.com/local-ch/lhs/graphs/contributors']
   s.email       = ['ws-operations@local.ch']
   s.homepage    = 'https://github.com/local-ch/lhs'
-  s.summary     = 'Rails gem providing an easy, active-record-like interface to use http backend services'
+  s.summary     = 'Rails gem providing an easy, active-record-like interface for http json services'
   s.description = s.summary
 
   s.files        = `git ls-files`.split("\n")
