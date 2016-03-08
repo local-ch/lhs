@@ -5,7 +5,7 @@ LHS uses [LHC](//github.com/local-ch/LHC) for http requests.
 
 ## Very Short Introduction
 
-A LHS::Record makes data available using http json services and one or multiple endpoints.
+Access data that is provided by an http json service with ease using a LHS::Record.
 
 ```ruby
 class Feedback < LHS::Record
