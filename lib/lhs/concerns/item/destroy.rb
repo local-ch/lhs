@@ -7,8 +7,7 @@ class LHS::Item < LHS::Proxy
     extend ActiveSupport::Concern
 
     def destroy
-      record = _data._root._record_class
-      _data._request = record.request(method: :delete, url: href)._request
+      _data._request = _data.class.request(method: :delete, url: href)._request
       _data
     end
   end

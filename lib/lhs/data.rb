@@ -5,14 +5,16 @@ Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each { |file| require file }
 class LHS::Data
   include Json
 
+  delegate :instance_methods, :items_key, :limit_key, :total_key, :offset_key, to: :class
+
   # prevent clashing with attributes of underlying data
-  attr_accessor :_proxy, :_raw, :_parent, :_record_class, :_request
+  attr_accessor :_proxy, :_raw, :_parent, :_record, :_request
 
   def initialize(input, parent = nil, record = nil, request = nil)
     self._raw = raw_from_input(input)
-    self._proxy = proxy_from_input(input)
-    self._record_class = record
     self._parent = parent
+    self._record = record
+    self._proxy = proxy_from_input(input)
     self._request = request
   end
 
@@ -30,7 +32,7 @@ class LHS::Data
   end
 
   def class
-    _root._record_class
+    _root._record
   end
 
   # enforce internal data structure to have deep symbolized keys
@@ -50,14 +52,14 @@ class LHS::Data
   end
 
   def respond_to_missing?(name, include_all = false)
-    (root_item? && _root._record_class.instance_methods.include?(name)) ||
+    (root_item? && instance_methods.include?(name)) ||
       _proxy.respond_to?(name, include_all)
   end
 
   private
 
   def collection_proxy?(input)
-    !! (input.is_a?(Hash) && input[:items]) || input.is_a?(Array) || _raw.is_a?(Array)
+    !! (input.is_a?(Hash) && input[items_key]) || input.is_a?(Array) || _raw.is_a?(Array)
   end
 
   def root_item
