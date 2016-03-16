@@ -68,16 +68,16 @@ describe LHS::Collection do
     # TODO: is this the right place for the following two spec examples?
 
     it 'converts to json' do
-      stub_request(:get, %r{/feedbacks}).to_return(body: ([{ foo: 'foo', bar: 'bar' }]).to_json)
+      stub_request(:get, %r{/feedbacks}).to_return(body: [{ foo: 'foo', bar: 'bar' }].to_json)
       all = Record.all
-      expect(all.as_json).to eq [{'foo'=>'foo', 'bar'=>'bar'}]
+      expect(all.as_json).to eq [{ 'foo'=>'foo', 'bar'=>'bar' }]
       expect(all.to_json).to eq "[{\"foo\":\"foo\",\"bar\":\"bar\"}]"
     end
 
     it 'converts with options to json' do
-      stub_request(:get, %r{/feedbacks}).to_return(body: ([{ foo: 'foo', bar: 'bar' }]).to_json)
+      stub_request(:get, %r{/feedbacks}).to_return(body: [{ foo: 'foo', bar: 'bar' }].to_json)
       all = Record.all
-      expect(all.as_json(only: 'foo')).to eq [{'foo'=>'foo'}]
+      expect(all.as_json(only: 'foo')).to eq [{ 'foo'=>'foo' }]
       expect(all.to_json(only: 'foo')).to eq "[{\"foo\":\"foo\"}]"
     end
   end
