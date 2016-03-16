@@ -6,7 +6,13 @@ class LHS::Data
     extend ActiveSupport::Concern
 
     def as_json(options = {})
-      _data._raw.as_json(options)
+      if _data._raw.kind_of?(Array)
+        _data._raw.as_json(options)
+      elsif _data._raw[:items].present?
+        _data._raw[:items].as_json(options)
+      else
+        _data._raw.as_json
+      end
     end
   end
 end
