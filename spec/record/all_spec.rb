@@ -65,7 +65,8 @@ describe LHS::Collection do
       expect(all.count).to eq 100
     end
 
-    # TODO: is the following two spec examples?
+    # TODO: is this the right place for the following two spec examples?
+
     it 'converts to json' do
       stub_request(:get, %r{/feedbacks}).to_return(body: ([{ foo: 'foo', bar: 'bar' }]).to_json)
       all = Record.all
