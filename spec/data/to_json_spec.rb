@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe LHS::Data do
+  let(:datastore) { 'http://local.ch/v2' }
+
   before(:each) do
     class Record < LHS::Record
       endpoint ':datastore/v2/:campaign_id/feedbacks'

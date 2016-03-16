@@ -49,7 +49,7 @@ describe LHS::Collection do
       expect(all.count).to eq 0
     end
 
-    it 'alsow works when there is no total in the stubbing' do
+    it 'also works when there is no total in the stubbing' do
       stub_request(:get, %r{/feedbacks}).to_return(body: { items: (1..100).to_a }.to_json)
       all = Record.all
       expect(all).to be_kind_of Record
@@ -57,12 +57,27 @@ describe LHS::Collection do
       expect(all.count).to eq 100
     end
 
-    it 'alsow works when there is no key "items" in the stubbing' do
+    it 'also works when there is no key "items" in the stubbing' do
       stub_request(:get, %r{/feedbacks}).to_return(body: (1..100).to_a.to_json)
       all = Record.all
       expect(all).to be_kind_of Record
       expect(all._proxy).to be_kind_of LHS::Collection
       expect(all.count).to eq 100
+    end
+
+    # TODO: is the following two spec examples?
+    it 'converts to json' do
+      stub_request(:get, %r{/feedbacks}).to_return(body: ([{ foo: 'foo', bar: 'bar' }]).to_json)
+      all = Record.all
+      expect(all.as_json).to eq [{'foo'=>'foo', 'bar'=>'bar'}]
+      expect(all.to_json).to eq "[{\"foo\":\"foo\",\"bar\":\"bar\"}]"
+    end
+
+    it 'converts with options to json' do
+      stub_request(:get, %r{/feedbacks}).to_return(body: ([{ foo: 'foo', bar: 'bar' }]).to_json)
+      all = Record.all
+      expect(all.as_json(only: 'foo')).to eq [{'foo'=>'foo'}]
+      expect(all.to_json(only: 'foo')).to eq "[{\"foo\":\"foo\"}]"
     end
   end
 end
