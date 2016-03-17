@@ -58,6 +58,7 @@ describe LHS::Data do
     end
 
     it 'converts with options to json' do
+      binding.pry
       expect(collection.as_json(only: :foo)).to eq [{ 'foo' => 'foo' }]
       expect(collection.to_json(only: :foo)).to eq "[{\"foo\":\"foo\"}]"
     end
