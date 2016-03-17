@@ -106,6 +106,8 @@ class LHS::Data
     if json.is_a?(Hash)
       json.deep_symbolize_keys
     else
+      # TODO: 
+      # json.map{ |j| j.deep_symbolize_keys }
       json
     end
   end
