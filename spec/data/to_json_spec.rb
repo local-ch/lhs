@@ -32,16 +32,16 @@ describe LHS::Data do
 
   it 'converts collection with options to json' do
     expect(collection.as_json(only: :href)).to eq [
-      { "href"=>"http://local.ch/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ" },
-      { "href"=>"http://local.ch/v2/feedbacks/QsUOQWNJoB-GFUNsX7z0jg" },
-      { "href"=>"http://local.ch/v2/feedbacks/QynNtmpXlsEGvUJ0ekDKVw" },
-      { "href"=>"http://local.ch/v2/feedbacks/INmminYWNZwW_qNFx5peJQ" },
-      { "href"=>"http://local.ch/v2/feedbacks/ltgfr0VRYDN2nxyC119wTg" },
-      { "href"=>"http://local.ch/v2/feedbacks/5dUdQP-kZ6sulN8NtpGXTw" },
-      { "href"=>"http://local.ch/v2/feedbacks/Z3KfWzIEQ3ZVCUj2IdrSNQ" },
-      { "href"=>"http://local.ch/v2/feedbacks/ZUUUeiw-Stw5Zb1baHDUzQ" },
-      { "href"=>"http://local.ch/v2/feedbacks/GyeWvhEtU4cYN_5T2FX2UA" },
-      { "href"=>"http://local.ch/v2/feedbacks/o-qTRqQGFS3Z_RPJm1f8SA" }
+      { "href" => "http://local.ch/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ" },
+      { "href" => "http://local.ch/v2/feedbacks/QsUOQWNJoB-GFUNsX7z0jg" },
+      { "href" => "http://local.ch/v2/feedbacks/QynNtmpXlsEGvUJ0ekDKVw" },
+      { "href" => "http://local.ch/v2/feedbacks/INmminYWNZwW_qNFx5peJQ" },
+      { "href" => "http://local.ch/v2/feedbacks/ltgfr0VRYDN2nxyC119wTg" },
+      { "href" => "http://local.ch/v2/feedbacks/5dUdQP-kZ6sulN8NtpGXTw" },
+      { "href" => "http://local.ch/v2/feedbacks/Z3KfWzIEQ3ZVCUj2IdrSNQ" },
+      { "href" => "http://local.ch/v2/feedbacks/ZUUUeiw-Stw5Zb1baHDUzQ" },
+      { "href" => "http://local.ch/v2/feedbacks/GyeWvhEtU4cYN_5T2FX2UA" },
+      { "href" => "http://local.ch/v2/feedbacks/o-qTRqQGFS3Z_RPJm1f8SA" }
     ]
   end
 
