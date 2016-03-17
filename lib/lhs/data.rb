@@ -105,9 +105,9 @@ class LHS::Data
     json = JSON.parse(input)
     if json.is_a?(Hash)
       json.deep_symbolize_keys
+    elsif json.is_a?(Array)
+      json.map{ |j| j.deep_symbolize_keys }
     else
-      # TODO: 
-      # json.map{ |j| j.deep_symbolize_keys }
       json
     end
   end
