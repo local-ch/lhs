@@ -63,7 +63,7 @@ describe LHS::Data do
 
   context 'non collection object with key items' do
     let(:collection) do
-      LHS::Data.new({ items: 666 })
+      LHS::Data.new(items: 666)
     end
 
     it 'converts with options to json' do
