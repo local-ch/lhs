@@ -60,4 +60,15 @@ describe LHS::Data do
       expect(collection.to_json(only: :foo)).to eq "[{\"foo\":\"foo\"}]"
     end
   end
+
+  context 'non collection object with key items' do
+    let(:collection) do
+      LHS::Data.new({ items: 666 })
+    end
+
+    it 'converts with options to json' do
+      expect(collection.as_json(only: :foo)).to eq 666
+      expect(collection.to_json(only: :foo)).to eq '666'
+    end
+  end
 end
