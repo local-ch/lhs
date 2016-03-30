@@ -6,7 +6,7 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     def current_page
-      offset + 1
+      offset / limit + 1
     end
 
     def first_page
