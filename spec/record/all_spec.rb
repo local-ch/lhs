@@ -66,9 +66,9 @@ describe LHS::Collection do
     end
 
     it 'also works when total of items is not divideable trough 100' do
-      stub_request(:get, "#{datastore}/feedbacks?limit=100").to_return(body: { total: 238, limit: 100, items: (1..100).to_a.map{ |num| { foo: "bar #{num}" } } }.to_json)
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101").to_return(body: { total: 238, limit: 100, items: (1..100).to_a.map{ |num| { foo: "bar #{num}" } } }.to_json)
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201").to_return(body: { total: 238, limit: 100, items: (1..38).to_a.map{ |num| { foo: "bar #{num}" } } }.to_json)
+      stub_request(:get, "#{datastore}/feedbacks?limit=100").to_return(body: { total: 238, limit: 100, items: (1..100).to_a.map { |num| { foo: "bar #{num}" } } }.to_json)
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101").to_return(body: { total: 238, limit: 100, items: (1..100).to_a.map { |num| { foo: "bar #{num}" } } }.to_json)
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201").to_return(body: { total: 238, limit: 100, items: (1..38).to_a.map { |num| { foo: "bar #{num}" } } }.to_json)
       all = Record.all
       expect(all.count).to eq 238
     end
