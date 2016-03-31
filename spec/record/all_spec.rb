@@ -64,5 +64,11 @@ describe LHS::Collection do
       expect(all._proxy).to be_kind_of LHS::Collection
       expect(all.count).to eq 100
     end
+
+    it 'also works when it is not divideable trough 100' do
+      stub_request(:get, %r{/feedbacks}).to_return(body: (1..2738).to_a.to_json)
+      all = Record.all
+      expect(all.count).to eq 2738
+    end
   end
 end
