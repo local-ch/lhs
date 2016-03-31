@@ -16,6 +16,7 @@ class LHS::Record
       def all(params = {})
         limit = params[limit_key] || DEFAULT_LIMIT
         data = request(params: params.merge(limit_key => limit))
+        binding.pry
         request_all_the_rest(data, params) if data._raw.is_a?(Hash) && data._raw[total_key]
         data._record.new(LHS::Data.new(data, nil, self))
       end
@@ -35,6 +36,7 @@ class LHS::Record
         limit = data._raw[limit_key] || data.count
         if limit > 0
           requests = total_left / limit
+          binding.pry
           requests.times do |i|
             offset = limit * (i + 1) + 1
             data._raw[items_key].concat all_items_from request(

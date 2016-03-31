@@ -65,8 +65,8 @@ describe LHS::Collection do
       expect(all.count).to eq 100
     end
 
-    it 'also works when it is not divideable trough 100' do
-      stub_request(:get, %r{/feedbacks}).to_return(body: (1..2738).to_a.to_json)
+    it 'also works when total of items is not divideable trough 100' do
+      stub_request(:get, %r{/feedbacks}).to_return(body: { total: 2738, limit: 100, items: (1..100).to_a.map{ |num| { foo: "bar #{num}" } } }.to_json)
       all = Record.all
       expect(all.count).to eq 2738
     end
