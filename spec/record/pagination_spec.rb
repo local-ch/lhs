@@ -56,5 +56,14 @@ describe LHS::Record do
     it 'responds to next_page' do
       expect(record.next_page).to eq(next_page)
     end
+
+    context 'when total of pages is not diviable trough limit' do
+      let(:total) { 2738 }
+      let(:limit) { 100 }
+
+      it 'rounds up' do
+        expect(record.total_pages).to eq(28)
+      end
+    end
   end
 end
