@@ -36,7 +36,7 @@ class LHS::Record
         if limit > 0
           requests = (total_left.to_f / limit).ceil
           requests.times do |i|
-            offset = limit * (i + 1) + 1
+            offset = limit * (i + 1)
             data._raw[items_key].concat all_items_from request(
               params: params.merge(
                 data._record.limit_key => limit,

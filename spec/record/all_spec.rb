@@ -15,10 +15,10 @@ describe LHS::Collection do
     it 'fetches all records from the backend' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(status: 200, body: { items: (1..100).to_a, total: 300, limit: 100, offset: 0 }.to_json)
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101")
-        .to_return(status: 200, body: { items: (101..200).to_a, total: 300, limit: 100, offset: 101 }.to_json)
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201")
-        .to_return(status: 200, body: { items: (201..300).to_a, total: 300, limit: 100, offset: 201 }.to_json)
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=100")
+        .to_return(status: 200, body: { items: (101..200).to_a, total: 300, limit: 100, offset: 100 }.to_json)
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=200")
+        .to_return(status: 200, body: { items: (201..300).to_a, total: 300, limit: 100, offset: 200 }.to_json)
       all = Record.all
       expect(all).to be_kind_of Record
       expect(all._data._proxy).to be_kind_of LHS::Collection
@@ -29,9 +29,9 @@ describe LHS::Collection do
     it 'also fetches all when there is not meta information for limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(status: 200, body: { items: (1..100).to_a, total: 300, offset: 0 }.to_json)
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101")
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=100")
         .to_return(status: 200, body: { items: (101..200).to_a, total: 300, offset: 101 }.to_json)
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201")
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=200")
         .to_return(status: 200, body: { items: (201..300).to_a, total: 300, offset: 201 }.to_json)
       all = Record.all
       expect(all).to be_kind_of Record
@@ -67,8 +67,8 @@ describe LHS::Collection do
 
     it 'also works when total of items is not divideable trough 100' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100").to_return(body: { total: 238, limit: 100, items: (1..100).to_a.map { |num| { foo: "bar #{num}" } } }.to_json)
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=101").to_return(body: { total: 238, limit: 100, items: (1..100).to_a.map { |num| { foo: "bar #{num}" } } }.to_json)
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201").to_return(body: { total: 238, limit: 100, items: (1..38).to_a.map { |num| { foo: "bar #{num}" } } }.to_json)
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=100").to_return(body: { total: 238, limit: 100, items: (1..100).to_a.map { |num| { foo: "bar #{num}" } } }.to_json)
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=200").to_return(body: { total: 238, limit: 100, items: (1..38).to_a.map { |num| { foo: "bar #{num}" } } }.to_json)
       all = Record.all
       expect(all.count).to eq 238
     end
