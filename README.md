@@ -377,14 +377,34 @@ In order to have `LHS::Record` deal with those different interfaces you can conf
 
 ```ruby
 class Search < LHS::Record
-  configuration items: :docs, limit: :size, offset: :start, total: :totalResults
+  configuration items_key: :docs, limit_key: :size, pagination_key: :page, pagination_type: :page, total_key: :totalResults
   endpoint ':search/:type'
 end
 ```
-`items` key used to determine items of the current page.
-`limit` key used to work with page limits.
-`offset` key used to paginate multiple pages.
-`total` key used to determine the total amount of items.
+
+`items_key` key used to determine items of the current page.
+`limit_key` key used to work with page limits (.
+`pagination_key` key used to paginate multiple pages (e.g. offset, start, page).
+`pagination_type` used to configure the strategy used for navigating.
+`total_key` key used to determine the total amount of items.
+
+### Pagination strategies
+
+LHS supports three types of pagination strategies: offset, page and start.
+
+For the following examples assume a limit of 100.
+
+`offset` (default) 0, 100, 200, 300, ...
+`start` 1, 101, 201, 301, ...
+`page` 1, 2, 3, 4, ...
+
+You can configure the `pagination_type` used by LHS on the record level.
+
+```ruby
+class Search < LHS::Record
+  configuration pagination_type: :page
+end
+```
 
 ### Partial Kaminari support
 
