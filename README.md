@@ -361,7 +361,7 @@ LHS supports paginated APIs and it also supports various pagination strategies a
 
 LHS diffentiates between the *pagination strategy* (how items/pages are navigated) itself and *pagination keys* (how stuff is named).
 
-Example 1
+Example 1 "offset"-strategy (default configuration)
 ```ruby
 # API response
 {
@@ -378,7 +378,7 @@ class Results < LHS::Record
 end
 ```
 
-Example 2
+Example 2 "page"-strategy and some naming configuration
 ```ruby
 # API response
 {
@@ -396,7 +396,7 @@ class Results < LHS::Record
 end
 ```
 
-Example 3
+Example 3 "start"-strategy and naming configuration
 ```ruby
 # API response
 {
@@ -418,9 +418,9 @@ end
 
 `limit_key` key used to work with page limits (e.g. `size`, `limit`, etc.)
 
-`pagination_key` key used to paginate multiple pages (e.g. `offset`, `start`, `page`, etc.).
+`pagination_key` key used to paginate multiple pages (e.g. `offset`, `page`, `startAt` etc.).
 
-`pagination_strategy` used to configure the strategy used for navigating (e.g. `offset`, `page`, `skip`, etc.).
+`pagination_strategy` used to configure the strategy used for navigating (e.g. `offset`, `page`, `start`, etc.).
 
 `total_key` key used to determine the total amount of items (e.g. `total`, `totalResults`, etc.).
 
