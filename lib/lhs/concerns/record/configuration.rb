@@ -15,15 +15,15 @@ class LHS::Record
       end
 
       def items_key
-        @configuration.try(:[], :items) || :items
+        @configuration.try(:[], :items_key) || :items
       end
 
       def limit_key
-        @configuration.try(:[], :limit) || :limit
+        @configuration.try(:[], :limit_key) || :limit
       end
 
       def total_key
-        @configuration.try(:[], :total) || :total
+        @configuration.try(:[], :total_key) || :total
       end
 
       # Key used for determine current page
