@@ -59,7 +59,7 @@ class LHS::Data
   private
 
   def collection_proxy?(input)
-    !! (input.is_a?(Hash) && input[items_key]) || input.is_a?(Array) || _raw.is_a?(Array)
+    !! (input.is_a?(Hash) && self.class.present? && input[items_key]) || input.is_a?(Array) || _raw.is_a?(Array)
   end
 
   def root_item
@@ -105,6 +105,8 @@ class LHS::Data
     json = JSON.parse(input)
     if json.is_a?(Hash)
       json.deep_symbolize_keys
+    elsif json.is_a?(Array)
+      json.map { |j| j.is_a?(Hash) ? j.deep_symbolize_keys : j }
     else
       json
     end
