@@ -11,7 +11,7 @@ class LHS::Record
 
     module ClassMethods
       def configuration(args)
-        @configuration ||= args.freeze || {}
+        @configuration = args.freeze || {}
       end
 
       def items_key

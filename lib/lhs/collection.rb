@@ -6,10 +6,13 @@ Dir[File.dirname(__FILE__) + '/concerns/collection/*.rb'].each { |file| require 
 class LHS::Collection < LHS::Proxy
   include InternalCollection
 
-  delegate :select, to: :_collection
+  delegate :select, :length, :size, to: :_collection
   delegate :_record, :_raw, to: :_data
-  delegate :_pagination, to: :_record
-  delegate :total, :limit, :offset, :start, :current_page, to: :_pagination
+  delegate :limit, :count, :total, :limit, :offset, :current_page, :start, to: :_pagination
+
+  def _pagination
+    _record.pagination(_data)
+  end
 
   def href
     _data._raw[:href]

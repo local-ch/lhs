@@ -19,10 +19,6 @@ class LHS::Record
   delegate :_proxy, to: :_data
   delegate :_endpoint, to: :_data
 
-  def _pagination
-    self.class.pagination(_data)
-  end
-
   def initialize(data = nil)
     data = LHS::Data.new({}, nil, self.class) unless data
     data = LHS::Data.new(data, nil, self.class) unless data.is_a?(LHS::Data)

@@ -8,6 +8,11 @@ class Pagination
     self.data = data
   end
 
+  # as standard in Rails' ActiveRecord count is not summing up, but using the number provided from data source
+  def count
+    total
+  end
+
   def total
     data._raw[_record.total_key.to_sym]
   end

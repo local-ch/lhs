@@ -43,8 +43,11 @@ class LHS::Record
                 data._record.pagination_key => pagination.next_offset
               )
             )
-            last_data = response_data
             data._raw[items_key].concat all_items_from response_data
+            data._raw[limit_key] = response_data._raw[limit_key]
+            data._raw[total_key] = response_data._raw[total_key]
+            data._raw[pagination_key] = response_data._raw[pagination_key]
+            last_data = response_data
           end
         end
       end
