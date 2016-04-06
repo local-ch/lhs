@@ -1,0 +1,100 @@
+# Pagination is used to navigate paginateable collections
+class Pagination
+
+  delegate :_record, to: :data
+  attr_accessor :data
+
+  def initialize(data)
+    self.data = data
+  end
+
+  def total
+    data._raw[_record.total_key.to_sym]
+  end
+
+  def limit
+    data._raw[_record.limit_key.to_sym] || LHS::Record::DEFAULT_LIMIT
+  end
+
+  def offset
+    data._raw[_record.pagination_key.to_sym]
+  end
+  alias_method :current_page, :offset
+  alias_method :start, :offset
+
+  def pages_left
+    total_pages - current_page
+  end
+
+  def next_offset
+    fail 'to be implemented in subclass'
+  end
+
+  def next_page
+    total_pages + current_page
+  end
+
+  def current_page
+    fail 'to be implemented in subclass'
+  end
+
+  def first_page
+    1
+  end
+
+  def last_page
+    total_pages
+  end
+
+  def prev_page
+    current_page - 1
+  end
+
+  def next_page
+    current_page + 1
+  end
+
+  def limit_value
+    limit
+  end
+
+  def total_pages
+    total / limit
+  end
+end
+
+class PagePagination < Pagination
+
+  def current_page
+    offset
+  end
+
+  def next_offset
+    current_page + 1
+  end
+
+end
+
+class StartPagination < Pagination
+
+  def current_page
+    (offset + limit - 1) / limit
+  end
+
+  def next_offset
+    offset + limit
+  end
+
+end
+
+class OffsetPagination < Pagination
+
+  def current_page
+    (offset + limit) / limit
+  end
+
+  def next_offset
+    offset + limit
+  end
+
+end

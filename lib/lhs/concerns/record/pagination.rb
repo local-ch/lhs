@@ -4,33 +4,25 @@ class LHS::Record
 
   module Pagination
     extend ActiveSupport::Concern
+    # Kaminari-Interface
+    delegate :current_page, :first_page, :last_page, :prev_page, :next_page, :limit_value, :total_pages, to: :_pagination
 
-    def current_page
-      offset + 1
+    def _pagination
+      self.class.pagination(_data)
     end
 
-    def first_page
-      1
-    end
+    module ClassMethods
 
-    def last_page
-      total_pages
-    end
-
-    def prev_page
-      current_page - 1
-    end
-
-    def next_page
-      current_page + 1
-    end
-
-    def limit_value
-      limit
-    end
-
-    def total_pages
-      total / limit
+      def pagination(data)
+        case data._record.pagination_type.to_sym
+        when :page
+          PagePagination.new(data)
+        when :start
+          StartPagination.new(data)
+        else
+          OffsetPagination.new(data)
+        end
+      end
     end
   end
 end

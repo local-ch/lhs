@@ -26,8 +26,14 @@ class LHS::Record
         @configuration.try(:[], :total) || :total
       end
 
-      def offset_key
-        @configuration.try(:[], :offset) || :offset
+      # Key used for determine current page
+      def pagination_key
+        @configuration.try(:[], :pagination_key) || :offset
+      end
+
+      # Type used for calculationg next pages and navigate pages
+      def pagination_type
+        @configuration.try(:[], :pagination_type) || :offset
       end
     end
   end

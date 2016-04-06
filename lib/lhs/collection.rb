@@ -7,19 +7,9 @@ class LHS::Collection < LHS::Proxy
   include InternalCollection
 
   delegate :select, to: :_collection
-  delegate :_record, to: :_data
-
-  def total
-    _data._raw[_record.total_key]
-  end
-
-  def limit
-    _data._raw[_record.limit_key]
-  end
-
-  def offset
-    _data._raw[_record.offset_key]
-  end
+  delegate :_record, :_raw, to: :_data
+  delegate :_pagination, to: :_record
+  delegate :total, :limit, :offset, :start, :current_page, to: :_pagination
 
   def href
     _data._raw[:href]
@@ -30,8 +20,6 @@ class LHS::Collection < LHS::Proxy
     raw ||= _data._raw[_record.items_key]
     Collection.new(raw, _data, _record)
   end
-
-  delegate :_raw, to: :_data
 
   protected
 

@@ -31,18 +31,20 @@ class LHS::Record
       end
 
       def request_all_the_rest(data, params)
-        total_left = data._raw[total_key] - data.count
-        limit = data._raw[limit_key] || data.count
-        if limit > 0
-          requests = total_left / limit
-          requests.times do |i|
-            offset = limit * (i + 1) + 1
-            data._raw[items_key].concat all_items_from request(
+        pagination = data._record.pagination(data)
+        if pagination.pages_left
+          last_data = data
+          pagination.pages_left.times do |_index|
+            return if last_data.count.zero?
+            pagination = data._record.pagination(last_data)
+            response_data = request(
               params: params.merge(
-                data._record.limit_key => limit,
-                data._record.offset_key => offset
+                data._record.limit_key => pagination.limit,
+                data._record.pagination_key => pagination.next_offset
               )
             )
+            last_data = response_data
+            data._raw[items_key].concat all_items_from response_data
           end
         end
       end

@@ -107,11 +107,8 @@ class LHS::Record
       end
 
       # Merge explicit params and take configured endpoints options as base
-      def process_options(options)
-        options ||= {}
-        options = options.dup
+      def process_options(options, endpoint)
         options[:params].deep_symbolize_keys! if options[:params]
-        endpoint = find_endpoint(options[:params])
         options = (endpoint.options || {}).merge(options)
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
         merge_explicit_params!(options[:params])
@@ -135,8 +132,11 @@ class LHS::Record
       end
 
       def single_request(options)
-        response = LHC.request(process_options(options))
-        data = LHS::Data.new(response.body, nil, self, response.request)
+        options ||= {}
+        options = options.dup
+        endpoint = find_endpoint(options[:params])
+        response = LHC.request(process_options(options, endpoint))
+        data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
         handle_includes(including, data) if including
         data
       end
