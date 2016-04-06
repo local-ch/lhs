@@ -242,12 +242,12 @@ describe LHS::Record do
           status: 200,
           body: { items: (1..100).to_a, total: 300, start: 1 }.to_json
         )
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&start=2")
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&start=101")
         .to_return(
           status: 200,
           body: { items: (101..200).to_a, total: 300, start: 2 }.to_json
         )
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&start=3")
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&start=201")
         .to_return(
           status: 200,
           body: { items: (201..300).to_a, total: 300, start: 3 }.to_json
