@@ -26,6 +26,25 @@ describe LHS::Record do
       expect(feedback._raw[:'some-key']).to eq([])
     end
 
+    context 'initialise records with raw data' do
+      before(:each) do
+        class User < LHS::Record
+          endpoint ':datastore/users'
+        end
+      end
+
+      it 'allows accessing nested data' do
+        user = User.new({
+          claims: {
+            items: [
+              { method: 'CustomerCenter' }
+            ]
+          }
+        }.to_json)
+        expect(user.claims.first['method']).to eq 'CustomerCenter'
+      end
+    end
+
     context 'custom setters' do
       before(:each) do
         class Feedback

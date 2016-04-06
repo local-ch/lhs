@@ -20,7 +20,7 @@ class LHS::Collection < LHS::Proxy
 
   def _collection
     raw = _data._raw if _data._raw.is_a?(Array)
-    raw ||= _data._raw[_record.items_key]
+    raw ||= _data._raw[items_key]
     Collection.new(raw, _data, _record)
   end
 
@@ -37,6 +37,11 @@ class LHS::Collection < LHS::Proxy
   end
 
   private
+
+  def items_key
+    return _record.items_key if _record
+    :items
+  end
 
   def enclose_in_data(value)
     data = LHS::Data.new(value, _data)
