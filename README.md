@@ -361,7 +361,7 @@ LHS supports paginated APIs and it also supports various pagination strategies a
 
 LHS diffentiates between the *pagination strategy* (how items/pages are navigated) itself and *pagination keys* (how stuff is named).
 
-Example 1
+*Example 1*
 ```ruby
 # API response
 {
@@ -378,7 +378,7 @@ class Results < LHS::Record
 end
 ```
 
-Example 2
+*Example 2*
 ```ruby
 # API response
 {
@@ -396,7 +396,7 @@ class Results < LHS::Record
 end
 ```
 
-Example 3
+*Example 3*
 ```ruby
 # API response
 {
