@@ -5,43 +5,47 @@ describe LHS::Record do
 
   before(:each) { LHC.config.placeholder('datastore', datastore) }
   let(:datastore) { 'http://local.ch/v2' }
-  let!(:endpoint) do
-    class Record < LHS::Record
-      endpoint ':datastore/feedbacks'
+
+  context 'default pagination behaviour' do
+
+    before(:each) do
+      class Record < LHS::Record
+        endpoint ':datastore/feedbacks'
+      end
     end
-  end
 
-  it 'also works when there is no item in the first response' do
-    stub_request(:get, "#{datastore}/feedbacks?limit=100")
-      .to_return(
-        status: 200,
-        body: { items: [], total: 300, offset: 0 }.to_json
-      )
-    all = Record.all
-    expect(all).to be_kind_of Record
-    expect(all._proxy).to be_kind_of LHS::Collection
-    expect(all.count).to eq 0
-  end
+    it 'also works when there is no item in the first response' do
+      stub_request(:get, "#{datastore}/feedbacks?limit=100")
+        .to_return(
+          status: 200,
+          body: { items: [], total: 300, offset: 0 }.to_json
+        )
+      all = Record.all
+      expect(all).to be_kind_of Record
+      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 0
+    end
 
-  it 'also works when there is no total in the stubbing' do
-    stub_request(:get, %r{/feedbacks}).to_return(body: { items: (1..100).to_a }.to_json)
-    all = Record.all
-    expect(all).to be_kind_of Record
-    expect(all._proxy).to be_kind_of LHS::Collection
-    expect(all.count).to eq 100
-  end
+    it 'also works when there is no total in the stubbing' do
+      stub_request(:get, %r{/feedbacks}).to_return(body: { items: (1..100).to_a }.to_json)
+      all = Record.all
+      expect(all).to be_kind_of Record
+      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 100
+    end
 
-  it 'also works when there is no key "items" in the stubbing' do
-    stub_request(:get, %r{/feedbacks}).to_return(body: (1..100).to_a.to_json)
-    all = Record.all
-    expect(all).to be_kind_of Record
-    expect(all._proxy).to be_kind_of LHS::Collection
-    expect(all.count).to eq 100
+    it 'also works when there is no key "items" in the stubbing' do
+      stub_request(:get, %r{/feedbacks}).to_return(body: (1..100).to_a.to_json)
+      all = Record.all
+      expect(all).to be_kind_of Record
+      expect(all._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 100
+    end
   end
 
   context 'pagination using offset(0,100,200,...)' do
 
-    context 'pagination_type:"offset" is used by default' do
+    context 'pagination_strategy:"offset" is used by default' do
 
       it 'fetches all records from the backend' do
         stub_request(:get, "#{datastore}/feedbacks?limit=100")
@@ -90,11 +94,11 @@ describe LHS::Record do
       end
     end
 
-    context 'using pagination_type:"offset" explicitly' do
+    context 'using pagination_strategy:"offset" explicitly' do
 
-      let!(:endpoint) do
+      before(:each) do
         class Record < LHS::Record
-          configuration pagination_type: 'offset', pagination_key: 'offset'
+          configuration pagination_strategy: 'offset', pagination_key: 'offset'
           endpoint ':datastore/feedbacks'
         end
       end
@@ -149,9 +153,9 @@ describe LHS::Record do
 
   context 'pagination using page(1,2,3,...)' do
 
-    let!(:endpoint) do
+    before(:each) do
       class Record < LHS::Record
-        configuration pagination_type: 'page', pagination_key: 'page'
+        configuration pagination_strategy: 'page', pagination_key: 'page'
         endpoint ':datastore/feedbacks'
       end
     end
@@ -206,9 +210,9 @@ describe LHS::Record do
 
   context 'pagination using start(1,101,201,...)' do
 
-    let!(:endpoint) do
+    before(:each) do
       class Record < LHS::Record
-        configuration pagination_type: 'start', pagination_key: 'start'
+        configuration pagination_strategy: 'start', pagination_key: 'start'
         endpoint ':datastore/feedbacks'
       end
     end

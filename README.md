@@ -355,56 +355,74 @@ unless user.valid?
 end
 ```
 
-## Collections: Offset / Limit / Pagination
+## How to work with paginated APIs
 
-You can paginate by passing offset, and limit params. They will be forwarded to the service.
+LHS supports paginated APIs and it also supports various pagination strategies and by providing configuration possibilities.
 
+LHS diffentiates between the *pagination strategy* (how items/pages are navigated) itself and *pagination keys* (how stuff is named).
+
+Example 1
 ```ruby
-data = Feedback.where(limit: 50)
-data.count // 50
-Feedback.where(limit: 50, offset: 51)
-```
+# API response
+{
+  items: [{...}, ...]
+  total: 300,
+  limit: 100,
+  offset: 0
+}
+# Next 'pages' are navigated with offset: 100, offset: 200, ...
 
-`total` provides total amount of items (even if paginated).
-`limit` provides amount of items per page.
-`offset` provides how many items where skipped to start the current page.
-
-### Configure the name of the keys for offset, limit, total and name of items
-
-Endpoints provide different interfaces to deal with paginated resources.
-They differ for example for the key that is used for providing the current page items, the total amount of items, the current page size etc.
-In order to have `LHS::Record` deal with those different interfaces you can configure it:
-
-```ruby
-class Search < LHS::Record
-  configuration items_key: :docs, limit_key: :size, pagination_key: :page, pagination_type: :page, total_key: :totalResults
-  endpoint ':search/:type'
+# Nothing has to be configured in LHS because this is default pagination naming and strategy
+class Results < LHS::Record
+  endpoint 'results'
 end
 ```
 
-`items_key` key used to determine items of the current page.
-`limit_key` key used to work with page limits (.
-`pagination_key` key used to paginate multiple pages (e.g. offset, start, page).
-`pagination_type` used to configure the strategy used for navigating.
-`total_key` key used to determine the total amount of items.
-
-### Pagination strategies
-
-LHS supports three types of pagination strategies: offset, page and start.
-
-For the following examples assume a limit of 100.
-
-`offset` (default) 0, 100, 200, 300, ...
-`start` 1, 101, 201, 301, ...
-`page` 1, 2, 3, 4, ...
-
-You can configure the `pagination_type` used by LHS on the record level.
-
+Example 2
 ```ruby
-class Search < LHS::Record
-  configuration pagination_type: :page
+# API response
+{
+  docs: [{...}, ...]
+  totalPages: 3,
+  limit: 100,
+  page: 1
+}
+# Next 'pages' are navigated with page: 1, offset: 2, ...
+
+# How LHS has to be configured
+class Results < LHS::Record
+  configuration items_key: 'docs', total_key: 'totalPages', pagination_key: 'page', pagination_strategy: 'page'
+  endpoint 'results'
 end
 ```
+
+Example 3
+```ruby
+# API response
+{
+  results: [{...}, ...]
+  total: 300,
+  badgeSize: 100,
+  startAt: 1
+}
+# Next 'pages' are navigated with startWith: 101, startWith: 201, ...
+
+# How LHS has to be configured
+class Results < LHS::Record
+  configuration items_key: 'results', limit_key: 'badgeSize', pagination_key: 'startAt', pagination_strategy: 'start'
+  endpoint 'results'
+end
+```
+
+`items_key` key used to determine items of the current page (e.g. `docs`, `items`, etc.).
+
+`limit_key` key used to work with page limits (e.g. `size`, `limit`, etc.)
+
+`pagination_key` key used to paginate multiple pages (e.g. `offset`, `start`, `page`, etc.).
+
+`pagination_strategy` used to configure the strategy used for navigating (e.g. `offset`, `page`, `skip`, etc.).
+
+`total_key` key used to determine the total amount of items (e.g. `total`, `totalResults`, etc.).
 
 ### Partial Kaminari support
 

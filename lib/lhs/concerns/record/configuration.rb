@@ -31,9 +31,9 @@ class LHS::Record
         @configuration.try(:[], :pagination_key) || :offset
       end
 
-      # Type used for calculationg next pages and navigate pages
-      def pagination_type
-        @configuration.try(:[], :pagination_type) || :offset
+      # Strategy used for calculationg next pages and navigate pages
+      def pagination_strategy
+        @configuration.try(:[], :pagination_strategy) || :offset
       end
     end
   end

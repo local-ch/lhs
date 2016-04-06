@@ -14,7 +14,7 @@ class LHS::Record
     module ClassMethods
 
       def pagination(data)
-        case data._record.pagination_type.to_sym
+        case data._record.pagination_strategy.to_sym
         when :page
           PagePagination.new(data)
         when :start
