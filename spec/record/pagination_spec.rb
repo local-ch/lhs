@@ -57,7 +57,7 @@ describe LHS::Record do
       expect(record.next_page).to eq(next_page)
     end
 
-    context 'when total of pages is not diviable trough limit' do
+    context 'when amount of total pages is not diviable by the limit' do
       let(:total) { 2738 }
       let(:limit) { 100 }
 
