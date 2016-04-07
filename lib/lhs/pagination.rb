@@ -64,7 +64,7 @@ class Pagination
   end
 
   def total_pages
-    total / limit
+    (total.to_f / limit).ceil
   end
 end
 

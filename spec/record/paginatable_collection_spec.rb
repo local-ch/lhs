@@ -63,16 +63,40 @@ describe LHS::Record do
           status: 200,
           body: { items: (101..200).to_a, limit: 100, total: 300, offset: 100 }.to_json
         )
-      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=200")
+      last_request = stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=200")
         .to_return(
           status: 200,
           body: { items: (201..300).to_a, limit: 100, total: 300, offset: 200 }.to_json
         )
       all = Record.all
+      assert_requested last_request
       expect(all).to be_kind_of Record
       expect(all._data._proxy).to be_kind_of LHS::Collection
       expect(all.count).to eq 300
       expect(all.last).to eq 300
+    end
+
+    it 'fetches all also for an uneven number of pages or if there is a rest' do
+      stub_request(:get, "#{datastore}/feedbacks?limit=100")
+        .to_return(
+          status: 200,
+          body: { items: (1..100).to_a, limit: 100, total: 223, offset: 0 }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=100")
+        .to_return(
+          status: 200,
+          body: { items: (101..200).to_a, limit: 100, total: 223, offset: 100 }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=200")
+        .to_return(
+          status: 200,
+          body: { items: (201..223).to_a, limit: 100, total: 223, offset: 200 }.to_json
+        )
+      all = Record.all
+      expect(all).to be_kind_of Record
+      expect(all._data._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 223
+      expect(all.last).to eq 223
     end
 
     it 'also fetches all when there is not meta information for limit' do
