@@ -23,7 +23,7 @@ describe LHS::Record do
       all = Record.all
       expect(all).to be_kind_of Record
       expect(all._proxy).to be_kind_of LHS::Collection
-      expect(all.count).to eq 0
+      expect(all.length).to eq 0
     end
 
     it 'also works when there is no total in the stubbing' do
@@ -31,7 +31,7 @@ describe LHS::Record do
       all = Record.all
       expect(all).to be_kind_of Record
       expect(all._proxy).to be_kind_of LHS::Collection
-      expect(all.count).to eq 100
+      expect(all.length).to eq 100
     end
 
     it 'also works when there is no key "items" in the stubbing' do
@@ -39,7 +39,7 @@ describe LHS::Record do
       all = Record.all
       expect(all).to be_kind_of Record
       expect(all._proxy).to be_kind_of LHS::Collection
-      expect(all.count).to eq 100
+      expect(all.length).to eq 100
     end
   end
 

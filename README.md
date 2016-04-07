@@ -111,8 +111,10 @@ If no record is found, `nil` is returned.
 ```ruby
 data = Feedback.all
 data.count # 998
-data.total # 998
+data.length # 998
 ```
+
+[Count vs. Length](#count-vs-length)
 
 `find_each` is a more fine grained way to process single records that are fetched in batches.
 
@@ -424,6 +426,8 @@ end
 
 `total_key` key used to determine the total amount of items (e.g. `total`, `totalResults`, etc.).
 
+In case of paginated resources it's important to know the difference between [count vs. length](#count-vs-length)
+
 ### Partial Kaminari support
 
 LHS implements an interface that makes it partially working with Kaminari.
@@ -440,7 +444,7 @@ For example, you can use kaminari to render paginations based on LHS Records:
 = paginate @items
 ```
 
-### form_for Helper
+## form_for Helper
 Rails `form_for` view-helper can be used in combination with instances of LHS::Record to autogenerate forms:
 ```
 <%= form_for(@instance, url: '/create') do |f| %>
@@ -449,3 +453,11 @@ Rails `form_for` view-helper can be used in combination with instances of LHS::R
   <%= f.submit "Create" %>
 <% end %>
 ```
+
+## Count vs. Length
+
+The behaviour of `count` and `length` is based on ActiveRecord's behaviour.
+
+`count` Determine the number of elements by taking the number of total elements that is provided by the endpoint/api.
+
+`length` This returns the number of elements loaded from an endpoint/api. In case of paginated resources this can be different to count, as it depends on how many pages have been loaded.
