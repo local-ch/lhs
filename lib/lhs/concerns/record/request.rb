@@ -92,7 +92,7 @@ class LHS::Record
       end
 
       def multiple_requests(options)
-        options = options.map { |option| process_options(option) }
+        options = options.map { |option| process_options(option, find_endpoint(option[:params])) }
         responses = LHC.request(options)
         data = responses.map { |response| LHS::Data.new(response.body, nil, self, response.request) }
         data = LHS::Data.new(data, nil, self)
