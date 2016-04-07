@@ -6,7 +6,7 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     def current_page
-      offset + 1
+      offset / limit + 1
     end
 
     def first_page
@@ -30,7 +30,7 @@ class LHS::Record
     end
 
     def total_pages
-      total / limit
+      (total.to_f / limit).ceil
     end
   end
 end

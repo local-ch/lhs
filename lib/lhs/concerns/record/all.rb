@@ -34,9 +34,9 @@ class LHS::Record
         total_left = data._raw[total_key] - data.count
         limit = data._raw[limit_key] || data.count
         if limit > 0
-          requests = total_left / limit
+          requests = (total_left.to_f / limit).ceil
           requests.times do |i|
-            offset = limit * (i + 1) + 1
+            offset = limit * (i + 1)
             data._raw[items_key].concat all_items_from request(
               params: params.merge(
                 data._record.limit_key => limit,

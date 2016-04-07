@@ -29,7 +29,7 @@ describe LHS::Collection do
       endpoint ':search/:type'
     end
     stub_request(:get, "http://local.ch/search/phonebook?size=10").to_return(body: first_response_data.to_json)
-    stub_request(:get, "http://local.ch/search/phonebook?size=10&start=11").to_return(body: second_response_data.to_json)
+    stub_request(:get, "http://local.ch/search/phonebook?size=10&start=10").to_return(body: second_response_data.to_json)
   end
 
   context 'lets you configure how to deal with collections' do
