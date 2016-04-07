@@ -432,11 +432,15 @@ In case of paginated resources it's important to know the difference between [co
 
 LHS implements an interface that makes it partially working with Kaminari.
 
-For example, you can use kaminari to render paginations based on LHS Records:
+The kaminari’s page parameter is in params[:page]. For example, you can use kaminari to render paginations based on LHS Records. Typically, your code will look like this:
 
 ```ruby
 # controller
-@items = Record.where(offset: offset, limit: limit)
+params[:page] = 0 if params[:page].nil?
+page = params[:page].to_i
+limit = 100
+offset = (page - 1) * limit
+@items = Record.where({ limit: limit, offset: offset }))
 ```
 
 ```ruby
