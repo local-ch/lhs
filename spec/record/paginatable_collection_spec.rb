@@ -73,7 +73,7 @@ describe LHS::Record do
       expect(all.last).to eq 300
     end
 
-    it 'fetches all also for an uneven number of pages or if there is a rest' do
+    it 'fetches all, also if there is a rest and the total is not divideable trough the limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(
           status: 200,
@@ -174,7 +174,7 @@ describe LHS::Record do
       expect(all.last).to eq 300
     end
 
-    it 'fetches all also for an uneven number of pages or if there is a rest' do
+    it 'fetches all, also if there is a rest and the total is not divideable trough the limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(
           status: 200,
@@ -252,7 +252,7 @@ describe LHS::Record do
       expect(all.last).to eq 300
     end
 
-    it 'fetches all also for an uneven number of pages or if there is a rest' do
+    it 'fetches all, also if there is a rest and the total is not divideable trough the limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(
           status: 200,
