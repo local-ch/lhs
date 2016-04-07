@@ -32,13 +32,13 @@ describe LHS::Collection do
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201").to_return(status: 200, body: api_response((201..300).to_a, 201))
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=301").to_return(status: 200, body: api_response((301..400).to_a, 301))
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=401").to_return(status: 200, body: api_response((401..total).to_a, 401))
-      count = 0
+      length = 0
       Record.find_in_batches do |records|
-        count += records.count
+        length += records.length
         expect(records).to be_kind_of Record
         expect(records._proxy).to be_kind_of LHS::Collection
       end
-      expect(count).to eq total
+      expect(length).to eq total
     end
 
     it 'adapts to backend max limit' do
@@ -47,19 +47,19 @@ describe LHS::Collection do
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=201").to_return(status: 200, body: api_response((201..300).to_a, 201))
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=301").to_return(status: 200, body: api_response((301..400).to_a, 301))
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=401").to_return(status: 200, body: api_response((401..total).to_a, 401))
-      count = 0
+      length = 0
       Record.find_in_batches(batch_size: 230) do |records|
-        count += records.count
+        length += records.length
         expect(records).to be_kind_of Record
         expect(records._proxy).to be_kind_of LHS::Collection
       end
-      expect(count).to eq total
+      expect(length).to eq total
     end
 
     it 'forwards offset' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=401").to_return(status: 200, body: api_response((401..total).to_a, 401))
       Record.find_in_batches(start: 401) do |records|
-        expect(records.count).to eq(total - 400)
+        expect(records.length).to eq(total - 400)
       end
     end
   end

@@ -17,6 +17,7 @@ class LHS::Record
   include Pagination
 
   delegate :_proxy, to: :_data
+  delegate :_endpoint, to: :_data
 
   def initialize(data = nil)
     data = LHS::Data.new({}, nil, self.class) unless data
