@@ -178,6 +178,29 @@ describe LHS::Record do
       expect(all.last).to eq 300
     end
 
+    it 'fetches all also for an uneven number of pages or if there is a rest' do
+      stub_request(:get, "#{datastore}/feedbacks?limit=100")
+        .to_return(
+          status: 200,
+          body: { items: (1..100).to_a, limit: 100, total: 223, page: 1 }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&page=2")
+        .to_return(
+          status: 200,
+          body: { items: (101..200).to_a, limit: 100, total: 223, page: 2 }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&page=3")
+        .to_return(
+          status: 200,
+          body: { items: (201..223).to_a, limit: 100, total: 223, page: 3 }.to_json
+        )
+      all = Record.all
+      expect(all).to be_kind_of Record
+      expect(all._data._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 223
+      expect(all.last).to eq 223
+    end
+
   end
 
   context 'pagination using start(1,101,201,...)' do
@@ -233,6 +256,29 @@ describe LHS::Record do
       expect(all._proxy).to be_kind_of LHS::Collection
       expect(all.count).to eq 300
       expect(all.last).to eq 300
+    end
+
+    it 'fetches all also for an uneven number of pages or if there is a rest' do
+      stub_request(:get, "#{datastore}/feedbacks?limit=100")
+        .to_return(
+          status: 200,
+          body: { items: (1..100).to_a, limit: 100, total: 223, start: 1 }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&start=101")
+        .to_return(
+          status: 200,
+          body: { items: (101..200).to_a, limit: 100, total: 223, start: 101 }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&start=201")
+        .to_return(
+          status: 200,
+          body: { items: (201..223).to_a, limit: 100, total: 223, start: 201 }.to_json
+        )
+      all = Record.all
+      expect(all).to be_kind_of Record
+      expect(all._data._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 223
+      expect(all.last).to eq 223
     end
   end
 end
