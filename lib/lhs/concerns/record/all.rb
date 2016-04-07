@@ -35,7 +35,7 @@ class LHS::Record
         if pagination.pages_left
           last_data = data
           pagination.pages_left.times do |_index|
-            return if last_data.length.zero?
+            return data if last_data.length.zero?
             pagination = data._record.pagination(last_data)
             response_data = request(
               params: params.merge(

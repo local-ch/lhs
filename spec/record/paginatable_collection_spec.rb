@@ -2,12 +2,10 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   before(:each) { LHC.config.placeholder('datastore', datastore) }
   let(:datastore) { 'http://local.ch/v2' }
 
   context 'default pagination behaviour' do
-
     before(:each) do
       class Record < LHS::Record
         endpoint ':datastore/feedbacks'
@@ -44,7 +42,6 @@ describe LHS::Record do
   end
 
   context 'pagination using offset(0,100,200,...)' do
-
     before(:each) do
       class Record < LHS::Record
         configuration pagination_strategy: 'offset', pagination_key: 'offset'
@@ -124,7 +121,6 @@ describe LHS::Record do
   end
 
   context 'pagination using page(1,2,3,...)' do
-
     before(:each) do
       class Record < LHS::Record
         configuration pagination_strategy: 'page', pagination_key: 'page'
@@ -200,11 +196,9 @@ describe LHS::Record do
       expect(all.count).to eq 223
       expect(all.last).to eq 223
     end
-
   end
 
   context 'pagination using start(1,101,201,...)' do
-
     before(:each) do
       class Record < LHS::Record
         configuration pagination_strategy: 'start', pagination_key: 'start'

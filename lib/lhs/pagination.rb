@@ -24,8 +24,8 @@ class Pagination
   def offset
     data._raw[_record.pagination_key.to_sym]
   end
-  alias_method :current_page, :offset
-  alias_method :start, :offset
+  alias current_page offset
+  alias start offset
 
   def pages_left
     total_pages - current_page
@@ -33,10 +33,6 @@ class Pagination
 
   def next_offset
     fail 'to be implemented in subclass'
-  end
-
-  def next_page
-    total_pages + current_page
   end
 
   def current_page
