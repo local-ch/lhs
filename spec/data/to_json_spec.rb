@@ -22,7 +22,7 @@ describe LHS::Data do
 
   it 'converts item to json' do
     expect(item.to_json)
-      .to eq JSON.parse(load_json(:feedbacks)).first.to_json
+      .to eq JSON.parse(load_json(:feedbacks))['items'].first.to_json
   end
 
   it 'converts collection to json' do
