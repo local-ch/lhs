@@ -11,23 +11,29 @@ class LHS::Record
 
     module ClassMethods
       def configuration(args)
-        @configuration ||= args.freeze || {}
+        @configuration = args.freeze || {}
       end
 
       def items_key
-        @configuration.try(:[], :items) || :items
+        @configuration.try(:[], :items_key) || :items
       end
 
       def limit_key
-        @configuration.try(:[], :limit) || :limit
+        @configuration.try(:[], :limit_key) || :limit
       end
 
       def total_key
-        @configuration.try(:[], :total) || :total
+        @configuration.try(:[], :total_key) || :total
       end
 
-      def offset_key
-        @configuration.try(:[], :offset) || :offset
+      # Key used for determine current page
+      def pagination_key
+        @configuration.try(:[], :pagination_key) || :offset
+      end
+
+      # Strategy used for calculationg next pages and navigate pages
+      def pagination_strategy
+        @configuration.try(:[], :pagination_strategy) || :offset
       end
     end
   end

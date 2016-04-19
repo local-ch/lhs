@@ -5,17 +5,18 @@ Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each { |file| require file }
 class LHS::Data
   include Json
 
-  delegate :instance_methods, :items_key, :limit_key, :total_key, :offset_key, to: :class
+  delegate :instance_methods, :items_key, :limit_key, :total_key, :pagination_key, to: :class
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_proxy, :_raw, :_parent, :_record, :_request
+  attr_accessor :_proxy, :_raw, :_parent, :_record, :_request, :_endpoint
 
-  def initialize(input, parent = nil, record = nil, request = nil)
+  def initialize(input, parent = nil, record = nil, request = nil, endpoint = nil)
     self._raw = raw_from_input(input)
     self._parent = parent
     self._record = record
     self._proxy = proxy_from_input(input)
     self._request = request
+    self._endpoint = endpoint
   end
 
   # merging data
@@ -105,6 +106,8 @@ class LHS::Data
     json = JSON.parse(input)
     if json.is_a?(Hash)
       json.deep_symbolize_keys
+    elsif json.is_a?(Array)
+      json.map { |item| item.is_a?(Hash) ? item.deep_symbolize_keys : item }
     else
       json
     end

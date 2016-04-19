@@ -15,7 +15,7 @@ class Feedback < LHS::Record
 
 end
 
-feedback = Feedback.find_by_email('somebody@mail.com') #<Feedback>
+feedback = Feedback.find_by(email: 'somebody@mail.com') #<Feedback>
 feedback.review # "Lunch was great"
 ```
 
@@ -111,8 +111,10 @@ If no record is found, `nil` is returned.
 ```ruby
 data = Feedback.all
 data.count # 998
-data.total # 998
+data.length # 998
 ```
+
+[Count vs. Length](#count-vs-length)
 
 `find_each` is a more fine grained way to process single records that are fetched in batches.
 
@@ -355,46 +357,90 @@ unless user.valid?
 end
 ```
 
-## Collections: Offset / Limit / Pagination
+## How to work with paginated APIs
 
-You can paginate by passing offset, and limit params. They will be forwarded to the service.
+LHS supports paginated APIs and it also supports various pagination strategies and by providing configuration possibilities.
 
+LHS diffentiates between the *pagination strategy* (how items/pages are navigated) itself and *pagination keys* (how stuff is named).
+
+*Example 1 "offset"-strategy (default configuration)*
 ```ruby
-data = Feedback.where(limit: 50)
-data.count // 50
-Feedback.where(limit: 50, offset: 51)
-```
+# API response
+{
+  items: [{...}, ...]
+  total: 300,
+  limit: 100,
+  offset: 0
+}
+# Next 'pages' are navigated with offset: 100, offset: 200, ...
 
-`total` provides total amount of items (even if paginated).
-`limit` provides amount of items per page.
-`offset` provides how many items where skipped to start the current page.
-
-### Configure the name of the keys for offset, limit, total and name of items
-
-Endpoints provide different interfaces to deal with paginated resources.
-They differ for example for the key that is used for providing the current page items, the total amount of items, the current page size etc.
-In order to have `LHS::Record` deal with those different interfaces you can configure it:
-
-```ruby
-class Search < LHS::Record
-  configuration items: :docs, limit: :size, offset: :start, total: :totalResults
-  endpoint ':search/:type'
+# Nothing has to be configured in LHS because this is default pagination naming and strategy
+class Results < LHS::Record
+  endpoint 'results'
 end
 ```
-`items` key used to determine items of the current page.
-`limit` key used to work with page limits.
-`offset` key used to paginate multiple pages.
-`total` key used to determine the total amount of items.
+
+*Example 2 "page"-strategy and some naming configuration*
+```ruby
+# API response
+{
+  docs: [{...}, ...]
+  totalPages: 3,
+  limit: 100,
+  page: 1
+}
+# Next 'pages' are navigated with page: 1, offset: 2, ...
+
+# How LHS has to be configured
+class Results < LHS::Record
+  configuration items_key: 'docs', total_key: 'totalPages', pagination_key: 'page', pagination_strategy: 'page'
+  endpoint 'results'
+end
+```
+
+*Example 3 "start"-strategy and naming configuration*
+```ruby
+# API response
+{
+  results: [{...}, ...]
+  total: 300,
+  badgeSize: 100,
+  startAt: 1
+}
+# Next 'pages' are navigated with startWith: 101, startWith: 201, ...
+
+# How LHS has to be configured
+class Results < LHS::Record
+  configuration items_key: 'results', limit_key: 'badgeSize', pagination_key: 'startAt', pagination_strategy: 'start'
+  endpoint 'results'
+end
+```
+
+`items_key` key used to determine items of the current page (e.g. `docs`, `items`, etc.).
+
+`limit_key` key used to work with page limits (e.g. `size`, `limit`, etc.)
+
+`pagination_key` key used to paginate multiple pages (e.g. `offset`, `page`, `startAt` etc.).
+
+`pagination_strategy` used to configure the strategy used for navigating (e.g. `offset`, `page`, `start`, etc.).
+
+`total_key` key used to determine the total amount of items (e.g. `total`, `totalResults`, etc.).
+
+In case of paginated resources it's important to know the difference between [count vs. length](#count-vs-length)
 
 ### Partial Kaminari support
 
 LHS implements an interface that makes it partially working with Kaminari.
 
-For example, you can use kaminari to render paginations based on LHS Records:
+The kaminari’s page parameter is in params[:page]. For example, you can use kaminari to render paginations based on LHS Records. Typically, your code will look like this:
 
 ```ruby
 # controller
-@items = Record.where(offset: offset, limit: limit)
+params[:page] = 0 if params[:page].nil?
+page = params[:page].to_i
+limit = 100
+offset = (page - 1) * limit
+@items = Record.where({ limit: limit, offset: offset }))
 ```
 
 ```ruby
@@ -402,7 +448,7 @@ For example, you can use kaminari to render paginations based on LHS Records:
 = paginate @items
 ```
 
-### form_for Helper
+## form_for Helper
 Rails `form_for` view-helper can be used in combination with instances of LHS::Record to autogenerate forms:
 ```
 <%= form_for(@instance, url: '/create') do |f| %>
@@ -411,3 +457,11 @@ Rails `form_for` view-helper can be used in combination with instances of LHS::R
   <%= f.submit "Create" %>
 <% end %>
 ```
+
+## Count vs. Length
+
+The behaviour of `count` and `length` is based on ActiveRecord's behaviour.
+
+`count` Determine the number of elements by taking the number of total elements that is provided by the endpoint/api.
+
+`length` This returns the number of elements loaded from an endpoint/api. In case of paginated resources this can be different to count, as it depends on how many pages have been loaded.
