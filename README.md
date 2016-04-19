@@ -15,7 +15,7 @@ class Feedback < LHS::Record
 
 end
 
-feedback = Feedback.find_by_email('somebody@mail.com') #<Feedback>
+feedback = Feedback.find_by(email: 'somebody@mail.com') #<Feedback>
 feedback.review # "Lunch was great"
 ```
 
