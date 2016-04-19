@@ -7,19 +7,15 @@ class LHS::Record
 
     module ClassMethods
       def create(data = {})
-        create!(data)
-      rescue LHC::Error => e
-        json = JSON.parse(data.to_json)
-        data = LHS::Data.new(json, nil, self, e.response.request)
-        item = LHS::Item.new(data)
-        item.errors = LHS::Errors.new(e.response)
-        data._record.new(LHS::Data.new(item, data))
+        record = new(data)
+        record.save
+        record
       end
 
       def create!(data = {})
-        url = compute_url!(data)
-        data = request(url: url, method: :post, body: data.to_json, headers: { 'Content-Type' => 'application/json' })
-        data._record.new(data)
+        record = new(data)
+        record.save!
+        record
       end
     end
   end

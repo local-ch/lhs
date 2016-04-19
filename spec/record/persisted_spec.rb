@@ -21,13 +21,8 @@ describe LHS::Record do
 
     context 'for saved record' do
       let(:campaign_id) { 'aaa' }
-      let(:parameters) do
-        {
-          recommended: true,
-          campaign_id: campaign_id
-        }
-      end
-      subject { Feedback.new(parameters) }
+      let(:parameters) { { recommended: true } }
+      subject { Feedback.new(parameters.merge(campaign_id: campaign_id)) }
 
       before do
         stub_request(:post, "#{datastore}/content-ads/#{campaign_id}/feedbacks")
