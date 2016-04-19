@@ -19,6 +19,13 @@ describe LHS::Data do
     LHS::Data.new(item)
   end
 
+  let(:data_from_array) do
+    LHS::Data.new([
+      { href: 'http://www.local.ch/v2/stuff/3', id: '123123123' },
+      { href: 'http://www.local.ch/v2/stuff/4', id: '123123124' }
+    ].to_json)
+  end
+
   context 'raw' do
     it 'you can access raw data that is underlying' do
       expect(data_from_raw._raw).to be_kind_of Hash
@@ -29,6 +36,11 @@ describe LHS::Data do
       expect(data_from_item._raw).to eq(
         href: 'http://www.local.ch/v2/stuff'
       )
+    end
+
+    it 'returns a Hash with symbols when the input is an array' do
+      expect(data_from_array._raw).to be_kind_of Array
+      expect(data_from_array._raw.first.keys.first).to be_kind_of Symbol
     end
   end
 end
