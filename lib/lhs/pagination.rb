@@ -22,7 +22,7 @@ class Pagination
   end
 
   def offset
-    data._raw[_record.pagination_key.to_sym]
+    data._raw[_record.pagination_key.to_sym].presence || 0
   end
   alias current_page offset
   alias start offset
