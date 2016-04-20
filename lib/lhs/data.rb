@@ -60,7 +60,7 @@ class LHS::Data
   private
 
   def collection_proxy?(input)
-    !! (input.is_a?(Hash) && (_record && input[items_key])) || input.is_a?(Array) || _raw.is_a?(Array)
+    !! (input.is_a?(Hash) && input[items_key]) || input.is_a?(Array) || _raw.is_a?(Array)
   end
 
   def root_item
