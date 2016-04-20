@@ -22,8 +22,8 @@ class LHS::Record
 
       private
 
-      def is_paginated?(data_raw)
-        data_raw.is_a?(Hash) && data_raw[total_key] && data_raw[pagination_key]
+      def is_paginated?(raw)
+        raw.is_a?(Hash) && raw[total_key] && raw[pagination_key]
       end
 
       def all_items_from(data)
