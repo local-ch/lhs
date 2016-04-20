@@ -96,7 +96,7 @@ describe LHS::Record do
       expect(all.last).to eq 223
     end
 
-    it 'also fetches all when there is not meta information for limit' do
+    it 'also fetches all when there is no meta information for limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(
           status: 200,
@@ -151,7 +151,7 @@ describe LHS::Record do
       expect(all.last).to eq 300
     end
 
-    it 'also fetches all when there is not meta information for limit' do
+    it 'also fetches all when there is no meta information for limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(
           status: 200,
@@ -229,7 +229,7 @@ describe LHS::Record do
       expect(all.last).to eq 300
     end
 
-    it 'also fetches all when there is not meta information for limit' do
+    it 'also fetches all when there is no meta information for limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(
           status: 200,
