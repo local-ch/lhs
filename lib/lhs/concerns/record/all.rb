@@ -16,13 +16,13 @@ class LHS::Record
       def all(params = {})
         limit = params[limit_key] || DEFAULT_LIMIT
         data = request(params: params.merge(limit_key => limit))
-        request_all_the_rest(data, params) if is_paginated?(data._raw)
+        request_all_the_rest(data, params) if paginated?(data._raw)
         data._record.new(LHS::Data.new(data, nil, self))
       end
 
       private
 
-      def is_paginated?(raw)
+      def paginated?(raw)
         raw.is_a?(Hash) && raw[total_key] && raw[pagination_key]
       end
 
