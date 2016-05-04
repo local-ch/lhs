@@ -29,6 +29,16 @@ describe LHS::Record do
       expect(records.class).to eq Record
       expect(records._raw).to eq [{ name: 'Steve' }]
       expect(records.first.uppercase_name).to eq 'STEVE'
+      expect(records.first.name).to eq 'Steve'
     end
+
+    it 'takes the last value for chains with same name parameters' do
+      stub_request(:get, "http://datastore/v2/records/?parameter=last")
+          .to_return(body: [{ name: 'Steve' }])
+      records = Record.where(parameter: 'first').where(parameter: 'last')
+      # initiate the call, the stub will fail if the wrong parameter 'won'
+      records.first
+    end
+    # TODO: add a test that resolves to method_missing
   end
 end
