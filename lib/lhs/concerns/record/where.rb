@@ -7,7 +7,7 @@ class LHS::Record
 
     class WhereChain
 
-      delegate *Object.instance_methods, to: :resolve
+      delegate(*Object.instance_methods, to: :resolve)
 
       def initialize(record, parameters)
         @record = record
