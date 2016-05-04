@@ -66,6 +66,28 @@ This uses the `:datastore/v2/feedbacks` endpoint, cause `:campaign_id` was not p
 
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
+## Scopes / WhereChains
+
+LHS supports WhereChains. That allows you to chain multiple where-queries and helps you organizing query parameters that are used often in scopes (methods):
+
+```ruby
+class Record < LHS::Record
+  endpoint 'records/'
+  endpoint 'records/:id'
+
+  def self.blue
+    where(color: 'blue')
+  end
+end
+
+records = Record.blue.where(available: true)
+...
+records.where(sort: 'DESC').each do |record|
+  ...
+end
+```
+The example would fetch the following in the end: `{color: blue, available: true, sort: 'DESC'}`.
+
 ## Find single records
 
 `find` finds a unique record by uniqe identifier (usualy id).
