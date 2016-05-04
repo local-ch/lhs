@@ -34,7 +34,7 @@ describe LHS::Record do
 
     it 'takes the last value for chains with same name parameters' do
       stub_request(:get, "http://datastore/v2/records/?parameter=last")
-          .to_return(body: [{ name: 'Steve' }])
+        .to_return(body: [{ name: 'Steve' }])
       records = Record.where(parameter: 'first').where(parameter: 'last')
       # initiate the call, the stub will fail if the wrong parameter 'won'
       records.first
