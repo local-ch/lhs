@@ -30,8 +30,7 @@ class LHS::Record
       end
 
       def resolve
-        return @resolved if @resolved
-        @resolved = @record.new(
+        @resolved ||= @record.new(
           @record.request(params: merged_parameters)
         )
       end

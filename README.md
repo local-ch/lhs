@@ -82,11 +82,11 @@ end
 
 records = Record.blue.where(available: true)
 ...
-records.where(sort: 'DESC').each do |record|
+records.where(visible: true).each do |record|
   ...
 end
 ```
-The example would fetch the following in the end: `{color: blue, available: true, sort: 'DESC'}`.
+The example would fetch the following in the end: `{color: blue, available: true, visible: true}`.
 
 ## Find single records
 
