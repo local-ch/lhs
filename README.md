@@ -95,7 +95,9 @@ records = Record.where(color: 'blue').where(available: true).where(color: 'red')
 
 expect(
   records
-).to have_requested "something" # will fail as no http request is made (no data requested)
+).to have_requested(:get, %r{records/})
+  .with(query: hash_including(color: 'blue', available: true))
+# will fail as no http request is made (no data requested)
 
 expect(
   records.where_values_hash
