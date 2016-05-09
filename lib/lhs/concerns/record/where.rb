@@ -21,6 +21,11 @@ class LHS::Record
         self
       end
 
+      # Returns a hash of where conditions (active-record-like).
+      def where_values_hash
+        merged_parameters
+      end
+
       protected
 
       def method_missing(name, *args, &block)

@@ -85,6 +85,23 @@ end
 ```
 The example would fetch records with the following parameters: `{color: blue, available: true}`.
 
+## Where values hash
+
+Returns a hash of where conditions (active-record-like).
+Common to use in tests, as where queries are not performing any HTTP-requests when no data is accessed.
+
+```
+records = Record.where(color: 'blue').where(available: true).where(color: 'red')
+
+expect(
+  records
+).to have_requested "something" # will fail as no http request is made (no data requested)
+
+expect(
+  records.where_values_hash
+).to eq {color: 'red', available: true}
+```
+
 ## Scopes: Reuse where statements
 
 In order to make common where statements reusable you can organise them in scopes:
