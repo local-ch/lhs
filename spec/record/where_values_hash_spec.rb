@@ -17,7 +17,6 @@ describe LHS::Record do
   end
 
   context 'where values hash' do
-
     it 'provides the hash or where parameters that have been requested' do
       stub_request(:get, "http://datastore/v2/records/?available=true&color=blue").to_return(response)
       expect(
