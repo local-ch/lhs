@@ -94,7 +94,7 @@ class Record < LHS::Record
   endpoint 'records/'
   endpoint 'records/:id'
   scope :blue, -> { where(color: 'blue') }
-  scope :available ->(state) { where(available: state) }
+  scope :available, ->(state) { where(available: state) }
 end
 
 records = Record.blue.available(true)
