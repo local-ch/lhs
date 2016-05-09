@@ -93,8 +93,8 @@ In order to make common where statements reusable you can organise them in scope
 class Record < LHS::Record
   endpoint 'records/'
   endpoint 'records/:id'
-  scope :blue, -> {color: 'blue'}
-  scope :available ->(state) {available: state}
+  scope :blue, -> { where(color: 'blue') }
+  scope :available ->(state) { where(available: state) }
 end
 
 records = Record.blue.available(true)
