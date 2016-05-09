@@ -66,27 +66,40 @@ This uses the `:datastore/v2/feedbacks` endpoint, cause `:campaign_id` was not p
 
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
-## Scopes / WhereChains
+## Chaining where statements
 
-LHS supports WhereChains. That allows you to chain multiple where-queries and helps you organizing query parameters that are used often in scopes (methods):
+LHS supports chaining where statements. 
+That allows you to chain multiple where-queries:
 
 ```ruby
 class Record < LHS::Record
   endpoint 'records/'
   endpoint 'records/:id'
-
-  def self.blue
-    where(color: 'blue')
-  end
 end
 
-records = Record.blue.where(available: true)
+records = Record.where(color: 'blue')
 ...
-records.where(visible: true).each do |record|
+records.where(available: true).each do |record|
   ...
 end
 ```
-The example would fetch the following in the end: `{color: blue, available: true, visible: true}`.
+The example would fetch records with the following parameters: `{color: blue, available: true}`.
+
+## Scopes: Reuse where statements
+
+In order to make common where statements reusable you can organise them in scopes:
+
+```ruby
+class Record < LHS::Record
+  endpoint 'records/'
+  endpoint 'records/:id'
+  scope :blue, -> {color: 'blue'}
+  scope :available ->(state) {available: state}
+end
+
+records = Record.blue.available(true)
+The example would fetch records with the following parameters: `{color: blue, visible: true}`.
+```
 
 ## Find single records
 

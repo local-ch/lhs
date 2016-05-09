@@ -14,10 +14,6 @@ describe LHS::Record do
     class Record < LHS::Record
       endpoint ':datastore/records/'
 
-      def self.blue
-        where(color: 'blue')
-      end
-
       def uppercase_name
         name.upcase
       end
@@ -30,7 +26,7 @@ describe LHS::Record do
         .to_return(response)
     end
 
-    let(:records) { Record.blue.where(range: '>26').where(available: true) }
+    let(:records) { Record.where(color: 'blue').where(range: '>26').where(available: true) }
 
     it 'allows chaining where statements' do
       expect(records.class).to eq Record
@@ -41,7 +37,7 @@ describe LHS::Record do
     it 'resolves triggered by method missing' do
       expect(records._raw).to eq [{ name: 'Steve' }]
       expect(
-        Record.blue.where(range: '>26', available: true).first.name
+        Record.where(color: 'blue').where(range: '>26', available: true).first.name
       ).to eq 'Steve'
     end
   end

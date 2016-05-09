@@ -7,7 +7,9 @@ class LHS::Record
 
     class WhereChain
 
-      delegate(*Object.instance_methods, to: :resolve)
+      # Instance exec is required for scope chains
+      delegated_methods = Object.instance_methods - [:instance_exec]
+      delegate(*delegated_methods, to: :resolve)
 
       def initialize(record, parameters)
         @record = record
@@ -22,11 +24,14 @@ class LHS::Record
       protected
 
       def method_missing(name, *args, &block)
+        scope = @record.scopes[name]
+        return instance_exec(*args, &scope) if scope
         resolve.send(name, *args, &block)
       end
 
       def respond_to_missing?(name, include_all = false)
-        resolve.respond_to?(name, include_all)
+        @record.scopes[name] ||
+          resolve.respond_to?(name, include_all)
       end
 
       def resolve
