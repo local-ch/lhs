@@ -66,6 +66,60 @@ This uses the `:datastore/v2/feedbacks` endpoint, cause `:campaign_id` was not p
 
 Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
 
+## Chaining where statements
+
+LHS supports chaining where statements. 
+That allows you to chain multiple where-queries:
+
+```ruby
+class Record < LHS::Record
+  endpoint 'records/'
+  endpoint 'records/:id'
+end
+
+records = Record.where(color: 'blue')
+...
+records.where(available: true).each do |record|
+  ...
+end
+```
+The example would fetch records with the following parameters: `{color: blue, available: true}`.
+
+## Where values hash
+
+Returns a hash of where conditions.
+Common to use in tests, as where queries are not performing any HTTP-requests when no data is accessed.
+
+```ruby
+records = Record.where(color: 'blue').where(available: true).where(color: 'red')
+
+expect(
+  records
+).to have_requested(:get, %r{records/})
+  .with(query: hash_including(color: 'blue', available: true))
+# will fail as no http request is made (no data requested)
+
+expect(
+  records.where_values_hash
+).to eq {color: 'red', available: true}
+```
+
+## Scopes: Reuse where statements
+
+In order to make common where statements reusable you can organise them in scopes:
+
+```ruby
+class Record < LHS::Record
+  endpoint 'records/'
+  endpoint 'records/:id'
+  scope :blue, -> { where(color: 'blue') }
+  scope :available, ->(state) { where(available: state) }
+end
+
+records = Record.blue.available(true)
+The example would fetch records with the following parameters: `{color: blue, visible: true}`.
+```
+
 ## Find single records
 
 `find` finds a unique record by uniqe identifier (usualy id).

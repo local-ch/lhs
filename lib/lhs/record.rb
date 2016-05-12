@@ -12,6 +12,7 @@ class LHS::Record
   include Mapping
   include Model
   include Includes
+  include Scope
   include Request
   include Where
   include Pagination
