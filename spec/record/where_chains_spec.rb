@@ -42,7 +42,7 @@ describe LHS::Record do
     end
   end
 
-  context 'multiple paramters' do
+  context 'multiple parameters' do
     before(:each) do
       stub_request(:get, "http://datastore/v2/records/?parameter=last").to_return(response)
     end

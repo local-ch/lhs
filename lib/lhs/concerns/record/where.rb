@@ -21,7 +21,7 @@ class LHS::Record
         self
       end
 
-      # Returns a hash of where conditions (active-record-like).
+      # Returns a hash of where conditions
       def where_values_hash
         merged_parameters
       end

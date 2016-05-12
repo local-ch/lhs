@@ -87,7 +87,7 @@ The example would fetch records with the following parameters: `{color: blue, av
 
 ## Where values hash
 
-Returns a hash of where conditions (active-record-like).
+Returns a hash of where conditions.
 Common to use in tests, as where queries are not performing any HTTP-requests when no data is accessed.
 
 ```ruby
