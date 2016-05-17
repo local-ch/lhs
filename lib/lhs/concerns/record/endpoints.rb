@@ -47,9 +47,13 @@ class LHS::Record
       end
 
       # Prevent clashing endpoints.
-      def sanity_check(endpoint)
-        placeholders = endpoint.placeholders
-        fail 'Clashing endpoints.' if endpoints.any? { |e| e.placeholders.sort == placeholders.sort }
+      def sanity_check(new_endpoint)
+        endpoints.each do |existing_endpoint|
+          invalid = existing_endpoint.placeholders.sort == new_endpoint.placeholders.sort &&
+            existing_endpoint.url != new_endpoint.url
+          next unless invalid
+          fail "Clashing endpoints! Cannot differentiate between #{existing_endpoint.url} and #{new_endpoint.url}"
+        end
       end
 
       # Computes the url from params

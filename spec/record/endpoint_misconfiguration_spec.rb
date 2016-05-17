@@ -10,7 +10,7 @@ describe LHS::Record do
             endpoint ':datastore/v2/reviews'
           end
         }
-      ).to raise_error('Clashing endpoints.')
+      ).to raise_error
       expect(
         lambda {
           class Record < LHS::Record
@@ -18,7 +18,7 @@ describe LHS::Record do
             endpoint ':datastore/v2/:campaign_id/reviews'
           end
         }
-      ).to raise_error('Clashing endpoints.')
+      ).to raise_error
     end
   end
 end
