@@ -33,8 +33,9 @@ class LHS::Collection < LHS::Proxy
       private
 
       def cast_item(item)
+        record = LHS::Record.for_url(item[:href]) if item[:href]
         data = LHS::Data.new(item, @parent, @record)
-        return @record.new(data) if @record
+        return (@record || record).new(data) if @record || record
         data
       end
     end
