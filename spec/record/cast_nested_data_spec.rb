@@ -22,13 +22,13 @@ describe LHS::Record do
 
     it 'casts nested data properly' do
       stub_request(:get, "http://local.ch/v2/customers?limit=1")
-       .to_return(
+        .to_return(
           body: {
             items: [
               {
                 href: "http://local.ch/v2/customers/12",
                 address: {
-                  href: "http://local.ch/v2/addresses/3",
+                  href: "http://local.ch/v2/addresses/3"
                 },
                 contracts: [
                   {
