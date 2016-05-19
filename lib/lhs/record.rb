@@ -3,19 +3,19 @@ Dir[File.dirname(__FILE__) + '/concerns/record/*.rb'].each { |file| require file
 class LHS::Record
   include All
   include Batch
+  include Chain
   include Configuration
   include Create
   include Endpoints
   include Find
   include FindBy
   include First
+  include Includes
   include Mapping
   include Model
-  include Includes
-  include Scope
-  include Request
-  include Where
   include Pagination
+  include Request
+  include Scope
 
   delegate :_proxy, to: :_data
   delegate :_endpoint, to: :_data
