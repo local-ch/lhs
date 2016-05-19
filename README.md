@@ -156,6 +156,19 @@ If no record is found, `nil` is returned.
 
 `first!` raises LHC::NotFound if nothing was found.
 
+## Request based options
+
+You can apply options to the request chain, similiar to where and scopes. Those options will be forwarded to the request to perfom your query:
+
+```ruby
+  authenticated_record = Record.options(auth: { bearer: '123456' })
+  
+  blue_records = authenticated_record.where(color: 'blue')
+  active_records = authenticated_record.where(active: true)
+```
+
+Similiar to where chains and scopes, also this is lazy evaluated.
+
 ## Batch processing
 
 **Be careful using methods for batch processing. They could result in a lot of HTTP requests!**
