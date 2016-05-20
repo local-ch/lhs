@@ -46,6 +46,10 @@ class LHS::Data
     root_item == self
   end
 
+  def collection?
+    _proxy.is_a? LHS::Collection
+  end
+
   protected
 
   def method_missing(name, *args, &block)

@@ -38,7 +38,7 @@ class LHS::Record
 
       # Extends existing raw data with additionaly fetched data
       def extend_raw_data(data, addition, key)
-        if data._proxy.is_a? LHS::Collection
+        if data.collection?
           data.each_with_index do |item, i|
             item = item[i] if item.is_a? LHS::Collection
             item._raw[key.to_sym].merge!(addition[i]._raw)
@@ -59,9 +59,9 @@ class LHS::Record
       end
 
       def handle_include(included, data, sub_includes = nil)
-        return unless data.present?
+        return unless data.present? && load_includes?(data, included)
         options =
-          if data._proxy.is_a? LHS::Collection
+          if data.collection?
             options_for_multiple(data, included)
             options_for_multiple(data, included)
           else
@@ -72,9 +72,17 @@ class LHS::Record
         extend_raw_data(data, addition, included)
       end
 
+      def load_includes?(data, included)
+        if data.collection?
+          data.to_a.any? { |item| item[included].present? }
+        else
+          data._raw.key?(included)
+        end
+      end
+
       # Load additional resources that are requested with include
       def load_include(options, data, sub_includes)
-        record = record_for_options(options) || self
+        record  = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
           record.includes(sub_includes).request(options)
