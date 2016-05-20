@@ -36,6 +36,14 @@ class LHS::Record
         @chain = [link].compact
       end
 
+      def create(data = {})
+        @record.create(data, merged_options)
+      end
+
+      def create!(data = {})
+        @record.create!(data, merged_options)
+      end
+
       def where(hash = nil)
         push Parameter.new(hash)
       end
@@ -44,12 +52,10 @@ class LHS::Record
         push Option.new(hash)
       end
 
-      # find has to be an instance method to be excluded from delegation
       def find(args)
         @record.find(args, merged_options)
       end
 
-      # find_by has to be an instance method to be excluded from delegation
       def find_by(params = {})
         @record.find_by(params, merged_options)
       end

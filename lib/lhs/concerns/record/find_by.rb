@@ -20,9 +20,9 @@ class LHS::Record
 
       private
 
-      def _find_by(params, options = nil)
-        params = params.dup.merge(limit: 1)
+      def _find_by(params, options = {})
         options ||= {}
+        params = params.dup.merge(limit: 1)
         data = request(options.merge(params: params))
         if data._proxy.is_a?(LHS::Collection)
           data.first || fail(LHC::NotFound.new('No item was found.', data._request.response))

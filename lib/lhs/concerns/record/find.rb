@@ -7,7 +7,7 @@ class LHS::Record
 
     module ClassMethods
       # Find a single uniqe record
-      def find(args, options = {})
+      def find(args, options = nil)
         data =
           if args.is_a? Hash
             find_with_parameters(args, options)
@@ -20,7 +20,7 @@ class LHS::Record
 
       private
 
-      def find_with_parameters(params, options = nil)
+      def find_with_parameters(params, options = {})
         options ||= {}
         data = request(options.merge(params: params))
         if data._proxy.is_a?(LHS::Collection)
@@ -31,7 +31,7 @@ class LHS::Record
         end
       end
 
-      def find_by_id(id, options = nil)
+      def find_by_id(id, options = {})
         options ||= {}
         request(options.merge(params: { id: id }))
       end

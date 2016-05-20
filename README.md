@@ -158,16 +158,25 @@ If no record is found, `nil` is returned.
 
 ## Request based options
 
-You can apply options to the request chain, similiar to where and scopes. Those options will be forwarded to the request to perfom your query:
+You can apply options to the request chain. Those options will be forwarded to the request perfomed by the chain/query.
 
 ```ruby
-  authenticated_record = Record.options(auth: { bearer: '123456' })
+  options = { auth: { bearer: '123456' } }
+  
+  authenticated_record = Record.options(options)
   
   blue_records = authenticated_record.where(color: 'blue')
   active_records = authenticated_record.where(active: true)
-```
 
-Similiar to where chains and scopes, also this is lazy evaluated.
+  authenticated_record.create(color: 'red')
+  
+  record = authenticated_record.find(123)
+  record.name = 'Walter'
+  record.valid?(options)
+  record.save(options)
+  record.destroy(options)
+  record.update({ name: 'Steve' }, options)
+```
 
 ## Batch processing
 

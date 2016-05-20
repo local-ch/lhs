@@ -6,14 +6,15 @@ class LHS::Item < LHS::Proxy
   module Save
     extend ActiveSupport::Concern
 
-    def save
-      save!
+    def save(options = nil)
+      save!(options)
     rescue LHC::Error => e
       self.errors = LHS::Errors.new(e.response)
       false
     end
 
-    def save!
+    def save!(options = {})
+      options ||= {}
       record = _data.class
       data = _data._raw.dup
       if href.present?
@@ -24,7 +25,7 @@ class LHS::Item < LHS::Proxy
         endpoint.remove_interpolated_params!(data)
       end
 
-      data = record.request(method: :post, url: url, body: data.to_json, headers: { 'Content-Type' => 'application/json' })
+      data = record.request(options.merge(method: :post, url: url, body: data.to_json, headers: { 'Content-Type' => 'application/json' }))
       _data.merge_raw!(data)
       true
     end
