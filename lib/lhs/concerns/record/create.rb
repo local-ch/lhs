@@ -6,15 +6,15 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def create(data = {})
+      def create(data = {}, options = nil)
         record = new(data)
-        record.save
+        record.save(options)
         record
       end
 
-      def create!(data = {})
+      def create!(data = {}, options = nil)
         record = new(data)
-        record.save!
+        record.save!(options)
         record
       end
     end
