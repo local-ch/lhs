@@ -103,17 +103,29 @@ class LHS::Record
       end
 
       def multiple_requests(options)
-        data = options.map do |option|
+        requests = options.map do |option|
           next unless option.present?
-          processed_option = process_options(option, find_endpoint(option[:params]))
-          response = LHC.request(processed_option)
-          LHS::Data.new(response.body, nil, self, response.request)
+          process_options(option, find_endpoint(option[:params]))
         end
+        data = LHC.request(requests.compact).map { |response| LHS::Data.new(response.body, nil, self, response.request) }
+        data = restore_with_nils(data, locate_nils(requests)) # nil objects in data provide location information for mapping
         unless data.empty?
           data = LHS::Data.new(data, nil, self)
           handle_includes(including, data) if including
         end
         data
+      end
+
+      def locate_nils(array)
+        nils = []
+        array.each_with_index { |val, i| nils << i if val.nil? }
+        nils
+      end
+
+      def restore_with_nils(array, nils)
+        arr = array.dup
+        nils.sort.each { |index| arr.insert(index, nil) }
+        arr
       end
 
       def options_for_multiple(data, key)

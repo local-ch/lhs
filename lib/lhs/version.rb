@@ -1,3 +1,3 @@
 module LHS
-  VERSION = "5.0.5"
+  VERSION = "5.1.1"
 end
