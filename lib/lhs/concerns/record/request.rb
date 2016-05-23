@@ -26,6 +26,7 @@ class LHS::Record
       end
 
       def convert_option_to_endpoints(option)
+        return unless option.present?
         new_options = option.dup
         url = option[:url]
         endpoint = LHS::Endpoint.for_url(url)
@@ -38,10 +39,14 @@ class LHS::Record
 
       # Extends existing raw data with additionaly fetched data
       def extend_raw_data(data, addition, key)
+        return if addition.empty?
         if data.collection?
           data.each_with_index do |item, i|
             item = item[i] if item.is_a? LHS::Collection
-            item._raw[key.to_sym].merge!(addition[i]._raw)
+            placeholder = item._raw[key.to_sym]
+            if placeholder.present?
+              placeholder.merge!(addition[i]._raw)
+            end
           end
         elsif data._proxy.is_a? LHS::Item
           data._raw[key.to_sym].merge!(addition._raw)
@@ -63,9 +68,7 @@ class LHS::Record
         options =
           if data.collection?
             options_for_multiple(data, included)
-            options_for_multiple(data, included)
           else
-            url_option_for(data, included)
             url_option_for(data, included)
           end
         addition = load_include(options, data, sub_includes)
@@ -100,11 +103,16 @@ class LHS::Record
       end
 
       def multiple_requests(options)
-        options = options.map { |option| process_options(option, find_endpoint(option[:params])) }
-        responses = LHC.request(options)
-        data = responses.map { |response| LHS::Data.new(response.body, nil, self, response.request) }
-        data = LHS::Data.new(data, nil, self)
-        handle_includes(including, data) if including
+        data = options.map do |option|
+          next unless option.present?
+          processed_option = process_options(option, find_endpoint(option[:params]))
+          response = LHC.request(processed_option)
+          LHS::Data.new(response.body, nil, self, response.request)
+        end
+        unless data.empty?
+          data = LHS::Data.new(data, nil, self)
+          handle_includes(including, data) if including
+        end
         data
       end
 
@@ -127,7 +135,7 @@ class LHS::Record
       def record_for_options(options)
         records = []
         if options.is_a?(Array)
-          options.each do |option|
+          options.compact.each do |option|
             record = LHS::Record.for_url(option[:url])
             next unless record
             records.push(record)
@@ -151,7 +159,7 @@ class LHS::Record
 
       def url_option_for(item, key)
         link = item[key]
-        { url: link.href }
+        return { url: link.href } if link.present? && link.href.present?
       end
     end
   end
