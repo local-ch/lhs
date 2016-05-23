@@ -23,7 +23,7 @@ class LHS::Data
   # e.g. when loading remote data via link
   def merge_raw!(data)
     return false unless data._raw.is_a?(Hash)
-    _raw.merge! data._raw
+    _raw.merge! data._raw if data._raw
   end
 
   def _root

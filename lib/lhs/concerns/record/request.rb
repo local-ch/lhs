@@ -41,15 +41,15 @@ class LHS::Record
       def extend_raw_data(data, addition, key)
         return if addition.empty?
         if data.collection?
-          data.each_with_index do |item, i|
-            item = item[i] if item.is_a? LHS::Collection
-            placeholder = item._raw[key.to_sym]
-            if placeholder.present?
-              placeholder.merge!(addition[i]._raw)
-            end
+          data.each_with_index do |item, index|
+            item = item[index] if item.collection?
+            link = item._raw[key.to_sym]
+            link.merge!(addition[index]._raw) if link.present?
+            # item.merge_raw!(addition[i])
           end
         elsif data._proxy.is_a? LHS::Item
           data._raw[key.to_sym].merge!(addition._raw)
+          # data.merge_raw!(addition)
         end
       end
 
@@ -64,7 +64,7 @@ class LHS::Record
       end
 
       def handle_include(included, data, sub_includes = nil)
-        return unless data.present? && load_includes?(data, included)
+        return if data.blank? || skip_loading_includes?(data, included)
         options =
           if data.collection?
             options_for_multiple(data, included)
@@ -75,17 +75,17 @@ class LHS::Record
         extend_raw_data(data, addition, included)
       end
 
-      def load_includes?(data, included)
+      def skip_loading_includes?(data, included)
         if data.collection?
-          data.to_a.any? { |item| item[included].present? }
+          data.to_a.none? { |item| item[included].present? }
         else
-          data._raw.key?(included)
+          !data._raw.key?(included)
         end
       end
 
       # Load additional resources that are requested with include
       def load_include(options, data, sub_includes)
-        record  = record_for_options(options) || self
+        record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
           record.includes(sub_includes).request(options)
@@ -103,12 +103,12 @@ class LHS::Record
       end
 
       def multiple_requests(options)
-        requests = options.map do |option|
+        options = options.map do |option|
           next unless option.present?
           process_options(option, find_endpoint(option[:params]))
         end
-        data = LHC.request(requests.compact).map { |response| LHS::Data.new(response.body, nil, self, response.request) }
-        data = restore_with_nils(data, locate_nils(requests)) # nil objects in data provide location information for mapping
+        data = LHC.request(options.compact).map { |response| LHS::Data.new(response.body, nil, self, response.request) }
+        data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         unless data.empty?
           data = LHS::Data.new(data, nil, self)
           handle_includes(including, data) if including
@@ -118,14 +118,14 @@ class LHS::Record
 
       def locate_nils(array)
         nils = []
-        array.each_with_index { |val, i| nils << i if val.nil? }
+        array.each_with_index { |value, index| nils << index if value.nil? }
         nils
       end
 
       def restore_with_nils(array, nils)
-        arr = array.dup
-        nils.sort.each { |index| arr.insert(index, nil) }
-        arr
+        array = array.dup
+        nils.sort.each { |index| array.insert(index, nil) }
+        array
       end
 
       def options_for_multiple(data, key)
