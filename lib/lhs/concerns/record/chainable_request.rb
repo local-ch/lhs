@@ -2,7 +2,7 @@ require 'active_support'
 
 class LHS::Record
 
-  module Chain
+  module ChainableRequest
     extend ActiveSupport::Concern
 
     # Link: A part of a chain
@@ -31,17 +31,30 @@ class LHS::Record
       delegated_methods = Object.instance_methods - [:instance_exec]
       delegate(*delegated_methods, to: :resolve)
 
-      def initialize(record, link)
+      def initialize(record_class, link, record = nil)
+        @record_class = record_class
         @record = record
         @chain = [link].compact
+        binding.pry
+        self
+      end
+
+      def save!(options = nil)
+        options ||= {}
+        @record.save!(options.merge(merged_options))
+      end
+
+      def save(options = nil)
+        options ||= {}
+        @record.save(options.merge(merged_options))
       end
 
       def create(data = {})
-        @record.create(data, merged_options)
+        @record_class.create(data, merged_options)
       end
 
       def create!(data = {})
-        @record.create!(data, merged_options)
+        @record_class.create!(data, merged_options)
       end
 
       def where(hash = nil)
@@ -53,11 +66,11 @@ class LHS::Record
       end
 
       def find(args)
-        @record.find(args, merged_options)
+        @record_class.find(args, merged_options)
       end
 
       def find_by(params = {})
-        @record.find_by(params, merged_options)
+        @record_class.find_by(params, merged_options)
       end
 
       # Returns a hash of where conditions
@@ -73,19 +86,19 @@ class LHS::Record
       protected
 
       def method_missing(name, *args, &block)
-        scope = @record.scopes[name]
+        scope = @record_class.scopes[name]
         return instance_exec(*args, &scope) if scope
         resolve.send(name, *args, &block)
       end
 
       def respond_to_missing?(name, include_all = false)
-        @record.scopes[name] ||
+        @record_class.scopes[name] ||
           resolve.respond_to?(name, include_all)
       end
 
       def resolve
-        @resolved ||= @record.new(
-          @record.request(merged_options.merge(params: merged_parameters))
+        @resolved ||= @record_class.new(
+          @record_class.request(merged_options.merge(params: merged_parameters))
         )
       end
 
@@ -112,6 +125,11 @@ class LHS::Record
         end
         hash
       end
+    end
+
+    # You can start new option chains for already fetched records (needed for save, update, valid etc.)
+    def options(hash = nil)
+      Chain.new(self, Option.new(hash))
     end
 
     module ClassMethods

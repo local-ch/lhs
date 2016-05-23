@@ -72,36 +72,81 @@ describe LHS::Record do
         Record.find(123)
       end
 
-      it 'is also applicable to save' do
-        stub_request(:post, 'http://datastore/v2/records/123').to_return(body: {}.to_json)
-        expect(LHC).to receive(:request)
-          .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: "{\"href\":\"http://datastore/v2/records/123\"}", headers: { "Content-Type" => "application/json" }))
-          .and_call_original
-        record.save(options)
+      context 'save' do
+        before(:each) do
+          stub_request(:post, 'http://datastore/v2/records/123').to_return(body: {}.to_json)
+          expect(LHC).to receive(:request)
+            .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: "{\"href\":\"http://datastore/v2/records/123\"}", headers: { "Content-Type" => "application/json" }))
+            .and_call_original
+        end
+
+        it 'applies directly on save' do
+          record.save(options)
+        end
+
+        it 'applies directly on save!' do
+          record.save!(options)
+        end
+
+        it 'applies chaining them with save' do
+          record.options(options).save
+        end
+
+        it 'applies chaining them with save!' do
+          record.options(options).save!
+        end
       end
 
-      it 'is also applicable to destroy' do
-        stub_request(:delete, 'http://datastore/v2/records/123').to_return(body: {}.to_json)
-        expect(LHC).to receive(:request)
-          .with(options.merge(method: :delete, url: "http://datastore/v2/records/123"))
-          .and_call_original
-        record.destroy(options)
+      context 'destroy' do
+        before(:each) do
+          stub_request(:delete, 'http://datastore/v2/records/123').to_return(body: {}.to_json)
+          expect(LHC).to receive(:request)
+            .with(options.merge(method: :delete, url: "http://datastore/v2/records/123"))
+            .and_call_original
+        end
+
+        it 'applies directly on destroy' do
+          record.destroy(options)
+        end
+
+        it 'applies chaining them with destroy' do
+          record.options(options).destroy
+        end
       end
 
-      it 'is also applicable to update' do
-        stub_request(:post, "http://datastore/v2/records/123").to_return(body: {}.to_json)
-        expect(LHC).to receive(:request)
-          .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: "{\"href\":\"http://datastore/v2/records/123\",\"name\":\"steve\"}", headers: { "Content-Type" => "application/json" }))
-          .and_call_original
-        record.update({ name: 'steve' }, options)
+      context 'update' do
+        before(:each) do
+          stub_request(:post, "http://datastore/v2/records/123").to_return(body: {}.to_json)
+          expect(LHC).to receive(:request)
+            .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: "{\"href\":\"http://datastore/v2/records/123\",\"name\":\"steve\"}", headers: { "Content-Type" => "application/json" }))
+            .and_call_original
+        end
+
+        it 'applies directly on update' do
+          record.update({ name: 'steve' }, options)
+        end
+
+        it 'applies chaining them with update' do
+          record.options(options).update(name: 'steve')
+        end
       end
 
-      it 'is also applicable to valid?' do
-        stub_request(:post, 'http://datastore/v2/records?persist=false').to_return(body: {}.to_json)
-        expect(LHC).to receive(:request)
-          .with(options.merge(url: ':datastore/records', method: :post, params: { persist: false }, body: "{\"href\":\"http://datastore/v2/records/123\"}", headers: { "Content-Type" => "application/json" }))
-          .and_call_original
-        record.valid?(options)
+      context 'valid' do
+        before(:each) do
+          stub_request(:post, 'http://datastore/v2/records?persist=false').to_return(body: {}.to_json)
+          expect(LHC).to receive(:request)
+            .with(options.merge(url: ':datastore/records', method: :post, params: { persist: false }, body: "{\"href\":\"http://datastore/v2/records/123\"}", headers: { "Content-Type" => "application/json" }))
+            .and_call_original
+        end
+
+        it 'applies directly on valid' do
+          record.valid?(options)
+          record.valid?(options)
+        end
+
+        it 'applies chaining them with valid' do
+          record.options(options).valid?
+        end
       end
     end
   end
