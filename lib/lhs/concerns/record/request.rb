@@ -43,10 +43,8 @@ class LHS::Record
         if data.collection?
           data.each_with_index do |item, i|
             item = item[i] if item.is_a? LHS::Collection
-            placeholder = item._raw[key.to_sym]
-            if placeholder.present?
-              placeholder.merge!(addition[i]._raw)
-            end
+            link = item._raw[key.to_sym]
+            link.merge!(addition[i]._raw) if link.present?
           end
         elsif data._proxy.is_a? LHS::Item
           data._raw[key.to_sym].merge!(addition._raw)
@@ -85,7 +83,7 @@ class LHS::Record
 
       # Load additional resources that are requested with include
       def load_include(options, data, sub_includes)
-        record  = record_for_options(options) || self
+        record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
           record.includes(sub_includes).request(options)
