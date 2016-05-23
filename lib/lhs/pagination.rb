@@ -1,6 +1,8 @@
 # Pagination is used to navigate paginateable collections
 class Pagination
 
+  DEFAULT_LIMIT = 100
+
   delegate :_record, to: :data
   attr_accessor :data
 
