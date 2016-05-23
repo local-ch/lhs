@@ -163,14 +163,14 @@ You can apply options to the request chain. Those options will be forwarded to t
 ```ruby
   options = { auth: { bearer: '123456' } }
   
-  authenticated_record = Record.options(options)
+  AuthenticatedRecord = Record.options(options)
   
-  blue_records = authenticated_record.where(color: 'blue')
-  active_records = authenticated_record.where(active: true)
+  blue_records = AuthenticatedRecord.where(color: 'blue')
+  active_records = AuthenticatedRecord.where(active: true)
 
-  authenticated_record.create(color: 'red')
+  AuthenticatedRecord.create(color: 'red')
   
-  record = authenticated_record.find(123)
+  record = AuthenticatedRecord.find(123)
   # Find resolves the current query and applies all options from the chain
   # All further requests are made from scratch and not based on the previous options
   record.name = 'Walter'
