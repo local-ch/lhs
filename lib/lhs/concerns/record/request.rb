@@ -108,11 +108,12 @@ class LHS::Record
           process_options(option, find_endpoint(option[:params]))
         end
         data = LHC.request(requests.compact).map { |response| LHS::Data.new(response.body, nil, self, response.request) }
+        data = restore_with_nils(data, locate_nils(requests)) # nil objects in data provide location information for mapping
         unless data.empty?
           data = LHS::Data.new(data, nil, self)
           handle_includes(including, data) if including
         end
-        restore_with_nils(data, locate_nils(requests)) # nil objects in data provide location information for mapping
+        data
       end
 
       def locate_nils(array)
