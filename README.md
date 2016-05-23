@@ -171,11 +171,14 @@ You can apply options to the request chain. Those options will be forwarded to t
   authenticated_record.create(color: 'red')
   
   record = authenticated_record.find(123)
+  # Find resolves the current query and applies all options from the chain
+  # All further requests are made from scratch and not based on the previous options
+
   record.name = 'Walter'
-  record.valid?(options)
-  record.save(options)
-  record.destroy(options)
-  record.update({ name: 'Steve' }, options)
+  record.options(options).valid?
+  record.options(options).save
+  record.options(options).destroy
+  record.options(options).update(name: 'Steve')
 ```
 
 ## Batch processing

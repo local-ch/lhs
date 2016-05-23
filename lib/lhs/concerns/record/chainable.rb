@@ -2,8 +2,23 @@ require 'active_support'
 
 class LHS::Record
 
-  module ChainableRequest
+  module Chainable
     extend ActiveSupport::Concern
+
+    # You can start new option chains for already fetched records (needed for save, update, valid etc.)
+    def options(hash = nil)
+      Chain.new(self.class, Option.new(hash), self)
+    end
+
+    module ClassMethods
+      def where(hash = nil)
+        Chain.new(self, Parameter.new(hash))
+      end
+
+      def options(hash = nil)
+        Chain.new(self, Option.new(hash))
+      end
+    end
 
     # Link: A part of a chain
     class Link
@@ -35,27 +50,46 @@ class LHS::Record
         @record_class = record_class
         @record = record
         @chain = [link].compact
-        binding.pry
-        self
+      end
+
+      def create(data = {})
+        @record_class.create(data, chain_options)
+      end
+
+      def create!(data = {})
+        @record_class.create!(data, chain_options)
       end
 
       def save!(options = nil)
         options ||= {}
-        @record.save!(options.merge(merged_options))
+        @record.save!(chain_options.merge(options))
       end
 
       def save(options = nil)
         options ||= {}
-        @record.save(options.merge(merged_options))
+        @record.save(chain_options.merge(options))
       end
 
-      def create(data = {})
-        @record_class.create(data, merged_options)
+      def destroy(options = nil)
+        options ||= {}
+        @record.destroy(chain_options.merge(options))
       end
 
-      def create!(data = {})
-        @record_class.create!(data, merged_options)
+      def update(data = {}, options = nil)
+        options ||= {}
+        @record.update(data, chain_options.merge(options))
       end
+
+      def update!(data = {}, options = nil)
+        options ||= {}
+        @record.update!(data, chain_options.merge(options))
+      end
+
+      def valid?(options = nil)
+        options ||= {}
+        @record.valid?(chain_options.merge(options))
+      end
+      alias validate valid?
 
       def where(hash = nil)
         push Parameter.new(hash)
@@ -66,21 +100,21 @@ class LHS::Record
       end
 
       def find(args)
-        @record_class.find(args, merged_options)
+        @record_class.find(args, chain_options)
       end
 
       def find_by(params = {})
-        @record_class.find_by(params, merged_options)
+        @record_class.find_by(params, chain_options)
       end
 
       # Returns a hash of where conditions
       def where_values_hash
-        merged_parameters
+        chain_parameters
       end
 
       # Returns a hash of options
       def option_values_hash
-        merged_options
+        chain_options
       end
 
       protected
@@ -98,7 +132,7 @@ class LHS::Record
 
       def resolve
         @resolved ||= @record_class.new(
-          @record_class.request(merged_options.merge(params: merged_parameters))
+          @record_class.request(chain_options.merge(params: chain_parameters))
         )
       end
 
@@ -109,11 +143,11 @@ class LHS::Record
         self
       end
 
-      def merged_parameters
+      def chain_parameters
         merge_links @chain.select { |link| link.is_a? Parameter }
       end
 
-      def merged_options
+      def chain_options
         merge_links @chain.select { |link| link.is_a? Option }
       end
 
@@ -124,21 +158,6 @@ class LHS::Record
           hash.deep_merge!(link.to_hash)
         end
         hash
-      end
-    end
-
-    # You can start new option chains for already fetched records (needed for save, update, valid etc.)
-    def options(hash = nil)
-      Chain.new(self, Option.new(hash))
-    end
-
-    module ClassMethods
-      def where(hash = nil)
-        Chain.new(self, Parameter.new(hash))
-      end
-
-      def options(hash = nil)
-        Chain.new(self, Option.new(hash))
       end
     end
   end

@@ -126,8 +126,16 @@ describe LHS::Record do
           record.update({ name: 'steve' }, options)
         end
 
+        it 'applies directly on update!' do
+          record.update!({ name: 'steve' }, options)
+        end
+
         it 'applies chaining them with update' do
           record.options(options).update(name: 'steve')
+        end
+
+        it 'applies chaining them with update!' do
+          record.options(options).update!(name: 'steve')
         end
       end
 
@@ -140,7 +148,6 @@ describe LHS::Record do
         end
 
         it 'applies directly on valid' do
-          record.valid?(options)
           record.valid?(options)
         end
 
