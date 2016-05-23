@@ -5,7 +5,8 @@ class LHS::Item < LHS::Proxy
   module Validation
     extend ActiveSupport::Concern
 
-    def valid?
+    def valid?(options = {})
+      options ||= {}
       self.errors = nil
       fail 'No validation endpoint found!' unless validation_endpoint
       record = LHS::Record.for_url(validation_endpoint.url)
@@ -13,11 +14,13 @@ class LHS::Item < LHS::Proxy
       params = validation_endpoint.options.fetch(:params, {}).merge(validation_params)
       begin
         record.request(
-          url: validation_endpoint.url,
-          method: :post,
-          params: params,
-          body: _data.to_json,
-          headers: { 'Content-Type' => 'application/json' }
+          options.merge(
+            url: validation_endpoint.url,
+            method: :post,
+            params: params,
+            body: _data.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+          )
         )
         true
       rescue LHC::Error => e

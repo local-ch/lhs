@@ -7,22 +7,23 @@ class LHS::Record
 
     module ClassMethods
       # Fetch some record by parameters
-      def find_by(params = {})
-        _find_by(params)
+      def find_by(params = {}, options = nil)
+        _find_by(params, options)
       rescue LHC::NotFound
         nil
       end
 
       # Raise if no record was found
-      def find_by!(params = {})
-        _find_by(params)
+      def find_by!(params = {}, options = nil)
+        _find_by(params, options)
       end
 
       private
 
-      def _find_by(params)
+      def _find_by(params, options = {})
+        options ||= {}
         params = params.dup.merge(limit: 1)
-        data = request(params: params)
+        data = request(options.merge(params: params))
         if data._proxy.is_a?(LHS::Collection)
           data.first || fail(LHC::NotFound.new('No item was found.', data._request.response))
         else
