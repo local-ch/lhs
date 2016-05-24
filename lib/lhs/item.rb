@@ -16,6 +16,10 @@ class LHS::Item < LHS::Proxy
 
   delegate :_raw, to: :_data
 
+  def item?
+    true
+  end
+
   protected
 
   def method_missing(name, *args, &_block)
