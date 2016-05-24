@@ -3,6 +3,7 @@ Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each { |file| require file }
 
 # Data provides functionalities to accesses information
 class LHS::Data
+  include Equality
   include Json
 
   delegate :instance_methods, :items_key, :limit_key, :total_key, :pagination_key, to: :class
@@ -32,6 +33,14 @@ class LHS::Data
     root
   end
 
+  def parent
+    if _parent && _parent._record
+      _parent._record.new(_parent)
+    else
+      _parent
+    end
+  end
+
   def class
     _root._record
   end
@@ -44,6 +53,14 @@ class LHS::Data
 
   def root_item?
     root_item == self
+  end
+
+  def collection?
+    _proxy.is_a? LHS::Collection
+  end
+
+  def item?
+    _proxy.is_a? LHS::Item
   end
 
   protected
