@@ -26,7 +26,7 @@ class LHS::Record
       def per(limit)
         Chain.new(self, Pagination.new(per: limit))
       end
-      
+
       def limit(argument = nil)
         Chain.new(self, Pagination.new(per: argument))
       end
