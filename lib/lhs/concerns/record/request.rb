@@ -41,15 +41,13 @@ class LHS::Record
       def extend_raw_data(data, addition, key)
         return if addition.empty?
         if data.collection?
-          data.each_with_index do |item, index|
-            item = item[index] if item.collection?
+          data.each_with_index do |item, i|
+            item = item[i] if item.is_a? LHS::Collection
             link = item._raw[key.to_sym]
-            link.merge!(addition[index]._raw) if link.present?
-            # item.merge_raw!(addition[i])
+            link.merge!(addition[i]._raw) if link.present?
           end
         elsif data._proxy.is_a? LHS::Item
           data._raw[key.to_sym].merge!(addition._raw)
-          # data.merge_raw!(addition)
         end
       end
 
