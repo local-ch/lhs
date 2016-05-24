@@ -43,8 +43,8 @@ class LHS::Record
         if data.collection?
           data.each_with_index do |item, i|
             item = item[i] if item.is_a? LHS::Collection
-            link = item._raw[key.to_sym]
-            link.merge!(addition[i]._raw) if link.present?
+            link = item[key.to_sym]
+            link.merge_raw!(addition[i]) if link.present?
           end
         elsif data._proxy.is_a? LHS::Item
           data._raw[key.to_sym].merge!(addition._raw)
