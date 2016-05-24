@@ -1,5 +1,7 @@
 # Pagination is used to navigate paginateable collections
-class Pagination
+class LHS::Pagination
+
+  DEFAULT_LIMIT = 100
 
   delegate :_record, to: :data
   attr_accessor :data
@@ -18,7 +20,7 @@ class Pagination
   end
 
   def limit
-    data._raw[_record.limit_key.to_sym] || LHS::Record::DEFAULT_LIMIT
+    data._raw[_record.limit_key.to_sym] || LHS::Pagination::DEFAULT_LIMIT
   end
 
   def offset
@@ -62,9 +64,13 @@ class Pagination
   def total_pages
     (total.to_f / limit).ceil
   end
+
+  def self.page_to_offset(page, _limit)
+    page
+  end
 end
 
-class PagePagination < Pagination
+class LHS::PagePagination < LHS::Pagination
 
   def current_page
     offset
@@ -73,10 +79,9 @@ class PagePagination < Pagination
   def next_offset
     current_page + 1
   end
-
 end
 
-class StartPagination < Pagination
+class LHS::StartPagination < LHS::Pagination
 
   def current_page
     (offset + limit - 1) / limit
@@ -86,9 +91,12 @@ class StartPagination < Pagination
     offset + limit
   end
 
+  def self.page_to_offset(page, limit = LHS::Pagination::DEFAULT_LIMIT)
+    (page - 1) * limit + 1
+  end
 end
 
-class OffsetPagination < Pagination
+class LHS::OffsetPagination < LHS::Pagination
 
   def current_page
     (offset + limit) / limit
@@ -98,4 +106,7 @@ class OffsetPagination < Pagination
     offset + limit
   end
 
+  def self.page_to_offset(page, limit = LHS::Pagination::DEFAULT_LIMIT)
+    (page - 1) * limit
+  end
 end

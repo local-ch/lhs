@@ -449,7 +449,7 @@ unless user.valid?
 end
 ```
 
-## How to work with paginated APIs
+## Pagination
 
 LHS supports paginated APIs and it also supports various pagination strategies and by providing configuration possibilities.
 
@@ -520,6 +520,40 @@ end
 
 In case of paginated resources it's important to know the difference between [count vs. length](#count-vs-length)
 
+### Pagination Chains
+
+You can use chainable pagination in combination with query chains:
+
+```ruby
+  class Record < LHS::Record
+    endpoint 'http://local.ch/records'
+  end
+  Record.page(3).per(20).where(color: 'blue')
+  # http://local.ch/records?offset=40&limit=20&color=blue
+```
+
+The applied pagination strategy depends on the actual configured pagination, so the interface is the same for all strategies:
+
+```ruby
+  class Record < LHS::Record
+    endpoint 'http://local.ch/records'
+    configuration pagination_strategy: 'page'
+  end
+  Record.page(3).per(20).where(color: 'blue')
+  # http://local.ch/records?page=3&limit=20&color=blue
+```
+
+```ruby
+  class Record < LHS::Record
+    endpoint 'http://local.ch/records'
+    configuration pagination_strategy: 'start'
+  end
+  Record.page(3).per(20).where(color: 'blue')
+  # http://local.ch/records?start=41&limit=20&color=blue
+```
+
+`limit(argument)` is an alias for `per(argument)`. Take notice that `limit` without argument instead, makes the query resolve and provides the current limit from the responds.
+
 ### Partial Kaminari support
 
 LHS implements an interface that makes it partially working with Kaminari.
@@ -531,8 +565,7 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 params[:page] = 0 if params[:page].nil?
 page = params[:page].to_i
 limit = 100
-offset = (page - 1) * limit
-@items = Record.where({ limit: limit, offset: offset }))
+@items = Record.page(page).per(limit)
 ```
 
 ```ruby

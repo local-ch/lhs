@@ -18,12 +18,28 @@ class LHS::Record
       def options(hash = nil)
         Chain.new(self, Option.new(hash))
       end
+
+      def page(page)
+        Chain.new(self, Pagination.new(page: page))
+      end
+
+      def per(limit)
+        Chain.new(self, Pagination.new(per: limit))
+      end
+
+      def limit(argument = nil)
+        Chain.new(self, Pagination.new(per: argument))
+      end
     end
 
     # Link: A part of a chain
     class Link
       def initialize(hash = nil)
         @hash = hash
+      end
+
+      def [](parameter)
+        @hash[parameter]
       end
 
       def to_hash
@@ -37,6 +53,10 @@ class LHS::Record
 
     # Option: Part of the chain that will be used to configure the communication with the endpoint
     class Option < Link
+    end
+
+    # Pagination: Part of the chain that will be used to controll pagination
+    class Pagination < Link
     end
 
     # A sequence of links
@@ -99,6 +119,19 @@ class LHS::Record
         push Option.new(hash)
       end
 
+      def page(page)
+        push Pagination.new(page: page)
+      end
+
+      def per(per)
+        push Pagination.new(per: per)
+      end
+
+      def limit(argument = nil)
+        return resolve.limit if argument.blank?
+        push Pagination.new(per: argument)
+      end
+
       def find(args)
         @record_class.find(args, chain_options)
       end
@@ -117,6 +150,11 @@ class LHS::Record
         chain_options
       end
 
+      # Returns a hash of pagination values
+      def pagination_values_hash
+        chain_pagination
+      end
+
       protected
 
       def method_missing(name, *args, &block)
@@ -132,7 +170,10 @@ class LHS::Record
 
       def resolve
         @resolved ||= @record_class.new(
-          @record_class.request(chain_options.merge(params: chain_parameters))
+          @record_class.request(
+            chain_options
+              .merge(params: chain_parameters.merge(chain_pagination))
+          )
         )
       end
 
@@ -149,6 +190,25 @@ class LHS::Record
 
       def chain_options
         merge_links @chain.select { |link| link.is_a? Option }
+      end
+
+      def chain_pagination
+        resolve_pagination @chain.select { |link| link.is_a? Pagination }
+      end
+
+      def resolve_pagination(links)
+        return {} if links.empty?
+        page = 1
+        per = LHS::Pagination::DEFAULT_LIMIT
+        links.each do |link|
+          page = link[:page] if link[:page].present?
+          per = link[:per] if link[:per].present?
+        end
+        pagination = @record_class.pagination_class
+        {
+          @record_class.pagination_key => pagination.page_to_offset(page, per),
+          @record_class.limit_key => per
+        }
       end
 
       def merge_links(links)

@@ -8,7 +8,7 @@ describe LHS::Record do
     LHS::Data.new(data_hash, nil, Record)
   end
 
-  let(:pagination) { OffsetPagination.new(data) }
+  let(:pagination) { LHS::OffsetPagination.new(data) }
 
   before(:each) do
     class Record < LHS::Record
