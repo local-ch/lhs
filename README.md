@@ -540,6 +540,8 @@ The applied pagination strategy depends on the actual configured pagination, so 
   # http://local.ch/records?start=41&limit=20&color=blue
 ```
 
+`limit(argument)` is an alias for `per(argument)`. Take notice that `limit` without argument instead, makes the query resolve and provides the current limit from the responds.
+
 ### Partial Kaminari support
 
 LHS implements an interface that makes it partially working with Kaminari.

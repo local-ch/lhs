@@ -38,6 +38,13 @@ describe LHS::Record do
         Record.per(10).page("").first
         expect(request).to have_been_made.times(2)
       end
+
+      it 'provides limit as alias for per' do
+        request = stub_request(:get, "http://local.ch/records?limit=10&offset=0").to_return(body: [].to_json)
+        Record.limit(10).first
+        Record.page("").limit(10).first
+        expect(request).to have_been_made.times(2)
+      end
     end
 
     context 'start pagination' do

@@ -26,6 +26,10 @@ class LHS::Record
       def per(limit)
         Chain.new(self, Pagination.new(per: limit))
       end
+      
+      def limit(argument = nil)
+        Chain.new(self, Pagination.new(per: argument))
+      end
     end
 
     # Link: A part of a chain
@@ -121,6 +125,11 @@ class LHS::Record
 
       def per(per)
         push Pagination.new(per: per)
+      end
+
+      def limit(argument = nil)
+        return resolve.limit if argument.blank?
+        push Pagination.new(per: argument)
       end
 
       def find(args)
