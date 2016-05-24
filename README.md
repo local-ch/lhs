@@ -537,7 +537,7 @@ The applied pagination strategy depends on the actual configured pagination, so 
     configuration pagination_strategy: 'start'
   end
   Record.page(3).per(20).where(color: 'blue')
-  # http://local.ch/records?page=61&limit=20
+  # http://local.ch/records?start=61&limit=20
 ```
 
 ### Partial Kaminari support
