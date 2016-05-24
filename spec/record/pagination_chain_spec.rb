@@ -20,6 +20,15 @@ describe LHS::Record do
         Record.where(color: 'blue').per(10).page(3).first
         Record.where(color: 'blue').per(20).page(5).per(10).page(3).first
       end
+
+      it 'allows to start chains with pagination methods' do
+        stub_request(:get, "http://local.ch/records?color=blue&offset=300&limit=100").to_return(body: [].to_json)
+        Record.page(3).where(color: 'blue').first
+        stub_request(:get, "http://local.ch/records?color=blue&offset=30&limit=10").to_return(body: [].to_json)
+        Record.page(3).per(10).where(color: 'blue').first
+        Record.per(10).page(3).where(color: 'blue').first
+        Record.per(20).page(5).where(color: 'blue').per(10).page(3).first
+      end
     end
 
     context 'start pagination' do

@@ -18,6 +18,14 @@ class LHS::Record
       def options(hash = nil)
         Chain.new(self, Option.new(hash))
       end
+
+      def page(page)
+        Chain.new(self, Pagination.new(page: page))
+      end
+
+      def per(limit)
+        Chain.new(self, Pagination.new(per: limit))
+      end
     end
 
     # Link: A part of a chain
