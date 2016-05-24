@@ -517,7 +517,7 @@ You can use chainable pagination in combination with query chains:
     endpoint 'http://local.ch/records'
   end
   Record.page(3).per(20).where(color: 'blue')
-  # http://local.ch/records?offset=60&limit=20
+  # http://local.ch/records?offset=40&limit=20&color=blue
 ```
 
 The applied pagination strategy depends on the actual configured pagination, so the interface is the same for all strategies:
@@ -528,7 +528,7 @@ The applied pagination strategy depends on the actual configured pagination, so 
     configuration pagination_strategy: 'page'
   end
   Record.page(3).per(20).where(color: 'blue')
-  # http://local.ch/records?page=3&limit=20
+  # http://local.ch/records?page=3&limit=20&color=blue
 ```
 
 ```ruby
@@ -537,7 +537,7 @@ The applied pagination strategy depends on the actual configured pagination, so 
     configuration pagination_strategy: 'start'
   end
   Record.page(3).per(20).where(color: 'blue')
-  # http://local.ch/records?start=61&limit=20
+  # http://local.ch/records?start=41&limit=20&color=blue
 ```
 
 ### Partial Kaminari support
