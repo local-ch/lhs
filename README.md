@@ -156,6 +156,18 @@ If no record is found, `nil` is returned.
 
 `first!` raises LHC::NotFound if nothing was found.
 
+## Navigate data
+
+After fetching [single](#find-single-records) or [multiple](#find-multiple-records) records you can navigate the received data with ease.
+
+```ruby
+  records = Record.where(color: 'blue')
+  records.collection? # true
+  record = records.first
+  record.item? # true
+  record.parent == records # true
+```
+
 ## Request based options
 
 You can apply options to the request chain. Those options will be forwarded to the request perfomed by the chain/query.

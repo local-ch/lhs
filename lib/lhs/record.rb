@@ -6,6 +6,7 @@ class LHS::Record
   include Chainable
   include Configuration
   include Create
+  include Equality
   include Endpoints
   include Find
   include FindBy
@@ -19,6 +20,7 @@ class LHS::Record
 
   delegate :_proxy, to: :_data
   delegate :_endpoint, to: :_data
+  delegate :select, to: :_data
 
   def initialize(data = nil)
     data = LHS::Data.new({}, nil, self.class) unless data
@@ -42,7 +44,7 @@ class LHS::Record
   protected
 
   def method_missing(name, *args, &block)
-    _data._proxy.send(name, *args, &block)
+    _data.send(name, *args, &block)
   end
 
   def respond_to_missing?(name, include_all = false)

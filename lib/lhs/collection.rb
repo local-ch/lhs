@@ -24,6 +24,10 @@ class LHS::Collection < LHS::Proxy
     Collection.new(raw, _data, _record)
   end
 
+  def collection?
+    true
+  end
+
   protected
 
   def method_missing(name, *args, &block)
