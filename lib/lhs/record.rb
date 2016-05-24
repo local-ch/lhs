@@ -18,9 +18,7 @@ class LHS::Record
   include Request
   include Scope
 
-  delegate :_proxy, to: :_data
-  delegate :_endpoint, to: :_data
-  delegate :select, to: :_data
+  delegate :_proxy, :_endpoint, :merge_raw!, :select, to: :_data
 
   def initialize(data = nil)
     data = LHS::Data.new({}, nil, self.class) unless data

@@ -170,6 +170,59 @@ describe LHS::Record do
         # rubocop:enable RSpec/InstanceVariable
       end
     end
+
+    context 'includes not present in response' do
+      before :each do
+        class Parent < LHS::Record
+          endpoint ':datastore/local-parents'
+          endpoint ':datastore/local-parents/:id'
+        end
+
+        class OptionalChild < LHS::Record
+          endpoint ':datastore/local-children/:id'
+        end
+      end
+
+      it 'handles missing but included fields in single object response' do
+        stub_request(:get, "#{datastore}/local-parents/1")
+          .to_return(status: 200, body: {
+            'href' => "#{datastore}/local-parents/1",
+            'name' => 'RspecName'
+          }.to_json)
+
+        parent = Parent.includes(:optional_children).find(1)
+        expect(parent).not_to be nil
+        expect(parent.name).to eq 'RspecName'
+        expect(parent.optional_children).to be nil
+      end
+
+      it 'handles missing but included fields in collection response' do
+        stub_request(:get, "#{datastore}/local-parents")
+          .to_return(status: 200, body: {
+            items: [
+              {
+                'href' => "#{datastore}/local-parents/1",
+                'name' => 'RspecParent'
+              }, {
+                'href'           => "#{datastore}/local-parents/2",
+                'name'           => 'RspecParent2',
+                'optional_child' => {
+                  'href' => "#{datastore}/local-children/1"
+                }
+              }]
+          }.to_json)
+
+        stub_request(:get, "#{datastore}/local-children/1")
+          .to_return(status: 200, body: {
+            href: "#{datastore}/local_children/1",
+            name: 'RspecOptionalChild1'
+          }.to_json)
+
+        child = Parent.includes(:optional_child).where[1].optional_child
+        expect(child).not_to be nil
+        expect(child.name).to eq 'RspecOptionalChild1'
+      end
+    end
   end
 
   context 'links pointing to nowhere' do
