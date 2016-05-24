@@ -26,6 +26,10 @@ class LHS::Record
         @hash = hash
       end
 
+      def [](parameter)
+        @hash[parameter]
+      end
+
       def to_hash
         @hash
       end
@@ -107,8 +111,8 @@ class LHS::Record
         push Pagination.new(page: page)
       end
 
-      def limit(limit)
-        push Pagination.new(limit: limit)
+      def per(per)
+        push Pagination.new(per: per)
       end
 
       def find(args)
@@ -172,19 +176,21 @@ class LHS::Record
       end
 
       def chain_pagination
-        merge_links resolve_pagination @chain.select { |link| link.is_a? Pagination }
+        resolve_pagination @chain.select { |link| link.is_a? Pagination }
       end
 
       def resolve_pagination(links)
+        return {} if links.empty?
         page = 1
-        limit = Pagination::DEFAULT_LIMIT
+        per = LHS::Pagination::DEFAULT_LIMIT
         links.each do |link|
           page = link[:page] if link[:page].present?
-          limit = link[:limit] if link[:limit].present?
+          per = link[:per] if link[:per].present?
         end
+        pagination = @record_class.pagination_class
         {
-          @record_class.pagination_key => page,
-          @record_class.limit_key => limit
+          @record_class.pagination_key => pagination.page_to_offset(page, per),
+          @record_class.limit_key => per
         }
       end
 

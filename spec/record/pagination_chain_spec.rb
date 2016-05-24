@@ -4,19 +4,60 @@ describe LHS::Record do
 
   context 'pagination chain' do
 
-    before(:each) do
-      class Record < LHS::Record
-        endpoint 'http://local.ch/records'
-        endpoint 'http://local.ch/records/:id'
+    context 'default pagination (offset)' do
+      before(:each) do
+        class Record < LHS::Record
+          endpoint 'http://local.ch/records'
+          endpoint 'http://local.ch/records/:id'
+        end
+      end
+
+      it 'allows to chain pagination methods' do
+        stub_request(:get, "http://local.ch/records?color=blue&offset=300&limit=100").to_return(body: [].to_json)
+        Record.where(color: 'blue').page(3).first
+        stub_request(:get, "http://local.ch/records?color=blue&offset=30&limit=10").to_return(body: [].to_json)
+        Record.where(color: 'blue').page(3).per(10).first
+        Record.where(color: 'blue').per(10).page(3).first
+        Record.where(color: 'blue').per(20).page(5).per(10).page(3).first
       end
     end
 
-    it 'allows to chain pagination methods' do
-      stub_request(:get, "http://local.ch/records?color=blue&offset=300&limit=100").to_return(body: [].to_json)
-      Record.where(color: 'blue').page(3).first
-      stub_request(:get, "http://local.ch/records?color=blue&offset=30&limit=10").to_return(body: [].to_json)
-      Record.where(color: 'blue').page(3).limit(10).first
-      Record.where(color: 'blue').limit(10).page(3).first
+    context 'start pagination' do
+      before(:each) do
+        class Record < LHS::Record
+          configuration pagination_strategy: 'start', pagination_key: 'start'
+          endpoint 'http://local.ch/records'
+          endpoint 'http://local.ch/records/:id'
+        end
+      end
+
+      it 'allows to chain pagination methods' do
+        stub_request(:get, "http://local.ch/records?color=blue&start=301&limit=100").to_return(body: [].to_json)
+        Record.where(color: 'blue').page(3).first
+        stub_request(:get, "http://local.ch/records?color=blue&start=31&limit=10").to_return(body: [].to_json)
+        Record.where(color: 'blue').page(3).per(10).first
+        Record.where(color: 'blue').per(10).page(3).first
+        Record.where(color: 'blue').per(20).page(5).per(10).page(3).first
+      end
+    end
+
+    context 'page pagination' do
+      before(:each) do
+        class Record < LHS::Record
+          configuration pagination_strategy: 'page', pagination_key: 'page'
+          endpoint 'http://local.ch/records'
+          endpoint 'http://local.ch/records/:id'
+        end
+      end
+
+      it 'allows to chain pagination methods' do
+        stub_request(:get, "http://local.ch/records?color=blue&page=3&limit=100").to_return(body: [].to_json)
+        Record.where(color: 'blue').page(3).first
+        stub_request(:get, "http://local.ch/records?color=blue&page=3&limit=10").to_return(body: [].to_json)
+        Record.where(color: 'blue').page(3).per(10).first
+        Record.where(color: 'blue').per(10).page(3).first
+        Record.where(color: 'blue').per(20).page(5).per(10).page(3).first
+      end
     end
   end
 end

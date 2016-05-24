@@ -437,7 +437,7 @@ unless user.valid?
 end
 ```
 
-## How to work with paginated APIs
+## Pagination
 
 LHS supports paginated APIs and it also supports various pagination strategies and by providing configuration possibilities.
 
@@ -507,6 +507,10 @@ end
 `total_key` key used to determine the total amount of items (e.g. `total`, `totalResults`, etc.).
 
 In case of paginated resources it's important to know the difference between [count vs. length](#count-vs-length)
+
+### Pagination Chains
+
+...
 
 ### Partial Kaminari support
 
