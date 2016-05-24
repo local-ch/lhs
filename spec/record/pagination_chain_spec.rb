@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'pagination chain' do
-
     context 'default pagination (offset)' do
       before(:each) do
         class Record < LHS::Record

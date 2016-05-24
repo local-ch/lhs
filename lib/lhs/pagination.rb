@@ -65,7 +65,7 @@ class LHS::Pagination
     (total.to_f / limit).ceil
   end
 
-  def self.page_to_offset(page, limit)
+  def self.page_to_offset(page, _limit)
     page
   end
 end

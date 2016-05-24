@@ -12,7 +12,6 @@ class LHS::Record
     end
 
     module ClassMethods
-
       def pagination_class
         case pagination_strategy.to_sym
         when :page
