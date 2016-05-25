@@ -301,8 +301,8 @@ The implementation is heavily influenced by [http://guides.rubyonrails.org/activ
   claims = Claims.includes(:localch_account).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
   claims.first.localch_account.email # 'test@email.com'
 ```
-* [see the JSON without include](examples/claim_no_include.json)
-* [see the JSON with include](examples/claim_with_include.json)
+* [see the JSON without include](docs/examples/claim_no_include.json)
+* [see the JSON with include](docs/examples/claim_with_include.json)
 
 ### Two-Level `includes`
 
