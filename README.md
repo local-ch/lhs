@@ -559,10 +559,7 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 
 ```ruby
 # controller
-params[:page] = 0 if params[:page].nil?
-page = params[:page].to_i
-limit = 100
-@items = Record.page(page).per(limit)
+@items = Record.page(params[:page]).per(100)
 ```
 
 ```ruby
