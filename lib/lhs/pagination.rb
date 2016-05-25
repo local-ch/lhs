@@ -66,7 +66,7 @@ class LHS::Pagination
   end
 
   def self.page_to_offset(page, _limit)
-    page
+    page.to_i
   end
 end
 
@@ -92,7 +92,7 @@ class LHS::StartPagination < LHS::Pagination
   end
 
   def self.page_to_offset(page, limit = LHS::Pagination::DEFAULT_LIMIT)
-    (page - 1) * limit + 1
+    (page.to_i - 1) * limit.to_i + 1
   end
 end
 
@@ -107,6 +107,6 @@ class LHS::OffsetPagination < LHS::Pagination
   end
 
   def self.page_to_offset(page, limit = LHS::Pagination::DEFAULT_LIMIT)
-    (page - 1) * limit
+    (page.to_i - 1) * limit.to_i
   end
 end

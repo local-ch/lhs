@@ -45,6 +45,13 @@ describe LHS::Record do
         Record.page("").limit(10).first
         expect(request).to have_been_made.times(2)
       end
+
+      it 'also works with strings' do
+        request = stub_request(:get, "http://local.ch/records?limit=10&offset=0").to_return(body: [].to_json)
+        Record.limit('10').first
+        Record.page('1').limit('10').first
+        expect(request).to have_been_made.times(2)
+      end
     end
 
     context 'start pagination' do
