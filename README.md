@@ -83,6 +83,7 @@ records.where(available: true).each do |record|
   ...
 end
 ```
+
 The example would fetch records with the following parameters: `{color: blue, available: true}`.
 
 ## Where values hash
@@ -371,7 +372,7 @@ end
 
 Nested records (in nested data) are automaticaly casted when the href matches any defined endpoint of any LHS::Record.
 
-```
+```ruby
 class Place < LHS::Record
   endpoint ':datastore/v2/places'
 
@@ -394,7 +395,7 @@ If automatic-detection of nested records does not work, make sure your LHS::Reco
 
 You can change attributes of LHS::Records:
 
-```
+```ruby
   record = Feedback.find(id: 'z12f-3asm3ngals')
   rcord.recommended = false
 ```
@@ -435,7 +436,7 @@ In order to validate LHS::Records before persisting them, you can use the `valid
 
 The specific endpoint has to support validations with the `persist=false` parameter. The endpoint has to be enabled (opt-in) for validations in the service configuration.
 
-```
+```ruby
 class User < LHS::Record
   endpoint ':datastore/v2/users', validates: true
 end
@@ -523,30 +524,30 @@ You can use chainable pagination in combination with query chains:
 
 ```ruby
   class Record < LHS::Record
-    endpoint 'http://local.ch/records'
+    endpoint ':datastore/records'
   end
   Record.page(3).per(20).where(color: 'blue')
-  # http://local.ch/records?offset=40&limit=20&color=blue
+  # /records?offset=40&limit=20&color=blue
 ```
 
 The applied pagination strategy depends on the actual configured pagination, so the interface is the same for all strategies:
 
 ```ruby
   class Record < LHS::Record
-    endpoint 'http://local.ch/records'
+    endpoint ':datastore/records'
     configuration pagination_strategy: 'page'
   end
   Record.page(3).per(20).where(color: 'blue')
-  # http://local.ch/records?page=3&limit=20&color=blue
+  # /records?page=3&limit=20&color=blue
 ```
 
 ```ruby
   class Record < LHS::Record
-    endpoint 'http://local.ch/records'
+    endpoint ':datastore/records'
     configuration pagination_strategy: 'start'
   end
   Record.page(3).per(20).where(color: 'blue')
-  # http://local.ch/records?start=41&limit=20&color=blue
+  # /records?start=41&limit=20&color=blue
 ```
 
 `limit(argument)` is an alias for `per(argument)`. Take notice that `limit` without argument instead, makes the query resolve and provides the current limit from the responds.
@@ -559,10 +560,7 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 
 ```ruby
 # controller
-params[:page] = 0 if params[:page].nil?
-page = params[:page].to_i
-limit = 100
-@items = Record.page(page).per(limit)
+@items = Record.page(params[:page]).per(100)
 ```
 
 ```ruby
@@ -572,7 +570,7 @@ limit = 100
 
 ## form_for Helper
 Rails `form_for` view-helper can be used in combination with instances of LHS::Record to autogenerate forms:
-```
+```ruby
 <%= form_for(@instance, url: '/create') do |f| %>
   <%= f.text_field :name %>
   <%= f.text_area :text %>
