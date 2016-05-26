@@ -63,13 +63,15 @@ class LHS::Record
     class Chain
 
       # Instance exec is required for scope chains
-      delegated_methods = Object.instance_methods - [:instance_exec]
+      delegated_methods = Object.instance_methods - [:instance_exec, :clone]
       delegate(*delegated_methods, to: :resolve)
+
+      attr_accessor :_links
 
       def initialize(record_class, link, record = nil)
         @record_class = record_class
         @record = record
-        @chain = [link].compact
+        self._links = [link].compact
       end
 
       def create(data = {})
@@ -180,20 +182,21 @@ class LHS::Record
       private
 
       def push(link)
-        @chain += [link].compact
-        self
+        clone = self.clone
+        clone._links = _links + [link].compact
+        clone
       end
 
       def chain_parameters
-        merge_links @chain.select { |link| link.is_a? Parameter }
+        merge_links _links.select { |link| link.is_a? Parameter }
       end
 
       def chain_options
-        merge_links @chain.select { |link| link.is_a? Option }
+        merge_links _links.select { |link| link.is_a? Option }
       end
 
       def chain_pagination
-        resolve_pagination @chain.select { |link| link.is_a? Pagination }
+        resolve_pagination _links.select { |link| link.is_a? Pagination }
       end
 
       def resolve_pagination(links)
