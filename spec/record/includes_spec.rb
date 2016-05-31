@@ -266,4 +266,31 @@ describe LHS::Record do
       Services::Feedback.includes(campaign: :entry).find(123)
     end
   end
+
+  context 'arrays' do
+    it 'includes items of arrays' do
+
+      class Place < LHS::Record
+        endpoint ':datastore/place'
+        endpoint ':datastore/place/:id'
+      end
+
+      stub_request(:get, "#{datastore}/place/1")
+        .to_return(body: {
+          'relations' => [
+            { 'href' => "#{datastore}/place/relations/2" },
+            { 'href' => "#{datastore}/place/relations/3" }
+          ]
+        }.to_json)
+
+      stub_request(:get, "#{datastore}/place/relations/2")
+        .to_return(body: { name: 'Category' }.to_json)
+      stub_request(:get, "#{datastore}/place/relations/3")
+        .to_return(body: { name: 'ZeFrank' }.to_json)
+
+      place = Place.includes(:relations).find(1)
+      expect(place.relations.first.name).to eq 'Category'
+      expect(place.relations[1].name).to eq 'ZeFrank'
+    end
+  end
 end
