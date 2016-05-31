@@ -62,8 +62,14 @@ class LHS::Record
     # A sequence of links
     class Chain
 
+      excluded_methods = []
       # Instance exec is required for scope chains
-      delegated_methods = Object.instance_methods - [:instance_exec, :clone]
+      excluded_methods += [:instance_exec]
+      # Clone is required to have immutable
+      excluded_methods += [:clone]
+      # We are asked from ruby to not delegate __send__ and object_id
+      excluded_methods += [:__send__, :object_id]
+      delegated_methods = Object.instance_methods - excluded_methods
       delegate(*delegated_methods, to: :resolve)
 
       attr_accessor :_links
