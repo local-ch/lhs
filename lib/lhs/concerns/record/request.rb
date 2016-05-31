@@ -46,6 +46,10 @@ class LHS::Record
             link = item[key.to_sym]
             link.merge_raw!(addition[i]) if link.present?
           end
+        elsif data[key]._raw.is_a? Array
+          data[key].zip(addition) do |item, additional_item|
+            item._raw.merge!(additional_item._raw)
+          end
         elsif data._proxy.is_a? LHS::Item
           data._raw[key.to_sym].merge!(addition._raw)
         end
@@ -66,6 +70,8 @@ class LHS::Record
         options =
           if data.collection?
             options_for_multiple(data, included)
+          elsif data[included]._raw.is_a?(Array)
+            options_for_nested_items(data, included)
           else
             url_option_for(data, included)
           end
@@ -132,6 +138,12 @@ class LHS::Record
         end
       end
 
+      def options_for_nested_items(data, key)
+        data[key].map do |item|
+          url_option_for(item)
+        end
+      end
+
       # Merge explicit params and take configured endpoints options as base
       def process_options(options, endpoint)
         options[:params].deep_symbolize_keys! if options[:params]
@@ -167,8 +179,8 @@ class LHS::Record
         data
       end
 
-      def url_option_for(item, key)
-        link = item[key]
+      def url_option_for(item, key = nil)
+        link = key ? item[key] : item
         return { url: link.href } if link.present? && link.href.present?
       end
     end
