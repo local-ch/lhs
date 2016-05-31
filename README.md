@@ -302,8 +302,40 @@ The implementation is heavily influenced by [http://guides.rubyonrails.org/activ
   claims = Claims.includes(:localch_account).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
   claims.first.localch_account.email # 'test@email.com'
 ```
-* [see the JSON without include](docs/examples/claim_no_include.json)
-* [see the JSON with include](docs/examples/claim_with_include.json)
+
+Before include:
+```json
+{
+  "href" : "http://datastore/v2/places/huU90mB_6vAfUdVz_uDoyA/claims",
+  "items" : [
+    {
+      "href" : "http://datastore/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg/claims/huU90mB_6vAfUdVz_uDoyA",
+      "localch_account" : {
+        "href" : "http://datastore/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg"
+      }
+    }
+  ]
+}
+```
+
+After include:
+```json
+{
+  "href" : "http://datastore/v2/places/huU90mB_6vAfUdVz_uDoyA/claims",
+  "items" : [
+    {
+      "href" : "http://datastore/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg/claims/huU90mB_6vAfUdVz_uDoyA",
+      "localch_account" : {
+        "href" : "http://datastore/v2/localch-accounts/6bSss0y93lK0MrVsgdNNdg",
+        "id" : "6bSss0y93lK0MrVsgdNNdg",
+        "name" : "Myriam",
+        "phone" : "12345678",
+        "email" : "email@gmail.com"
+      }
+    }
+  ]
+}
+```
 
 ### Two-Level `includes`
 
