@@ -47,8 +47,8 @@ class LHS::Record
             link.merge_raw!(addition[i]) if link.present?
           end
         elsif data[key]._raw.is_a? Array
-          data[key].each_with_index do |item, index|
-            item._raw.merge!(addition[index]._raw)
+          data[key].zip(addition) do |item, additional_item|
+            item._raw.merge!(additional_item._raw)
           end
         elsif data._proxy.is_a? LHS::Item
           data._raw[key.to_sym].merge!(addition._raw)
