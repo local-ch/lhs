@@ -74,6 +74,11 @@ class LHS::Data
       _proxy.respond_to?(name, include_all)
   end
 
+  def inspect_with_focus
+    _raw
+  end
+  alias_method_chain :inspect, :focus
+
   private
 
   def collection_proxy?(input)
