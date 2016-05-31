@@ -269,7 +269,6 @@ describe LHS::Record do
 
   context 'arrays' do
     it 'includes items of arrays' do
-
       class Place < LHS::Record
         endpoint ':datastore/place'
         endpoint ':datastore/place/:id'
