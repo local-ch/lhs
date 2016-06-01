@@ -55,17 +55,18 @@ class LHS::Record
         end
       end
 
-      def handle_includes(includes, data)
+      # Expand nested data by loading hrefs (endpoint doesn't support expansion of nested data)
+      def handle_includes!(includes, data)
         if includes.is_a? Hash
-          includes.each { |included, sub_includes| handle_include(included, data, sub_includes) }
+          includes.each { |included, sub_includes| handle_include!(included, data, sub_includes) }
         elsif includes.is_a? Array
-          includes.each { |included| handle_includes(included, data) }
+          includes.each { |included| handle_includes!(included, data) }
         else
-          handle_include(includes, data)
+          handle_include!(includes, data)
         end
       end
 
-      def handle_include(included, data, sub_includes = nil)
+      def handle_include!(included, data, sub_includes = nil)
         return if data.blank? || skip_loading_includes?(data, included)
         options =
           if data.collection?
@@ -75,6 +76,7 @@ class LHS::Record
           else
             url_option_for(data, included)
           end
+        binding.pry
         addition = load_include(options, data, sub_includes)
         extend_raw_data(data, addition, included)
       end
@@ -115,7 +117,7 @@ class LHS::Record
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         unless data.empty?
           data = LHS::Data.new(data, nil, self)
-          handle_includes(including, data) if including
+          handle_includes!(including, data) if including
         end
         data
       end
@@ -146,12 +148,31 @@ class LHS::Record
 
       # Merge explicit params and take configured endpoints options as base
       def process_options(options, endpoint)
+        options = options.deep_dup
         options[:params].deep_symbolize_keys! if options[:params]
         options = (endpoint.options || {}).merge(options)
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
+        options[:params] ||= {}
+        expand_includes!(options[:params], including) if including.present?
         merge_explicit_params!(options[:params])
         options.delete(:params) if options[:params] && options[:params].empty?
         options
+      end
+
+      # Prepare expand parameter in order to get expanding done by the endpoint
+      def expand_includes!(params, expands)
+        params[:expand] = ''
+        if includes.is_a? Hash
+          fail 'pending'
+        elsif includes.is_a? Array
+          fail 'pending'
+        else
+          expand_include!(params, expands)
+        end
+      end
+
+      def expand_include!(params, expand)
+        params[:expand] = expand.to_s
       end
 
       def record_for_options(options)
@@ -175,7 +196,7 @@ class LHS::Record
         endpoint = find_endpoint(options[:params])
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
-        handle_includes(including, data) if including
+        handle_includes!(including, data) if including
         data
       end
 
