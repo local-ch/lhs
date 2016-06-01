@@ -75,7 +75,7 @@ class LHS::Data
   end
 
   def inspect_with_focus
-    _raw
+    "\n#{JSON.pretty_generate(_raw)}"
   end
   alias_method_chain :inspect, :focus
 
