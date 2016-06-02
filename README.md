@@ -295,6 +295,8 @@ When fetching records, you can specify in advance all the linked resources that 
 
 The implementation is heavily influenced by [http://guides.rubyonrails.org/active_record_class_querying](http://guides.rubyonrails.org/active_record_class_querying.html#eager-loading-associations) and you should read it to understand this feature in all its glory.
 
+LHS will ask the specific endpoint to `expand` the included linked resources on their side. If it detects that this didn't happen, it will fetch them itself.
+
 ### One-Level `includes`
 
 ```ruby
