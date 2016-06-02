@@ -67,7 +67,7 @@ class LHS::Record
       end
 
       def handle_include!(included, data, sub_includes = nil)
-        return if data.blank? || skip_loading_includes?(data, included)
+        return if data.blank? || skip_loading_includes?(data, included) || expanded?(included, data, sub_includes)
         options =
           if data.collection?
             options_for_multiple(data, included)
@@ -76,9 +76,14 @@ class LHS::Record
           else
             url_option_for(data, included)
           end
-        binding.pry
         addition = load_include(options, data, sub_includes)
         extend_raw_data(data, addition, included)
+      end
+
+      # target already expaned
+      def expanded?(included, data, sub_includes)
+        target = data[included]
+        (target._raw.keys - [:href]).present?
       end
 
       def skip_loading_includes?(data, included)
@@ -153,26 +158,24 @@ class LHS::Record
         options = (endpoint.options || {}).merge(options)
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
         options[:params] ||= {}
-        expand_includes!(options[:params], including) if including.present?
+        options[:params][:expand] = handle_expands(including) if including.present?
         merge_explicit_params!(options[:params])
         options.delete(:params) if options[:params] && options[:params].empty?
         options
       end
 
       # Prepare expand parameter in order to get expanding done by the endpoint
-      def expand_includes!(params, expands)
-        params[:expand] = ''
-        if includes.is_a? Hash
+      def handle_expands(expands)
+        list = []
+        if expands.is_a? Hash
+          expands.each { |expands, sub_expands|  }
           fail 'pending'
-        elsif includes.is_a? Array
-          fail 'pending'
+        elsif expands.is_a? Array
+          expands.each { |expands| handle_expands(expands) }
         else
-          expand_include!(params, expands)
+          expand.to_s
         end
-      end
-
-      def expand_include!(params, expand)
-        params[:expand] = expand.to_s
+        list.join(',')
       end
 
       def record_for_options(options)
