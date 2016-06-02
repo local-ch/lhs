@@ -36,7 +36,11 @@ class LHS::Record
   end
 
   def inspect
-    "<#{self.class}#{_data._raw}>"
+    "<#{self.class} #{_raw.inspect}>"
+  end
+
+  def pretty
+    puts JSON.pretty_generate(_raw)
   end
 
   protected

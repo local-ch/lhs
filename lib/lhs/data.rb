@@ -63,6 +63,14 @@ class LHS::Data
     _proxy.is_a? LHS::Item
   end
 
+  def pretty
+    puts JSON.pretty_generate(_raw)
+  end
+
+  def inspect
+    _raw.to_s
+  end
+
   protected
 
   def method_missing(name, *args, &block)
@@ -73,11 +81,6 @@ class LHS::Data
     (root_item? && instance_methods.include?(name)) ||
       _proxy.respond_to?(name, include_all)
   end
-
-  def inspect_with_focus
-    _raw
-  end
-  alias_method_chain :inspect, :focus
 
   private
 

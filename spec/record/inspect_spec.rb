@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe LHS::Data do
+describe LHS::Record do
   context 'inspect' do
     before(:each) do
       class Record < LHS::Record
-        endpoint 'http://local.ch/records'
+        endpoint 'http://local.ch/records/:id'
       end
     end
 
@@ -12,12 +12,14 @@ describe LHS::Data do
       { name: 'Steve' }
     end
 
-    let(:data) do
-      LHS::Data.new(raw, nil, Record)
+    let(:record) do
+      Record.find(1)
     end
 
     it 'provides inspect method that is focused on the raw data' do
-      expect(data.inspect).to eq raw.to_s
+      stub_request(:get, "http://local.ch/records/1")
+        .to_return(body: raw.to_json)
+      expect(record.inspect).to eq "<Record #{raw.inspect}>"
     end
   end
 end

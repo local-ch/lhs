@@ -166,6 +166,31 @@ After fetching [single](#find-single-records) or [multiple](#find-multiple-recor
   record.parent == records # true
 ```
 
+## Inspect/Debug Data and Records
+
+```ruby
+  data = Record.find(1).users.first
+  data
+  # {:name=>"Steve"}
+  data.pretty
+{
+  "name": "Steve"
+}
+```
+
+```ruby
+  record = data = Record.find(1)
+  record
+  # <Record { href: "http://datastore/records/1", :user => {:name=>"Steve"}}>
+  record.pretty
+{
+  "href": "http://datastore/records/1",
+  "user": {
+    "name": "Steve"
+  }
+}
+```
+
 ## Request based options
 
 You can apply options to the request chain. Those options will be forwarded to the request perfomed by the chain/query.
