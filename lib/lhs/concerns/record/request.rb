@@ -165,15 +165,21 @@ class LHS::Record
       end
 
       # Prepare expand parameter in order to get expanding done by the endpoint
-      def handle_expands(expands)
+      def handle_expands(expands, prefix = nil)
         list = []
         if expands.is_a? Hash
-          expands.each { |expands, sub_expands|  }
-          fail 'pending'
+          expands.each do |key, sub_expands|
+            list << handle_expands(sub_expands, [prefix, key].compact.join('.'))
+          end
         elsif expands.is_a? Array
-          expands.each { |expands| handle_expands(expands) }
+          expands.each do |element|
+            list << handle_expands(element, prefix)
+          end
         else
-          expand.to_s
+          list << [
+            prefix,
+            expands
+          ].compact.join('.')
         end
         list.join(',')
       end

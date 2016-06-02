@@ -40,8 +40,47 @@ describe LHS::Record do
     it 'expands also more complex includes' do
       stub_request(:get, "http://datastore/records/1?expand=customer.addresses,categories")
         .to_return(body: {}.to_json)
-      record = Record.includes([{ customer: :addresses }, :categories]).find(1)
-      binding.pry
+      Record.includes([{ customer: :addresses }, :categories]).find(1)
+    end
+
+    
+    it 'expands also realy complex includes' do
+      stub_request(:get, "http://datastore/records/1?expand=customer.address,customer.categories.region,customer.categories.country.political_region")
+        .to_return(body: {}.to_json)
+      Record.includes(
+        customer: [
+          :address,
+          {
+            categories: [
+              :region,
+              {
+                country: :political_region
+              }
+            ]
+          }
+        ]
+      ).find(1)
+    end
+
+    it 'expands also realy complex alternative includes' do
+      stub_request(:get, "http://datastore/records/1?expand=user.contracts.company.address,customer.address,customer.categories.region,customer.categories.country.political_region")
+        .to_return(body: {}.to_json)
+      Record.includes(
+        user: [
+          { contracts: { company: :address } }
+        ],
+        customer: [
+          :address,
+          {
+            categories: [
+              :region,
+              {
+                country: :political_region
+              }
+            ]
+          }
+        ]
+      ).find(1)
     end
   end
 end
