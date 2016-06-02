@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Data do
-  context 'equality' do
+  context 'inspect' do
     before(:each) do
       class Record < LHS::Record
         endpoint 'http://local.ch/records'
@@ -17,8 +17,7 @@ describe LHS::Data do
     end
 
     it 'provides inspect method that is focused on the raw data' do
-      expect(data.inspect).to eq "\n#{JSON.pretty_generate(raw)}"
-      expect(data.inspect_without_focus).to include 'LHS::Data'
+      expect(data.inspect).to eq raw.to_s
     end
   end
 end
