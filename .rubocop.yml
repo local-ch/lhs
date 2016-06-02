@@ -11,3 +11,6 @@ RSpec/DescribedClass:
 
 RSpec/AnyInstance:
   Enabled: false
+
+Rails/Output:
+  Enabled: false
