@@ -25,7 +25,11 @@ class LHS::Item < LHS::Proxy
         endpoint.remove_interpolated_params!(data)
       end
 
-      data = record.request(options.merge(method: :post, url: url, body: data.to_json, headers: { 'Content-Type' => 'application/json' }))
+      options = options.merge(method: :post, url: url, body: data.to_json)
+      options[:headers] ||= {}
+      options[:headers].merge!('Content-Type' => 'application/json')
+
+      data = record.request(options)
       _data.merge_raw!(data)
       true
     end
