@@ -67,7 +67,7 @@ class LHS::Record
       end
 
       def handle_include!(included, data, sub_includes = nil)
-        return if data.blank? || skip_loading_includes?(data, included) || expanded?(included, data, sub_includes)
+        return unless handle_include?(included, data)
         options =
           if data.collection?
             options_for_multiple(data, included)
@@ -80,8 +80,14 @@ class LHS::Record
         extend_raw_data(data, addition, included)
       end
 
+      def handle_include?(included, data)
+        data.present? &&
+          !skip_loading_includes?(data, included) &&
+          !expanded?(included, data)
+      end
+
       # target already expaned
-      def expanded?(included, data, sub_includes)
+      def expanded?(included, data)
         target = data[included]
         (target._raw.keys - [:href]).present?
       end
@@ -154,10 +160,10 @@ class LHS::Record
       # Merge explicit params and take configured endpoints options as base
       def process_options(options, endpoint)
         options = options.deep_dup
-        options[:params].deep_symbolize_keys! if options[:params]
+        options[:params] ||= {}
+        options[:params].deep_symbolize_keys!
         options = (endpoint.options || {}).merge(options)
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
-        options[:params] ||= {}
         options[:params][:expand] = handle_expands(including) if including.present?
         merge_explicit_params!(options[:params])
         options.delete(:params) if options[:params] && options[:params].empty?
@@ -166,22 +172,22 @@ class LHS::Record
 
       # Prepare expand parameter in order to get expanding done by the endpoint
       def handle_expands(expands, prefix = nil)
-        list = []
-        if expands.is_a? Hash
-          expands.each do |key, sub_expands|
-            list << handle_expands(sub_expands, [prefix, key].compact.join('.'))
+        [].tap do |list|
+          if expands.is_a? Hash
+            expands.each do |key, sub_expands|
+              list << handle_expands(sub_expands, [prefix, key].compact.join('.'))
+            end
+          elsif expands.is_a? Array
+            expands.each do |element|
+              list << handle_expands(element, prefix)
+            end
+          else
+            list << [
+              prefix,
+              expands
+            ].compact.join('.')
           end
-        elsif expands.is_a? Array
-          expands.each do |element|
-            list << handle_expands(element, prefix)
-          end
-        else
-          list << [
-            prefix,
-            expands
-          ].compact.join('.')
-        end
-        list.join(',')
+        end.compact.join(',')
       end
 
       def record_for_options(options)
