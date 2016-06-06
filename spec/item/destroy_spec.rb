@@ -47,11 +47,9 @@ describe LHS::Item do
       end
 
       it 'destroys an item even though it includes additonal services and an empty response body' do
-        stub_request(:delete, "#{datastore}/v2/feedbacks/1")
-          .to_return(status: 204, body: '')
-        data = { href: "#{datastore}/v2/feedbacks/1", restaurant: { href: "#{datastore}/v2/restaurants/1" } }
-        stub_request(:get, "#{datastore}/v2/feedbacks?id=1")
-          .to_return(status: 200, body: data.to_json)
+        stub_request(:delete, "#{datastore}/v2/feedbacks/1").to_return(status: 204, body: '')
+        stub_request(:get, "#{datastore}/v2/feedbacks?expand=restaurant&id=1")
+          .to_return(status: 200, body: { href: "#{datastore}/v2/feedbacks/1", restaurant: { href: "#{datastore}/v2/restaurants/1" } }.to_json)
         stub_request(:get, "#{datastore}/v2/restaurants/1")
           .to_return(status: 200, body: { name: 'Casa Ferlin' }.to_json)
         item = Record.includes(:restaurant).find(1)
