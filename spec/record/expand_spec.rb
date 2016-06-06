@@ -43,7 +43,6 @@ describe LHS::Record do
       Record.includes([{ customer: :addresses }, :categories]).find(1)
     end
 
-    
     it 'expands also realy complex includes' do
       stub_request(:get, "http://datastore/records/1?expand=customer.address,customer.categories.region,customer.categories.country.political_region")
         .to_return(body: {}.to_json)
