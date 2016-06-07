@@ -38,6 +38,9 @@ class Feedback < LHS::Record
 end
 ```
 
+Please use placeholders when configuring endpoints also for hosts. Otherwise LHS will match them strictly, which can result in problems when mixing URLs containing `http`, `https` or no protocol at all.
+[https://github.com/local-ch/lhc/blob/master/docs/configuration.md#placeholders](LHC Placeholder Configuration)
+
 If you try to setup a LHS::Record with clashing endpoints it will immediately raise an exception.
 
 ```ruby
