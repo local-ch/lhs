@@ -110,7 +110,6 @@ describe LHS::Item do
   end
 
   context 'pick right endpoint' do
-
     before(:each) do
       class Record < LHS::Record
         endpoint 'http://datastore/v2/records'
@@ -118,7 +117,7 @@ describe LHS::Item do
       end
       stub_request(:get, "http://datastore/v2/records/1")
         .to_return(body: { href: 'http://datastore/v2/records/1' }.to_json)
-       stub_request(:post, "http://datastore/v2/records/1?persist=false")
+      stub_request(:post, "http://datastore/v2/records/1?persist=false")
         .to_return(body: {}.to_json)
     end
 

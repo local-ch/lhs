@@ -47,7 +47,7 @@ class LHS::Item < LHS::Proxy
     end
 
     def params_from_embeded_href
-      return {} unless _data.href
+      return {} if !_data.href || !embeded_endpoint
       LHC::Endpoint.values_as_params(embeded_endpoint.url, _data.href)
     end
   end
