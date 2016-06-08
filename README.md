@@ -482,6 +482,15 @@ unless user.valid?
 end
 ```
 
+In case endpoints define other parameter names for validation like `publish` you can configure those with passing a string to `validates`:
+
+```ruby
+class User < LHS::Record
+  endpoint ':datastore/v2/users', validates: 'publish'
+end
+```
+
+
 ## Pagination
 
 LHS supports paginated APIs and it also supports various pagination strategies and by providing configuration possibilities.
