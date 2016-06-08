@@ -108,4 +108,22 @@ describe LHS::Item do
       end
     end
   end
+
+  context 'pick right endpoint' do
+    before(:each) do
+      class Record < LHS::Record
+        endpoint 'http://datastore/v2/records'
+        endpoint 'http://datastore/v2/records/:id', validates: true
+      end
+      stub_request(:get, "http://datastore/v2/records/1")
+        .to_return(body: { href: 'http://datastore/v2/records/1' }.to_json)
+      stub_request(:post, "http://datastore/v2/records/1?persist=false")
+        .to_return(body: {}.to_json)
+    end
+
+    it 'takes the right endpoint for validation' do
+      record = Record.find(1)
+      record.valid?
+    end
+  end
 end
