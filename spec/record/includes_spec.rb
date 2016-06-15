@@ -323,13 +323,13 @@ describe LHS::Record do
       stub_request(:get, "#{datastore}/place/1")
         .to_return(body: {
           'contracts' => {
-            'items' => [{ 'href' => '#{datastore}/place/1/contacts/1' }]
+            'items' => [{ 'href' => "#{datastore}/place/1/contacts/1" }]
           }
         }.to_json)
 
-      stub_request(:get, '#{datastore}/place/1/contacts/1')
+      stub_request(:get, "#{datastore}/place/1/contacts/1")
         .to_return(body: {
-          'products' => { 'href' => '#{datastore}/place/1/contacts/1/products' }
+          'products' => { 'href' => "#{datastore}/place/1/contacts/1/products" }
         }.to_json)
 
       place = Place.includes(:contracts).find(1)
