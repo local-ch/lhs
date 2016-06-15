@@ -292,4 +292,25 @@ describe LHS::Record do
       expect(place.relations[1].name).to eq 'ZeFrank'
     end
   end
+
+  context 'empty collections' do
+
+    it 'skips including empty collections' do
+      class Place < LHS::Record
+        endpoint ':datastore/place'
+        endpoint ':datastore/place/:id'
+      end
+
+      stub_request(:get, "#{datastore}/place/1")
+        .to_return(body: {
+          'available_products' => {
+            "url" => "#{datastore}/place/1/products",
+            "items" => []
+          }
+        }.to_json)
+
+      place = Place.includes(:available_products).find(1)
+      expect(place.available_products.empty?).to eq true
+    end
+  end
 end
