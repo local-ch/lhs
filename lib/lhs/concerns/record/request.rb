@@ -38,20 +38,45 @@ class LHS::Record
       end
 
       # Extends existing raw data with additionaly fetched data
-      def extend_raw_data(data, addition, key)
+      def extend_raw_data!(data, addition, key)
         return if addition.empty?
         if data.collection?
-          data.each_with_index do |item, i|
-            item = item[i] if item.is_a? LHS::Collection
-            link = item[key.to_sym]
-            link.merge_raw!(addition[i]) if link.present?
-          end
+          extend_base_collection!(data, addition, key)
         elsif data[key]._raw.is_a? Array
-          data[key].zip(addition) do |item, additional_item|
-            item._raw.merge!(additional_item._raw)
-          end
-        elsif data._proxy.is_a? LHS::Item
+          extend_base_array!(data, addition, key)
+        elsif data.item?
+          extend_base_item!(data, addition, key)
+        end
+      end
+
+      def extend_base_collection!(data, addition, key)
+        data.each_with_index do |item, i|
+          item = item[i] if item.is_a? LHS::Collection
+          link = item[key.to_sym]
+          link.merge_raw!(addition[i]) if link.present?
+        end
+      end
+
+      def extend_base_array!(data, addition, key)
+        data[key].zip(addition) do |item, additional_item|
+          item._raw.merge!(additional_item._raw)
+        end
+      end
+
+      def extend_base_item!(data, addition, key)
+        if addition.collection?
+          extend_base_item_with_collection!(data, addition, key)
+        else # simple case merges hash into hash
           data._raw[key.to_sym].merge!(addition._raw)
+        end
+      end
+
+      def extend_base_item_with_collection!(data, addition, key)
+        target = data[key]
+        if target._raw.is_a? Array
+          data[key] = addition.map(&:_raw)
+        else # hash with items
+          target._raw[items_key] = addition.map(&:_raw)
         end
       end
 
@@ -76,7 +101,7 @@ class LHS::Record
             url_option_for(data, included)
           end
         addition = load_include(options, data, sub_includes)
-        extend_raw_data(data, addition, included)
+        extend_raw_data!(data, addition, included)
       end
 
       def skip_loading_includes?(data, included)

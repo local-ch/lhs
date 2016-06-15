@@ -312,4 +312,28 @@ describe LHS::Record do
       expect(place.available_products.empty?).to eq true
     end
   end
+
+  context 'extend items with arrays' do
+    it 'extends base items with arrays' do
+      class Place < LHS::Record
+        endpoint ':datastore/place'
+        endpoint ':datastore/place/:id'
+      end
+
+      stub_request(:get, "#{datastore}/place/1")
+        .to_return(body: {
+          'contracts' => {
+            "items" => [{"href" => "#{datastore}/place/1/contacts/1"}]
+          }
+        }.to_json)
+
+      stub_request(:get, "#{datastore}/place/1/contacts/1")
+        .to_return(body: {
+          'products' => { "href" => "#{datastore}/place/1/contacts/1/products"}
+        }.to_json)
+
+      place = Place.includes(:contracts).find(1)
+      expect(place.contracts.first.products.href).to eq "#{datastore}/place/1/contacts/1/products"
+    end
+  end
 end
