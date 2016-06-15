@@ -294,7 +294,6 @@ describe LHS::Record do
   end
 
   context 'empty collections' do
-
     it 'skips including empty collections' do
       class Place < LHS::Record
         endpoint ':datastore/place'
