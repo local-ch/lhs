@@ -70,7 +70,7 @@ class LHS::Record
         options =
           if data.collection?
             options_for_multiple(data, included)
-          elsif data[included]._raw.is_a?(Array)
+          elsif data[included].collection?
             options_for_nested_items(data, included)
           else
             url_option_for(data, included)
