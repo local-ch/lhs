@@ -5,13 +5,13 @@ describe LHS::Collection do
 
   let(:limit) { 100 }
 
-  def api_response(ids, offset)
+  def api_response(ids, offset, options = {})
     records = ids.map { |i| { id: i } }
     {
-      items: records,
-      total: total,
-      limit: limit,
-      offset: offset
+      options.fetch(:items_key, :items) => records,
+      options.fetch(:total_key, :total) => total,
+      options.fetch(:limit_key, :limit) => limit,
+      options.fetch(:pagination_key, :offset) => offset
     }.to_json
   end
 
@@ -61,6 +61,34 @@ describe LHS::Collection do
       Record.find_in_batches(start: 401) do |records|
         expect(records.length).to eq(total - 400)
       end
+    end
+  end
+
+  context 'configured pagination' do
+
+    before(:each) do
+      class Record < LHS::Record
+        endpoint ':datastore/:campaign_id/feedbacks'
+        endpoint ':datastore/feedbacks'
+        configuration items_key: 'docs', limit_key: 'size', pagination_key: 'start', pagination_strategy: 'start', total_key: 'totalResults'
+      end
+    end
+
+    let(:options) { {items_key: 'docs', limit_key: 'size', pagination_key: 'start', total_key: 'totalResults'} }
+
+    it 'capable to do batch processing with configured pagination' do
+      stub_request(:get, "#{datastore}/feedbacks?size=230&start=1").to_return(status: 200, body: api_response((1..100).to_a, 1, options))
+      stub_request(:get, "#{datastore}/feedbacks?size=100&start=101").to_return(status: 200, body: api_response((101..200).to_a, 101, options))
+      stub_request(:get, "#{datastore}/feedbacks?size=100&start=201").to_return(status: 200, body: api_response((201..300).to_a, 201, options))
+      stub_request(:get, "#{datastore}/feedbacks?size=100&start=301").to_return(status: 200, body: api_response((301..400).to_a, 301, options))
+      stub_request(:get, "#{datastore}/feedbacks?size=100&start=401").to_return(status: 200, body: api_response((401..total).to_a, 401, options))
+      length = 0
+      Record.find_in_batches(batch_size: 230) do |records|
+        length += records.length
+        expect(records).to be_kind_of Record
+        expect(records._proxy).to be_kind_of LHS::Collection
+      end
+      expect(length).to eq total
     end
   end
 end
