@@ -23,9 +23,9 @@ class LHS::Record
         batch_size = options[:batch_size] || LHS::Pagination::DEFAULT_LIMIT
         params = options[:params] || {}
         loop do # as suggested by Matz
-          data = request(params: params.merge(limit: batch_size, offset: start))
-          batch_size = data._raw[:limit]
-          left = data._raw[:total].to_i - data._raw[:offset].to_i - data._raw[:limit].to_i
+          data = request(params: params.merge(limit_key => batch_size, pagination_key => start))
+          batch_size = data._raw[limit_key]
+          left = data._raw[total_key].to_i - data._raw[pagination_key].to_i - data._raw[limit_key].to_i
           yield new(data)
           break if left <= 0
           start += batch_size
