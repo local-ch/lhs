@@ -65,7 +65,6 @@ describe LHS::Collection do
   end
 
   context 'configured pagination' do
-
     before(:each) do
       class Record < LHS::Record
         endpoint ':datastore/:campaign_id/feedbacks'
@@ -74,7 +73,7 @@ describe LHS::Collection do
       end
     end
 
-    let(:options) { {items_key: 'docs', limit_key: 'size', pagination_key: 'start', total_key: 'totalResults'} }
+    let(:options) { { items_key: 'docs', limit_key: 'size', pagination_key: 'start', total_key: 'totalResults' } }
 
     it 'capable to do batch processing with configured pagination' do
       stub_request(:get, "#{datastore}/feedbacks?size=230&start=1").to_return(status: 200, body: api_response((1..100).to_a, 1, options))
