@@ -27,6 +27,7 @@ class LHS::Item < LHS::Proxy
     name = args.first if name == :[]
     value = _data._raw[name.to_s]
     value = _data._raw[name.to_sym] if value.nil?
+    value = _data._raw[name.to_s.classify.to_sym] if value.nil?
     if value.is_a?(Hash)
       handle_hash(value)
     elsif value.is_a?(Array)
