@@ -129,15 +129,14 @@ class LHS::Data
     if json.is_a?(Hash)
       json.deep_symbolize_keys
     elsif json.is_a?(Array)
-      json.map { |item| item.is_a?(Hash) ? item.deep_symbolize_keys : item }
+      json.map { |item| item.is_a?(Hash) ? item.with_indifferent_access : item }
     else
       json
     end
   end
 
   def raw_from_anything_else(input)
-    input = input.to_hash if input.class != Hash && input.respond_to?(:to_hash)
-    input.deep_symbolize_keys! if input.is_a?(Hash)
-    input
+    return input unless input.respond_to?(:to_hash)
+    input.to_hash.with_indifferent_access
   end
 end
