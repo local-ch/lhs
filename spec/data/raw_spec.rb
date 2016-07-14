@@ -33,8 +33,8 @@ describe LHS::Data do
 
     it 'forwards raw when you feed data with some LHS object' do
       expect(data_from_item._raw).to be_kind_of Hash
-      expect(data_from_item._raw).to eq(
-        href: 'http://www.local.ch/v2/stuff'
+      expect(data_from_item._raw[:href]).to eq(
+        'http://www.local.ch/v2/stuff'
       )
     end
 
