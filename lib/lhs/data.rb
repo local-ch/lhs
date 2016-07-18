@@ -5,6 +5,7 @@ Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each { |file| require file }
 class LHS::Data
   include Equality
   include Json
+  include ToHash
 
   delegate :instance_methods, :items_key, :limit_key, :total_key, :pagination_key, to: :class
 
