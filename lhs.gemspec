@@ -31,4 +31,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'ciderizer'
   s.add_development_dependency 'capybara'
+  
+  spec.license = 'GPL-3'
 end

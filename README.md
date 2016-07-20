@@ -629,3 +629,7 @@ The behaviour of `count` and `length` is based on ActiveRecord's behaviour.
 `count` Determine the number of elements by taking the number of total elements that is provided by the endpoint/api.
 
 `length` This returns the number of elements loaded from an endpoint/api. In case of paginated resources this can be different to count, as it depends on how many pages have been loaded.
+
+## License
+
+[GNU Affero General Public License Version 3.](https://www.gnu.org/licenses/agpl-3.0.en.html)
