@@ -174,6 +174,7 @@ After fetching [single](#find-single-records) or [multiple](#find-multiple-recor
 You can apply options to the request chain. Those options will be forwarded to the request perfomed by the chain/query.
 
 ```ruby
+  # Authenticate with OAuth
   options = { auth: { bearer: '123456' } }
   
   AuthenticatedRecord = Record.options(options)
@@ -365,22 +366,22 @@ After include:
 
 When including linked resources with `includes`, known/defined services and endpoints are used to make those requests.
 That also means that options for endpoints of linked resources are applied when requesting those in addition.
-This allows you to include protected resources (e.g. OAuth) as endpoint options for oauth authentication get applied.
+This allows you to include protected resources (e.g. Basic auth) as endpoint options for oauth authentication get applied.
 
 The [Auth Inteceptor](https://github.com/local-ch/lhc-core-interceptors#auth-interceptor) from [lhc-core-interceptors](https://github.com/local-ch/lhc-core-interceptors) is used to configure the following endpoints.
 
 ```ruby
 class Favorite < LHS::Record
 
-  endpoint ':datastore/:user_id/favorites', auth: { bearer: -> { bearer_token } }
-  endpoint ':datastore/:user_id/favorites/:id', auth: { bearer: -> { bearer_token } }
+  endpoint ':datastore/:user_id/favorites', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint ':datastore/:user_id/favorites/:id', auth: { basic: { username: 'steve', password: 'can' } }
 
 end
 
 class Place < LHS::Record
 
-  endpoint ':datastore/v2/places', auth: { bearer: -> { bearer_token } }
-  endpoint ':datastore/v2/places/:id', auth: { bearer: -> { bearer_token } }
+  endpoint ':datastore/v2/places', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint ':datastore/v2/places/:id', auth: { basic: { username: 'steve', password: 'can' } }
 
 end
 
