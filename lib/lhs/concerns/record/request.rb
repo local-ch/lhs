@@ -27,12 +27,11 @@ class LHS::Record
 
       def convert_options_to_endpoint(options)
         return unless options.present?
-        new_options = options.dup
         url = options[:url]
         endpoint = LHS::Endpoint.for_url(url)
         return unless endpoint
         template = endpoint.url
-        new_options = new_options.deep_merge(params: LHC::Endpoint.values_as_params(template, url))
+        new_options = options.deep_merge(params: LHC::Endpoint.values_as_params(template, url))
         new_options[:url] = template
         new_options
       end
