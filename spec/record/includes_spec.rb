@@ -338,7 +338,6 @@ describe LHS::Record do
   end
 
   context 'includes with options' do
-
     before(:each) do
       class Customer < LHS::Record
         endpoint ':datastore/customers/:id'

@@ -111,7 +111,7 @@ class LHS::Record
         return options unless references
         options ||= {}
         if options.is_a?(Array)
-          options.map{ |options| options.merge(references) }
+          options.map { |request_options| request_options.merge(references) }
         else
           options.merge(references)
         end
