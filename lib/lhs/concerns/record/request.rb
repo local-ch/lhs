@@ -84,7 +84,7 @@ class LHS::Record
         if includes.is_a? Hash
           includes.each { |included, sub_includes| handle_include(included, data, sub_includes, references[included]) }
         elsif includes.is_a? Array
-          includes.each { |included| handle_includes(included, data, references) }
+          includes.each { |included| handle_includes(included, data, references[:included]) }
         else
           handle_include(includes, data, nil, references[includes])
         end
