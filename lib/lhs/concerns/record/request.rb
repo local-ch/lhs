@@ -19,7 +19,7 @@ class LHS::Record
       # Convert URLs in options to endpoint templates
       def convert_options_to_endpoints(options)
         if options.is_a?(Array)
-          options.map { |options| convert_options_to_endpoint(options) }
+          options.map { |request_options| convert_options_to_endpoint(request_options) }
         else
           convert_options_to_endpoint(options)
         end
