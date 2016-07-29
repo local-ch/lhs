@@ -6,6 +6,7 @@ class LHS::Data
   include Equality
   include Json
   include ToHash
+  include Inspect
 
   delegate :instance_methods, :items_key, :limit_key, :total_key, :pagination_key, to: :class
 
@@ -74,11 +75,6 @@ class LHS::Data
     (root_item? && instance_methods.include?(name)) ||
       _proxy.respond_to?(name, include_all)
   end
-
-  def inspect_with_focus
-    _raw
-  end
-  alias_method_chain :inspect, :focus
 
   private
 
