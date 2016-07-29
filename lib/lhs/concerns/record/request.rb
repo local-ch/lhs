@@ -108,7 +108,7 @@ class LHS::Record
       def options_for_data(data, included = nil)
         if data.collection?
           options_for_multiple(data, included)
-        elsif data[included].collection?
+        elsif included && data[included].collection?
           options_for_nested_items(data, included)
         else
           url_option_for(data, included)
@@ -129,6 +129,7 @@ class LHS::Record
       end
 
       def no_expanded_data?(addition)
+        return false if addition.blank?
         if addition.item?
           (addition._raw.keys - [:href]).empty?
         elsif addition.collection?
@@ -197,7 +198,7 @@ class LHS::Record
 
       def options_for_nested_items(data, key = nil)
         data[key].map do |item|
-          url_option_for(item, key)
+          url_option_for(item)
         end
       end
 
