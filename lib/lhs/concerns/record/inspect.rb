@@ -16,24 +16,11 @@ class LHS::Record
 
     def pretty_raw
       return if _data._raw.blank?
-      return pretty_raw_array if raw.is_a?(Array)
-      pretty_raw_hash
-    end
-
-    def pretty_raw_array
-      [
-        '[',
-        _data._raw,
-        ']'
-      ].flatten.join("\n")
-    end
-
-    def pretty_raw_hash
-      [
-        '{',
-        _data._raw.to_a.map { |key, value| ":#{key} => #{value}" },
-        '}'
-      ].flatten.join("\n")
+      if _data._raw.is_a?(Array)
+        _data._raw
+      else
+        _data._raw.to_a.map { |key, value| ":#{key} => #{value}" }
+      end.join("\n")
     end
   end
 end
