@@ -12,6 +12,7 @@ class LHS::Record
   include FindBy
   include First
   include Includes
+  include Inspect
   include Mapping
   include Model
   include Pagination
@@ -33,10 +34,6 @@ class LHS::Record
 
   def self.build(data = nil)
     new(data)
-  end
-
-  def inspect
-    "<#{self.class}#{_data._raw}>"
   end
 
   protected
