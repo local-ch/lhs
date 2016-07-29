@@ -76,7 +76,14 @@ class LHS::Record
         if target._raw.is_a? Array
           data[key] = addition.map(&:_raw)
         else # hash with items
-          target._raw[items_key] = addition.map(&:_raw)
+          target._raw[items_key] ||= []
+          if target._raw[items_key].empty?
+            target._raw[items_key] = addition.map(&:_raw)
+          else
+            target._raw[items_key].each_with_index do |item, index|
+              item.merge!(addition[index])
+            end
+          end
         end
       end
 
@@ -92,16 +99,41 @@ class LHS::Record
 
       def handle_include(included, data, sub_includes = nil)
         return if data.blank? || skip_loading_includes?(data, included)
-        options =
-          if data.collection?
-            options_for_multiple(data, included)
-          elsif data[included].collection?
-            options_for_nested_items(data, included)
-          else
-            url_option_for(data, included)
-          end
+        options = options_for_data(data, included)
         addition = load_include(options, data, sub_includes)
         extend_raw_data!(data, addition, included)
+        expand_addition!(data, included) if no_expanded_data?(addition)
+      end
+
+      def options_for_data(data, included = nil)
+        if data.collection?
+          options_for_multiple(data, included)
+        elsif data[included].collection?
+          options_for_nested_items(data, included)
+        else
+          url_option_for(data, included)
+        end
+      end
+
+      def expand_addition!(data, included)
+        addition = data[included]
+        options = options_for_data(addition)
+        record = record_for_options(options) || self
+        options = convert_options_to_endpoints(options) if record_for_options(options)
+        expanded_data = begin
+          record.without_including.request(options)
+        rescue LHC::NotFound
+          LHS::Data.new({}, data, record)
+        end
+        extend_raw_data!(data, expanded_data, included)
+      end
+
+      def no_expanded_data?(addition)
+        if addition.item?
+          (addition._raw.keys - [:href]).empty?
+        elsif addition.collection?
+          addition.all? { |item| item && (item._raw.keys - [:href]).empty? }
+        end
       end
 
       def skip_loading_includes?(data, included)
@@ -157,15 +189,15 @@ class LHS::Record
         array
       end
 
-      def options_for_multiple(data, key)
+      def options_for_multiple(data, key = nil)
         data.map do |item|
           url_option_for(item, key)
         end
       end
 
-      def options_for_nested_items(data, key)
+      def options_for_nested_items(data, key = nil)
         data[key].map do |item|
-          url_option_for(item)
+          url_option_for(item, key)
         end
       end
 

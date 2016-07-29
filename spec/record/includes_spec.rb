@@ -336,4 +336,33 @@ describe LHS::Record do
       expect(place.contracts.first.products.href).to eq "#{datastore}/place/1/contacts/1/products"
     end
   end
+
+  context 'unexpanded response when requesting the included collection' do
+    it 'loads the collection and the single items, if not already expanded' do
+      class Customer < LHS::Record
+        endpoint ':datastore/customer/:id'
+      end
+
+      stub_request(:get, "#{datastore}/customer/1")
+        .to_return(body: {
+          places: {
+            href: "#{datastore}/places"
+          }
+        }.to_json)
+
+      stub_request(:get, "#{datastore}/places")
+        .to_return(body: {
+          items: [{ href: "#{datastore}/places/1" }]
+        }.to_json)
+
+      item_request = stub_request(:get, "#{datastore}/places/1")
+        .to_return(body: {
+          name: 'Casa Ferlin'
+        }.to_json)
+
+      place = Customer.includes(:places).find(1).places.first
+      assert_requested(item_request)
+      expect(place.name).to eq 'Casa Ferlin'
+    end
+  end
 end
