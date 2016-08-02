@@ -42,4 +42,22 @@ describe LHS::Proxy do
         .to raise_error LHC::NotFound
     end
   end
+
+  context 'endpoint options' do
+    before(:each) do
+      class AnotherRecord < LHS::Record
+        endpoint ':datastore/v2/feedbacks', params: { color: :blue }
+      end
+    end
+
+    let(:record) do
+      AnotherRecord.new(href: 'http://datastore/v2/feedbacks')
+    end
+
+    it 'applys endpoint options on load!' do
+      stub_request(:get, 'http://datastore/v2/feedbacks?color=blue')
+        .to_return(body: {}.to_json)
+      record.load!
+    end
+  end
 end
