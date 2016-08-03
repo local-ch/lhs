@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
   s.test_files   = `git ls-files -- spec/*`.split("\n")
   s.require_paths = ['lib']
 
-  s.requirements << 'Ruby >= 1.9.2'
-  s.required_ruby_version = '>= 1.9.2'
+  s.requirements << 'Ruby >= 2.0.0'
+  s.required_ruby_version = '>= 2.0.0'
 
   s.add_dependency 'lhc', '>= 3.5.2'
   s.add_dependency 'lhc-core-interceptors', '>= 2.0.1'

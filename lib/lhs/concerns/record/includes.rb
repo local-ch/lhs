@@ -5,13 +5,21 @@ class LHS::Record
   module Includes
     extend ActiveSupport::Concern
 
+    included do
+      cattr_accessor :including, :referencing
+    end
+
     module ClassMethods
-      def including
-        @including
+      def includes(*args)
+        class_clone_factory(args).tap do |class_clone|
+          class_clone.including = unfold_args(args)
+        end
       end
 
-      def including=(including)
-        @including = including
+      def references(*args)
+        class_clone_factory(args).tap do |class_clone|
+          class_clone.referencing = unfold_args(args)
+        end
       end
 
       def includes(*args)

@@ -363,6 +363,34 @@ describe LHS::Record do
       place = Customer.includes(:places).find(1).places.first
       assert_requested(item_request)
       expect(place.name).to eq 'Casa Ferlin'
+
+  context 'includes with options' do
+    before(:each) do
+      class Customer < LHS::Record
+        endpoint ':datastore/customers/:id'
+      end
+
+      class Place < LHS::Record
+        endpoint ':datastore/places'
+      end
+    end
+
+    it 'forwards includes options to requests made for those includes' do
+      stub_request(:get, "#{datastore}/customers/1")
+        .to_return(body: {
+          'places' => {
+            'href' => "#{datastore}/places"
+          }
+        }.to_json)
+      stub_request(:get, "#{datastore}/places?forwarded_params=123")
+        .to_return(body: {
+          'items' => [{ id: 1 }]
+        }.to_json)
+      customer = Customer
+        .includes(:places)
+        .references(places: { params: { forwarded_params: 123 } })
+        .find(1)
+      expect(customer.places.first.id).to eq 1
     end
   end
 end
