@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Data do
-  context 'equality' do
+  context 'inspect' do
     before(:each) do
       class Record < LHS::Record
         endpoint 'http://local.ch/records'
@@ -9,16 +9,24 @@ describe LHS::Data do
     end
 
     let(:raw) do
-      { name: 'Steve' }
+      { pets: [
+        {
+          name: 'Steve',
+          kind: {
+            animal: {
+              type: 'Monkey'
+            }
+          }
+        }
+      ] }
     end
 
     let(:data) do
-      LHS::Data.new(raw, nil, Record)
+      LHS::Data.new(raw, nil, Record).pets.first
     end
 
-    it 'provides inspect method that is focused on the raw data' do
-      expect(data.inspect).to eq raw
-      expect(data.inspect_without_focus).to include 'LHS::Data'
+    it 'prints inspected data on multiple lines' do
+      expect(data.inspect).to eq "Data of Record##{data.object_id}\n:name => \"Steve\"\n:kind => {:animal=>{:type=>\"Monkey\"}}"
     end
   end
 end
