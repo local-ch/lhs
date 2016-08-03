@@ -19,20 +19,19 @@ class LHS::Record
       # Convert URLs in options to endpoint templates
       def convert_options_to_endpoints(options)
         if options.is_a?(Array)
-          options.map { |option| convert_option_to_endpoints(option) }
+          options.map { |request_options| convert_options_to_endpoint(request_options) }
         else
-          convert_option_to_endpoints(options)
+          convert_options_to_endpoint(options)
         end
       end
 
-      def convert_option_to_endpoints(option)
-        return unless option.present?
-        new_options = option.dup
-        url = option[:url]
+      def convert_options_to_endpoint(options)
+        return unless options.present?
+        url = options[:url]
         endpoint = LHS::Endpoint.for_url(url)
         return unless endpoint
         template = endpoint.url
-        new_options = new_options.merge(params: LHC::Endpoint.values_as_params(template, url))
+        new_options = options.deep_merge(params: LHC::Endpoint.values_as_params(template, url))
         new_options[:url] = template
         new_options
       end
@@ -80,17 +79,18 @@ class LHS::Record
         end
       end
 
-      def handle_includes(includes, data)
+      def handle_includes(includes, data, references = {})
+        references ||= {}
         if includes.is_a? Hash
-          includes.each { |included, sub_includes| handle_include(included, data, sub_includes) }
+          includes.each { |included, sub_includes| handle_include(included, data, sub_includes, references[included]) }
         elsif includes.is_a? Array
-          includes.each { |included| handle_includes(included, data) }
+          includes.each { |included| handle_includes(included, data, references[included]) }
         else
-          handle_include(includes, data)
+          handle_include(includes, data, nil, references[includes])
         end
       end
 
-      def handle_include(included, data, sub_includes = nil)
+      def handle_include(included, data, sub_includes = nil, references = nil)
         return if data.blank? || skip_loading_includes?(data, included)
         options =
           if data.collection?
@@ -100,8 +100,20 @@ class LHS::Record
           else
             url_option_for(data, included)
           end
+        options = extend_with_references(options, references)
         addition = load_include(options, data, sub_includes)
         extend_raw_data!(data, addition, included)
+      end
+
+      # Extends request options with options provided for this reference
+      def extend_with_references(options, references)
+        return options unless references
+        options ||= {}
+        if options.is_a?(Array)
+          options.map { |request_options| request_options.merge(references) }
+        else
+          options.merge(references)
+        end
       end
 
       def skip_loading_includes?(data, included)
@@ -140,7 +152,7 @@ class LHS::Record
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         unless data.empty?
           data = LHS::Data.new(data, nil, self)
-          handle_includes(including, data) if including
+          handle_includes(including, data, referencing) if including
         end
         data
       end
@@ -200,7 +212,7 @@ class LHS::Record
         endpoint = find_endpoint(options[:params])
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
-        handle_includes(including, data) if including
+        handle_includes(including, data, referencing) if including
         data
       end
 

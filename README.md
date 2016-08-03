@@ -389,6 +389,16 @@ Favorite.includes(:place).where(user_id: current_user.id)
 # Will include places and applies endpoint options to authenticate the request.
 ```
 
+### Forward options used for request made to include referenced resources
+
+Provide options to the requests made to include referenced resources:
+
+```
+
+  Favorite.includes(:place).references(place: { auth: { bearer: '123' }})
+
+```
+
 ## Map data
 
 To influence how data is accessed/provied, you can use mappings to either map deep nested data or to manipulate data when its accessed. Simply create methods inside the LHS::Record. They can access underlying data:
