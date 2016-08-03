@@ -126,7 +126,8 @@ The example would fetch records with the following parameters: `{color: blue, vi
 
 ## Error handling with chains
 
-One benefit of chains is lazy evaluation. This means they get resolved and when data is accessed. This makes it hard to catch errors with normal `rescue` blocks.
+One benefit of chains is lazy evaluation. This means they get resolved when data is accessed. This makes it hard to catch errors with normal `rescue` blocks.
+
 To simplify error handling with chains, you can also chain error handlers to be resolved, as part of the chain.
 
 In case no matchin error handler is found the error gets re-raised.
