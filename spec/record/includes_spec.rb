@@ -158,7 +158,6 @@ describe LHS::Record do
       end
 
       it 'uses interceptors for included links from known services' do
-        # rubocop:disable RSpec/InstanceVariable
         stub_feedback_request
         stub_entry_request
 
@@ -167,7 +166,6 @@ describe LHS::Record do
 
         expect(Feedback.includes(:entry).where.first.entry.name).to eq 'Casa Ferlin'
         expect(@called).to eq 2
-        # rubocop:enable RSpec/InstanceVariable
       end
     end
 
