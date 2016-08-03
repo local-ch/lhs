@@ -243,10 +243,25 @@ class LHS::Record
         options ||= {}
         options = options.dup
         endpoint = find_endpoint(options[:params])
-        response = LHC.request(process_options(options, endpoint))
-        data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
-        handle_includes(including, data, referencing) if including
-        data
+        error_handling = options.delete(:error_handling)
+        begin
+          response = LHC.request(process_options(options, endpoint))
+          data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
+          handle_includes(including, data, referencing) if including
+          data
+        rescue => error
+          handle_error(error, error_handling)
+          nil
+        end
+      end
+
+      def handle_error(error, error_handling)
+        error_handlers = error_handling.select { |error_handler| error.is_a? error_handler.class }
+        if error_handlers.any?
+          error_handlers.each { |handler| handler.call(error) }
+        else
+          fail error
+        end
       end
 
       def url_option_for(item, key = nil)
