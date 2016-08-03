@@ -22,6 +22,12 @@ class LHS::Record
         end
       end
 
+      def without_including
+        class_clone_factory(rand.to_s.gsub(/\D/, '')).tap do |class_clone|
+          class_clone.including = nil
+        end
+      end
+
       private
 
       def unfold_args(args)
