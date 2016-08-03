@@ -14,8 +14,8 @@ describe LHS::Record do
     @error_resolved = false
     @rescued = false
     begin
-      record = Record.where(color: 'blue').handle(LHC::Error, ->(error){ @error_resolved = true })
-    rescue => e
+      record = Record.where(color: 'blue').handle(LHC::Error, ->(_error) { @error_resolved = true })
+    rescue => _e
       @rescued = true
     end
     record.first
@@ -28,7 +28,7 @@ describe LHS::Record do
     # rubocop:disable RSpec/InstanceVariable
     @error_resolved = false
     @rescued = false
-    record = Record.where(color: 'blue').handle(LHC::Conflict, ->(error){ @error_resolved = true })
+    record = Record.where(color: 'blue').handle(LHC::Conflict, ->(_error) { @error_resolved = true })
     begin
       record.first
     rescue => _e
@@ -45,9 +45,9 @@ describe LHS::Record do
     @rescued = false
     begin
       record = Record.where(color: 'blue')
-        .handle(LHC::Error, ->(error){ @error_resolved += 1 })
-        .handle(LHC::Error, ->(error){ @error_resolved += 2 })
-    rescue => e
+        .handle(LHC::Error, ->(_error) { @error_resolved += 1 })
+        .handle(LHC::Error, ->(_error) { @error_resolved += 2 })
+    rescue => _e
       @rescued = true
     end
     record.first
