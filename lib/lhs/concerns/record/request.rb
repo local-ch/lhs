@@ -256,7 +256,7 @@ class LHS::Record
       end
 
       def handle_error(error, error_handling)
-        error_handlers = error_handling.select { |error_handler| error.is_a? error_handler.class }
+        error_handlers = (error_handling || []).select { |error_handler| error.is_a? error_handler.class }
         if error_handlers.any?
           error_handlers.each { |handler| handler.call(error) }
         else

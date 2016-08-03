@@ -11,31 +11,48 @@ describe LHS::Record do
 
   it 'allows to chain error handling' do
     # rubocop:disable RSpec/InstanceVariable
-    @errorResolved = false
+    @error_resolved = false
     @rescued = false
     begin
-      record = Record.where(color: 'blue').handle(LHC::Error, ->(error){ @errorResolved = true })
+      record = Record.where(color: 'blue').handle(LHC::Error, ->(error){ @error_resolved = true })
     rescue => e
       @rescued = true
     end
     record.first
-    expect(@errorResolved).to eq true
+    expect(@error_resolved).to eq true
     expect(@rescued).to eq false
     # rubocop:enable RSpec/InstanceVariable
   end
 
   it 'reraises in case chained error is not matched' do
     # rubocop:disable RSpec/InstanceVariable
-    @errorResolved = false
+    @error_resolved = false
     @rescued = false
-    record = Record.where(color: 'blue').handle(LHC::Conflict, ->(error){ @errorResolved = true })
+    record = Record.where(color: 'blue').handle(LHC::Conflict, ->(error){ @error_resolved = true })
     begin
       record.first
     rescue => _e
       @rescued = true
     end
-    expect(@errorResolved).to eq false
+    expect(@error_resolved).to eq false
     expect(@rescued).to eq true
+    # rubocop:enable RSpec/InstanceVariable
+  end
+
+  it 'calls all the handlers' do
+    # rubocop:disable RSpec/InstanceVariable
+    @error_resolved = 0
+    @rescued = false
+    begin
+      record = Record.where(color: 'blue')
+        .handle(LHC::Error, ->(error){ @error_resolved += 1 })
+        .handle(LHC::Error, ->(error){ @error_resolved += 2 })
+    rescue => e
+      @rescued = true
+    end
+    record.first
+    expect(@error_resolved).to eq 3
+    expect(@rescued).to eq false
     # rubocop:enable RSpec/InstanceVariable
   end
 end
