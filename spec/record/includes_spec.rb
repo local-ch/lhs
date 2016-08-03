@@ -361,6 +361,8 @@ describe LHS::Record do
       place = Customer.includes(:places).find(1).places.first
       assert_requested(item_request)
       expect(place.name).to eq 'Casa Ferlin'
+    end
+  end
 
   context 'includes with options' do
     before(:each) do
@@ -372,7 +374,6 @@ describe LHS::Record do
         endpoint ':datastore/places'
       end
     end
-  end
 
     it 'forwards includes options to requests made for those includes' do
       stub_request(:get, "#{datastore}/customers/1")
