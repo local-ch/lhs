@@ -135,7 +135,7 @@ In case no matchin error handler is found the error gets re-raised.
 ```ruby
 record = Record.where(color: 'blue')
   .handle(LHC::BadRequest, ->(error){ show_error })
-  .handle(LHC::Unauthorized < LHC::ClientError, ->(error){ authorize })
+  .handle(LHC::Unauthorized, ->(error){ authorize })
 ```
 
 [List of possible error classes](https://github.com/local-ch/lhc/tree/master/lib/lhc/errors)
