@@ -5,9 +5,9 @@ module Inspect
 
   def inspect
     [
-      "#{self.class}##{object_id}",
+      "#{to_s.match('LHS::Data') ? 'Data of ' : nil}#{self.class}##{object_id}",
       pretty_raw
-    ].join("\n")
+    ].compact.join("\n")
   end
 
   private
@@ -17,7 +17,14 @@ module Inspect
     if _raw.is_a?(Array)
       _raw
     else
-      _raw.to_a.map { |key, value| ":#{key} => #{value}" }
+      _raw.to_a.map do |key, value|
+        ":#{key} => " +
+          if value.is_a? String
+            "\"#{value}\""
+          else
+            value.to_s
+          end
+      end
     end.join("\n")
   end
 end
