@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe LHS::Record do
+  let(:handler) { spy('handler') }
+
   before(:each) do
     class Record < LHS::Record
       endpoint 'http://local.ch/v2/records'
@@ -10,49 +12,27 @@ describe LHS::Record do
   end
 
   it 'allows to chain error handling' do
-    # rubocop:disable RSpec/InstanceVariable
-    @error_resolved = false
-    @rescued = false
-    begin
-      record = Record.where(color: 'blue').handle(LHC::Error, ->(_error) { @error_resolved = true })
-    rescue => _e
-      @rescued = true
-    end
-    record.first
-    expect(@error_resolved).to eq true
-    expect(@rescued).to eq false
-    # rubocop:enable RSpec/InstanceVariable
+    expect {
+      Record.where(color: 'blue').handle(LHC::Error, ->(_error) { handler.handle }).first
+    }.not_to raise_error
+    expect(handler).to have_received(:handle)
   end
 
   it 'reraises in case chained error is not matched' do
-    # rubocop:disable RSpec/InstanceVariable
-    @error_resolved = false
-    @rescued = false
-    record = Record.where(color: 'blue').handle(LHC::Conflict, ->(_error) { @error_resolved = true })
-    begin
-      record.first
-    rescue => _e
-      @rescued = true
-    end
-    expect(@error_resolved).to eq false
-    expect(@rescued).to eq true
-    # rubocop:enable RSpec/InstanceVariable
+    expect {
+      Record.where(color: 'blue').handle(LHC::Conflict, ->(_error) { handler.handle }).first
+    }.to raise_error(LHC::Error)
+    expect(handler).not_to have_received(:handle)
   end
 
   it 'calls all the handlers' do
-    # rubocop:disable RSpec/InstanceVariable
-    @error_resolved = 0
-    @rescued = false
-    begin
-      record = Record.where(color: 'blue')
-        .handle(LHC::Error, ->(_error) { @error_resolved += 1 })
-        .handle(LHC::Error, ->(_error) { @error_resolved += 2 })
-    rescue => _e
-      @rescued = true
-    end
-    record.first
-    expect(@error_resolved).to eq 3
-    expect(@rescued).to eq false
-    # rubocop:enable RSpec/InstanceVariable
+    expect {
+      Record.where(color: 'blue')
+        .handle(LHC::Error, ->(_error) { handler.handle_1 })
+        .handle(LHC::Error, ->(_error) { handler.handle_2 })
+        .first
+    }.not_to raise_error
+    expect(handler).to have_received(:handle_1)
+    expect(handler).to have_received(:handle_2)
   end
 end
