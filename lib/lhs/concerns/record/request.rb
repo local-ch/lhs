@@ -75,13 +75,17 @@ class LHS::Record
         if target._raw.is_a? Array
           data[key] = addition.map(&:_raw)
         else # hash with items
-          target._raw[items_key] ||= []
-          if target._raw[items_key].empty?
-            target._raw[items_key] = addition.map(&:_raw)
-          else
-            target._raw[items_key].each_with_index do |item, index|
-              item.merge!(addition[index])
-            end
+          extend_base_item_with_hash_of_items!(target, addition)
+        end
+      end
+
+      def extend_base_item_with_hash_of_items!(target, addition)
+        target._raw[items_key] ||= []
+        if target._raw[items_key].empty?
+          target._raw[items_key] = addition.map(&:_raw)
+        else
+          target._raw[items_key].each_with_index do |item, index|
+            item.merge!(addition[index])
           end
         end
       end
@@ -107,13 +111,9 @@ class LHS::Record
       end
 
       def options_for_data(data, included = nil)
-        if data.collection?
-          options_for_multiple(data, included)
-        elsif included && data[included].collection?
-          options_for_nested_items(data, included)
-        else
-          url_option_for(data, included)
-        end
+        return options_for_multiple(data, included) if data.collection?
+        return options_for_nested_items(data, included) if included && data[included].collection?
+        url_option_for(data, included)
       end
 
       def expand_addition!(data, included)
