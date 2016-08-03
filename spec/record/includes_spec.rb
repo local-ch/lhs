@@ -372,6 +372,7 @@ describe LHS::Record do
         endpoint ':datastore/places'
       end
     end
+  end
 
     it 'forwards includes options to requests made for those includes' do
       stub_request(:get, "#{datastore}/customers/1")
