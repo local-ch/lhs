@@ -149,25 +149,20 @@ describe LHS::Record do
           }.to_json)
       end
 
+      let(:interceptor) { spy('interceptor') }
+
       before(:each) do
         class Entry < LHS::Record
           endpoint ':datastore/local-entries/:id'
         end
-        class SomeInterceptor < LHC::Interceptor; end
-        LHC.config.interceptors = [SomeInterceptor]
+        LHC.config.interceptors = [interceptor]
       end
 
       it 'uses interceptors for included links from known services' do
-        # rubocop:disable RSpec/InstanceVariable
         stub_feedback_request
         stub_entry_request
-
-        @called = 0
-        allow_any_instance_of(SomeInterceptor).to receive(:before_request) { @called += 1 }
-
         expect(Feedback.includes(:entry).where.first.entry.name).to eq 'Casa Ferlin'
-        expect(@called).to eq 2
-        # rubocop:enable RSpec/InstanceVariable
+        expect(interceptor).to have_received(:before_request).twice
       end
     end
 

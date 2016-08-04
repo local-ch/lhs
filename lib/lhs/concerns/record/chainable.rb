@@ -30,6 +30,10 @@ class LHS::Record
       def limit(argument = nil)
         Chain.new(self, Pagination.new(per: argument))
       end
+
+      def handle(error_class, handler)
+        Chain.new(self, ErrorHandling.new(error_class => handler))
+      end
     end
 
     # Link: A part of a chain
@@ -57,6 +61,19 @@ class LHS::Record
 
     # Pagination: Part of the chain that will be used to controll pagination
     class Pagination < Link
+    end
+
+    # ErrorHandling: Catch and resolve errors when resolving the chain
+    class ErrorHandling < Link
+      delegate :call, to: :handler
+
+      def handler
+        @hash.values.first
+      end
+
+      def class
+        @hash.keys.first
+      end
     end
 
     # A sequence of links
@@ -140,6 +157,10 @@ class LHS::Record
         push Pagination.new(per: argument)
       end
 
+      def handle(error_class, handler)
+        push ErrorHandling.new(error_class => handler)
+      end
+
       def find(args)
         @record_class.find(args, chain_options)
       end
@@ -181,6 +202,7 @@ class LHS::Record
           @record_class.request(
             chain_options
               .merge(params: chain_parameters.merge(chain_pagination))
+              .merge(error_handling: chain_error_handling)
           )
         )
       end
@@ -199,6 +221,10 @@ class LHS::Record
 
       def chain_options
         merge_links _links.select { |link| link.is_a? Option }
+      end
+
+      def chain_error_handling
+        _links.select { |link| link.is_a? ErrorHandling }
       end
 
       def chain_pagination

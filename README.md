@@ -124,6 +124,22 @@ records = Record.blue.available(true)
 The example would fetch records with the following parameters: `{color: blue, visible: true}`.
 ```
 
+## Error handling with chains
+
+One benefit of chains is lazy evaluation. This means they get resolved when data is accessed. This makes it hard to catch errors with normal `rescue` blocks.
+
+To simplify error handling with chains, you can also chain error handlers to be resolved, as part of the chain.
+
+In case no matchin error handler is found the error gets re-raised.
+
+```ruby
+record = Record.where(color: 'blue')
+  .handle(LHC::BadRequest, ->(error){ show_error })
+  .handle(LHC::Unauthorized, ->(error){ authorize })
+```
+
+[List of possible error classes](https://github.com/local-ch/lhc/tree/master/lib/lhc/errors)
+
 ## Find single records
 
 `find` finds a unique record by uniqe identifier (usualy id).
