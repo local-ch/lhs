@@ -59,7 +59,7 @@ class LHS::Record
 
   def instance_data
     if _data._proxy.is_a?(LHS::Collection) && _data._raw.is_a?(Hash)
-      _data._raw.fetch(:items, [])
+      _data._raw.fetch(items_key, [])
     else
       _data._raw
     end
