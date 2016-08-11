@@ -65,6 +65,26 @@ describe LHS::Record do
         expect(feedback.ratings.first.name).to eq :z
       end
 
+      context 'that do not affect raw data' do
+        before(:each) do
+          class Rating
+            attr_accessor :listing
+          end
+        end
+
+        let(:listing) { double('listing') }
+
+        it 'are used by initializer' do
+          feedback = Rating.new(listing: listing)
+          expect(feedback.listing).to eq(listing)
+        end
+
+        it 'do not set raw data' do
+          feedback = Rating.new(listing: listing)
+          expect(feedback._raw[:listing]).to be_nil
+        end
+      end
+
       context 'and custom getters' do
         before(:each) do
           class Rating
