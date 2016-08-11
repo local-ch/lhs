@@ -28,7 +28,6 @@ describe LHS::Record do
       expect(record.inspect).to eq(output)
     end
 
-
     context 'with custom setters that do no touch raw data' do
       before do
         class Record
