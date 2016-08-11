@@ -25,7 +25,7 @@ class LHS::Record
     data = LHS::Data.new({}, nil, self.class) unless data
     data = LHS::Data.new(data, nil, self.class) unless data.is_a?(LHS::Data)
     define_singleton_method(:_data) { data }
-    consider_custom_setters
+    consider_custom_setters!
   end
 
   def as_json(options = nil)
@@ -48,12 +48,15 @@ class LHS::Record
 
   private
 
-  def consider_custom_setters
-    return if !instance_data.is_a?(Hash)
-    instance_data.each do |k, v|
-      if public_methods.include?("#{k}=".to_sym)
-        send("#{k}=", v)
-      end
+  def consider_custom_setters!
+    data = instance_data
+
+    return if !data.is_a?(Hash)
+
+    custom_setters = data.keys.find_all { |k| public_methods.include?("#{k}=".to_sym) }
+    custom_setters.each do |setter|
+      value = data.delete(setter)
+      send("#{setter}=", value)
     end
   end
 
