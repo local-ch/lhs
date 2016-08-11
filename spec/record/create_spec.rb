@@ -73,7 +73,7 @@ describe LHS::Record do
           .to_return(status: 400, body: creation_error.to_json)
         expect(lambda {
           Feedback.create!(object.merge(campaign_id: '12345'))
-        }).to raise_error
+        }).to raise_error(LHC::Error)
       end
     end
 
