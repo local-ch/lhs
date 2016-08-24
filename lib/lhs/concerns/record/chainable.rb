@@ -162,7 +162,10 @@ class LHS::Record
       end
 
       def find(args)
-        @record_class.find(args, chain_options)
+        @record_class.find(
+          args,
+          chain_options.merge(error_handler: chain_error_handler)
+        )
       end
 
       def find_by(params = {})
@@ -202,7 +205,7 @@ class LHS::Record
           @record_class.request(
             chain_options
               .merge(params: chain_parameters.merge(chain_pagination))
-              .merge(error_handling: chain_error_handling)
+              .merge(error_handler: chain_error_handler)
           )
         )
       end
@@ -223,7 +226,7 @@ class LHS::Record
         merge_links _links.select { |link| link.is_a? Option }
       end
 
-      def chain_error_handling
+      def chain_error_handler
         _links.select { |link| link.is_a? ErrorHandling }
       end
 
