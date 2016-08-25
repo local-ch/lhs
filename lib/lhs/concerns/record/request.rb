@@ -182,7 +182,10 @@ class LHS::Record
           next unless option.present?
           process_options(option, find_endpoint(option[:params]))
         end
-        data = LHC.request(options.compact).map { |response| LHS::Data.new(response.body, nil, self, response.request) }
+        data = LHC.request(options.compact).map do |response|
+          data = response.body_replacement || response.body
+          LHS::Data.new(data, nil, self, response.request) 
+        end
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         handle_includes(including, data, referencing) if including && !data.empty?
         data
@@ -231,6 +234,7 @@ class LHS::Record
             handlers_return = handler.call(response)
             return_data = handlers_return if handlers_return.present?
           end
+          return return_data
         end
       end
 
