@@ -7,7 +7,8 @@ class LHS::Record
 
     module ClassMethods
       # Find a single uniqe record
-      def find(args, options = nil)
+      def find(*args)
+        args, options = process_args(args)
         data =
           if args.is_a? Array
             find_in_parallel(args, options)
@@ -21,6 +22,16 @@ class LHS::Record
       end
 
       private
+
+      def process_args(args)
+        if args.length == 1
+          args = args.first 
+        else
+          options = args.pop if args.last.is_a?(Hash)
+        end
+        options ||= nil
+        [args, options]
+      end
 
       def get_unique_item!(data)
         if data._proxy.is_a?(LHS::Collection)

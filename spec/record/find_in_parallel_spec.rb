@@ -32,7 +32,7 @@ describe LHS::Record do
       stub_request(:get, "http://datastore/records/2").to_return(status: 401)
       data = Record
         .handle(LHC::Unauthorized, ->(response) { Record.new(name: 'unknown') })
-        .find([1, 2, 3])
+        .find(1, 2, 3)
       expect(data[1].name).to eq 'unknown'
     end
   end
