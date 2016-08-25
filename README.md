@@ -8,15 +8,15 @@ LHS uses [LHC](//github.com/local-ch/LHC) for http requests.
 Access data that is provided by an http json service with ease using a LHS::Record.
 
 ```ruby
-class Feedback < LHS::Record
+class Record < LHS::Record
 
-  endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks'
-  endpoint ':datastore/v2/feedbacks'
+  endpoint ':service/v2/records'
+  endpoint ':service/v2/association/:association_id/records'
 
 end
 
-feedback = Feedback.find_by(email: 'somebody@mail.com') #<Feedback>
-feedback.review # "Lunch was great"
+record = Record.find_by(email: 'somebody@mail.com') #<Record>
+record.review # "Lunch was great"
 ```
 
 ## Where to store LHS::Records
@@ -28,12 +28,12 @@ Please store all defined LHS::Records in `app/models` as they are not autoloaded
 You setup a LHS::Record by configuring one or multiple endpoints. You can also add request options for an endpoint (see following example).
 
 ```ruby
-class Feedback < LHS::Record
+class Record < LHS::Record
 
-  endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks'
-  endpoint ':datastore/v2/content-ads/:campaign_id/feedbacks/:id'
-  endpoint ':datastore/v2/feedbacks', cache: true, cache_expires_in: 1.day
-  endpoint ':datastore/v2/feedbacks/:id', cache: true, cache_expires_in: 1.day
+  endpoint ':service/v2/association/:association_id/records'
+  endpoint ':service/v2/association/:association_id/records/:id'
+  endpoint ':service/v2/records', cache: true, cache_expires_in: 1.day
+  endpoint ':service/v2/records/:id', cache: true, cache_expires_in: 1.day
 
 end
 ```
@@ -44,10 +44,10 @@ Please use placeholders when configuring endpoints also for hosts. Otherwise LHS
 If you try to setup a LHS::Record with clashing endpoints it will immediately raise an exception.
 
 ```ruby
-class Feedback < LHS::Record
+class Record < LHS::Record
 
-  endpoint ':datastore/v2/reviews'
-  endpoint ':datastore/v2/feedbacks'
+  endpoint ':service/v2/records'
+  endpoint ':service/v2/something_else'
 
 end
 # raises: Clashing endpoints.
@@ -58,16 +58,16 @@ end
 You can query a service for records by using `where`.
 
 ```ruby
-  Feedback.where(has_reviews: true)
+  Record.where(color: 'blue')
 ```
 
-This uses the `:datastore/v2/feedbacks` endpoint, cause `:campaign_id` was not provided. In addition it would add `?has_reviews=true` to the get parameters.
+This uses the `:service/v2/records` endpoint, cause `:association_id` was not provided. In addition it would add `?color=blue` to the get parameters.
 
 ```ruby
-  Feedback.where(campaign_id: 'fq-a81ngsl1d')
+  Record.where(association_id: 'fq-a81ngsl1d')
 ```
 
-Uses the `:datastore/v2/content-ads/:campaign_id/feedbacks` endpoint.
+Uses the `:service/v2/association/:association_id/records` endpoint.
 
 ## Chaining where statements
 
@@ -149,7 +149,7 @@ If no record is found an error is raised.
 `find` can also be used to find a single uniqe record with parameters:
 
 ```ruby
-  Feedback.find(campaign_id: 123, id: 456)
+  Record.find(association_id: 123, id: 456)
 ```
 
 `find_by` finds the first record matching the specified conditions.
@@ -159,14 +159,14 @@ If no record is found, `nil` is returned.
 `find_by!` raises LHC::NotFound if nothing was found.
 
 ```ruby
-  Feedback.find_by(id: 'z12f-3asm3ngals')
-  Feedback.find_by(id: 'doesntexist') # nil
+  Record.find_by(id: 'z12f-3asm3ngals')
+  Record.find_by(id: 'doesntexist') # nil
 ```
 
 `first` is an alias for finding the first record without parameters.
 
 ```ruby
-  Feedback.first
+  Record.first
 ```
 
 If no record is found, `nil` is returned.
@@ -219,7 +219,7 @@ You can apply options to the request chain. Those options will be forwarded to t
 `all` fetches all records from the service by doing multiple requests if necessary.
 
 ```ruby
-data = Feedback.all
+data = Record.all
 data.count # 998
 data.length # 998
 ```
@@ -229,26 +229,26 @@ data.length # 998
 `find_each` is a more fine grained way to process single records that are fetched in batches.
 
 ```ruby
-Feedback.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |feedback|
+Record.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |record|
   # Iterates over each record. Starts with record nr. 50 and fetches 20 records each batch.
-  feedback
-  break if feedback.some_attribute == some_value
+  record
+  break if record.some_attribute == some_value
 end
 ```
 
 `find_in_batches` is used by `find_each` and processes batches.
 ```ruby
-Feedback.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }) do |feedbacks|
+Record.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }) do |records|
   # Iterates over multiple records (batch size is 20). Starts with record nr. 50 and fetches 20 records each batch.
-  feedbacks
-  break if feedback.some_attribute == some_value
+  records
+  break if records.first.name == some_value
 end
 ```
 
 ## Create records
 
 ```ruby
-  feedback = Feedback.create(
+  record = Record.create(
     recommended: true,
     source_id: 'aaa',
     content_ad_id: '1z-5r1fkaj'
@@ -258,9 +258,9 @@ end
 When creation fails, the object contains errors. It provides them through the `errors` attribute:
 
 ```ruby
-  feedback.errors #<LHS::Errors>
-  feedback.errors.include?(:ratings) # true
-  feedback.errors[:ratings] # ['REQUIRED_PROPERTY_VALUE']
+  record.errors #<LHS::Errors>
+  record.errors.include?(:ratings) # true
+  record.errors[:ratings] # ['REQUIRED_PROPERTY_VALUE']
   record.errors.messages # {:ratings=>["REQUIRED_PROPERTY_VALUE"], :recommended=>["REQUIRED_PROPERTY_VALUE"]}
   record.errors.message # ratings must be set when review or name or review_title is set | The property value is required; it cannot be null, empty, or blank."
 ```
@@ -270,8 +270,8 @@ When creation fails, the object contains errors. It provides them through the `e
 Build and persist new items from scratch are done either with `new` or it's alias `build`.
 
 ```ruby
-  feedback = Feedback.new(recommended: true)
-  feedback.save
+  record = Record.new(recommended: true)
+  record.save
 ```
 
 ## Custom setters and getters
@@ -280,21 +280,21 @@ Sometimes it is the case that you want to have your custom getters and setters a
 The initializer will now use custom setter if one is defined:
 
 ```ruby
-class Feedback < LHS::Record
+class Record < LHS::Record
   def ratings=(ratings)
     _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
   end
 end
 
-feedback = Feedback.new(ratings: { quality: 3 }) # <Feedback{:ratings=>[{:name=>:quality, :value=>3}]}>
-feedback.ratings # #<LHS::Data:0x007fc8fa6d4050 ... @_raw=[{:name=>:quality, :value=>3}]>
+record = Record.new(ratings: { quality: 3 }) # <Record{:ratings=>[{:name=>:quality, :value=>3}]}>
+record.ratings # #<LHS::Data:0x007fc8fa6d4050 ... @_raw=[{:name=>:quality, :value=>3}]>
 
 ```
 
 If you have an accompanying getter the whole data manipulation would be internal only.
 
 ```ruby
-class Feedback < LHS::Record
+class Record < LHS::Record
   def ratings=(ratings)
     _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
   end
@@ -304,8 +304,8 @@ class Feedback < LHS::Record
   end
 end
 
-feedback = Feedback.new(ratings: { quality: 3 }) # <Feedback{:ratings=>[{:name=>:quality, :value=>3}]}>
-feedback.ratings # {:quality=>3}
+record = Record.new(ratings: { quality: 3 }) # <Record{:ratings=>[{:name=>:quality, :value=>3}]}>
+record.ratings # {:quality=>3}
 
 ```
 
@@ -360,9 +360,9 @@ After include:
 ### Two-Level `includes`
 
 ```ruby
-  # a feedback has a campaign, which has an entry
-  feedbacks = Feedback.includes(campaign: :entry).where(has_reviews: true)
-  feedbacks.first.campaign.entry.name # 'Casa Ferlin'
+  # a record has a association, which has an entry
+  records = Record.includes(association: :entry).where(has_reviews: true)
+  records.first.association.entry.name # 'Casa Ferlin'
 ```
 
 ### Multiple `includes`
@@ -375,7 +375,7 @@ After include:
   claims = Claims.includes([:localch_account, :entry]).where(place_id: 'huU90mB_6vAfUdVz_uDoyA')
 
   # Two-level with array of includes
-  feedbacks = Feedback.includes(campaign: [:entry, :user]).where(has_reviews: true)
+  records = Record.includes(campaign: [:entry, :user]).where(has_reviews: true)
 ```
 
 ### Known LHS::Records are used to request linked resources
@@ -389,15 +389,15 @@ The [Auth Inteceptor](https://github.com/local-ch/lhc-core-interceptors#auth-int
 ```ruby
 class Favorite < LHS::Record
 
-  endpoint ':datastore/:user_id/favorites', auth: { basic: { username: 'steve', password: 'can' } }
-  endpoint ':datastore/:user_id/favorites/:id', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint ':service/:user_id/favorites', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint ':service/:user_id/favorites/:id', auth: { basic: { username: 'steve', password: 'can' } }
 
 end
 
 class Place < LHS::Record
 
-  endpoint ':datastore/v2/places', auth: { basic: { username: 'steve', password: 'can' } }
-  endpoint ':datastore/v2/places/:id', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint ':service/v2/places', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint ':service/v2/places/:id', auth: { basic: { username: 'steve', password: 'can' } }
 
 end
 
@@ -421,7 +421,7 @@ To influence how data is accessed/provied, you can use mappings to either map de
 
 ```ruby
 class LocalEntry < LHS::Record
-  endpoint ':datastore/v2/local-entries'
+  endpoint ':service/v2/local-entries'
 
   def name
     addresses.first.business.identities.first.name
@@ -436,7 +436,7 @@ Nested records (in nested data) are automaticaly casted when the href matches an
 
 ```ruby
 class Place < LHS::Record
-  endpoint ':datastore/v2/places'
+  endpoint ':service/v2/places'
 
   def name
     addresses.first.business.identities.first.name
@@ -444,7 +444,7 @@ class Place < LHS::Record
 end
 
 class Favorite < LHS::Record
-  endpoint ':datastore/v2/favorites'
+  endpoint ':service/v2/favorites'
 end
 
 favorite = Favorite.includes(:place).find(1)
@@ -458,7 +458,7 @@ If automatic-detection of nested records does not work, make sure your LHS::Reco
 You can change attributes of LHS::Records:
 
 ```ruby
-  record = Feedback.find(id: 'z12f-3asm3ngals')
+  record = Record.find(id: 'z12f-3asm3ngals')
   rcord.recommended = false
 ```
 
@@ -467,9 +467,9 @@ You can change attributes of LHS::Records:
 You can persist changes with `save`. `save` will return `false` if persisting fails. `save!` instead will raise an exception.
 
 ```ruby
-  feedback = Feedback.find('1z-5r1fkaj')
-  feedback.recommended = false
-  feedback.save
+  record = Record.find('1z-5r1fkaj')
+  record.recommended = false
+  record.save
 ```
 
 ## Update
@@ -479,8 +479,8 @@ You can persist changes with `save`. `save` will return `false` if persisting fa
 `update` always updates the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is updated.
 
 ```ruby
-feedback = Feedback.find('1z-5r1fkaj')
-feedback.update(recommended: false)
+record = Record.find('1z-5r1fkaj')
+record.update(recommended: false)
 ```
 
 ## Destroy
@@ -488,8 +488,8 @@ feedback.update(recommended: false)
 You can delete records remotely by calling `destroy` on an LHS::Record.
 
 ```ruby
-  feedback = Feedback.find('1z-5r1fkaj')
-  feedback.destroy
+  record = Record.find('1z-5r1fkaj')
+  record.destroy
 ```
 
 ## Validation
@@ -500,7 +500,7 @@ The specific endpoint has to support validations with the `persist=false` parame
 
 ```ruby
 class User < LHS::Record
-  endpoint ':datastore/v2/users', validates: true
+  endpoint ':service/v2/users', validates: true
 end
 
 user = User.build(email: 'im not an email address')
@@ -513,7 +513,7 @@ In case endpoints define other parameter names for validation like `publish` you
 
 ```ruby
 class User < LHS::Record
-  endpoint ':datastore/v2/users', validates: 'publish'
+  endpoint ':service/v2/users', validates: 'publish'
 end
 ```
 
@@ -595,7 +595,7 @@ You can use chainable pagination in combination with query chains:
 
 ```ruby
   class Record < LHS::Record
-    endpoint ':datastore/records'
+    endpoint ':service/records'
   end
   Record.page(3).per(20).where(color: 'blue')
   # /records?offset=40&limit=20&color=blue
@@ -605,7 +605,7 @@ The applied pagination strategy depends on the actual configured pagination, so 
 
 ```ruby
   class Record < LHS::Record
-    endpoint ':datastore/records'
+    endpoint ':service/records'
     configuration pagination_strategy: 'page'
   end
   Record.page(3).per(20).where(color: 'blue')
@@ -614,7 +614,7 @@ The applied pagination strategy depends on the actual configured pagination, so 
 
 ```ruby
   class Record < LHS::Record
-    endpoint ':datastore/records'
+    endpoint ':service/records'
     configuration pagination_strategy: 'start'
   end
   Record.page(3).per(20).where(color: 'blue')
