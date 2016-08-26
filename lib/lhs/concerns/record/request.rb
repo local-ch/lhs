@@ -234,7 +234,7 @@ class LHS::Record
           error_class = LHC::Error.find(response)
           error = error_class.new(error_class, response)
           handlers = handlers.to_a.select { |error_handler| error.is_a? error_handler.class }
-          fail(error) unless handlers.any? 
+          fail(error) unless handlers.any?
           handlers.each do |handler|
             handlers_return = handler.call(response)
             return_data = handlers_return if handlers_return.present?

@@ -38,8 +38,8 @@ class LHS::Record
 
       def get_unique_item!(data)
         if data._proxy.is_a?(LHS::Collection)
-          raise LHC::NotFound.new('Requested unique item. Multiple were found.', data._request.response) if data.length > 1
-          data.first || raise(LHC::NotFound.new('No item was found.', data._request.response))
+          fail LHC::NotFound.new('Requested unique item. Multiple were found.', data._request.response) if data.length > 1
+          data.first || fail(LHC::NotFound.new('No item was found.', data._request.response))
         else
           data
         end
