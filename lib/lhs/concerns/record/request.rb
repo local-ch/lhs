@@ -7,6 +7,7 @@ class LHS::Record
 
     module ClassMethods
       def request(options)
+        options ||= {}
         if options.is_a? Array
           multiple_requests(options)
         else
@@ -181,12 +182,12 @@ class LHS::Record
           next unless option.present?
           process_options(option, find_endpoint(option[:params]))
         end
-        data = LHC.request(options.compact).map { |response| LHS::Data.new(response.body, nil, self, response.request) }
-        data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
-        unless data.empty?
-          data = LHS::Data.new(data, nil, self)
-          handle_includes(including, data, referencing) if including
+        data = LHC.request(options.compact).map do |response|
+          LHS::Data.new(response.body, nil, self, response.request)
         end
+        data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
+        data = LHS::Data.new(data, nil, self)
+        handle_includes(including, data, referencing) if including && !data.empty?
         data
       end
 
@@ -217,11 +218,29 @@ class LHS::Record
       # Merge explicit params and take configured endpoints options as base
       def process_options(options, endpoint)
         options[:params].deep_symbolize_keys! if options[:params]
+        options[:error_handler] = merge_error_handlers(options[:error_handler]) if options[:error_handler]
         options = (endpoint.options || {}).merge(options)
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
         merge_explicit_params!(options[:params])
         options.delete(:params) if options[:params] && options[:params].empty?
         options
+      end
+
+      # LHC supports only one error handler, merge all error handlers to one
+      # and reraise
+      def merge_error_handlers(handlers)
+        lambda do |response|
+          return_data = nil
+          error_class = LHC::Error.find(response)
+          error = error_class.new(error_class, response)
+          handlers = handlers.to_a.select { |error_handler| error.is_a? error_handler.class }
+          fail(error) unless handlers.any?
+          handlers.each do |handler|
+            handlers_return = handler.call(response)
+            return_data = handlers_return if handlers_return.present?
+          end
+          return return_data
+        end
       end
 
       def record_for_options(options)
@@ -243,25 +262,10 @@ class LHS::Record
         options ||= {}
         options = options.dup
         endpoint = find_endpoint(options[:params])
-        error_handling = options.delete(:error_handling)
-        begin
-          response = LHC.request(process_options(options, endpoint))
-          data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
-          handle_includes(including, data, referencing) if including
-          data
-        rescue => error
-          handle_error(error, error_handling)
-          nil
-        end
-      end
-
-      def handle_error(error, error_handling)
-        error_handlers = (error_handling || []).select { |error_handler| error.is_a? error_handler.class }
-        if error_handlers.any?
-          error_handlers.each { |handler| handler.call(error) }
-        else
-          fail error
-        end
+        response = LHC.request(process_options(options, endpoint))
+        data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
+        handle_includes(including, data, referencing) if including
+        data
       end
 
       def url_option_for(item, key = nil)

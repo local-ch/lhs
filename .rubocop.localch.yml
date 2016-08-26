@@ -19,10 +19,7 @@ AllCops:
 
 Rails:
   Enabled: true
-
-require:
-  - rubocop-rspec
-
+  
 Lint/HandleExceptions:
   Exclude:
     - spec/**/*

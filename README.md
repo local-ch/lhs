@@ -173,6 +173,23 @@ If no record is found, `nil` is returned.
 
 `first!` raises LHC::NotFound if nothing was found.
 
+# Find multiple single records in parallel
+
+In case you want to fetch multiple records by id in parallel, you can also do this with `find`:
+
+```ruby
+Record.find(1, 2, 3)
+```
+
+If you want to inject values for the failing records, that might not have been found, you can inject values for them with error handlers:
+
+```ruby
+data = Record
+  .handle(LHC::Unauthorized, ->(response) { Record.new(name: 'unknown') })
+  .find(1, 2, 3)
+data[1].name # 'unknown'
+```
+
 ## Navigate data
 
 After fetching [single](#find-single-records) or [multiple](#find-multiple-records) records you can navigate the received data with ease.
