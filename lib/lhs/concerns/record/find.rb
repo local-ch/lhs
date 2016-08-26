@@ -29,8 +29,8 @@ class LHS::Record
         elsif args.length == 2 && args.last.is_a?(Hash)
           options = args.pop if args.last.is_a?(Hash)
           args = args.first
-        else
-          options = args.pop if args.last.is_a?(Hash)
+        elsif args.last.is_a?(Hash)
+          options = args.pop
         end
         options ||= nil
         [args, options]
@@ -38,8 +38,8 @@ class LHS::Record
 
       def get_unique_item!(data)
         if data._proxy.is_a?(LHS::Collection)
-          fail LHC::NotFound.new('Requested unique item. Multiple were found.', data._request.response) if data.length > 1
-          data.first || fail(LHC::NotFound.new('No item was found.', data._request.response))
+          raise LHC::NotFound.new('Requested unique item. Multiple were found.', data._request.response) if data.length > 1
+          data.first || raise(LHC::NotFound.new('No item was found.', data._request.response))
         else
           data
         end
