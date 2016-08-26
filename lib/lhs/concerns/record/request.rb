@@ -183,7 +183,7 @@ class LHS::Record
           process_options(option, find_endpoint(option[:params]))
         end
         data = LHC.request(options.compact).map do |response|
-          LHS::Data.new(response.body, nil, self, response.request) 
+          LHS::Data.new(response.body, nil, self, response.request)
         end
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         data = LHS::Data.new(data, nil, self)
