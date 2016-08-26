@@ -161,11 +161,10 @@ class LHS::Record
         push ErrorHandling.new(error_class => handler)
       end
 
-      def find(args)
-        @record_class.find(
-          args,
-          chain_options.merge(error_handler: chain_error_handler)
-        )
+      def find(*args)
+        options = chain_options
+        options = options.merge(error_handler: chain_error_handler) if chain_error_handler.any?
+        @record_class.find(*args.push(options))
       end
 
       def find_by(params = {})
@@ -201,12 +200,11 @@ class LHS::Record
       end
 
       def resolve
+        options = chain_options
+        options = options.merge(params: chain_parameters.merge(chain_pagination))
+        options = options.merge(error_handler: chain_error_handler) if chain_error_handler.any?
         @resolved ||= @record_class.new(
-          @record_class.request(
-            chain_options
-              .merge(params: chain_parameters.merge(chain_pagination))
-              .merge(error_handler: chain_error_handler)
-          )
+          @record_class.request(options)
         )
       end
 

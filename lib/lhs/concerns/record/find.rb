@@ -25,7 +25,10 @@ class LHS::Record
 
       def process_args(args)
         if args.length == 1
-          args = args.first 
+          args = args.first
+        elsif args.length == 2 && args.last.is_a?(Hash)
+          options = args.pop if args.last.is_a?(Hash)
+          args = args.first
         else
           options = args.pop if args.last.is_a?(Hash)
         end
@@ -37,6 +40,8 @@ class LHS::Record
         if data._proxy.is_a?(LHS::Collection)
           fail LHC::NotFound.new('Requested unique item. Multiple were found.', data._request.response) if data.length > 1
           data.first || fail(LHC::NotFound.new('No item was found.', data._request.response))
+        else
+          data
         end
       end
 

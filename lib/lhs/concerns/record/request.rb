@@ -186,6 +186,7 @@ class LHS::Record
           LHS::Data.new(response.body, nil, self, response.request) 
         end
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
+        data = LHS::Data.new(data, nil, self)
         handle_includes(including, data, referencing) if including && !data.empty?
         data
       end
@@ -226,9 +227,14 @@ class LHS::Record
       end
 
       # LHC supports only one error handler, merge all error handlers to one
+      # and reraise
       def merge_error_handlers(handlers)
         lambda do |response|
           return_data = nil
+          error_class = LHC::Error.find(response)
+          error = error_class.new(error_class, response)
+          handlers = (handlers || []).select { |error_handler| error.is_a? error_handler.class }
+          fail(error) unless handlers.any? 
           handlers.each do |handler|
             handlers_return = handler.call(response)
             return_data = handlers_return if handlers_return.present?
