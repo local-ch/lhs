@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'lhc', '>= 3.6.0'
   s.add_dependency 'lhc-core-interceptors', '>= 2.0.1'
+  s.add_dependency 'activesupport', '> 4'
 
   s.add_development_dependency 'rspec-rails', '>= 3.0.0'
   s.add_development_dependency 'rails', '>= 4.0.0'
