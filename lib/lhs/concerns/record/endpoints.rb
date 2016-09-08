@@ -12,16 +12,10 @@ class LHS::Record
     mattr_accessor :all
 
     module ClassMethods
-      def endpoints
-        @endpoints ||= []
-      end
-
-      def endpoints=(endpoints)
-        @endpoints = endpoints
-      end
-
       # Adds the endpoint to the list of endpoints.
       def endpoint(url, options = nil)
+        class_attribute :endpoints unless defined? endpoints
+        self.endpoints ||= []
         endpoint = LHC::Endpoint.new(url, options)
         sanity_check(endpoint)
         endpoints.push(endpoint)
