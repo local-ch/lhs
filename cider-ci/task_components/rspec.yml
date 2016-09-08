@@ -1,0 +1,36 @@
+ports:
+  CAPYBARA_PORT:
+    min: 8000
+    max: 8999
+  PHANTOMJS_PORT:
+    min: 44600
+    max: 44999
+
+environment_variables:
+  RUBY:
+    read_and_replace_with: .ruby-version
+
+scripts:
+  rspec:
+    body: |
+      #!/usr/bin/env bash
+      set -eux
+      mkdir -p tmp/cache
+      export PATH=~/.rubies/$RUBY/bin:$PATH
+      bundle exec rspec
+    
+    start_when:
+      'bundled':
+        script_key: bundle
+
+
+trial_attachments:
+  logs:
+    include_match: log\/.*\.log$
+    content_type: text/plain
+  image-screenshots:
+    include_match: tmp\/capybara\/.*\.png$
+    content_type: image/png
+  html-screenshots:
+    include_match: tmp\/capybara\/.*\.html$
+    content_type: text/html
