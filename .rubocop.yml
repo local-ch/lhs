@@ -17,3 +17,6 @@ Style/MethodMissing:
 
 Rails/OutputSafety:
   Enabled: false
+
+Style/SignalException:
+  Enabled: false
