@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'inherit endpoints' do
-
     before(:each) do
       class Base < LHS::Record
         endpoint 'records/:id'
