@@ -204,7 +204,8 @@ describe LHS::Record do
                 'optional_child' => {
                   'href' => "#{datastore}/local-children/1"
                 }
-              }]
+              }
+            ]
           }.to_json)
 
         stub_request(:get, "#{datastore}/local-children/1")

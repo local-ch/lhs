@@ -16,7 +16,7 @@ class LHS::Proxy
   end
 
   def reload!
-    fail 'No href found' unless _data.href
+    raise 'No href found' unless _data.href
     data = _data.class.request(url: _data.href, method: :get)
     _data.merge_raw!(data)
     self._loaded = true

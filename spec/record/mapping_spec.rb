@@ -65,7 +65,8 @@ describe LHS::Record do
             'href' => "#{datastore}/agbs/547f02c61c266c4830ea6ce7",
             'preceding_agb' => { 'href' => preceding_agb_url },
             'binary_url_pdf_de' => 'de'
-          }.to_json)
+          }.to_json
+        )
 
       # includes request
       stub_request(:get, preceding_agb_url).to_return(
