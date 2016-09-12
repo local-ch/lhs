@@ -16,6 +16,7 @@ class LHS::Record
       def endpoint(url, options = nil)
         class_attribute :endpoints unless defined? endpoints
         self.endpoints ||= []
+        self.endpoints = endpoints.clone
         endpoint = LHC::Endpoint.new(url, options)
         sanity_check(endpoint)
         endpoints.push(endpoint)
