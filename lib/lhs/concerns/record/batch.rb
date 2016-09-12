@@ -18,7 +18,7 @@ class LHS::Record
 
       # Process batches of entries
       def find_in_batches(options = {})
-        fail 'No block given' unless block_given?
+        raise 'No block given' unless block_given?
         start = options[:start] || 1
         batch_size = options[:batch_size] || LHS::Pagination::DEFAULT_LIMIT
         params = options[:params] || {}

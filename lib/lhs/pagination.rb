@@ -34,11 +34,11 @@ class LHS::Pagination
   end
 
   def next_offset
-    fail 'to be implemented in subclass'
+    raise 'to be implemented in subclass'
   end
 
   def current_page
-    fail 'to be implemented in subclass'
+    raise 'to be implemented in subclass'
   end
 
   def first_page

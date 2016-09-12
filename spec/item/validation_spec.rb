@@ -46,11 +46,12 @@ describe LHS::Item do
 
     let(:failing_validation) do
       stub_request(:post, "#{datastore}/v2/users?persist=false")
-        .to_return(status: 400,
-                   body: {
-                     field_errors: [{ code: "UNSUPPORTED_PROPERTY_VALUE", "path" => ["email"] }]
-                   }.to_json
-                  )
+        .to_return(
+          status: 400,
+          body: {
+            field_errors: [{ code: "UNSUPPORTED_PROPERTY_VALUE", "path" => ["email"] }]
+          }.to_json
+        )
     end
 
     context 'valid data' do

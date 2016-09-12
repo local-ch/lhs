@@ -52,7 +52,7 @@ class LHS::Record
           invalid = existing_endpoint.placeholders.sort == new_endpoint.placeholders.sort &&
             existing_endpoint.url != new_endpoint.url
           next unless invalid
-          fail "Clashing endpoints! Cannot differentiate between #{existing_endpoint.url} and #{new_endpoint.url}"
+          raise "Clashing endpoints! Cannot differentiate between #{existing_endpoint.url} and #{new_endpoint.url}"
         end
       end
 
@@ -89,7 +89,7 @@ class LHS::Record
           endpoint.placeholders.length
         end
         bases = endpoints[endpoints.keys.min]
-        fail 'Multiple base endpoints found' if bases.count > 1
+        raise 'Multiple base endpoints found' if bases.count > 1
         bases.first
       end
     end

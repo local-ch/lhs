@@ -79,7 +79,9 @@ class LHS::Data
   private
 
   def collection_proxy?(input)
-    !! (input.is_a?(Hash) && input[items_key]) || input.is_a?(Array) || _raw.is_a?(Array)
+    (input.is_a?(Hash) && input[items_key].present?) ||
+      input.is_a?(Array) ||
+      _raw.is_a?(Array)
   end
 
   def root_item
@@ -110,7 +112,7 @@ class LHS::Data
   end
 
   def raw_from_input(input)
-    if input.is_a?(String) && input.length > 0
+    if input.is_a?(String) && !input.empty?
       raw_from_json_string(input)
     elsif defined?(input._raw)
       input._raw

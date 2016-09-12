@@ -22,7 +22,8 @@ describe LHS::Data do
       {
         href: 'http://local.ch/records',
         items: [item]
-      }, nil, Record)
+      }, nil, Record
+    )
   end
 
   it 'possible to navigate the parent' do

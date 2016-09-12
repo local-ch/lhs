@@ -8,7 +8,7 @@ class LHS::Item < LHS::Proxy
     def valid?(options = {})
       options ||= {}
       self.errors = nil
-      fail 'No validation endpoint found!' unless validation_endpoint
+      raise 'No validation endpoint found!' unless validation_endpoint
       record = LHS::Record.for_url(validation_endpoint.url)
       validation_params = validation_endpoint.options[:validates] == true ? { persist: false } : { validation_endpoint.options[:validates] => false }
       params = validation_endpoint.options.fetch(:params, {})
@@ -38,7 +38,7 @@ class LHS::Item < LHS::Proxy
       endpoint = embeded_endpoint if _data.href # take embeded first
       endpoint ||= _data._record.find_endpoint(_data._raw)
       validates = endpoint.options && endpoint.options.fetch(:validates, false)
-      fail 'Endpoint does not support validations!' unless validates
+      raise 'Endpoint does not support validations!' unless validates
       endpoint
     end
 
