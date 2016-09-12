@@ -674,6 +674,21 @@ The behaviour of `count` and `length` is based on ActiveRecord's behaviour.
 
 `length` This returns the number of elements loaded from an endpoint/api. In case of paginated resources this can be different to count, as it depends on how many pages have been loaded.
 
+## Inheritance
+
+You can inherit from previously defined records and also inherit endpoints that way:
+
+```
+class Base < LHS::Record
+  endpoint 'records/:id'
+end
+
+class Example < Base
+end
+
+Example.find(1) # GET records/1
+```
+
 ## License
 
 [GNU Affero General Public License Version 3.](https://www.gnu.org/licenses/agpl-3.0.en.html)
