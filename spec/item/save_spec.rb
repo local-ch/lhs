@@ -56,7 +56,8 @@ describe LHS::Item do
       request = stub_request(:post, item.href)
         .with(
           body: item._raw.to_json,
-          headers: headers)
+          headers: headers
+        )
         .to_return(status: 200, body: item._raw.to_json)
 
       item.save!(headers: headers)

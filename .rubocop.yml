@@ -11,3 +11,12 @@ RSpec/DescribedClass:
 
 RSpec/AnyInstance:
   Enabled: false
+
+Style/MethodMissing:
+  Enabled: false
+
+Rails/OutputSafety:
+  Enabled: false
+
+Style/SignalException:
+  Enabled: false

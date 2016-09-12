@@ -49,7 +49,7 @@ class LHS::Item < LHS::Proxy
   private
 
   # FIXME: Extend the set of keywords
-  BLACKLISTED_KEYWORDS = %w( new proxy_association )
+  BLACKLISTED_KEYWORDS = %w(new proxy_association)
 
   def convert(value)
     return value unless value.is_a?(String)

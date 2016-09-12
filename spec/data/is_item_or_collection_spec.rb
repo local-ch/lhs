@@ -24,7 +24,8 @@ describe LHS::Data do
       {
         href: 'http://local.ch/records',
         items: [item]
-      }, nil, Record)
+      }, nil, Record
+    )
   end
 
   it 'provides the information which type of proxy data ist' do

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -eux
+
+export PATH=~/.rubies/$RUBY/bin:$PATH
+rm -f .bundle/config
+
+if [ ! -f ~/.rubies/$RUBY/bin/bundle ]; then
+  gem install bundler
+fi
+
+sed "s/^source 'https:\/\/rubygems\.intra\.local\.ch'*/source 'http\:\/\/52.29.7.59:9292'/g" Gemfile > Gemfile.tmp
+mv Gemfile.tmp Gemfile
+
+DIGEST=$(git ls-tree HEAD --\
+  cider-ci.yml cider-ci Gemfile.lock \
+  | openssl dgst -sha1 | cut -d ' ' -f 2)
+
+DIGEST=$(echo "$DIGEST $PATH" \
+ | openssl dgst -sha1 | cut -d ' ' -f 2)
+
+CACHE_SIGNATURE_FILE="/tmp/bundle_cache_signature_${DIGEST}"
+
+if [ ! -f  $CACHE_SIGNATURE_FILE ] ; then
+  bundle install
+  touch $CACHE_SIGNATURE_FILE
+fi
+

@@ -1,0 +1,18 @@
+traits:
+  ruby-install: true
+  Bash: true
+
+trial_attachments:
+  gemfile:
+    include_match: Gemfile
+    content_type: text/plain
+
+scripts:
+
+  bundle:
+    exclusive_executor_resource: ruby-install_{{$RUBY}}
+    timeout: 20 Minutes
+    body: cider-ci/bin/bundle
+    start_when:
+      'ruby installed':
+        script_key: ruby-install
