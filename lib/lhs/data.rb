@@ -79,7 +79,7 @@ class LHS::Data
   private
 
   def collection_proxy?(input)
-    (input.is_a?(Hash) && input[items_key].present?) ||
+    (input.is_a?(Hash) && input[items_key]) ||
       input.is_a?(Array) ||
       _raw.is_a?(Array)
   end
