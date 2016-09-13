@@ -17,7 +17,7 @@ class LHS::Errors
   alias has_key? include?
   alias key? include?
 
-  def add(attribute, message = :invalid, options = {})
+  def add(attribute, message = :invalid, _options = {})
     self[attribute]
     messages[attribute] << message
   end
