@@ -536,7 +536,7 @@ end
 
 ## Custom validation errors
 
-In case you want to add custom validation errors to an instance of LHS::Record, the interface is the same as ActiveModel::Validation:
+In case you want to add custom validation errors to an instance of LHS::Record:
 
 ```ruby
 user.errors.add(:name, 'The name you provided is not valid.')
