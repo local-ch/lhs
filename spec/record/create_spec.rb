@@ -26,7 +26,7 @@ describe LHS::Record do
       record = Feedback.create(object)
       expect(record).to be_kind_of Feedback
       expect(record.recommended).to eq true
-      expect(record.errors).to eq nil
+      expect(record.errors.messages).to eq nil
     end
 
     it 'uses proper endpoint when creating data' do
