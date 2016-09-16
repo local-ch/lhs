@@ -16,6 +16,11 @@ class LHS::Item < LHS::Proxy
 
   delegate :_raw, to: :_data
 
+  def initialize(data)
+    self.errors = LHS::Errors.new
+    super(data)
+  end
+
   def item?
     true
   end

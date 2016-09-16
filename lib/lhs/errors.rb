@@ -4,10 +4,10 @@ class LHS::Errors
 
   attr_reader :messages, :message, :raw
 
-  def initialize(response)
+  def initialize(response = nil)
     @messages = messages_from_response(response)
     @message = message_from_response(response)
-    @raw = response.body
+    @raw = response.body if response
   rescue JSON::ParserError # rubocop:disable Lint/HandleExceptions
   end
 
@@ -16,6 +16,11 @@ class LHS::Errors
   end
   alias has_key? include?
   alias key? include?
+
+  def add(attribute, message = :invalid, _options = {})
+    self[attribute]
+    messages[attribute] << message
+  end
 
   def get(key)
     messages[key]
@@ -81,13 +86,14 @@ class LHS::Errors
     messages
   end
 
-  def messages_from_response(response)
-    return {} if !response.body.is_a?(String) || response.body.length.zero?
+  def messages_from_response(response = nil)
+    return {} if !response || !response.body.is_a?(String) || response.body.length.zero?
     json = JSON.parse(response.body)
     parse_messages(json)
   end
 
-  def message_from_response(response)
+  def message_from_response(response = nil)
+    return unless response
     json = JSON.parse(response.body)
     json['message']
   end
