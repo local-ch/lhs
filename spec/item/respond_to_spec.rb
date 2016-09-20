@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe LHS::Item do
-  let(:item){
+  let(:item) do
     LHS::Item.new(id: 1234)
-  }
+  end
 
   context '#respond_to?' do
     it 'is true for setters' do

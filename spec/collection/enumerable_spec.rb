@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-  let(:data) {
+  let(:data) do
     [1, 2, 3]
-  }
+  end
 
-  let(:collection){
+  let(:collection) do
     LHS::Collection.new(LHS::Data.new(data))
-  }
+  end
 
   context 'enumerable' do
     it 'works with map' do
