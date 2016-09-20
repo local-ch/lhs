@@ -7,7 +7,6 @@ class LHS::Item < LHS::Proxy
   include Destroy
   include Save
   include Update
-  include Validation
 
   delegate :present?, :blank?, :empty?, to: :_raw
 
@@ -33,7 +32,7 @@ class LHS::Item < LHS::Proxy
     value = _data._raw[name.to_s]
     if value.nil? && _data._raw.present?
       value = _data._raw[name.to_sym]
-      value ||= _data._raw[name.to_s.classify.to_sym]
+      value = _data._raw[name.to_s.classify.to_sym] if value.nil?
     end
     if value.is_a?(Hash)
       handle_hash(value)

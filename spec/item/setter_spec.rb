@@ -32,5 +32,11 @@ describe LHS::Item do
       expect((item.name = nil)).to eq nil
       expect(item.name).to eq nil
     end
+
+    it 'sets things to false' do
+      item.recommended = true
+      expect((item.recommended = false)).to eq false
+      expect(item.recommended).to eq false
+    end
   end
 end
