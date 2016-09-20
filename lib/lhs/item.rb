@@ -7,6 +7,7 @@ class LHS::Item < LHS::Proxy
   include Destroy
   include Save
   include Update
+  include Validation
 
   delegate :present?, :blank?, :empty?, to: :_raw
 
