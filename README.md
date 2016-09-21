@@ -297,31 +297,44 @@ Sometimes it is the case that you want to have your custom getters and setters a
 The initializer will now use custom setter if one is defined:
 
 ```ruby
-class Record < LHS::Record
-  def ratings=(ratings)
-    _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
+
+module RatingsConversions
+  def ratings=(values)
+    super(
+      values.map { |k, v| { name: k, value: v } }
+    )
   end
 end
 
-record = Record.new(ratings: { quality: 3 }) # <Record{:ratings=>[{:name=>:quality, :value=>3}]}>
-record.ratings # #<LHS::Data:0x007fc8fa6d4050 ... @_raw=[{:name=>:quality, :value=>3}]>
+class Record < LHS::Record
+  prepend RatingsConversions
+end
+
+record = Record.new(ratings: { quality: 3 })
+record.ratings # [{ :name=>:quality, :value=>3 }]
 
 ```
 
 If you have an accompanying getter the whole data manipulation would be internal only.
 
 ```ruby
-class Record < LHS::Record
-  def ratings=(ratings)
-    _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
+module RatingsConversions
+  def ratings=(values)
+    super(
+      values.map { |k, v| { name: k, value: v } }
+    )
   end
 
   def ratings
-    Hash[_raw[:ratings].map { |r| [r[:name], r[:value]] }]
+    super.map { |r| [r[:name], r[:value]] }]
   end
 end
 
-record = Record.new(ratings: { quality: 3 }) # <Record{:ratings=>[{:name=>:quality, :value=>3}]}>
+class Record < LHS::Record
+  prepend RatingsConversions
+end
+
+record = Record.new(ratings: { quality: 3 }) # [{ :name=>:quality, :value=>3 }]
 record.ratings # {:quality=>3}
 
 ```
