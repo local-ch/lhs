@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-  let(:data) {
+  let(:data) do
     ['ROLE_USER', 'ROLE_LOCALCH_ACCOUNT']
-  }
+  end
 
-  let(:collection){
+  let(:collection) do
     LHS::Collection.new(LHS::Data.new(data))
-  }
+  end
 
   context 'delegates methods to raw' do
     %w(present? blank? empty?).each do |method|
