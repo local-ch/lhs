@@ -6,8 +6,9 @@ class LHS::Record
   include Chainable
   include Configuration
   include Create
-  include Equality
+  include Destroy
   include Endpoints
+  include Equality
   include Find
   include FindBy
   include First
