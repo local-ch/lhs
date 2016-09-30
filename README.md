@@ -522,6 +522,18 @@ You can delete records remotely by calling `destroy` on an LHS::Record.
   record.destroy
 ```
 
+You can also destroy records directly without fetching them first:
+
+```ruby
+  destroyed_record = Record.destroy('1z-5r1fkaj')
+```
+
+or with parameters:
+
+```ruby
+  destroyed_records = Record.destroy(name: 'Steve')
+```
+
 ## Validation
 
 In order to validate LHS::Records before persisting them, you can use the `valid?` (`validate` alias) method.
