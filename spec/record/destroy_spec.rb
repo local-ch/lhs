@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'destroy' do
-
     before(:each) do
       class Record < LHS::Record
         endpoint 'http://datastore/history'
