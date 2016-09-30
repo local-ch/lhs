@@ -118,8 +118,11 @@ class LHS::Record
       def destroy(options = nil)
         options ||= {}
         options = options.respond_to?(:to_h) ? options : { id: options }
-        @record.destroy(chain_options.merge(options)) if @record
-        @record_class.destroy(options, chain_options)
+        if @record
+          @record.destroy(chain_options.merge(options))
+        else
+          @record_class.destroy(options, chain_options)
+        end
       end
 
       def update(data = {}, options = nil)
