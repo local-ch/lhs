@@ -176,6 +176,10 @@ class LHS::Record
         @record_class.find_by(params, chain_options)
       end
 
+      def find_by!(params = {})
+        @record_class.find_by!(params, chain_options)
+      end
+
       # Returns a hash of where conditions
       def where_values_hash
         chain_parameters
