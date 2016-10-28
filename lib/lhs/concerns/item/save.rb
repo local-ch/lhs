@@ -23,7 +23,7 @@ class LHS::Item < LHS::Proxy
         endpoint = record.find_endpoint(data)
         url = endpoint.compile(data)
         endpoint.remove_interpolated_params!(data)
-        options.merge!(endpoint.options.merge(options))
+        options.merge!(endpoint.options.merge(options)) if endpoint.options
       end
 
       options = options.merge(method: :post, url: url, body: data.to_json)
