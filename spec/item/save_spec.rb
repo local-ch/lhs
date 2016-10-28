@@ -20,6 +20,25 @@ describe LHS::Item do
     data[0]
   end
 
+  context 'endpoint options' do
+
+    let(:headers) { { 'X-Header' => 'VALUE' } }
+
+    before(:each) do
+      class RecordWithOptions < LHS::Record
+        endpoint 'http://datastore/records', headers: { 'X-Header' => 'VALUE' }
+      end
+    end
+
+    it 'considers end point options when saving' do
+      data = { name: 'Steve' }
+      stub_request(:post, "http://datastore/records")
+         .with(body: data.to_json, headers: headers)
+         .to_return(body: data.to_json)
+      RecordWithOptions.create!(data)
+    end
+  end
+
   context 'save' do
     it 'persists changes on the backend' do
       stub_request(:post, item.href).with(body: item._raw.merge(name: 'Steve').to_json)
