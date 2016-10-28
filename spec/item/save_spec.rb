@@ -21,7 +21,6 @@ describe LHS::Item do
   end
 
   context 'endpoint options' do
-
     let(:headers) { { 'X-Header' => 'VALUE' } }
 
     before(:each) do
@@ -33,8 +32,8 @@ describe LHS::Item do
     it 'considers end point options when saving' do
       data = { name: 'Steve' }
       stub_request(:post, "http://datastore/records")
-         .with(body: data.to_json, headers: headers)
-         .to_return(body: data.to_json)
+        .with(body: data.to_json, headers: headers)
+        .to_return(body: data.to_json)
       RecordWithOptions.create!(data)
     end
   end
