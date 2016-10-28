@@ -20,3 +20,7 @@ Rails/OutputSafety:
 
 Style/SignalException:
   Enabled: false
+
+Rails/DynamicFindBy:
+  Enabled: false
+  
