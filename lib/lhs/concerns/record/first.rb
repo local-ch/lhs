@@ -6,12 +6,12 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def first
-        find_by
+      def first(options = nil)
+        find_by({}, options)
       end
 
-      def first!
-        find_by!
+      def first!(options = nil)
+        find_by!({}, options)
       end
     end
   end
