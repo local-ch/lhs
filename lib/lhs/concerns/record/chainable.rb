@@ -46,16 +46,15 @@ class LHS::Record
 
     # Link: A part of a chain
     class Link
+
+      attr_reader :data
+
       def initialize(data = nil)
         @data = data
       end
 
       def [](parameter)
         @data[parameter]
-      end
-
-      def data
-        @data
       end
     end
 

@@ -72,7 +72,7 @@ describe LHS::Record do
       stub_request(:get, preceding_agb_url).to_return(
         status: 200, body: { 'href' => preceding_agb_url }.to_json, headers: {}
       )
-      
+
       agb = Agb.includes(:preceding_agb).first!
       expect(agb.pdf_url).to be == 'de'
     end
