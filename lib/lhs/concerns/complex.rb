@@ -1,5 +1,7 @@
 # Complex is the main data structure for includes.
-# can be for example :entr
+# can be for example :place, [:place, :customer],
+# { places: [:customer] }, { places: { customer: :contract }}
+# and so on
 class LHS::Complex
 
   def self.merge(data)
