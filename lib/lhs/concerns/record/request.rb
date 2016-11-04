@@ -168,8 +168,8 @@ class LHS::Record
         begin
           if options.is_a?(Array)
             options.each { |options| options.merge!(including: sub_includes) if sub_includes.present? }
-          else
-            options.merge!(including: sub_includes) if sub_includes.present?
+          elsif sub_includes.present?
+            options.merge!(including: sub_includes)
           end
           record.request(options)
         rescue LHC::NotFound
