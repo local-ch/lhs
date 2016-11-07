@@ -272,11 +272,11 @@ class LHS::Record
       end
 
       def chain_parameters
-        merge_links _links.select { |link| link.is_a? Parameter }
+        merge_links(_links.select { |link| link.is_a? Parameter })
       end
 
       def chain_options
-        merge_links _links.select { |link| link.is_a? Option }
+        merge_links(_links.select { |link| link.is_a? Option })
       end
 
       def chain_error_handler
@@ -288,15 +288,19 @@ class LHS::Record
       end
 
       def chain_includes
-        LHS::Complex.merge _links
-          .select { |link| link.is_a?(Include) && link.data.present? }
-          .map { |link| link.data }
+        LHS::Complex.merge(
+          _links
+            .select { |link| link.is_a?(Include) && link.data.present? }
+            .map { |link| link.data }
+        )
       end
 
       def chain_references
-        LHS::Complex.merge _links
-          .select { |link| link.is_a?(Reference) && link.data.present? }
-          .map { |link| link.data }
+        LHS::Complex.merge(
+          _links
+            .select { |link| link.is_a?(Reference) && link.data.present? }
+            .map { |link| link.data }
+        )
       end
 
       def resolve_pagination(links)
