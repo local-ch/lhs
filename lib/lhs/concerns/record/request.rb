@@ -93,10 +93,13 @@ class LHS::Record
 
       def handle_includes(includes, data, references = {})
         references ||= {}
+        references = [references] if includes.is_a?(Array) && !references.is_a?(Array)
         if includes.is_a? Hash
           includes.each { |included, sub_includes| handle_include(included, data, sub_includes, references[included]) }
         elsif includes.is_a? Array
-          includes.each { |included| handle_includes(included, data, references[included]) }
+          includes.each_with_index do |included, index|
+            handle_includes(included, data, references[index])
+          end
         else
           handle_include(includes, data, nil, references[includes])
         end
@@ -123,7 +126,7 @@ class LHS::Record
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         expanded_data = begin
-          record.without_including.request(options)
+          record.request(options)
         rescue LHC::NotFound
           LHS::Data.new({}, data, record)
         end
@@ -163,7 +166,12 @@ class LHS::Record
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
-          record.includes(sub_includes).request(options)
+          if options.is_a?(Array)
+            options.each { |options| options.merge!(including: sub_includes) if sub_includes.present? }
+          elsif sub_includes.present?
+            options.merge!(including: sub_includes)
+          end
+          record.request(options)
         rescue LHC::NotFound
           LHS::Data.new({}, data, record)
         end
@@ -185,9 +193,11 @@ class LHS::Record
         data = LHC.request(options.compact).map do |response|
           LHS::Data.new(response.body, nil, self, response.request)
         end
+        including = LHS::Complex.merge options.compact.map { |options| options.delete(:including) }.compact
+        referencing = LHS::Complex.merge options.compact.map { |options| options.delete(:referencing) }.compact
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         data = LHS::Data.new(data, nil, self)
-        handle_includes(including, data, referencing) if including && !data.empty?
+        handle_includes(including, data, referencing) if including.present? && !data.empty?
         data
       end
 
@@ -260,6 +270,8 @@ class LHS::Record
 
       def single_request(options)
         options ||= {}
+        including = options.delete(:including)
+        referencing = options.delete(:referencing)
         options = options.dup
         endpoint = find_endpoint(options[:params])
         response = LHC.request(process_options(options, endpoint))

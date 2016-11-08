@@ -6,6 +6,9 @@ inherit_from:
 Lint/IneffectiveAccessModifier:
   Enabled: false
 
+Lint/ShadowingOuterLocalVariable:
+  Enabled: false
+
 RSpec/DescribedClass:
   Enabled: false
 

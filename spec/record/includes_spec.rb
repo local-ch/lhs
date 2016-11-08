@@ -366,11 +366,17 @@ describe LHS::Record do
     before(:each) do
       class Customer < LHS::Record
         endpoint ':datastore/customers/:id'
+        endpoint ':datastore/customers'
       end
 
       class Place < LHS::Record
         endpoint ':datastore/places'
       end
+
+      stub_request(:get, "#{datastore}/places?forwarded_params=123")
+        .to_return(body: {
+          'items' => [{ id: 1 }]
+        }.to_json)
     end
 
     it 'forwards includes options to requests made for those includes' do
@@ -380,15 +386,25 @@ describe LHS::Record do
             'href' => "#{datastore}/places"
           }
         }.to_json)
-      stub_request(:get, "#{datastore}/places?forwarded_params=123")
-        .to_return(body: {
-          'items' => [{ id: 1 }]
-        }.to_json)
       customer = Customer
         .includes(:places)
         .references(places: { params: { forwarded_params: 123 } })
         .find(1)
       expect(customer.places.first.id).to eq 1
+    end
+
+    it 'is chain-able' do
+      stub_request(:get, "#{datastore}/customers?name=Steve")
+        .to_return(body: [
+          'places' => {
+            'href' => "#{datastore}/places"
+          }
+        ].to_json)
+      customers = Customer
+        .where(name: 'Steve')
+        .references(places: { params: { forwarded_params: 123 } })
+        .includes(:places)
+      expect(customers.first.places.first.id).to eq 1
     end
   end
 end

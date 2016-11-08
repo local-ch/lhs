@@ -34,20 +34,27 @@ class LHS::Record
       def handle(error_class, handler)
         Chain.new(self, ErrorHandling.new(error_class => handler))
       end
+
+      def includes(*args)
+        Chain.new(self, Include.new(Chain.unfold(args)))
+      end
+
+      def references(*args)
+        Chain.new(self, Reference.new(Chain.unfold(args)))
+      end
     end
 
     # Link: A part of a chain
     class Link
-      def initialize(hash = nil)
-        @hash = hash
+
+      attr_reader :data
+
+      def initialize(data = nil)
+        @data = data
       end
 
       def [](parameter)
-        @hash[parameter]
-      end
-
-      def to_hash
-        @hash
+        @data[parameter]
       end
     end
 
@@ -63,16 +70,25 @@ class LHS::Record
     class Pagination < Link
     end
 
+    # Include: Part of the chain that will be used to include linked resources
+    class Include < Link
+    end
+
+    # Reference: Part of the chain that will be used to pass options to requests
+    # made to include linked resources
+    class Reference < Link
+    end
+
     # ErrorHandling: Catch and resolve errors when resolving the chain
     class ErrorHandling < Link
       delegate :call, to: :handler
 
       def handler
-        @hash.values.first
+        @data.values.first
       end
 
       def class
-        @hash.keys.first
+        @data.keys.first
       end
     end
 
@@ -91,6 +107,10 @@ class LHS::Record
 
       attr_accessor :_links
 
+      def self.unfold(args)
+        args.size == 1 ? args[0] : args
+      end
+
       def initialize(record_class, link, record = nil)
         @record_class = record_class
         @record = record
@@ -98,46 +118,46 @@ class LHS::Record
       end
 
       def create(data = {})
-        @record_class.create(data, chain_options)
+        @record_class.create(data, resolved_options)
       end
 
       def create!(data = {})
-        @record_class.create!(data, chain_options)
+        @record_class.create!(data, resolved_options)
       end
 
       def save!(options = nil)
         options ||= {}
-        @record.save!(chain_options.merge(options))
+        @record.save!(resolved_options.merge(options))
       end
 
       def save(options = nil)
         options ||= {}
-        @record.save(chain_options.merge(options))
+        @record.save(resolved_options.merge(options))
       end
 
       def destroy(options = nil)
         options ||= {}
         options = options.respond_to?(:to_h) ? options : { id: options }
         if @record
-          @record.destroy(chain_options.merge(options))
+          @record.destroy(resolved_options.merge(options))
         else
-          @record_class.destroy(options, chain_options)
+          @record_class.destroy(options, resolved_options)
         end
       end
 
       def update(data = {}, options = nil)
         options ||= {}
-        @record.update(data, chain_options.merge(options))
+        @record.update(data, resolved_options.merge(options))
       end
 
       def update!(data = {}, options = nil)
         options ||= {}
-        @record.update!(data, chain_options.merge(options))
+        @record.update!(data, resolved_options.merge(options))
       end
 
       def valid?(options = nil)
         options ||= {}
-        @record.valid?(chain_options.merge(options))
+        @record.valid?(resolved_options.merge(options))
       end
       alias validate valid?
 
@@ -166,18 +186,28 @@ class LHS::Record
         push ErrorHandling.new(error_class => handler)
       end
 
+      def includes(*args)
+        push Include.new(Chain.unfold(args))
+      end
+
+      def references(*args)
+        push Reference.new(Chain.unfold(args))
+      end
+
       def find(*args)
-        options = chain_options
-        options = options.merge(error_handler: chain_error_handler) if chain_error_handler.any?
-        @record_class.find(*args.push(options))
+        @record_class.find(*args.push(resolved_options))
       end
 
       def find_by(params = {})
-        @record_class.find_by(params, chain_options)
+        @record_class.find_by(params, resolved_options)
       end
 
       def find_by!(params = {})
-        @record_class.find_by!(params, chain_options)
+        @record_class.find_by!(params, resolved_options)
+      end
+
+      def first!
+        @record_class.first!(resolved_options)
       end
 
       # Returns a hash of where conditions
@@ -195,6 +225,16 @@ class LHS::Record
         chain_pagination
       end
 
+      # Returns a hash of include conditions
+      def includes_values
+        chain_includes
+      end
+
+      # Returns a hash of reference options
+      def references_values
+        chain_references
+      end
+
       protected
 
       def method_missing(name, *args, &block)
@@ -209,12 +249,18 @@ class LHS::Record
       end
 
       def resolve
+        @resolved ||= @record_class.new(
+          @record_class.request(resolved_options)
+        )
+      end
+
+      def resolved_options
         options = chain_options
         options = options.merge(params: chain_parameters.merge(chain_pagination))
-        options = options.merge(error_handler: chain_error_handler) if chain_error_handler.any?
-        @resolved ||= @record_class.new(
-          @record_class.request(options)
-        )
+        options = options.merge(error_handler: chain_error_handler) if chain_error_handler.present?
+        options = options.merge(including: chain_includes) if chain_includes.present?
+        options = options.merge(referencing: chain_references) if chain_references.present?
+        options
       end
 
       private
@@ -226,11 +272,11 @@ class LHS::Record
       end
 
       def chain_parameters
-        merge_links _links.select { |link| link.is_a? Parameter }
+        merge_links(_links.select { |link| link.is_a? Parameter })
       end
 
       def chain_options
-        merge_links _links.select { |link| link.is_a? Option }
+        merge_links(_links.select { |link| link.is_a? Option })
       end
 
       def chain_error_handler
@@ -239,6 +285,22 @@ class LHS::Record
 
       def chain_pagination
         resolve_pagination _links.select { |link| link.is_a? Pagination }
+      end
+
+      def chain_includes
+        LHS::Complex.merge(
+          _links
+            .select { |link| link.is_a?(Include) && link.data.present? }
+            .map { |link| link.data }
+        )
+      end
+
+      def chain_references
+        LHS::Complex.merge(
+          _links
+            .select { |link| link.is_a?(Reference) && link.data.present? }
+            .map { |link| link.data }
+        )
       end
 
       def resolve_pagination(links)
@@ -259,8 +321,8 @@ class LHS::Record
       def merge_links(links)
         hash = {}
         links.each do |link|
-          next if link.to_hash.blank?
-          hash.deep_merge!(link.to_hash)
+          next if link.data.blank?
+          hash.deep_merge!(link.data)
         end
         hash
       end

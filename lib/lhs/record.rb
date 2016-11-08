@@ -12,7 +12,6 @@ class LHS::Record
   include Find
   include FindBy
   include First
-  include Includes
   include Inspect
   include Mapping
   include Model
