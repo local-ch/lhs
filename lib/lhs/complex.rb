@@ -20,6 +20,7 @@ class LHS::Complex
     array.uniq!
     return array.first if array.length == 1
     reduce_symbols!(array)
+    return nil if array.blank?
     array
   end
   private_class_method :reduce!
