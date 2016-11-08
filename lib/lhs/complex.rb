@@ -75,8 +75,14 @@ class LHS::Complex
 
   def self.merge_symbol_into_hash!(parent, element, addition, key = nil)
     return if element.key?(addition)
-    parent.push(addition)
-    reduce!(parent)
+    if parent.is_a?(Array)
+      parent.push(addition)
+      reduce!(parent)
+    elsif parent.is_a?(Hash)
+      parent[key] = reduce!([element, addition])
+    else
+      raise "Can't merge that complex: #{addition} -> #{parent} (#{element})#{key ? " for #{key}" : ''}"
+    end
   end
   private_class_method :merge_symbol_into_hash!
 
@@ -104,7 +110,9 @@ class LHS::Complex
   private_class_method :merge_hash_into_symbol!
 
   def self.merge_array_into_symbol!(parent, element, addition, key = nil)
-    binding.pry
+    addition.unshift(element)
+    reduce!(addition)
+    parent[key] = addition
   end
   private_class_method :merge_array_into_symbol!
 
@@ -120,7 +128,9 @@ class LHS::Complex
   private_class_method :merge_hash_into_hash!
 
   def self.merge_array_into_hash!(parent, element, addition, key = nil)
-    binding.pry
+    addition.each do |element_to_add|
+      merge_multi_level!(parent, element, element_to_add, key)
+    end
   end
   private_class_method :merge_array_into_hash!
 

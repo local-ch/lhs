@@ -155,5 +155,23 @@ describe LHS::Complex do
         products: [{ content_ads: [:address, :owner] }, { price: :region }, :image]
       )
     end
+
+    it 'merges another complex multi-level example' do
+      expect(LHS::Complex.merge([
+        { entries: :products },
+        { entries: [:customer, :contracts] }
+      ])).to eq(
+        entries: [:products, :customer, :contracts]
+      )
+    end
+
+    it 'merges another complex multi-level example' do
+      expect(LHS::Complex.merge([
+        { entries: { customer: :contracts } },
+        { entries: [:customer, :content_ads] }
+      ])).to eq(
+        entries: [{ customer: :contracts }, :content_ads]
+      )
+    end
   end
 end
