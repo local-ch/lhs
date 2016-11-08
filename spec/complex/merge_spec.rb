@@ -168,5 +168,13 @@ describe LHS::Complex do
         entries: [{ customer: :contracts }, :content_ads]
       )
     end
+
+    it 'reduces properly' do
+      expect(LHS::Complex.merge([
+        [:entries, :place, :content_ads], [{ place: :content_ads }], { content_ads: :place }
+      ])).to eq(
+        [:entries, { place: :content_ads, content_ads: :place }]
+      )
+    end
   end
 end

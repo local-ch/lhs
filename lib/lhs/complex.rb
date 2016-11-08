@@ -117,11 +117,13 @@ class LHS::Complex
   end
   private_class_method :merge_array_into_symbol!
 
-  def self.merge_hash_into_hash!(_parent, element, addition, _key = nil)
+  def self.merge_hash_into_hash!(parent, element, addition, _key = nil)
     addition.keys.each do |key|
       if element[key]
+        parent.delete(addition)
         merge_multi_level!(element, element[key], addition[key], key)
       else
+        parent.delete(addition)
         element[key] = addition[key]
       end
     end
