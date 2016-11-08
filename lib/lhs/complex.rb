@@ -87,7 +87,7 @@ class LHS::Complex
   end
   private_class_method :merge_symbol_into_hash!
 
-  def self.merge_symbol_into_array!(_parent, element, addition, key = nil)
+  def self.merge_symbol_into_array!(_parent, element, addition, _key = nil)
     return if element.include?(addition)
     element.push(addition)
     reduce!(element)
@@ -117,7 +117,7 @@ class LHS::Complex
   end
   private_class_method :merge_array_into_symbol!
 
-  def self.merge_hash_into_hash!(parent, element, addition, key = nil)
+  def self.merge_hash_into_hash!(_parent, element, addition, _key = nil)
     addition.keys.each do |key|
       if element[key]
         merge_multi_level!(element, element[key], addition[key], key)
@@ -135,7 +135,7 @@ class LHS::Complex
   end
   private_class_method :merge_array_into_hash!
 
-  def self.merge_array_into_array!(parent, element, addition, key = nil)
+  def self.merge_array_into_array!(_parent, element, addition, _key = nil)
     addition.each do |element_to_add|
       merge_multi_level!(element, element, element_to_add)
     end

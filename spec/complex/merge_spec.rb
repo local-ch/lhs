@@ -1,11 +1,8 @@
 require 'rails_helper'
 
 describe LHS::Complex do
-
   context 'first level' do
-
     context 'merges symbols into/with X' do
-
       it 'merges symbols into hash' do
         expect(LHS::Complex.merge([
           { entries: :contract },
@@ -37,7 +34,6 @@ describe LHS::Complex do
     end
 
     context 'merges arrays into/with X' do
-
       it 'merges arrays into an hash' do
         expect(LHS::Complex.merge([
           { entries: :contract },
@@ -73,7 +69,6 @@ describe LHS::Complex do
     end
 
     context 'merges hashes into/with X' do
-
       it 'merges hash into an hash' do
         expect(LHS::Complex.merge([
           { entries: :contract },
