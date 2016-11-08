@@ -144,5 +144,16 @@ describe LHS::Complex do
         products: { content_ads: [:address, { place: :location }] }
       ])
     end
+
+    it 'merges another complex multi-level example' do
+      expect(LHS::Complex.merge([
+        [entries: :content_ads, products: :price],
+        [:entries, products: { content_ads: :address }],
+        [entries: { content_ads: :owner }, products: [{ price: :region }, :image, { content_ads: :owner }]]
+      ])).to eq(
+        entries: { content_ads: :owner },
+        products: [{ content_ads: [:address, :owner] }, { price: :region }, :image]
+      )
+    end
   end
 end
