@@ -147,7 +147,7 @@ describe LHS::Complex do
         [entries: { content_ads: :owner }, products: [{ price: :region }, :image, { content_ads: :owner }]]
       ])).to eq(
         entries: { content_ads: :owner },
-        products: [{ content_ads: [:address, :owner] }, { price: :region }, :image]
+        products: [{ content_ads: [:address, :owner], price: :region }, :image]
       )
     end
 
