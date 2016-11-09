@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe LHS::Complex do
+  it 'returns nil when result is empty' do
+    expect(LHS::Complex.merge([])).to be_nil
+  end
+
   context 'first level' do
     context 'merges symbols into/with X' do
       it 'merges symbols into hash' do

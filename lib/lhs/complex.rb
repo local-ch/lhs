@@ -36,12 +36,14 @@ class LHS::Complex
   end
 
   def raw_data
-    if data.is_a?(Symbol)
-      data
-    elsif data.is_a?(Array)
-      data.map(&:raw_data)
+    if data.is_a?(Array)
+      result = data.map(&:raw_data)
+      result.empty? ? nil : result
     elsif data.is_a?(Hash)
-      data.map { |k, v| [k, v.raw_data] }.to_h
+      result = data.map { |k, v| [k, v.raw_data] }.to_h
+      result.empty? ? nil : result
+    else
+      data
     end
   end
 
