@@ -8,14 +8,12 @@ class LHS::Complex
   def initialize(data)
     if data.is_a?(LHS::Complex)
       @data = data.data
-    elsif data.is_a?(Symbol) || data.empty?
-      @data = data
-    elsif data.is_a?(Array)
+    elsif data.is_a?(Array) && !data.empty?
       @data = data.inject(LHS::Complex.new([])) { |acc, datum| acc.merge!(LHS::Complex.new(datum)) }.data
-    elsif data.is_a?(Hash)
+    elsif data.is_a?(Hash) && !data.empty?
       @data = data.map { |k, v| [k, LHS::Complex.new(v)] }.to_h
     else
-      raise ArgumentError, "Invalid data: #{data}. Complex can be Symbol, Array[Complex] or Hash[Symbol, Complex]"
+      @data = data
     end
   end
 
@@ -30,6 +28,8 @@ class LHS::Complex
       merge_into_array!(other)
     elsif data.is_a?(Hash)
       merge_into_hash!(other)
+    else
+      raise ArgumentError, "Cannot merge #{raw_data} with #{other.raw_data}"
     end
 
     self

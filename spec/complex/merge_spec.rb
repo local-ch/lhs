@@ -5,6 +5,16 @@ describe LHS::Complex do
     expect(LHS::Complex.merge([])).to be_nil
   end
 
+  it 'forwards primitive types' do
+    expect(LHS::Complex.merge(entry_id: 123)).to eq(entry_id: 123)
+  end
+
+  it 'fails when trying to merge primitive types' do
+    expect {
+      LHS::Complex.merge([{ entry: true }, { entry: :content }])
+    }.to raise_error(ArgumentError)
+  end
+
   context 'first level' do
     context 'merges symbols into/with X' do
       it 'merges symbols into hash' do
