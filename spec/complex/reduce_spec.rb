@@ -1,125 +1,139 @@
 require 'rails_helper'
 
 describe LHS::Complex do
+  it 'returns nil when result is empty' do
+    expect(LHS::Complex.reduce([])).to be_nil
+  end
+
+  it 'forwards primitive types' do
+    expect(LHS::Complex.reduce(entry_id: 123)).to eq(entry_id: 123)
+  end
+
+  it 'fails when trying to merge primitive types' do
+    expect {
+      LHS::Complex.reduce([{ entry: true }, { entry: :content }])
+    }.to raise_error(ArgumentError)
+  end
+
   context 'first level' do
-    context 'merges symbols into/with X' do
-      it 'merges symbols into hash' do
-        expect(LHS::Complex.merge([
+    context 'reduces symbols into/with X' do
+      it 'reduces symbols into hash' do
+        expect(LHS::Complex.reduce([
           { entries: :contract },
           :entries
         ])).to eq(entries: :contract)
       end
 
-      it 'merges symbols into array' do
-        expect(LHS::Complex.merge([
+      it 'reduces symbols into array' do
+        expect(LHS::Complex.reduce([
           [:contracts],
           :entries
         ])).to eq([:contracts, :entries])
-        expect(LHS::Complex.merge([
+        expect(LHS::Complex.reduce([
           [:entries],
           :entries
         ])).to eq(:entries)
       end
 
-      it 'merges symbols with symbols' do
-        expect(LHS::Complex.merge([
+      it 'reduces symbols with symbols' do
+        expect(LHS::Complex.reduce([
           :contracts,
           :entries
         ])).to eq([:contracts, :entries])
-        expect(LHS::Complex.merge([
+        expect(LHS::Complex.reduce([
           :entries,
           :entries
         ])).to eq(:entries)
       end
     end
 
-    context 'merges arrays into/with X' do
-      it 'merges arrays into an hash' do
-        expect(LHS::Complex.merge([
+    context 'reduces arrays into/with X' do
+      it 'reduces arrays into an hash' do
+        expect(LHS::Complex.reduce([
           { entries: :contract },
           [:entries]
         ])).to eq(entries: :contract)
-        expect(LHS::Complex.merge([
+        expect(LHS::Complex.reduce([
           { entries: :contract },
           [:products]
         ])).to eq([{ entries: :contract }, :products])
       end
 
-      it 'merges arrays into an arrays' do
-        expect(LHS::Complex.merge([
+      it 'reduces arrays into an arrays' do
+        expect(LHS::Complex.reduce([
           [:entries],
           [:entries]
         ])).to eq(:entries)
-        expect(LHS::Complex.merge([
+        expect(LHS::Complex.reduce([
           [:entries],
           [:products]
         ])).to eq([:entries, :products])
       end
 
-      it 'merges arrays into an symbols' do
-        expect(LHS::Complex.merge([
+      it 'reduces arrays into an symbols' do
+        expect(LHS::Complex.reduce([
           :entries,
           [:entries]
         ])).to eq(:entries)
-        expect(LHS::Complex.merge([
+        expect(LHS::Complex.reduce([
           :entries,
           [:products]
         ])).to eq([:entries, :products])
       end
     end
 
-    context 'merges hashes into/with X' do
-      it 'merges hash into an hash' do
-        expect(LHS::Complex.merge([
+    context 'reduces hashes into/with X' do
+      it 'reduces hash into an hash' do
+        expect(LHS::Complex.reduce([
           { entries: :contract },
           { entries: :products }
         ])).to eq(entries: [:contract, :products])
-        expect(LHS::Complex.merge([
+        expect(LHS::Complex.reduce([
           { entries: :contract },
           { entries: :contract }
         ])).to eq(entries: :contract)
       end
 
-      it 'merges hash into an array' do
-        expect(LHS::Complex.merge([
+      it 'reduces hash into an array' do
+        expect(LHS::Complex.reduce([
           [:entries],
           { entries: :products }
         ])).to eq(entries: :products)
-        expect(LHS::Complex.merge([
+        expect(LHS::Complex.reduce([
           [{ entries: :contract }],
           { entries: :contract }
         ])).to eq(entries: :contract)
       end
 
-      it 'merges hash into a symbol' do
-        expect(LHS::Complex.merge([
+      it 'reduces hash into a symbol' do
+        expect(LHS::Complex.reduce([
           :entries,
           { entries: :products }
         ])).to eq(entries: :products)
-        expect(LHS::Complex.merge([
+        expect(LHS::Complex.reduce([
           :products,
           { entries: :contract }
         ])).to eq([:products, { entries: :contract }])
       end
     end
 
-    context 'merges array into/with X' do
-      it 'merges array into hash' do
-        expect(LHS::Complex.merge([
+    context 'reduces array into/with X' do
+      it 'reduces array into hash' do
+        expect(LHS::Complex.reduce([
           { entries: :contract },
           [:entries, :products]
         ])).to eq([{ entries: :contract }, :products])
       end
 
-      it 'merges array into array' do
-        expect(LHS::Complex.merge([
+      it 'reduces array into array' do
+        expect(LHS::Complex.reduce([
           [:contracts],
           [:entries, :products, :contracts]
         ])).to eq([:contracts, :entries, :products])
       end
 
-      it 'merges array with symbols' do
-        expect(LHS::Complex.merge([
+      it 'reduces array with symbols' do
+        expect(LHS::Complex.reduce([
           :contracts,
           [:entries, :products]
         ])).to eq([:contracts, :entries, :products])
@@ -128,8 +142,8 @@ describe LHS::Complex do
   end
 
   context 'multi-level' do
-    it 'merges a complex multi-level example' do
-      expect(LHS::Complex.merge([
+    it 'reduces a complex multi-level example' do
+      expect(LHS::Complex.reduce([
         :contracts,
         [:entries, products: { content_ads: :address }],
         products: { content_ads: { place: :location } }
@@ -140,19 +154,19 @@ describe LHS::Complex do
       ])
     end
 
-    it 'merges another complex multi-level example' do
-      expect(LHS::Complex.merge([
+    it 'reduces another complex multi-level example' do
+      expect(LHS::Complex.reduce([
         [entries: :content_ads, products: :price],
         [:entries, products: { content_ads: :address }],
         [entries: { content_ads: :owner }, products: [{ price: :region }, :image, { content_ads: :owner }]]
       ])).to eq(
         entries: { content_ads: :owner },
-        products: [{ content_ads: [:address, :owner] }, { price: :region }, :image]
+        products: [{ content_ads: [:address, :owner], price: :region }, :image]
       )
     end
 
-    it 'merges another complex multi-level example' do
-      expect(LHS::Complex.merge([
+    it 'reduces another complex multi-level example' do
+      expect(LHS::Complex.reduce([
         { entries: :products },
         { entries: [:customer, :contracts] }
       ])).to eq(
@@ -160,8 +174,8 @@ describe LHS::Complex do
       )
     end
 
-    it 'merges another complex multi-level example' do
-      expect(LHS::Complex.merge([
+    it 'reduces another complex multi-level example' do
+      expect(LHS::Complex.reduce([
         { entries: { customer: :contracts } },
         { entries: [:customer, :content_ads] }
       ])).to eq(
@@ -170,7 +184,7 @@ describe LHS::Complex do
     end
 
     it 'reduces properly' do
-      expect(LHS::Complex.merge([
+      expect(LHS::Complex.reduce([
         [:entries, :place, :content_ads], [{ place: :content_ads }], { content_ads: :place }
       ])).to eq(
         [:entries, { place: :content_ads, content_ads: :place }]

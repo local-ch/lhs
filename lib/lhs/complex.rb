@@ -3,178 +3,154 @@
 # [{ places: [:customer] }, { places: { customer: :contract }}]
 # and so on
 class LHS::Complex
+  attr_reader :data
 
-  # Merge an array of complex that is created
-  # when chaining includes/references and
-  # reducing values is required for further handling
-  def self.merge(data)
-    result = []
-    data.flatten.uniq.each do |datum|
-      result = merge_first_level!(result, datum)
+  def reduce!(data)
+    if data.is_a?(LHS::Complex)
+      @data = data.data
+    elsif data.is_a?(Array) && !data.empty?
+      @data = data.inject(LHS::Complex.new.reduce!([])) { |acc, datum| acc.merge!(LHS::Complex.new.reduce!(datum)) }.data
+    elsif data.is_a?(Hash) && !data.empty?
+      @data = data.map { |k, v| [k, LHS::Complex.new.reduce!(v)] }.to_h
+    else
+      @data = data
     end
-    reduce!(result)
+
+    self
   end
 
-  def self.reduce!(array)
-    array.flatten!
-    array.uniq!
-    return array.first if array.length == 1
-    reduce_symbols!(array)
-    return nil if array.blank?
-    array
+  def self.reduce(data)
+    new.reduce!(data).unwrap
   end
-  private_class_method :reduce!
 
-  def self.reduce_symbols!(array)
-    array.each do |element|
-      if element.is_a?(Symbol)
-        array.each do |other_element|
-          array.delete(element) if other_element.is_a?(Hash) && other_element.key?(element)
-          array.delete(element) if other_element.is_a?(Array) && other_element.include?(element)
+  def merge!(other)
+    if data.is_a?(Symbol)
+      merge_into_symbol!(other)
+    elsif data.is_a?(Array)
+      merge_into_array!(other)
+    elsif data.is_a?(Hash)
+      merge_into_hash!(other)
+    else
+      raise ArgumentError, "Cannot merge #{unwrap} with #{other.unwrap}"
+    end
+
+    self
+  end
+
+  def unwrap
+    if data.is_a?(Array)
+      result = data.map(&:unwrap)
+      result.empty? ? nil : result
+    elsif data.is_a?(Hash)
+      result = data.map { |k, v| [k, v.unwrap] }.to_h
+      result.empty? ? nil : result
+    else
+      data
+    end
+  end
+
+  def ==(other)
+    unwrap == other.unwrap
+  end
+
+  private
+
+  def merge_into_array!(other)
+    if data.empty?
+      @data = other.data
+    elsif other.data.is_a?(Symbol)
+      merge_symbol_into_array!(other)
+    elsif other.data.is_a?(Array)
+      merge_array_into_array!(other)
+    elsif other.data.is_a?(Hash)
+      merge_hash_into_array!(other)
+    end
+  end
+
+  def merge_symbol_into_array!(other)
+    return if data.include?(other)
+    data.push(other)
+  end
+
+  def merge_array_into_array!(other)
+    @data = other.data.inject(self) { |acc, datum| acc.merge!(datum) }.data
+  end
+
+  def merge_hash_into_array!(other)
+    @data = [].tap do |new_data|
+      data.each do |element|
+        if element.data.is_a?(Symbol)
+          # remove keys that were in the hash
+          new_data << element if !other.data.key?(element.data)
+        elsif element.data.is_a?(Array)
+          new_data << element
+        elsif element.data.is_a?(Hash)
+          new_data << element.merge!(other)
         end
       end
     end
-  end
-  private_class_method :reduce_symbols!
 
-  # Merging the addition into the base array (first level)
-  def self.merge_first_level!(base, addition)
-    return [addition] if base.empty?
-    base.each do |element|
-      merge_multi_level!(base, element, addition)
+    # add it to the array if there was no hash to merge it
+    data.push(other) if !data.any? { |element| element.data.is_a?(Hash) }
+  end
+
+  def merge_into_hash!(other)
+    if data.empty?
+      @data = other.data
+    elsif other.data.is_a?(Symbol)
+      merge_symbol_into_hash!(other)
+    elsif other.data.is_a?(Array)
+      merge_array_into_hash!(other)
+    elsif other.data.is_a?(Hash)
+      merge_hash_into_hash!(other)
     end
   end
-  private_class_method :merge_first_level!
 
-  # Merge nested complex (addition) into
-  # an hash or an array (element) of the parent
-  def self.merge_multi_level!(parent, element, addition, key = nil)
-    return if element == addition
-    if addition.is_a?(Symbol) && element.is_a?(Hash)
-      merge_symbol_into_hash!(parent, element, addition, key)
-    elsif addition.is_a?(Symbol) && element.is_a?(Array)
-      merge_symbol_into_array!(parent, element, addition, key)
-    elsif addition.is_a?(Symbol) && element.is_a?(Symbol)
-      add_symbol_to_parent!(parent, element, addition, key)
-    elsif addition.is_a?(Hash) && element.is_a?(Symbol)
-      merge_hash_into_symbol!(parent, element, addition, key)
-    elsif addition.is_a?(Hash) && element.is_a?(Hash)
-      merge_hash_into_hash!(parent, element, addition, key)
-    elsif addition.is_a?(Hash) && element.is_a?(Array)
-      merge_hash_into_array!(element, addition)
-    elsif addition.is_a?(Array) && element.is_a?(Symbol)
-      merge_array_into_symbol!(parent, element, addition, key)
-    elsif addition.is_a?(Array) && element.is_a?(Hash)
-      merge_array_into_hash!(parent, element, addition, key)
-    elsif addition.is_a?(Array) && element.is_a?(Array)
-      merge_array_into_array!(parent, element, addition, key)
-    else
-      raise "Can't merge that complex: #{addition} -> #{parent} (#{element})#{key ? " for #{key}" : ''}"
-    end
+  def merge_symbol_into_hash!(other)
+    return if data.key?(other.data)
+
+    @data = [LHS::Complex.new.reduce!(data), other]
   end
-  private_class_method :merge_multi_level!
 
-  def self.merge_symbol_into_hash!(parent, element, addition, key = nil)
-    return if element.key?(addition)
-    if parent.is_a?(Array)
-      parent.push(addition)
-      reduce!(parent)
-    elsif parent.is_a?(Hash)
-      parent[key] = reduce!([element, addition])
-    else
-      raise "Can't merge that complex: #{addition} -> #{parent} (#{element})#{key ? " for #{key}" : ''}"
-    end
+  def merge_array_into_hash!(other)
+    @data = other.data.inject(self) { |acc, datum| acc.merge!(datum) }.data
   end
-  private_class_method :merge_symbol_into_hash!
 
-  def self.merge_symbol_into_array!(_parent, element, addition, _key = nil)
-    return if element.include?(addition)
-    element.push(addition)
-    reduce!(element)
-  end
-  private_class_method :merge_symbol_into_array!
-
-  def self.merge_hash_into_symbol!(parent, element, addition, key = nil)
-    parent.delete(element) if addition.key?(element)
-    if parent.is_a?(Array)
-      merge_hash_into_array!(parent, addition)
-    elsif parent.is_a?(Hash)
-      if addition.key?(element)
-        parent[key] = addition
+  def merge_hash_into_hash!(other)
+    other.data.each do |k, v|
+      if data.key?(k)
+        data[k] = data[k].merge!(v)
       else
-        parent[key] = reduce!([element, addition])
+        data[k] = v
       end
+    end
+  end
+
+  def merge_into_symbol!(other)
+    if other.data.is_a?(Symbol)
+      merge_symbol_into_symbol!(other)
+    elsif other.data.is_a?(Array)
+      merge_array_into_symbol!(other)
+    elsif other.data.is_a?(Hash)
+      merge_hash_into_symbol!(other)
+    end
+  end
+
+  def merge_symbol_into_symbol!(other)
+    return if other.data == data
+
+    @data = [LHS::Complex.new.reduce!(data), other]
+  end
+
+  def merge_array_into_symbol!(other)
+    @data = other.data.unshift(LHS::Complex.new.reduce!(data)).uniq { |a| a.unwrap }
+  end
+
+  def merge_hash_into_symbol!(other)
+    if other.data.key?(data)
+      @data = other.data
     else
-      raise "Can't merge that complex: #{addition} -> #{parent} (#{element})"
+      @data = [LHS::Complex.new.reduce!(data), other]
     end
   end
-  private_class_method :merge_hash_into_symbol!
-
-  def self.merge_array_into_symbol!(parent, element, addition, key = nil)
-    addition.unshift(element)
-    reduce!(addition)
-    parent[key] = addition
-  end
-  private_class_method :merge_array_into_symbol!
-
-  def self.merge_hash_into_hash!(parent, element, addition, _key = nil)
-    addition.keys.each do |key|
-      if element[key]
-        parent.delete(addition)
-        merge_multi_level!(element, element[key], addition[key], key)
-      else
-        parent.delete(addition)
-        element[key] = addition[key]
-      end
-    end
-  end
-  private_class_method :merge_hash_into_hash!
-
-  def self.merge_array_into_hash!(parent, element, addition, key = nil)
-    addition.each do |element_to_add|
-      merge_multi_level!(parent, element, element_to_add, key)
-    end
-  end
-  private_class_method :merge_array_into_hash!
-
-  def self.merge_array_into_array!(_parent, element, addition, _key = nil)
-    addition.each do |element_to_add|
-      merge_multi_level!(element, element, element_to_add)
-    end
-  end
-  private_class_method :merge_array_into_array!
-
-  def self.merge_hash_into_array!(array, addition)
-    array.each do |element|
-      next unless element.is_a?(Hash)
-      element.keys.each do |key|
-        next unless addition.key?(key)
-        return merge_multi_level!(element, element[key], addition[key], key)
-      end
-    end
-    array.push(addition)
-    reduce!(array)
-  end
-  private_class_method :merge_hash_into_array!
-
-  def self.add_symbol_to_parent!(parent, element, addition, key = nil)
-    if parent.is_a?(Array)
-      unless parent.include?(addition)
-        parent.push(addition)
-        reduce!(parent)
-      end
-    elsif parent.is_a?(Hash)
-      add_symbol_to_hash_parent!(parent, element, addition, key)
-    else
-      raise "Can't merge that complex: #{addition} -> #{parent} (#{element})"
-    end
-  end
-  private_class_method :add_symbol_to_parent!
-
-  def self.add_symbol_to_hash_parent!(parent, element, addition, key)
-    return if parent[key] == addition
-    return if parent[key].is_a?(Array) && parent[key].include?(addition)
-    parent[key] = reduce!([element, addition])
-  end
-  private_class_method :add_symbol_to_hash_parent!
 end
