@@ -288,7 +288,7 @@ class LHS::Record
       end
 
       def chain_includes
-        LHS::Complex.merge(
+        LHS::Complex.reduce(
           _links
             .select { |link| link.is_a?(Include) && link.data.present? }
             .map { |link| link.data }
@@ -296,7 +296,7 @@ class LHS::Record
       end
 
       def chain_references
-        LHS::Complex.merge(
+        LHS::Complex.reduce(
           _links
             .select { |link| link.is_a?(Reference) && link.data.present? }
             .map { |link| link.data }

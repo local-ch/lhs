@@ -5,20 +5,22 @@
 class LHS::Complex
   attr_reader :data
 
-  def initialize(data)
+  def reduce!(data)
     if data.is_a?(LHS::Complex)
       @data = data.data
     elsif data.is_a?(Array) && !data.empty?
-      @data = data.inject(LHS::Complex.new([])) { |acc, datum| acc.merge!(LHS::Complex.new(datum)) }.data
+      @data = data.inject(LHS::Complex.new.reduce!([])) { |acc, datum| acc.merge!(LHS::Complex.new.reduce!(datum)) }.data
     elsif data.is_a?(Hash) && !data.empty?
-      @data = data.map { |k, v| [k, LHS::Complex.new(v)] }.to_h
+      @data = data.map { |k, v| [k, LHS::Complex.new.reduce!(v)] }.to_h
     else
       @data = data
     end
+
+    self
   end
 
-  def self.merge(data)
-    new(data).raw_data
+  def self.reduce(data)
+    new.reduce!(data).unwrap
   end
 
   def merge!(other)
@@ -29,18 +31,18 @@ class LHS::Complex
     elsif data.is_a?(Hash)
       merge_into_hash!(other)
     else
-      raise ArgumentError, "Cannot merge #{raw_data} with #{other.raw_data}"
+      raise ArgumentError, "Cannot merge #{unwrap} with #{other.unwrap}"
     end
 
     self
   end
 
-  def raw_data
+  def unwrap
     if data.is_a?(Array)
-      result = data.map(&:raw_data)
+      result = data.map(&:unwrap)
       result.empty? ? nil : result
     elsif data.is_a?(Hash)
-      result = data.map { |k, v| [k, v.raw_data] }.to_h
+      result = data.map { |k, v| [k, v.unwrap] }.to_h
       result.empty? ? nil : result
     else
       data
@@ -48,7 +50,7 @@ class LHS::Complex
   end
 
   def ==(other)
-    raw_data == other.raw_data
+    unwrap == other.unwrap
   end
 
   private
@@ -107,7 +109,7 @@ class LHS::Complex
   def merge_symbol_into_hash!(other)
     return if data.key?(other.data)
 
-    @data = [LHS::Complex.new(data), other]
+    @data = [LHS::Complex.new.reduce!(data), other]
   end
 
   def merge_array_into_hash!(other)
@@ -137,18 +139,18 @@ class LHS::Complex
   def merge_symbol_into_symbol!(other)
     return if other.data == data
 
-    @data = [LHS::Complex.new(data), other]
+    @data = [LHS::Complex.new.reduce!(data), other]
   end
 
   def merge_array_into_symbol!(other)
-    @data = other.data.unshift(LHS::Complex.new(data)).uniq { |a| a.raw_data }
+    @data = other.data.unshift(LHS::Complex.new.reduce!(data)).uniq { |a| a.unwrap }
   end
 
   def merge_hash_into_symbol!(other)
     if other.data.key?(data)
       @data = other.data
     else
-      @data = [LHS::Complex.new(data), other]
+      @data = [LHS::Complex.new.reduce!(data), other]
     end
   end
 end
