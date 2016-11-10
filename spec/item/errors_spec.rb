@@ -39,6 +39,13 @@ describe LHS::Item do
     }
   end
 
+  let(:not_defined_error_format) do
+    {
+      'error' => 'missing_token',
+      'error_description' => 'Bearer token is missing'
+    }
+  end
+
   before(:each) do
     LHC.config.placeholder(:datastore, datastore)
     class Record < LHS::Record
@@ -56,6 +63,7 @@ describe LHS::Item do
       result = record.save
       expect(result).to eq false
       expect(record.errors).to be
+      expect(record.errors.any?).to eq true
       expect(record.name).to eq 'Steve'
       expect(record.errors.include?(:ratings)).to eq true
       expect(record.errors.include?(:recommended)).to eq true
@@ -71,6 +79,7 @@ describe LHS::Item do
       result = record.save
       expect(result).to eq false
       expect(record.errors).to be
+      expect(record.errors.any?).to eq true
       expect(record.errors.include?(:gender)).to eq true
       expect(record.errors.include?(:"contract.entry_id")).to eq true
       expect(record.errors[:gender]).to eq ['UNSUPPORTED_PROPERTY_VALUE', 'INCOMPLETE_PROPERTY_VALUE']
@@ -85,10 +94,24 @@ describe LHS::Item do
       record = Record.build
       record.save
       expect(record.errors.raw).to be
+      expect(record.errors.any?).to eq true
       json = JSON.parse(record.errors.raw)
       expect(json['status']).to be
       expect(json['message']).to be
       expect(json['field_errors']).to be
+    end
+  end
+
+  context 'request fails with unformated error message' do
+    it 'still tells us that there is an error' do
+      stub_request(:post, "#{datastore}/feedbacks")
+        .to_return(status: 400, body: not_defined_error_format.to_json)
+      record = Record.build
+      record.name = 'Steve'
+      result = record.save
+      expect(result).to eq false
+      expect(record.errors).to be
+      expect(record.errors.any?).to eq true
     end
   end
 end

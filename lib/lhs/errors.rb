@@ -65,6 +65,7 @@ class LHS::Errors
   private
 
   def add_error(messages, key, value)
+    key = key.to_sym
     messages[key] ||= []
     messages[key].push(value)
   end
@@ -81,6 +82,11 @@ class LHS::Errors
     if json['field_errors']
       json['field_errors'].each do |field_error|
         add_error(messages, field_error['path'].join('.').to_sym, field_error['code'])
+      end
+    end
+    if messages.empty? && json.present?
+      json.each do |key, value|
+        add_error(messages, key, value)
       end
     end
     messages
