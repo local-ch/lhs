@@ -112,6 +112,8 @@ describe LHS::Item do
       expect(result).to eq false
       expect(record.errors).to be
       expect(record.errors.any?).to eq true
+      expect(record.errors['error']).to eq ['missing_token']
+      expect(record.errors['error_description']).to eq ['Bearer token is missing']
     end
   end
 
@@ -124,6 +126,7 @@ describe LHS::Item do
       expect(result).to eq false
       expect(record.errors).to be
       expect(record.errors.any?).to eq true
+      expect(record.errors['body']).to eq ['parse error']
     end
   end
 end
