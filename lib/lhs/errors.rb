@@ -8,7 +8,8 @@ class LHS::Errors
     @messages = messages_from_response(response)
     @message = message_from_response(response)
     @raw = response.body if response
-  rescue JSON::ParserError # rubocop:disable Lint/HandleExceptions
+  rescue JSON::ParserError
+    add_error(messages, 'body', 'parse error')
   end
 
   def include?(attribute)
@@ -72,24 +73,34 @@ class LHS::Errors
 
   def parse_messages(json)
     messages = {}
-    if json['fields']
-      json['fields'].each do |field|
-        field['details'].each do |detail|
-          add_error(messages, field['name'].to_sym, detail['code'])
-        end
-      end
-    end
-    if json['field_errors']
-      json['field_errors'].each do |field_error|
-        add_error(messages, field_error['path'].join('.').to_sym, field_error['code'])
-      end
-    end
-    if messages.empty? && json.present?
+    fields_to_errors(json, messages) if json['fields']
+    field_errors_to_errors(json, messages) if json['field_errors']
+    fallback_errors(json, messages) if messages.empty?
+    messages
+  end
+
+  def fallback_errors(json, messages)
+    if json.present?
       json.each do |key, value|
         add_error(messages, key, value)
       end
+    else
+      add_error(messages, 'unknown', 'error')
     end
-    messages
+  end
+
+  def field_errors_to_errors(json, messages)
+    json['field_errors'].each do |field_error|
+      add_error(messages, field_error['path'].join('.').to_sym, field_error['code'])
+    end
+  end
+
+  def fields_to_errors(json, messages)
+    json['fields'].each do |field|
+      field['details'].each do |detail|
+        add_error(messages, field['name'].to_sym, detail['code'])
+      end
+    end
   end
 
   def messages_from_response(response = nil)

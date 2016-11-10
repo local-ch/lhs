@@ -114,4 +114,16 @@ describe LHS::Item do
       expect(record.errors.any?).to eq true
     end
   end
+
+  context 'empty error response body' do
+    it 'still tells us that there is an error' do
+      stub_request(:post, "#{datastore}/feedbacks").to_return(status: 400)
+      record = Record.build
+      record.name = 'Steve'
+      result = record.save
+      expect(result).to eq false
+      expect(record.errors).to be
+      expect(record.errors.any?).to eq true
+    end
+  end
 end
