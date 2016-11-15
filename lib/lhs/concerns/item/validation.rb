@@ -8,31 +8,46 @@ class LHS::Item < LHS::Proxy
     def valid?(options = {})
       options ||= {}
       self.errors = nil
-      raise 'No validation endpoint found!' unless validation_endpoint
-      record = LHS::Record.for_url(validation_endpoint.url)
-      validation_params = validation_endpoint.options[:validates] == true ? { persist: false } : { validation_endpoint.options[:validates] => false }
-      params = validation_endpoint.options.fetch(:params, {})
-        .merge(params_from_embeded_href)
-        .merge(validation_params)
-      begin
-        record.request(
-          options.merge(
-            url: validation_endpoint.url,
-            method: :post,
-            params: params,
-            body: _data.to_json,
-            headers: { 'Content-Type' => 'application/json' }
-          )
-        )
-        true
-      rescue LHC::Error => e
-        self.errors = LHS::Errors.new(e.response)
-        false
-      end
+      raise 'No endpoint found to perform validations: https://github.com/local-ch/lhs#validation' unless validation_endpoint
+      endpoint = validation_endpoint
+      record = LHS::Record.for_url(endpoint.url)
+      params = merge_validation_params(endpoint)
+      url = validation_url(endpoint)
+      run_validation!(record, options, url, params)
+      true
+    rescue LHC::Error => e
+      self.errors = LHS::Errors.new(e.response)
+      false
     end
     alias validate valid?
 
     private
+
+    def validation_url(endpoint)
+      url = endpoint.url
+      action = endpoint.options[:validates].is_a?(String) ? endpoint.options[:validates] : nil
+      url = "#{url}#{action}" if action.present?
+      url
+    end
+
+    def merge_validation_params(endpoint)
+      validates_params = endpoint.options[:validates]
+      params = endpoint.options.fetch(:params, {}).merge(params_from_embeded_href)
+      params = params.merge(validates_params) if validates_params.is_a?(Hash)
+      params
+    end
+
+    def run_validation!(record, options, url, params)
+      record.request(
+        options.merge(
+          url: url,
+          method: :post,
+          params: params,
+          body: _data.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+      )
+    end
 
     def validation_endpoint
       endpoint = embeded_endpoint if _data.href # take embeded first

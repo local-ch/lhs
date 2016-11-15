@@ -17,6 +17,7 @@ class LHS::Record
         class_attribute :endpoints unless defined? endpoints
         self.endpoints ||= []
         self.endpoints = endpoints.clone
+        validates_deprecation_check!(options)
         endpoint = LHC::Endpoint.new(url, options)
         sanity_check(endpoint)
         endpoints.push(endpoint)
@@ -62,6 +63,14 @@ class LHS::Record
       end
 
       private
+
+      def validates_deprecation_check!(options)
+        return unless options.present?
+        return unless options[:validates].present?
+        return if options[:validates].is_a?(Hash)
+        return if !options[:validates].is_a?(TrueClass) && options[:validates].match(/^\//)
+        raise 'Validates with either true or a simple string is deprecated: https://github.com/local-ch/lhs#validation'
+      end
 
       # Finds the best endpoint.
       # The best endpoint is the one where all placeholders are interpolated.
