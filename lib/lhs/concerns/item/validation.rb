@@ -8,8 +8,8 @@ class LHS::Item < LHS::Proxy
     def valid?(options = {})
       options ||= {}
       self.errors = nil
-      raise 'No endpoint found to perform validations: https://github.com/local-ch/lhs#validation' unless validation_endpoint
       endpoint = validation_endpoint
+      raise 'No endpoint found to perform validations: https://github.com/local-ch/lhs#validation' unless endpoint
       record = LHS::Record.for_url(endpoint.url)
       params = merge_validation_params(endpoint)
       url = validation_url(endpoint)
