@@ -10,18 +10,17 @@ describe LHS::Item do
   end
 
   context 'deprecation warning for old syntax' do
-
     it 'throws errors when using validates with the old syntax' do
-      expect(-> {
+      expect(lambda do
         class User < LHS::Record
           endpoint 'http://datastore/v2/users', validates: true
         end
-      }).to raise_error 'Validates with either true or a simple string is deprecated: https://github.com/local-ch/lhs#validation'
-      expect(-> {
+      end).to raise_error 'Validates with either true or a simple string is deprecated: https://github.com/local-ch/lhs#validation'
+      expect(lambda do
         class Record < LHS::Record
           endpoint 'http://datastore/v2/records', validates: 'publish'
         end
-      }).to raise_error 'Validates with either true or a simple string is deprecated: https://github.com/local-ch/lhs#validation'
+      end).to raise_error 'Validates with either true or a simple string is deprecated: https://github.com/local-ch/lhs#validation'
     end
   end
 
