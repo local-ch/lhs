@@ -542,7 +542,7 @@ The specific endpoint has to support validations without peristance. An endpoint
 
 ```ruby
 class User < LHS::Record
-  endpoint ':service/v2/users', validates: { persist: false }
+  endpoint ':service/v2/users', validates: { params: { persist: false } }
 end
 
 user = User.build(email: 'im not an email address')
@@ -554,10 +554,10 @@ end
 The parameters passed to the `validates` endpoint option are used to perform the validation:
 
 ```ruby
-  endpoint ':service/v2/users', validates: { persist: false }  # will add ?persist=false to the request
-  endpoint ':service/v2/users', validates: { publish: false }  # will add ?publish=false to the request
-  endpoint ':service/v2/users', validates: { validates: true } # will add ?validates=true to the request
-  endpoint ':service/v2/users', validates: '/validate'         # will perform a validation via :service/v2/users/validate
+  endpoint ':service/v2/users', validates: { params: { persist: false } }  # will add ?persist=false to the request
+  endpoint ':service/v2/users', validates: { params: { publish: false } }  # will add ?publish=false to the request
+  endpoint ':service/v2/users', validates: { params: { validates: true } } # will add ?validates=true to the request
+  endpoint ':service/v2/users', validates: { path: 'validate' }            # will perform a validation via :service/v2/users/validate
 ```
 
 ## Custom validation errors
