@@ -11,7 +11,7 @@ class LHS::Item < LHS::Proxy
       endpoint = validation_endpoint
       raise 'No endpoint found to perform validations! See here: https://github.com/local-ch/lhs#validation' unless endpoint
       record = LHS::Record.for_url(endpoint.url)
-      params = merge_validation_params(endpoint)
+      params = merge_validation_params!(endpoint)
       url = validation_url(endpoint)
       run_validation!(record, options, url, params)
       true
@@ -25,13 +25,13 @@ class LHS::Item < LHS::Proxy
 
     def validation_url(endpoint)
       url = endpoint.url
-      action = endpoint.options[:validates].is_a?(String) ? endpoint.options[:validates] : nil
-      url = "#{url}#{action}" if action.present?
+      action = endpoint.options[:validates][:path].presence
+      url = "#{url}/#{action}" if action.present?
       url
     end
 
-    def merge_validation_params(endpoint)
-      validates_params = endpoint.options[:validates]
+    def merge_validation_params!(endpoint)
+      validates_params = endpoint.options[:validates].select { |key, _| key.to_sym != :path }
       params = endpoint.options.fetch(:params, {}).merge(params_from_embeded_href)
       params = params.merge(validates_params) if validates_params.is_a?(Hash)
       params

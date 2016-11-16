@@ -31,7 +31,7 @@ describe LHS::Item do
 
     it 'validates {publish: false}' do
       class User < LHS::Record
-        endpoint 'http://datastore/v2/users', validates: { publish: false }
+        endpoint 'http://datastore/v2/users', validates: { params: { publish: false } }
       end
       stub_request(:post, "http://datastore/v2/users?publish=false").to_return(body: {}.to_json)
       expect(user.valid?).to eq true
@@ -39,7 +39,7 @@ describe LHS::Item do
 
     it 'validates {persist: false}' do
       class User < LHS::Record
-        endpoint 'http://datastore/v2/users', validates: { persist: false }
+        endpoint 'http://datastore/v2/users', validates: { params: { persist: false } }
       end
       stub_request(:post, "http://datastore/v2/users?persist=false").to_return(body: {}.to_json)
       expect(user.valid?).to eq true
@@ -47,7 +47,7 @@ describe LHS::Item do
 
     it 'validates {validates: true}' do
       class User < LHS::Record
-        endpoint 'http://datastore/v2/users', validates: { validates: true }
+        endpoint 'http://datastore/v2/users', validates: { params: { validates: true } }
       end
       stub_request(:post, "http://datastore/v2/users?validates=true").to_return(body: {}.to_json)
       expect(user.valid?).to eq true
@@ -55,7 +55,7 @@ describe LHS::Item do
 
     it 'validates /validate' do
       class User < LHS::Record
-        endpoint 'http://datastore/v2/users', validates: '/validate'
+        endpoint 'http://datastore/v2/users', validates: { path: 'validate' }
       end
       stub_request(:post, "http://datastore/v2/users/validate").to_return(body: {}.to_json)
       expect(user.valid?).to eq true
@@ -74,7 +74,7 @@ describe LHS::Item do
 
     before(:each) do
       class User < LHS::Record
-        endpoint 'http://datastore/v2/users', validates: { persist: false }
+        endpoint 'http://datastore/v2/users', validates: { params: { persist: false } }
       end
     end
 
