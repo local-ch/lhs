@@ -538,11 +538,11 @@ or with parameters:
 
 In order to validate LHS::Records before persisting them, you can use the `valid?` (`validate` alias) method.
 
-The specific endpoint has to support validations with the `persist=false` parameter. The endpoint has to be enabled (opt-in) for validations in the service configuration.
+The specific endpoint has to support validations without peristance. An endpoint has to be enabled (opt-in) for validations in the service configuration.
 
 ```ruby
 class User < LHS::Record
-  endpoint ':service/v2/users', validates: true
+  endpoint ':service/v2/users', validates: { params: { persist: false } }
 end
 
 user = User.build(email: 'im not an email address')
@@ -551,12 +551,13 @@ unless user.valid?
 end
 ```
 
-In case endpoints define other parameter names for validation like `publish` you can configure those with passing a string to `validates`:
+The parameters passed to the `validates` endpoint option are used to perform the validation:
 
 ```ruby
-class User < LHS::Record
-  endpoint ':service/v2/users', validates: 'publish'
-end
+  endpoint ':service/v2/users', validates: { params: { persist: false } }  # will add ?persist=false to the request
+  endpoint ':service/v2/users', validates: { params: { publish: false } }  # will add ?publish=false to the request
+  endpoint ':service/v2/users', validates: { params: { validates: true } } # will add ?validates=true to the request
+  endpoint ':service/v2/users', validates: { path: 'validate' }            # will perform a validation via :service/v2/users/validate
 ```
 
 ## Custom validation errors

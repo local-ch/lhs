@@ -8,11 +8,11 @@ describe LHS::Record do
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
-      endpoint ':datastore/records', validates: true
+      endpoint ':datastore/records', validates: { persist: false }
     end
   end
 
-  let(:options) { { auth: { bearer: '123' }, validates: true } }
+  let(:options) { { auth: { bearer: '123' }, validates: { persist: false } } }
   let(:params) { { name: 'Steve' } }
 
   context 'options' do
