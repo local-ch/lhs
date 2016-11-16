@@ -15,12 +15,12 @@ describe LHS::Item do
         class User < LHS::Record
           endpoint 'http://datastore/v2/users', validates: true
         end
-      end).to raise_error 'Validates with either true or a simple string is deprecated: https://github.com/local-ch/lhs#validation'
+      end).to raise_error 'Validates with either true or a simple string is deprecated! See here: https://github.com/local-ch/lhs#validation'
       expect(lambda do
         class Record < LHS::Record
           endpoint 'http://datastore/v2/records', validates: 'publish'
         end
-      end).to raise_error 'Validates with either true or a simple string is deprecated: https://github.com/local-ch/lhs#validation'
+      end).to raise_error 'Validates with either true or a simple string is deprecated! See here: https://github.com/local-ch/lhs#validation'
     end
   end
 

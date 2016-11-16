@@ -69,7 +69,7 @@ class LHS::Record
         return unless options[:validates].present?
         return if options[:validates].is_a?(Hash)
         return if !options[:validates].is_a?(TrueClass) && options[:validates].match(%r{^\/})
-        raise 'Validates with either true or a simple string is deprecated: https://github.com/local-ch/lhs#validation'
+        raise 'Validates with either true or a simple string is deprecated! See here: https://github.com/local-ch/lhs#validation'
       end
 
       # Finds the best endpoint.
