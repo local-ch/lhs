@@ -281,7 +281,7 @@ class LHS::Record
       end
 
       def url_option_for(item, key = nil)
-        link = key ? item[key] : item
+        link = item && key ? item[key] : item
         return { url: link.href } if link.present? && link.href.present?
       end
     end
