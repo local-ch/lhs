@@ -4,6 +4,8 @@ Dir[File.dirname(__FILE__) + '/concerns/item/*.rb'].each { |file| require file }
 # An item is a concrete record.
 # It can be part of another proxy like collection.
 class LHS::Item < LHS::Proxy
+  include Create
+  include Link
   include Destroy
   include Save
   include Update

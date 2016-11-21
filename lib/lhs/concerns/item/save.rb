@@ -21,8 +21,10 @@ class LHS::Item < LHS::Proxy
         url = href
       else
         endpoint = record.find_endpoint(data)
-        url = endpoint.compile(data)
+        params = data.merge(options.fetch(:params, {}))
+        url = endpoint.compile(params)
         endpoint.remove_interpolated_params!(data)
+        endpoint.remove_interpolated_params!(options[:params]) if options[:params].present?
         options.merge!(endpoint.options.merge(options)) if endpoint.options
       end
 
