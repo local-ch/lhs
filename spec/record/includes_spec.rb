@@ -462,7 +462,10 @@ describe LHS::Record do
           items: []
         }.to_json)
       place = Place.includes(:contracts).find('123')
-      expect(place.contracts._raw[:items]).to eq []
+      expect(
+        place.contracts.as_json
+      ).to eq('href' => 'http://datastore/places/123/contracts', 'items' => [])
+      expect(place.contracts.to_a).to eq([])
     end
   end
 end
