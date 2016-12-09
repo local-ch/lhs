@@ -448,5 +448,25 @@ describe LHS::Record do
         place.contracts.first.product.name
       ).to eq 'Local Logo'
     end
+
+    it 'expands empty arrays' do
+      stub_request(:get, "http://datastore/places/123")
+        .to_return(body: {
+          'contracts' => {
+            'href' => "http://datastore/places/123/contracts"
+          }
+        }.to_json)
+      stub_request(:get, "http://datastore/places/123/contracts")
+        .to_return(body: {
+          href: "http://datastore/places/123/contracts",
+          items: []
+        }.to_json)
+      place = Place.includes(:contracts).find('123')
+      expect(place.contracts.collection?).to eq true
+      expect(
+        place.contracts.as_json
+      ).to eq('href' => 'http://datastore/places/123/contracts', 'items' => [])
+      expect(place.contracts.to_a).to eq([])
+    end
   end
 end
