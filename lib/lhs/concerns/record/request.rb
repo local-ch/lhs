@@ -109,7 +109,7 @@ class LHS::Record
         return if data.blank? || skip_loading_includes?(data, included)
         options = options_for_data(data, included)
         options = extend_with_references(options, references)
-        addition = load_include(options, data, sub_includes)
+        addition = load_include(options, data, sub_includes, references)
         extend_raw_data!(data, addition, included)
         expand_addition!(data, included) if no_expanded_data?(addition)
       end
@@ -162,14 +162,14 @@ class LHS::Record
       end
 
       # Load additional resources that are requested with include
-      def load_include(options, data, sub_includes)
+      def load_include(options, data, sub_includes, references)
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
           if options.is_a?(Array)
-            options.each { |options| options.merge!(including: sub_includes) if sub_includes.present? }
+            options.each { |options| options.merge!(including: sub_includes, referencing: references) if sub_includes.present? }
           elsif sub_includes.present?
-            options.merge!(including: sub_includes)
+            options.merge!(including: sub_includes, referencing: references)
           end
           record.request(options)
         rescue LHC::NotFound

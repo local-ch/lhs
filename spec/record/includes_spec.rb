@@ -407,4 +407,46 @@ describe LHS::Record do
       expect(customers.first.places.first.id).to eq 1
     end
   end
+
+  context 'more complex examples' do
+    before(:each) do
+      class Place < LHS::Record
+        endpoint 'http://datastore/places/:id'
+      end
+    end
+
+    it 'forwards complex references' do
+      stub_request(:get, "http://datastore/places/123?limit=1")
+        .to_return(body: {
+          'contracts' => {
+            'href' => "http://datastore/places/123/contracts"
+          }
+        }.to_json)
+      stub_request(:get, "http://datastore/places/123/contracts?forwarded_params=for_contracts")
+        .to_return(body: {
+          href: "http://datastore/places/123/contracts?forwarded_params=for_contracts",
+          items: [
+            { product: { 'href' => "http://datastore/products/llo" } }
+          ]
+        }.to_json)
+      stub_request(:get, "http://datastore/products/llo?forwarded_params=for_product")
+        .to_return(body: {
+          'href' => "http://datastore/products/llo",
+          'name' => 'Local Logo'
+        }.to_json)
+      place = Place
+        .options(forward_params: 'for_place')
+        .includes(contracts: :product)
+        .references(
+          contracts: {
+            params: { forwarded_params: 'for_contracts' },
+            product: { params: { forwarded_params: 'for_product' } }
+          }
+        )
+        .find_by(id: '123')
+      expect(
+        place.contracts.first.product.name
+      ).to eq 'Local Logo'
+    end
+  end
 end
