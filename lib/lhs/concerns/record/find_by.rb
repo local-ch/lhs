@@ -22,7 +22,7 @@ class LHS::Record
 
       def _find_by(params, options = {})
         options ||= {}
-        params = params.dup.merge(limit: 1)
+        params = params.dup.merge(limit: 1).merge(options.fetch(:params, {}))
         data = request(options.merge(params: params))
         if data._proxy.is_a?(LHS::Collection)
           data.first || raise(LHC::NotFound.new('No item was found.', data._request.response))

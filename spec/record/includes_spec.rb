@@ -416,7 +416,7 @@ describe LHS::Record do
     end
 
     it 'forwards complex references' do
-      stub_request(:get, "http://datastore/places/123?limit=1")
+      stub_request(:get, "http://datastore/places/123?limit=1&forwarded_params=for_place")
         .to_return(body: {
           'contracts' => {
             'href' => "http://datastore/places/123/contracts"
@@ -435,7 +435,7 @@ describe LHS::Record do
           'name' => 'Local Logo'
         }.to_json)
       place = Place
-        .options(forward_params: 'for_place')
+        .options(params: { forwarded_params: 'for_place' })
         .includes(contracts: :product)
         .references(
           contracts: {
