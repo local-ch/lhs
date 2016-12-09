@@ -39,7 +39,6 @@ class LHS::Record
 
       # Extends existing raw data with additionaly fetched data
       def extend_raw_data!(data, addition, key)
-        return if addition.empty?
         if data.collection?
           extend_base_collection!(data, addition, key)
         elsif data[key]._raw.is_a? Array
