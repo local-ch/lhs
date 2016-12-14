@@ -29,7 +29,6 @@ class LHS::Proxy
       raise(ArgumentError, 'Record already exists') if _raw.keys != [:href] && item?
 
       record = yield
-      merge_record_data(record)
       # Needed to handle unexpanded collection which looks the same as item
       reload!
       record
@@ -39,14 +38,6 @@ class LHS::Proxy
       return options if params_from_link.blank?
       options = {} if options.blank?
       options.deep_merge(params: params_from_link)
-    end
-
-    def merge_record_data(record)
-      if collection?
-        _collection << record._raw
-      elsif item?
-        _data.merge_raw!(record._data)
-      end
     end
   end
 end
