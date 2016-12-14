@@ -256,7 +256,7 @@ class LHS::Record
 
       def resolved_options
         options = chain_options
-        options = options.merge(params: chain_parameters.merge(chain_pagination))
+        options = options.deep_merge(params: chain_parameters.merge(chain_pagination))
         options = options.merge(error_handler: chain_error_handler) if chain_error_handler.present?
         options = options.merge(including: chain_includes) if chain_includes.present?
         options = options.merge(referencing: chain_references) if chain_references.present?

@@ -14,17 +14,15 @@ class LHS::Item < LHS::Proxy
     end
 
     def save!(options = {})
-      options ||= {}
-      record = _data.class
+      options = options.present? ? options.dup : {}
       data = _data._raw.dup
       if href.present?
         url = href
       else
-        endpoint = record.find_endpoint(data)
-        params = data.merge(options.fetch(:params, {}))
-        url = endpoint.compile(params)
+        endpoint = endpoint_for_persistance(data, options)
+        url = url_for_persistance(endpoint, data, options)
         endpoint.remove_interpolated_params!(data)
-        endpoint.remove_interpolated_params!(options[:params]) if options[:params].present?
+        endpoint.remove_interpolated_params!(options.fetch(:params, {}))
         options.merge!(endpoint.options.merge(options)) if endpoint.options
       end
 
@@ -32,9 +30,34 @@ class LHS::Item < LHS::Proxy
       options[:headers] ||= {}
       options[:headers].merge!('Content-Type' => 'application/json')
 
-      data = record.request(options)
+      data = record_for_persistance.request(options)
       _data.merge_raw!(data)
       true
+    end
+
+    private
+
+    def endpoint_for_persistance(data, options)
+      record_for_persistance
+        .find_endpoint(merge_data_with_options(data, options))
+    end
+
+    def merge_data_with_options(data, options)
+      if options && options[:params]
+        data.merge(options[:params])
+      else
+        data
+      end
+    end
+
+    def record_for_persistance
+      _data.class
+    end
+
+    def url_for_persistance(endpoint, data, options)
+      endpoint.compile(
+        merge_data_with_options(data, options)
+      )
     end
   end
 end
