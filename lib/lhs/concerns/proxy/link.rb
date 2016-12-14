@@ -1,7 +1,7 @@
 require 'active_support'
-require File.dirname(__FILE__) + '/../../proxy'
+# require File.dirname(__FILE__) + '/../../proxy'
 
-class LHS::Item < LHS::Proxy
+class LHS::Proxy
 
   module Link
     extend ActiveSupport::Concern
