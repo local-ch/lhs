@@ -14,6 +14,7 @@ describe LHS::Item do
   let!(:create_review_request) do
     stub_request(:post, "http://datastore/v2/feedbacks/1/reviews")
       .to_return(body: {
+        href: 'http://datastore/v2/feedbacks/1/reviews/1',
         title: 'Simply awesome'
       }.to_json)
   end
