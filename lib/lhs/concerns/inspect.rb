@@ -28,21 +28,24 @@ module Inspect
   def _inspect_path
     current = self
     path = []
-    while current.parent
-      parent_raw = current.parent._raw
-      if parent_raw.is_a?(Array)
-        parent_raw.each_with_index do |element, index|
-          path.push(index) if element == current._raw
-        end
-      elsif parent_raw.is_a?(Hash)
-        parent_raw.each do |key, value|
-          path.push(key) if value == current._raw
-        end
-      end
-      current = current.parent
-    end
+    _collect_parents_for_inspect!(path, current)
     return unless path.present?
     "> #{path.reverse.join(' > ')}"
+  end
+
+  def _collect_parents_for_inspect!(path, current)
+    return unless current.parent
+    parent_raw = current.parent._raw
+    if parent_raw.is_a?(Array)
+      parent_raw.each_with_index do |element, index|
+        path.push(index) if element == current._raw
+      end
+    elsif parent_raw.is_a?(Hash)
+      parent_raw.each do |key, value|
+        path.push(key) if value == current._raw
+      end
+    end
+    _collect_parents_for_inspect!(path, current.parent) if current.parent
   end
 
   def pretty_raw
