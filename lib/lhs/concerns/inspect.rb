@@ -14,7 +14,7 @@ module Inspect
           _inspect_id
         ].join(' '),
         _inspect_path
-      ].compact.join(' '),
+      ].compact.join("\n"),
       pretty_raw
     ].compact.join("\n")
   end
@@ -45,7 +45,7 @@ module Inspect
         path.push(key) if value == current._raw
       end
     end
-    _collect_parents_for_inspect!(path, current.parent) if current.parent
+    _collect_parents_for_inspect!(path, current.parent)
   end
 
   def pretty_raw

@@ -37,7 +37,8 @@ describe LHS::Data do
 
     it 'prints inspected data on multiple lines' do
       expect_inspect_to_look_like data, %Q{
-        Data of Record #{data.object_id} > pets > 0
+        Data of Record #{data.object_id}
+        > pets > 0
         :name => \"Steve\"
         :kind => {:animal=>{:type=>\"Monkey\"}}
       }
@@ -48,7 +49,8 @@ describe LHS::Data do
 
       it 'prints the breadcrumb that shows you the current location within the main record' do
         expect_inspect_to_look_like data, %Q{
-          Data of Record #{data.object_id} > pets > 0 > kind > animal
+          Data of Record #{data.object_id}
+          > pets > 0 > kind > animal
           :type => \"Monkey\"
         }
       end
