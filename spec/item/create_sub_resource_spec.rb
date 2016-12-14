@@ -36,6 +36,33 @@ describe LHS::Item do
               }
             }.to_json)
         end
+
+        it 'creates an item' do
+          review
+          assert_requested(create_review_request)
+
+          expect(feedback.review.title).to eq 'Simply awesome'
+          expect(review.title).to eq 'Simply awesome'
+        end
+      end
+
+      context 'with existing item' do
+        before(:each) do
+          stub_request(:get, "http://datastore/v2/feedbacks/1")
+            .to_return(body: {
+              review: {
+                href: 'http://datastore/v2/feedbacks/1/reviews',
+                title: 'Simply awesome'
+              }
+            }.to_json)
+        end
+
+        it 'raises error' do
+          expect { review }.to raise_error(ArgumentError)
+
+          assert_not_requested(create_review_request)
+        end
+      end
     end
   end
 end

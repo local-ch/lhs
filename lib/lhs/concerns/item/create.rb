@@ -26,6 +26,8 @@ class LHS::Item < LHS::Proxy
     private
 
     def record_creation!
+      raise(ArgumentError, 'Record already exists') if _raw.keys != [:href]
+
       record = yield
       _data.merge_raw!(record._data)
       record
