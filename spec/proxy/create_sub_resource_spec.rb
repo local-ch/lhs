@@ -27,6 +27,14 @@ describe LHS::Item do
         )
       end
 
+      before do
+        stub_request(:get, "http://datastore/v2/feedbacks/1/reviews")
+          .to_return(body: {
+            href: 'http://datastore/v2/feedbacks/1/reviews',
+            title: 'Simply awesome'
+          }.to_json)
+      end
+
       context 'without the object' do
         before(:each) do
           stub_request(:get, "http://datastore/v2/feedbacks/1")
@@ -72,6 +80,16 @@ describe LHS::Item do
         )
       end
 
+      before do
+        stub_request(:get, "http://datastore/v2/feedbacks/1/reviews")
+          .to_return(body: {
+            items: [{
+              href: 'http://datastore/v2/feedbacks/1/reviews/1',
+              title: 'Simply awesome'
+            }]
+          }.to_json)
+      end
+
       context 'when expanded' do
         before(:each) do
           stub_request(:get, "http://datastore/v2/feedbacks/1")
@@ -84,6 +102,27 @@ describe LHS::Item do
         end
 
         let(:feedback) { Feedback.includes(:reviews).find(1) }
+
+        it 'creates an item' do
+          review
+          assert_requested(create_review_request)
+
+          expect(feedback.reviews.first.title).to eq 'Simply awesome'
+          expect(review.title).to eq 'Simply awesome'
+        end
+      end
+
+      context 'when not expanded' do
+        before(:each) do
+          stub_request(:get, "http://datastore/v2/feedbacks/1")
+            .to_return(body: {
+              reviews: {
+                href: 'http://datastore/v2/feedbacks/1/reviews',
+              }
+            }.to_json)
+        end
+
+        let(:feedback) { Feedback.find(1) }
 
         it 'creates an item' do
           review

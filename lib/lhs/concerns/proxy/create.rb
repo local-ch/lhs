@@ -30,6 +30,7 @@ class LHS::Proxy
 
       record = yield
       merge_record_data(record)
+      reload!
       record
     end
 
