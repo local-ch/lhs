@@ -22,6 +22,10 @@ class LHS::Item < LHS::Proxy
     super(data)
   end
 
+  def collection?
+    false
+  end
+
   def item?
     true
   end

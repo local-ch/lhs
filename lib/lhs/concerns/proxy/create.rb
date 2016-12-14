@@ -1,6 +1,6 @@
 require 'active_support'
 
-class LHS::Item < LHS::Proxy
+class LHS::Proxy
 
   module Create
     extend ActiveSupport::Concern
@@ -26,10 +26,10 @@ class LHS::Item < LHS::Proxy
     private
 
     def record_creation!
-      raise(ArgumentError, 'Record already exists') if _raw.keys != [:href]
+      raise(ArgumentError, 'Record already exists') if _raw.keys != [:href] && item?
 
       record = yield
-      _data.merge_raw!(record._data)
+      merge_record_data(record)
       record
     end
 
@@ -37,6 +37,14 @@ class LHS::Item < LHS::Proxy
       return options if params_from_link.blank?
       options = {} if options.blank?
       options.deep_merge(params: params_from_link)
+    end
+
+    def merge_record_data(record)
+      if collection?
+        _collection << record._data
+      elsif item?
+        _data.merge_raw!(record._data)
+      end
     end
   end
 end

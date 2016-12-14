@@ -29,6 +29,10 @@ class LHS::Collection < LHS::Proxy
     true
   end
 
+  def item?
+    false
+  end
+
   protected
 
   def method_missing(name, *args, &block)
