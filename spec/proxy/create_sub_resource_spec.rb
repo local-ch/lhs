@@ -117,7 +117,7 @@ describe LHS::Item do
           stub_request(:get, "http://datastore/v2/feedbacks/1")
             .to_return(body: {
               reviews: {
-                href: 'http://datastore/v2/feedbacks/1/reviews',
+                href: 'http://datastore/v2/feedbacks/1/reviews'
               }
             }.to_json)
         end
