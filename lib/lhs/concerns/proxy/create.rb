@@ -30,6 +30,7 @@ class LHS::Proxy
 
       record = yield
       merge_record_data(record)
+      # Needed to handle unexpanded collection which looks the same as item
       reload!
       record
     end
@@ -42,7 +43,7 @@ class LHS::Proxy
 
     def merge_record_data(record)
       if collection?
-        _collection << record._data
+        _collection << record._raw
       elsif item?
         _data.merge_raw!(record._data)
       end

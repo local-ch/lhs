@@ -12,7 +12,8 @@ class LHS::Collection < LHS::Proxy
       include Enumerable
 
       attr_accessor :raw
-      delegate :length, :size, :last, :sample, :[], :present?, :blank?, :empty?, :<<, to: :raw
+      delegate :length, :size, :last, :sample, :[], :present?, :blank?, :empty?,
+               :<<, :push, to: :raw
 
       def initialize(raw, parent, record)
         self.raw = raw
