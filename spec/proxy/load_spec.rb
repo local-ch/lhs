@@ -54,10 +54,22 @@ describe LHS::Proxy do
       AnotherRecord.new(href: 'http://datastore/v2/feedbacks')
     end
 
-    it 'applys endpoint options on load!' do
+    it 'applies endpoint options on load!' do
       stub_request(:get, 'http://datastore/v2/feedbacks?color=blue')
         .to_return(body: {}.to_json)
       record.load!
+    end
+  end
+
+  context 'per request options' do
+    let(:record) do
+      Record.new(href: 'http://datastore/v2/feedbacks')
+    end
+
+    it 'applies options passed to load' do
+      stub_request(:get, 'http://datastore/v2/feedbacks?color=blue')
+        .to_return(body: {}.to_json)
+      record.load!(params: { color: 'blue' })
     end
   end
 end

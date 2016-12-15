@@ -15,14 +15,16 @@ class LHS::Proxy
     self._loaded = false
   end
 
-  def load!
+  def load!(options = nil)
     return self if _loaded
-    reload!
+    reload!(options)
   end
 
-  def reload!
+  def reload!(options = nil)
     raise 'No href found' unless _data.href
-    data = _data.class.request(url: _data.href, method: :get)
+    options = {} if options.blank?
+
+    data = _data.class.request(options.merge(url: _data.href, method: :get))
     _data.merge_raw!(data)
     self._loaded = true
     self

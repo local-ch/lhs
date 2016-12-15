@@ -6,7 +6,7 @@ class LHS::Proxy
     extend ActiveSupport::Concern
 
     def create(data = {}, options = nil)
-      record_creation! do
+      record_creation!(options) do
         record_from_link.create(
           data,
           options_for_creation(options)
@@ -15,7 +15,7 @@ class LHS::Proxy
     end
 
     def create!(data = {}, options = nil)
-      record_creation! do
+      record_creation!(options) do
         record_from_link.create!(
           data,
           options_for_creation(options)
@@ -25,12 +25,12 @@ class LHS::Proxy
 
     private
 
-    def record_creation!
+    def record_creation!(options)
       raise(ArgumentError, 'Record already exists') if _raw.keys != [:href] && item?
 
       record = yield
       # Needed to handle unexpanded collection which looks the same as item
-      reload!
+      reload!(options)
       record
     end
 
