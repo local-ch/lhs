@@ -30,7 +30,7 @@ class LHS::Proxy
 
       record = yield
       # Needed to handle unexpanded collection which looks the same as item
-      reload!(options)
+      reload!(options) if record.errors.empty?
       record
     end
 

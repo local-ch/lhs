@@ -11,15 +11,15 @@ describe LHS::Item do
     end
   end
 
-  let!(:create_review_request) do
-    stub_request(:post, "http://datastore/v2/feedbacks/1/reviews")
-      .to_return(body: {
-        href: 'http://datastore/v2/feedbacks/1/reviews/1',
-        title: 'Simply awesome'
-      }.to_json)
-  end
-
   context 'create sub-resource' do
+    let!(:create_review_request) do
+      stub_request(:post, "http://datastore/v2/feedbacks/1/reviews")
+        .to_return(body: {
+          href: 'http://datastore/v2/feedbacks/1/reviews/1',
+          title: 'Simply awesome'
+        }.to_json)
+    end
+
     context 'for a nested item' do
       let(:feedback) { Feedback.find(1) }
       let(:review) do
@@ -133,6 +133,48 @@ describe LHS::Item do
           expect(review.title).to eq 'Simply awesome'
         end
       end
+    end
+  end
+
+  context 'error messages' do
+    let!(:create_review_request) do
+      stub_request(:post, "http://datastore/v2/feedbacks/1/reviews")
+        .to_return(
+          status: 400,
+          body: {
+            status: 400,
+            message: 'Validation failed',
+            field_errors: [{
+              code: 'UNSATISFIED_PROPERTY_VALUE_MAXIMUM_LENGTH',
+              path: ['title'],
+              message: 'Title is too long'
+            }]
+          }.to_json
+        )
+    end
+
+    let(:feedback) { Feedback.find(1) }
+    let(:review) do
+      feedback.review.create(
+        title: 'Simply awesome'
+      )
+    end
+
+    before do
+      stub_request(:get, "http://datastore/v2/feedbacks/1")
+        .to_return(body: {
+          review: {
+            href: 'http://datastore/v2/feedbacks/1/reviews'
+          }
+        }.to_json)
+    end
+
+    it 'are propagated when creation fails' do
+      review
+      assert_requested(create_review_request)
+
+      expect(review.title).to eq 'Simply awesome'
+      expect(review.errors.messages[:title]).to include('UNSATISFIED_PROPERTY_VALUE_MAXIMUM_LENGTH')
     end
   end
 end
