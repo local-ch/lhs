@@ -5,11 +5,13 @@ class LHS::Errors
   attr_reader :messages, :message, :raw
 
   def initialize(response = nil)
+    @raw = response.body if response
     @messages = messages_from_response(response)
     @message = message_from_response(response)
-    @raw = response.body if response
   rescue JSON::ParserError
-    add_error(messages, 'body', 'parse error')
+    @messages = messages || {}
+    @message = 'parse error'
+    add_error(@messages, 'body', 'parse error')
   end
 
   def include?(attribute)
