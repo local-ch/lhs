@@ -59,11 +59,11 @@ describe LHS::Item do
   end
 
   context 'save failed' do
+    let(:record) { Record.build(name: 'Steve') }
+
     it 'parses fields correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_fields.to_json)
-      record = Record.build
-      record.name = 'Steve'
       result = record.save
       expect(result).to eq false
       expect(record.errors).to be
@@ -78,8 +78,6 @@ describe LHS::Item do
     it 'parses field errors correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_field_errors.to_json)
-      record = Record.build
-      record.name = 'Steve'
       result = record.save
       expect(result).to eq false
       expect(record.errors).to be
@@ -88,6 +86,19 @@ describe LHS::Item do
       expect(record.errors.include?(:"contract.entry_id")).to eq true
       expect(record.errors[:gender]).to eq ['UNSUPPORTED_PROPERTY_VALUE', 'INCOMPLETE_PROPERTY_VALUE']
       expect(record.errors[:"contract.entry_id"]).to eq ['INCOMPLETE_PROPERTY_VALUE']
+    end
+
+    it 'parses field errors correctly when exception in raised' do
+      stub_request(:post, "#{datastore}/feedbacks")
+        .to_return(status: 400, body: error_format_fields.to_json)
+      expect { record.save! }.to raise_error(LHC::BadRequest)
+      expect(record.errors).to be
+      expect(record.errors.any?).to eq true
+      expect(record.name).to eq 'Steve'
+      expect(record.errors.include?(:ratings)).to eq true
+      expect(record.errors.include?(:recommended)).to eq true
+      expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE', 'UNSUPPORTED_PROPERTY_VALUE']
+      expect(record.errors[:recommended]).to eq ['REQUIRED_PROPERTY_VALUE']
     end
   end
 

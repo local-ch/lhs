@@ -8,8 +8,7 @@ class LHS::Item < LHS::Proxy
 
     def save(options = nil)
       save!(options)
-    rescue LHC::Error => e
-      self.errors = LHS::Errors.new(e.response)
+    rescue LHC::Error
       false
     end
 
@@ -33,6 +32,9 @@ class LHS::Item < LHS::Proxy
       data = record_for_persistance.request(options)
       _data.merge_raw!(data)
       true
+    rescue LHC::Error => e
+      self.errors = LHS::Errors.new(e.response)
+      raise e
     end
 
     private
