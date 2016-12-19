@@ -32,7 +32,7 @@ class LHS::Item < LHS::Proxy
 
     def merge_validation_params!(endpoint)
       validates_params = endpoint.options[:validates].select { |key, _| key.to_sym != :path }
-      params = endpoint.options.fetch(:params, {}).merge(params_from_embeded_href)
+      params = endpoint.options.fetch(:params, {}).merge(params_from_link)
       params = params.merge(validates_params) if validates_params.is_a?(Hash)
       params
     end
@@ -50,20 +50,11 @@ class LHS::Item < LHS::Proxy
     end
 
     def validation_endpoint
-      endpoint = embeded_endpoint if _data.href # take embeded first
+      endpoint = endpoint_from_link if _data.href # take embeded first
       endpoint ||= _data._record.find_endpoint(_data._raw)
       validates = endpoint.options && endpoint.options.fetch(:validates, false)
       raise 'Endpoint does not support validations!' unless validates
       endpoint
-    end
-
-    def embeded_endpoint
-      LHS::Endpoint.for_url(_data.href)
-    end
-
-    def params_from_embeded_href
-      return {} if !_data.href || !embeded_endpoint
-      LHC::Endpoint.values_as_params(embeded_endpoint.url, _data.href)
     end
   end
 end

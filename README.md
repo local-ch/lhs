@@ -282,6 +282,80 @@ When creation fails, the object contains errors. It provides them through the `e
   record.errors.message # ratings must be set when review or name or review_title is set | The property value is required; it cannot be null, empty, or blank."
 ```
 
+## Create records through associations (nested resources)
+
+```ruby
+  class Review < LHS::Record
+    endpoint ':service/reviews'
+  end 
+
+  class Comment < LHS::Record
+    endpoint ':service/reviews/:review_id/comments'
+  end
+```
+
+### Item
+```ruby
+  review = Review.find(1)
+  # Review#1
+  # :href => ':service/reviews/1
+  # :text => 'Simply awesome'
+  # :comment => { :href => ':service/reviews/1/comments }
+
+  review.comment.create(text: 'Thank you!')
+  # Comment#1
+  # :href => ':service/reviews/1/comments
+  # :text => 'Thank you!'
+
+  review
+  # Review#1
+  # :href => ':service/reviews/1
+  # :text => 'Simply awesome'
+  # :comment => { :href => ':service/reviews/1/comments, :text => 'Thank you!' }
+```
+
+If the item already exists `ArgumentError` is raised.
+
+### Expanded collection
+```ruby
+  review = Review.includes(:comments).find(1)
+  # Review#1
+  # :href => ':service/reviews/1'
+  # :text => 'Simply awesome'
+  # :comments => { :href => ':service/reviews/1/comments, :items => [] }
+
+  review.comments.create(text: 'Thank you!')
+  # Comment#1
+  # :href => ':service/reviews/1/comments/1'
+  # :text => 'Thank you!'
+
+  review
+  # Review#1
+  # :href => ':service/reviews/1'
+  # :text => 'Simply awesome'
+  # :comments => { :href => ':service/reviews/1/comments, :items => [{ :href => ':service/reviews/1/comments/1', :text => 'Thank you!' }] }
+```
+
+### Not expanded collection
+```ruby
+  review = Review.find(1)
+  # Review#1
+  # :href => ':service/reviews/1'
+  # :text => 'Simply awesome'
+  # :comments => { :href => ':service/reviews/1/comments' }
+
+  review.comments.create(text: 'Thank you!')
+  # Comment#1
+  # :href => ':service/reviews/1/comments/1'
+  # :text => 'Thank you!'
+
+  review
+  # Review#1
+  # :href => ':service/reviews/1
+  # :text => 'Simply awesome'
+  # :comments => { :href => ':service/reviews/1/comments', :items => [{ :href => ':service/reviews/1/comments/1', :text => 'Thank you!' }] }
+```
+
 ## Build new records
 
 Build and persist new items from scratch are done either with `new` or it's alias `build`.

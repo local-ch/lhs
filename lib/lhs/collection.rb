@@ -5,6 +5,7 @@ Dir[File.dirname(__FILE__) + '/concerns/collection/*.rb'].each { |file| require 
 # that contains multiple items
 class LHS::Collection < LHS::Proxy
   include InternalCollection
+  include Create
 
   delegate :select, :length, :size, to: :_collection
   delegate :_record, :_raw, to: :_data
@@ -26,6 +27,10 @@ class LHS::Collection < LHS::Proxy
 
   def collection?
     true
+  end
+
+  def item?
+    false
   end
 
   protected

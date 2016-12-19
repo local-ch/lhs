@@ -4,6 +4,7 @@ Dir[File.dirname(__FILE__) + '/concerns/item/*.rb'].each { |file| require file }
 # An item is a concrete record.
 # It can be part of another proxy like collection.
 class LHS::Item < LHS::Proxy
+  include Create
   include Destroy
   include Save
   include Update
@@ -19,6 +20,10 @@ class LHS::Item < LHS::Proxy
   def initialize(data)
     self.errors = LHS::Errors.new
     super(data)
+  end
+
+  def collection?
+    false
   end
 
   def item?
