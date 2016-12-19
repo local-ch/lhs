@@ -46,6 +46,10 @@ describe LHS::Item do
     }
   end
 
+  let(:unparsable_error_body) do
+    '<html></html>'
+  end
+
   before(:each) do
     LHC.config.placeholder(:datastore, datastore)
     class Record < LHS::Record
@@ -120,6 +124,19 @@ describe LHS::Item do
   context 'empty error response body' do
     it 'still tells us that there is an error' do
       stub_request(:post, "#{datastore}/feedbacks").to_return(status: 400)
+      record = Record.build
+      record.name = 'Steve'
+      result = record.save
+      expect(result).to eq false
+      expect(record.errors).to be
+      expect(record.errors.any?).to eq true
+      expect(record.errors['body']).to eq ['parse error']
+    end
+  end
+
+  context 'unparsable error body' do
+    it 'still tells us that there is an error' do
+      stub_request(:post, "#{datastore}/feedbacks").to_return(status: 400, body: unparsable_error_body)
       record = Record.build
       record.name = 'Steve'
       result = record.save
