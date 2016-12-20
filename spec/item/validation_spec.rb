@@ -110,4 +110,20 @@ describe LHS::Item do
       end).to raise_error('Endpoint does not support validations!')
     end
   end
+
+  context 'generate validation url from locally passed params' do
+    before(:each) do
+      class User < LHS::Record
+        endpoint 'http://datastore/v2/users/:user_id', validates: { params: { persist: false } }
+      end
+    end
+
+    it 'takes local params when generating validation url' do
+      stub_request(:post, "http://datastore/v2/users/2?persist=false")
+        .to_return(status: 201)
+      expect(
+        user.valid?(params: { user_id: 2 })
+      ).to eq true
+    end
+  end
 end
