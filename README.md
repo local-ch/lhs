@@ -766,6 +766,22 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 = paginate @items
 ```
 
+## Automatic Detection of Collections
+
+How to configure endpoints for automatic collection detection?
+
+LHS detects autmatically if the responded data is a single business object or a set of business objects (collection).
+
+Conventionally, when the responds contains an `items` key `{ items: [] }` it's treated as a collection, but also if the responds contains a plain raw array: `[{ href: '' }]` it's also treated as a collection.
+
+In case the responds uses another key than `items`, you can configure it within an `LHS::Record`:
+
+```ruby
+class Results < LHS::Record
+  configuration items_key: 'docs'
+end
+```
+
 ## form_for Helper
 Rails `form_for` view-helper can be used in combination with instances of LHS::Record to autogenerate forms:
 ```ruby
