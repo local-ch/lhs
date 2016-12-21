@@ -66,7 +66,7 @@ class LHS::Item < LHS::Proxy
       endpoint = endpoint_for_persistance(data, options)
       endpoint.compile(
         merge_data_with_options(data, options)
-      ).tap do 
+      ).tap do
         endpoint.remove_interpolated_params!(data)
         endpoint.remove_interpolated_params!(options.fetch(:params, {}))
         options.merge!(endpoint.options.merge(options)) if endpoint.options
