@@ -62,17 +62,14 @@ class LHS::Item < LHS::Proxy
     end
 
     def url_for_persistance!(options, data)
-      if href.present?
-        href
-      else
-        endpoint = endpoint_for_persistance(data, options)
-        url = endpoint.compile(
-          merge_data_with_options(data, options)
-        )
+      return href if href.present?
+      endpoint = endpoint_for_persistance(data, options)
+      endpoint.compile(
+        merge_data_with_options(data, options)
+      ).tap do 
         endpoint.remove_interpolated_params!(data)
         endpoint.remove_interpolated_params!(options.fetch(:params, {}))
         options.merge!(endpoint.options.merge(options)) if endpoint.options
-        url
       end
     end
   end
