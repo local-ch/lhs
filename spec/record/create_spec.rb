@@ -133,7 +133,6 @@ describe LHS::Record do
     end
 
     context 'location header' do
-
       before(:each) do
         class ContactPerson < LHS::Record
           endpoint 'http://datastore/contact_persons'
