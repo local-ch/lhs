@@ -92,12 +92,11 @@ class LHS::Record
 
       def handle_includes(includes, data, references = {})
         references ||= {}
-        references = [references] if includes.is_a?(Array) && !references.is_a?(Array)
         if includes.is_a? Hash
           includes.each { |included, sub_includes| handle_include(included, data, sub_includes, references[included]) }
         elsif includes.is_a? Array
           includes.each_with_index do |included, index|
-            handle_includes(included, data, references[index])
+            handle_includes(included, data, references)
           end
         else
           handle_include(includes, data, nil, references[includes])

@@ -468,5 +468,7 @@ describe LHS::Record do
       ).to eq('href' => 'http://datastore/places/123/contracts', 'items' => [])
       expect(place.contracts.to_a).to eq([])
     end
+
+    
   end
 end
