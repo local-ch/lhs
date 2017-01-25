@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Record do
-
   context 'references' do
     before(:each) do
       class Customer < LHS::Record
@@ -34,11 +33,11 @@ describe LHS::Record do
     end
 
     let(:referencing_options) do
-      { headers: { 'Authentication': 'Bearer 123' } }
+      { headers: { 'Authentication' => 'Bearer 123' } }
     end
 
     it 'uses the "references" hash for all symbols of the "including" array' do
-      customer = Customer
+      Customer
         .includes(:electronic_addresses, :contact_addresses)
         .references(
           electronic_addresses: referencing_options,
