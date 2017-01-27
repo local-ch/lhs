@@ -19,7 +19,7 @@ describe LHS::Record do
       Customer.where(name: name, page: page)
     end
 
-    context 'next link is present, previous is not' do
+    context 'next and previous link is present' do
       let(:name) { 'Simpl' }
       let(:page) { 2 }
       let(:body) do
@@ -33,6 +33,22 @@ describe LHS::Record do
       it 'tells me that there is a next link' do
         expect(customers.next?).to eq true
         expect(customers.previous?).to eq true
+      end
+    end
+
+    context 'next link is present, previous is not' do
+      let(:name) { 'Simpl' }
+      let(:page) { 2 }
+      let(:body) do
+        {
+          next: "http://datastore/customer?name=#{name}&page=3",
+          items: [{ name: 'Simplificator' }]
+        }.to_json
+      end
+
+      it 'tells me that there is a next link' do
+        expect(customers.next?).to eq true
+        expect(customers.previous?).to eq false
       end
     end
 
