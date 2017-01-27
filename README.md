@@ -766,6 +766,15 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 = paginate @items
 ```
 
+### Pagination Links
+
+When endpoints provide indicators for current page position with links (like `next` and `previous`), LHS provides some functionalities to interact/use those links/information:
+
+`next?` Tells you if there is a next link or not.
+
+`previous?` Tells you if there is a previous link or not.
+
+
 ## Automatic Detection of Collections
 
 How to configure endpoints for automatic collection detection?
