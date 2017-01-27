@@ -195,7 +195,8 @@ class LHS::Record
         referencing = LHS::Complex.reduce options.compact.map { |options| options.delete(:referencing) }.compact
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         data = LHS::Data.new(data, nil, self)
-        handle_includes(including, data, referencing) if including.present? && !data.empty?
+        binding.pry
+        handle_includes(including, data, referencing) if including.present? && data.present?
         data
       end
 
@@ -274,7 +275,7 @@ class LHS::Record
         endpoint = find_endpoint(options[:params])
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
-        handle_includes(including, data, referencing) if including
+        handle_includes(including, data, referencing) if including.present? && data.present?
         data
       end
 

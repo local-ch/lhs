@@ -39,6 +39,12 @@ class LHS::Record
         Chain.new(self, Include.new(Chain.unfold(args)))
       end
 
+      def includes_all(*args)
+        chain = Chain.new(self, Include.new(Chain.unfold(args)))
+        chain.include_all!(args)
+        chain
+      end
+
       def references(*args)
         Chain.new(self, Reference.new(Chain.unfold(args)))
       end
@@ -190,6 +196,12 @@ class LHS::Record
         push Include.new(Chain.unfold(args))
       end
 
+      def includes_all(*args)
+        chain = push Include.new(Chain.unfold(args))
+        chain.include_all!(args)
+        chain
+      end
+
       def references(*args)
         push Reference.new(Chain.unfold(args))
       end
@@ -235,6 +247,14 @@ class LHS::Record
         chain_references
       end
 
+      # Adds additional .references(name_of_linked_resource: { all: true })
+      # to all linked resources included with includes_all
+      def include_all!(args)
+        includes_all_to_references(args).each do |reference|
+          _links.push(reference)
+        end
+      end
+
       protected
 
       def method_missing(name, *args, &block)
@@ -264,6 +284,28 @@ class LHS::Record
       end
 
       private
+
+      def includes_all_to_references(args, parent = nil)
+        references = []
+        if args.is_a?(Array)
+          args.each do |part|
+            references += includes_all_to_references(part, parent)
+          end
+        elsif args.is_a?(Hash)
+          args.each do |key, value|
+            parent ||= { all: true }
+            references += [Reference.new(key => parent)]
+            references += includes_all_to_references(value, parent)
+          end
+        elsif args.is_a?(Symbol)
+          if parent.present?
+            parent[args] = { all: true }
+          else
+            references += [Reference.new(args => { all: true })]
+          end
+        end
+        references
+      end
 
       def push(link)
         clone = self.clone
