@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'pagination links' do
-
     before(:each) do
       class Customer < LHS::Record
         endpoint 'http://datastore/customer'
@@ -21,37 +20,35 @@ describe LHS::Record do
     end
 
     context 'next link is present, previous is not' do
-
       let(:name) { 'Simpl' }
       let(:page) { 2 }
-      let(:body) do 
+      let(:body) do
         {
           next: "http://datastore/customer?name=#{name}&page=3",
           previous: "http://datastore/customer?name=#{name}&page=1",
-          items: [{name: 'Simplificator'}]
+          items: [{ name: 'Simplificator' }]
         }.to_json
       end
 
       it 'tells me that there is a next link' do
         expect(customers.next?).to eq true
         expect(customers.previous?).to eq true
-      end  
+      end
     end
 
     context 'no next link and no previous link is present' do
-
       let(:name) { 'Simplificator' }
       let(:page) { 1 }
-      let(:body) do 
+      let(:body) do
         {
-          items: [{name: 'Simplificator'}]
+          items: [{ name: 'Simplificator' }]
         }.to_json
       end
 
       it 'tells me that there is no next link' do
         expect(customers.next?).to eq false
         expect(customers.previous?).to eq false
-      end  
+      end
     end
   end
 end
