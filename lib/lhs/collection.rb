@@ -9,7 +9,8 @@ class LHS::Collection < LHS::Proxy
 
   delegate :select, :length, :size, to: :_collection
   delegate :_record, :_raw, to: :_data
-  delegate :limit, :count, :total, :limit, :offset, :current_page, :start, to: :_pagination
+  delegate :limit, :count, :total, :offset, :current_page, :start,
+           :next?, :previous?, to: :_pagination
 
   def _pagination
     _record.pagination(_data)
