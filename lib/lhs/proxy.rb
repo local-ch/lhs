@@ -4,6 +4,7 @@ Dir[File.dirname(__FILE__) + '/concerns/proxy/*.rb'].each { |file| require file 
 # If href is present it also alows loading/reloading
 class LHS::Proxy
 
+  include Accessors
   include Create
   include Link
 
