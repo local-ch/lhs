@@ -33,7 +33,7 @@ class LHS::Pagination
     total_pages - current_page
   end
 
-  def next_offset
+  def next_offset(step = 1)
     raise 'to be implemented in subclass'
   end
 
@@ -84,8 +84,8 @@ class LHS::PagePagination < LHS::Pagination
     offset
   end
 
-  def next_offset
-    current_page + 1
+  def next_offset(step = 1)
+    current_page + step
   end
 end
 
@@ -95,8 +95,8 @@ class LHS::StartPagination < LHS::Pagination
     (offset + limit - 1) / limit
   end
 
-  def next_offset
-    offset + limit
+  def next_offset(step = 1)
+    offset + limit * step
   end
 
   def self.page_to_offset(page, limit = LHS::Pagination::DEFAULT_LIMIT)
@@ -110,8 +110,8 @@ class LHS::OffsetPagination < LHS::Pagination
     (offset + limit) / limit
   end
 
-  def next_offset
-    offset + limit
+  def next_offset(step = 1)
+    offset + limit * step
   end
 
   def self.page_to_offset(page, limit = LHS::Pagination::DEFAULT_LIMIT)

@@ -164,15 +164,62 @@ class LHS::Record
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
-          if options.is_a?(Array)
-            options.each { |options| options.merge!(including: sub_includes, referencing: references) if sub_includes.present? }
-          elsif sub_includes.present?
-            options.merge!(including: sub_includes, referencing: references)
+          prepare_options_for_include_request!(options, sub_includes, references)
+          if references && references[:all] # include all linked resources
+            prepare_options_for_include_all_request!(options)
+            data = load_all_included!(record, options)
+            references.delete(:all) # for this all remote objects have been fetched
+            continue_including(data, sub_includes, references)
+          else # simple request
+            record.request(options)
           end
-          record.request(options)
         rescue LHC::NotFound
           LHS::Data.new({}, data, record)
         end
+      end
+
+      # Continues loading included resources after one complete batch/level has been fetched
+      def continue_including(data, including, referencing)
+        handle_includes(including, data, referencing) if including.present? && data.present?
+        data
+      end
+
+      # Loads all included/linked resources, 
+      # paginates itself to ensure all records are fetched
+      def load_all_included!(record, options)
+        data = record.request(options)
+        load_and_merge_all_the_rest!(data, options)
+        data
+      end
+
+      def prepare_options_for_include_all_request!(options)
+        if options.is_a?(Array)
+          options.each do |option|
+            prepare_option_for_include_all_request!(option)
+          end
+        else
+          prepare_option_for_include_all_request!(options)
+        end
+        options
+      end
+
+      # When including all resources on one level, don't forward :includes & :references
+      # as we have to fetch all resources on this level first, before we continue_including
+      def prepare_option_for_include_all_request!(option)
+        option[:params] ||= {}
+        option[:params].merge!(limit_key => option.fetch(:params, {}).fetch(limit_key, LHS::Pagination::DEFAULT_LIMIT))
+        option.delete(:including)
+        option.delete(:referencing)
+        option
+      end
+
+      def prepare_options_for_include_request!(options, sub_includes, references)
+        if options.is_a?(Array)
+          options.each { |option| option.merge!(including: sub_includes, referencing: references) if sub_includes.present? }
+        elsif sub_includes.present?
+          options.merge!(including: sub_includes, referencing: references)
+        end
+        options || {}
       end
 
       # Merge explicit params nested in 'params' namespace with original hash.
@@ -195,7 +242,6 @@ class LHS::Record
         referencing = LHS::Complex.reduce options.compact.map { |options| options.delete(:referencing) }.compact
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         data = LHS::Data.new(data, nil, self)
-        binding.pry
         handle_includes(including, data, referencing) if including.present? && data.present?
         data
       end
