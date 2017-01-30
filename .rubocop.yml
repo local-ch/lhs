@@ -27,3 +27,5 @@ Style/SignalException:
 Rails/DynamicFindBy:
   Enabled: false
   
+Metrics/BlockLength:
+  Enabled: false

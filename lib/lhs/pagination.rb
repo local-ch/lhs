@@ -49,6 +49,14 @@ class LHS::Pagination
     total_pages
   end
 
+  def next?
+    data._raw[:next].present?
+  end
+
+  def previous?
+    data._raw[:previous].present?
+  end
+
   def prev_page
     current_page - 1
   end
