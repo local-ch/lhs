@@ -4,11 +4,11 @@ class LHS::Proxy
   module Accessors
     extend ActiveSupport::Concern
 
-    private
-
     # Keywords that would not be forwarded via method missing
     # FIXME: Extend the set of keywords
     BLACKLISTED_KEYWORDS = %w(new proxy_association)
+
+    private
 
     def set(name, value)
       key = name.to_s.gsub(/=$/, '')
@@ -22,15 +22,10 @@ class LHS::Proxy
         value = _data._raw[name.to_sym]
         value = _data._raw[name.to_s.classify.to_sym] if value.nil?
       end
-      if value.is_a?(Hash)
-        handle_hash(value)
-      elsif value.is_a?(Array)
-        data = LHS::Data.new(value, _data)
-        collection = LHS::Collection.new(data)
-        LHS::Data.new(collection, _data)
-      else
-        convert(value)
-      end
+
+      return access_item(value) if value.is_a?(Hash)
+      return access_collection(value) if value.is_a?(Array)
+      convert(value)
     end
 
     def convert(value)
@@ -44,7 +39,7 @@ class LHS::Proxy
       end
     end
 
-    def handle_hash(value)
+    def access_item(value)
       record = LHS::Record.for_url(value[:href]) if value[:href]
       data = LHS::Data.new(value, _data)
       if record
@@ -52,6 +47,12 @@ class LHS::Proxy
       else
         data
       end
+    end
+
+    def access_collection(value)
+      data = LHS::Data.new(value, _data)
+      collection = LHS::Collection.new(data)
+      LHS::Data.new(collection, _data)
     end
 
     def date?(value)

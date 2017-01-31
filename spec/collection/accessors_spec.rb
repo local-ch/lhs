@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Collection do
-  let(:datastore) { 'http://local.ch/v2' }
-  let(:items) { [{name: 'Steve'}] }
+  let(:items) { [{ name: 'Steve' }] }
   let(:extra) { 'extra' }
   let(:collection) { Record.where }
 
@@ -16,11 +15,10 @@ describe LHS::Collection do
     end
 
     before(:each) do
-      LHC.config.placeholder('datastore', datastore)
       class Record < LHS::Record
-        endpoint ':datastore/records`'
+        endpoint 'http://datastore/records`'
       end
-      stub_request(:get, %r{http://local.ch/v2/records})
+      stub_request(:get, %r{http://datastore/records})
         .to_return(body: response_data.to_json)
     end
 
