@@ -285,26 +285,40 @@ class LHS::Record
 
       private
 
+      # Translates includes_all(resources:) to the internal datastructure
+      # references(resource: { all: true })
       def includes_all_to_references(args, parent = nil)
         references = []
         if args.is_a?(Array)
-          args.each do |part|
-            references += includes_all_to_references(part, parent)
-          end
+          includes_all_to_references_for_arrays!(references, args, parent)
         elsif args.is_a?(Hash)
-          args.each do |key, value|
-            parent ||= { all: true }
-            references += [Reference.new(key => parent)]
-            references += includes_all_to_references(value, parent)
-          end
+          includes_all_to_references_for_hash!(references, args, parent)
         elsif args.is_a?(Symbol)
-          if parent.present?
-            parent[args] = { all: true }
-          else
-            references += [Reference.new(args => { all: true })]
-          end
+          includes_all_to_references_for_symbol!(references, args, parent)
         end
         references
+      end
+
+      def includes_all_to_references_for_arrays!(references, args, parent)
+        args.each do |part|
+          references.concat(includes_all_to_references(part, parent))
+        end
+      end
+
+      def includes_all_to_references_for_hash!(references, args, parent)
+        args.each do |key, value|
+          parent ||= { all: true }
+          references.concat([Reference.new(key => parent)])
+          references.concat(includes_all_to_references(value, parent))
+        end
+      end
+
+      def includes_all_to_references_for_symbol!(references, args, parent)
+        if parent.present?
+          parent[args] = { all: true }
+        else
+          references += [Reference.new(args => { all: true })]
+        end
       end
 
       def push(link)
