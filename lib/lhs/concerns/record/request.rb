@@ -8,6 +8,7 @@ class LHS::Record
     module ClassMethods
       def request(options)
         options ||= {}
+        options = options.deep_dup
         if options.is_a? Array
           multiple_requests(options)
         else

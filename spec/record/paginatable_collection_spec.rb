@@ -16,7 +16,12 @@ describe LHS::Record do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(
           status: 200,
-          body: { items: [], total: 300, offset: 0 }.to_json
+          body: { items: [], total: 200, offset: 0 }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&offset=100")
+        .to_return(
+          status: 200,
+          body: { items: [], total: 200, offset: 0 }.to_json
         )
       all = Record.all
       expect(all).to be_kind_of Record

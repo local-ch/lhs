@@ -34,9 +34,9 @@ describe LHS::Record do
     end
 
     it 'warns if linked data was simply included but is paginated' do
-      expect lambda{
+      expect(lambda{
         Customer.includes(:contracts).find(1)
-      }.to output(
+      }).to output(
         "[WARNING] You included `http://datastore/customers/1/contracts`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints).\n"
       ).to_stderr
     end
