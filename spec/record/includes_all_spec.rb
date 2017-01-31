@@ -8,6 +8,9 @@ describe LHS::Record do
       end
     end
 
+    let(:amount_of_contracts) { 33 }
+    let(:amount_of_products) { 22 }
+
     let!(:customer_request) do
       stub_request(:get, 'http://datastore/customers/1')
         .to_return(
@@ -28,7 +31,7 @@ describe LHS::Record do
             end,
             limit: 10,
             offset: 0,
-            total: 33
+            total: amount_of_contracts
           }.to_json
         )
     end
@@ -44,7 +47,7 @@ describe LHS::Record do
             end,
             limit: 10,
             offset: offset,
-            total: 33
+            total: amount_of_contracts
           }.to_json
         )
     end
@@ -70,7 +73,7 @@ describe LHS::Record do
             end,
             limit: 10,
             offset: 0,
-            total: 22
+            total: amount_of_products
           }.to_json
         )
     end
@@ -84,7 +87,7 @@ describe LHS::Record do
             end,
             limit: 10,
             offset: offset,
-            total: 22
+            total: amount_of_products
           }.to_json
         )
     end
@@ -101,8 +104,8 @@ describe LHS::Record do
       customer = Customer
         .includes_all(contracts: :products)
         .find(1)
-      expect(customer.contracts.length).to eq 33
-      expect(customer.contracts.first.products.length).to eq 22
+      expect(customer.contracts.length).to eq amount_of_contracts
+      expect(customer.contracts.first.products.length).to eq amount_of_products
       expect(customer_request).to have_been_requested.at_least_once
       expect(contracts_request).to have_been_requested.at_least_once
       expect(contracts_request_page_2).to have_been_requested.at_least_once
