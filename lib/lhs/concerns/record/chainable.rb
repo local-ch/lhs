@@ -39,6 +39,12 @@ class LHS::Record
         Chain.new(self, Include.new(Chain.unfold(args)))
       end
 
+      def includes_all(*args)
+        chain = Chain.new(self, Include.new(Chain.unfold(args)))
+        chain.include_all!(args)
+        chain
+      end
+
       def references(*args)
         Chain.new(self, Reference.new(Chain.unfold(args)))
       end
@@ -162,36 +168,42 @@ class LHS::Record
       alias validate valid?
 
       def where(hash = nil)
-        push Parameter.new(hash)
+        push(Parameter.new(hash))
       end
 
       def options(hash = nil)
-        push Option.new(hash)
+        push(Option.new(hash))
       end
 
       def page(page)
-        push Pagination.new(page: page)
+        push(Pagination.new(page: page))
       end
 
       def per(per)
-        push Pagination.new(per: per)
+        push(Pagination.new(per: per))
       end
 
       def limit(argument = nil)
         return resolve.limit if argument.blank?
-        push Pagination.new(per: argument)
+        push(Pagination.new(per: argument))
       end
 
       def handle(error_class, handler)
-        push ErrorHandling.new(error_class => handler)
+        push(ErrorHandling.new(error_class => handler))
       end
 
       def includes(*args)
-        push Include.new(Chain.unfold(args))
+        push(Include.new(Chain.unfold(args)))
+      end
+
+      def includes_all(*args)
+        chain = push(Include.new(Chain.unfold(args)))
+        chain.include_all!(args)
+        chain
       end
 
       def references(*args)
-        push Reference.new(Chain.unfold(args))
+        push(Reference.new(Chain.unfold(args)))
       end
 
       def find(*args)
@@ -235,6 +247,14 @@ class LHS::Record
         chain_references
       end
 
+      # Adds additional .references(name_of_linked_resource: { all: true })
+      # to all linked resources included with includes_all
+      def include_all!(args)
+        includes_all_to_references(args).each do |reference|
+          _links.push(reference)
+        end
+      end
+
       protected
 
       def method_missing(name, *args, &block)
@@ -264,6 +284,42 @@ class LHS::Record
       end
 
       private
+
+      # Translates includes_all(resources:) to the internal datastructure
+      # references(resource: { all: true })
+      def includes_all_to_references(args, parent = nil)
+        references = []
+        if args.is_a?(Array)
+          includes_all_to_references_for_arrays!(references, args, parent)
+        elsif args.is_a?(Hash)
+          includes_all_to_references_for_hash!(references, args, parent)
+        elsif args.is_a?(Symbol)
+          includes_all_to_references_for_symbol!(references, args, parent)
+        end
+        references
+      end
+
+      def includes_all_to_references_for_arrays!(references, args, parent)
+        args.each do |part|
+          references.concat(includes_all_to_references(part, parent))
+        end
+      end
+
+      def includes_all_to_references_for_hash!(references, args, parent)
+        args.each do |key, value|
+          parent ||= { all: true }
+          references.concat([Reference.new(key => parent)])
+          references.concat(includes_all_to_references(value, parent))
+        end
+      end
+
+      def includes_all_to_references_for_symbol!(references, args, parent)
+        if parent.present?
+          parent[args] = { all: true }
+        else
+          references.concat([Reference.new(args => { all: true })])
+        end
+      end
 
       def push(link)
         clone = self.clone
@@ -306,7 +362,7 @@ class LHS::Record
       def resolve_pagination(links)
         return {} if links.empty?
         page = 1
-        per = LHS::Pagination::DEFAULT_LIMIT
+        per = LHS::Pagination::Base::DEFAULT_LIMIT
         links.each do |link|
           page = link[:page] if link[:page].present?
           per = link[:per] if link[:per].present?

@@ -415,9 +415,29 @@ record.ratings # {:quality=>3}
 
 ## Include linked resources
 
-When fetching records, you can specify in advance all the linked resources that you want to include in the results. With `includes`, LHS ensures that all matching and explicitly linked resources are loaded and merged, if they're included in the server response.
+When fetching records, you can specify in advance all the linked resources that you want to include in the results. With `includes` or `includes_all` (to enforce fetching all remote objects for paginated endpoints), LHS ensures that all matching and explicitly linked resources are loaded and merged.
 
 The implementation is heavily influenced by [http://guides.rubyonrails.org/active_record_class_querying](http://guides.rubyonrails.org/active_record_class_querying.html#eager-loading-associations) and you should read it to understand this feature in all its glory.
+
+### `includes_all` for paginated endpoints
+
+In case endpoints are paginated and you are certain that you'll need all objects of a set and not only the first page/batch, use `includes_all`.
+
+LHS will ensure that all linked resources are around by loading all pages (parallelized/performance optimized).
+
+```ruby
+customer = Customer.includes_all(contracts: :products).find(1)
+
+# GET http://datastore/customers/1
+# GET http://datastore/customers/1/contracts?limit=100
+# GET http://datastore/customers/1/contracts?limit=10&offset=10
+# GET http://datastore/customers/1/contracts?limit=10&offset=20
+# GET http://datastore/products?limit=100
+# GET http://datastore/products?limit=10&offset=10
+
+customer.contracts.length # 33
+customer.contracts.first.products.length # 22
+```
 
 ### One-Level `includes`
 
