@@ -41,7 +41,7 @@ class LHS::Collection < LHS::Proxy
       value = _collection.send(name, *args, &block)
       return enclose_in_data(value) if value.is_a? Hash
       value
-    else
+    elsif _data._raw.is_a?(Hash)
       get(name, *args)
     end
   end
