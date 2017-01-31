@@ -15,11 +15,11 @@ class LHS::Record
       def pagination_class
         case pagination_strategy.to_sym
         when :page
-          LHS::PagePagination
+          LHS::Pagination::Page
         when :start
-          LHS::StartPagination
+          LHS::Pagination::Start
         else
-          LHS::OffsetPagination
+          LHS::Pagination::Offset
         end
       end
 

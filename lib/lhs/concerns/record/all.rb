@@ -14,7 +14,7 @@ class LHS::Record
       def all(options = {})
         options ||= {}
         options[:params] ||= {}
-        options[:params] = options[:params].merge(limit_key => options[:params][limit_key] || LHS::Pagination::DEFAULT_LIMIT)
+        options[:params] = options[:params].merge(limit_key => options[:params][limit_key] || LHS::Pagination::Base::DEFAULT_LIMIT)
         data = request(options)
         load_and_merge_all_the_rest!(data, options) if paginated?(data._raw)
         data._record.new(LHS::Data.new(data, nil, self))

@@ -20,7 +20,7 @@ class LHS::Record
       def find_in_batches(options = {})
         raise 'No block given' unless block_given?
         start = options[:start] || 1
-        batch_size = options[:batch_size] || LHS::Pagination::DEFAULT_LIMIT
+        batch_size = options[:batch_size] || LHS::Pagination::Base::DEFAULT_LIMIT
         params = options[:params] || {}
         loop do # as suggested by Matz
           data = request(params: params.merge(limit_key => batch_size, pagination_key => start))

@@ -210,7 +210,7 @@ class LHS::Record
       # as we have to fetch all resources on this level first, before we continue_including
       def prepare_option_for_include_all_request!(option)
         option[:params] ||= {}
-        option[:params].merge!(limit_key => option.fetch(:params, {}).fetch(limit_key, LHS::Pagination::DEFAULT_LIMIT))
+        option[:params].merge!(limit_key => option.fetch(:params, {}).fetch(limit_key, LHS::Pagination::Base::DEFAULT_LIMIT))
         option.delete(:including)
         option.delete(:referencing)
         option

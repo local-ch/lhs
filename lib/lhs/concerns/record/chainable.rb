@@ -362,7 +362,7 @@ class LHS::Record
       def resolve_pagination(links)
         return {} if links.empty?
         page = 1
-        per = LHS::Pagination::DEFAULT_LIMIT
+        per = LHS::Pagination::Base::DEFAULT_LIMIT
         links.each do |link|
           page = link[:page] if link[:page].present?
           per = link[:per] if link[:per].present?
