@@ -37,13 +37,18 @@ class LHS::Collection < LHS::Proxy
   protected
 
   def method_missing(name, *args, &block)
-    value = _collection.send(name, *args, &block)
-    return enclose_in_data(value) if value.is_a? Hash
-    value
+    if _collection.respond_to?(name)
+      value = _collection.send(name, *args, &block)
+      return enclose_in_data(value) if value.is_a? Hash
+      value
+    elsif _data._raw.is_a?(Hash)
+      get(name, *args)
+    end
   end
 
-  def respond_to_missing?(name, include_all = false)
-    _collection.respond_to?(name, include_all)
+  def respond_to_missing?(name, _include_all = false)
+    # We accept every message that does not belong to set of keywords and is not a setter
+    BLACKLISTED_KEYWORDS.exclude?(name.to_s) && !name.to_s[/=$/]
   end
 
   private
