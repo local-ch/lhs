@@ -168,42 +168,42 @@ class LHS::Record
       alias validate valid?
 
       def where(hash = nil)
-        push Parameter.new(hash)
+        push(Parameter.new(hash))
       end
 
       def options(hash = nil)
-        push Option.new(hash)
+        push(Option.new(hash))
       end
 
       def page(page)
-        push Pagination.new(page: page)
+        push(Pagination.new(page: page))
       end
 
       def per(per)
-        push Pagination.new(per: per)
+        push(Pagination.new(per: per))
       end
 
       def limit(argument = nil)
         return resolve.limit if argument.blank?
-        push Pagination.new(per: argument)
+        push(Pagination.new(per: argument))
       end
 
       def handle(error_class, handler)
-        push ErrorHandling.new(error_class => handler)
+        push(ErrorHandling.new(error_class => handler))
       end
 
       def includes(*args)
-        push Include.new(Chain.unfold(args))
+        push(Include.new(Chain.unfold(args)))
       end
 
       def includes_all(*args)
-        chain = push Include.new(Chain.unfold(args))
+        chain = push(Include.new(Chain.unfold(args)))
         chain.include_all!(args)
         chain
       end
 
       def references(*args)
-        push Reference.new(Chain.unfold(args))
+        push(Reference.new(Chain.unfold(args)))
       end
 
       def find(*args)
