@@ -317,7 +317,7 @@ class LHS::Record
         if parent.present?
           parent[args] = { all: true }
         else
-          references += [Reference.new(args => { all: true })]
+          references.concat([Reference.new(args => { all: true })])
         end
       end
 
