@@ -33,7 +33,7 @@ class LHS::Pagination
     total_pages - current_page
   end
 
-  def next_offset(step = 1)
+  def next_offset(_step = 1)
     raise 'to be implemented in subclass'
   end
 

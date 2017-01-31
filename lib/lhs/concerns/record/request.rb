@@ -186,7 +186,7 @@ class LHS::Record
         data
       end
 
-      # Loads all included/linked resources, 
+      # Loads all included/linked resources,
       # paginates itself to ensure all records are fetched
       def load_all_included!(record, options)
         data = record.request(options)

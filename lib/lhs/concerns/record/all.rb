@@ -59,7 +59,7 @@ class LHS::Record
 
       def load_and_merge_set_of_paginated_collections!(data, options)
         options_for_this_batch = []
-        options.each_with_index do |option, index|
+        options.each_with_index do |_, index|
           record = data[index]._record
           pagination = record.pagination(data[index])
           next if pagination.pages_left.zero?
@@ -79,11 +79,11 @@ class LHS::Record
 
       def options_for_next_batch(record, pagination, options, parent_data = nil)
         batch_options = []
-        pagination.pages_left.times do |_index|
+        pagination.pages_left.times do |index|
           page_options = {
             params: {
               record.limit_key => pagination.limit,
-              record.pagination_key => pagination.next_offset(_index + 1)
+              record.pagination_key => pagination.next_offset(index + 1)
             }
           }
           page_options[:parent_data] = parent_data if parent_data
