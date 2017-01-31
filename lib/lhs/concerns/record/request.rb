@@ -170,8 +170,10 @@ class LHS::Record
             data = load_all_included!(record, options)
             references.delete(:all) # for this all remote objects have been fetched
             continue_including(data, sub_includes, references)
-          else # simple request
-            record.request(options)
+          else # simply request first page/batch
+            data = record.request(options)
+            warn "[WARNING] You included `#{options[:url]}`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints)." if paginated?(data._raw)
+            data
           end
         rescue LHC::NotFound
           LHS::Data.new({}, data, record)
