@@ -178,8 +178,7 @@ class LHS::Record
       end
 
       def all(hash = nil)
-        push(Parameter.new(hash))
-        push(Option.new(all: true))
+        push([Parameter.new(hash), Option.new(all: true)])
       end
 
       def options(hash = nil)
@@ -334,7 +333,7 @@ class LHS::Record
 
       def push(link)
         clone = self.clone
-        clone._links = _links + [link].compact
+        clone._links = _links + [link].flatten.compact
         clone
       end
 

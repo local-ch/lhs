@@ -48,6 +48,14 @@ describe LHS::Record do
         expect(second_page_request).to have_been_requested.times(3)
         expect(third_page_request).to have_been_requested.times(3)
       end
+
+      it 'works in combination with include and includes' do
+        records = Record.includes(:product).includes_all(:options).all(color: 'blue')
+        expect(records.length).to eq total
+        expect(first_page_request).to have_been_requested.times(1)
+        expect(second_page_request).to have_been_requested.times(1)
+        expect(third_page_request).to have_been_requested.times(1)
+      end
     end
   end
 end
