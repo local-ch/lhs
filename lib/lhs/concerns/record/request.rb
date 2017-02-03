@@ -172,7 +172,7 @@ class LHS::Record
       # we can evaluate if there are further remote objects remaining
       # and after preparing all the requests that have to be made in order to fetch all
       # remote items during this batch, they are fetched in parallel
-      def load_and_merge_all_the_rest!(data, options)
+      def load_and_merge_remaining_objects!(data, options)
         if paginated?(data._raw)
           load_and_merge_paginated_collection!(data, options)
         elsif data.collection? && paginated?(data.first._raw)
@@ -235,7 +235,7 @@ class LHS::Record
       # paginates itself to ensure all records are fetched
       def load_all_included!(record, options)
         data = record.request(options)
-        load_and_merge_all_the_rest!(data, options)
+        load_and_merge_remaining_objects!(data, options)
         data
       end
 
@@ -399,7 +399,7 @@ class LHS::Record
         apply_limit!(options) if options[:all]
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
-        load_and_merge_all_the_rest!(data, process_options(options, endpoint)) if paginated?(data._raw) && options[:all]
+        load_and_merge_remaining_objects!(data, process_options(options, endpoint)) if paginated?(data._raw) && options[:all]
         handle_includes(including, data, referencing) if including.present? && data.present?
         data
       end
