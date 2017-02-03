@@ -18,6 +18,14 @@ class LHS::Record
 
       private
 
+      # Applies limit to the first request of an all request chain
+      # Tries to apply an high value for limit and reacts on the limit
+      # returned by the endpoint to make further requests
+      def apply_limit!(options)
+        options[:params] ||= {}
+        options[:params] = options[:params].merge(limit_key => options[:params][limit_key] || LHS::Pagination::Base::DEFAULT_LIMIT)
+      end
+
       # Convert URLs in options to endpoint templates
       def convert_options_to_endpoints(options)
         if options.is_a?(Array)
@@ -160,6 +168,42 @@ class LHS::Record
         end
       end
 
+      # After fetching the first page,
+      # we can evaluate if there are further remote objects remaining
+      # and after preparing all the requests that have to be made in order to fetch all
+      # remote items during this batch, they are fetched in parallel
+      def load_and_merge_all_the_rest!(data, options)
+        if paginated?(data._raw)
+          load_and_merge_paginated_collection!(data, options)
+        elsif data.collection? && paginated?(data.first._raw)
+          load_and_merge_set_of_paginated_collections!(data, options)
+        end
+      end
+
+      def load_and_merge_paginated_collection!(data, options)
+        pagination = data._record.pagination(data)
+        return data if pagination.pages_left.zero?
+        record = data._record
+        record.request(
+          options_for_next_batch(record, pagination, options)
+        ).each do |batch_data|
+          merge_batch_data_with_parent!(batch_data, data)
+        end
+      end
+
+      def load_and_merge_set_of_paginated_collections!(data, options)
+        options_for_this_batch = []
+        options.each_with_index do |_, index|
+          record = data[index]._record
+          pagination = record.pagination(data[index])
+          next if pagination.pages_left.zero?
+          options_for_this_batch.push(options_for_next_batch(record, pagination, options[index], data[index]))
+        end
+        data._record.request(options_for_this_batch.flatten).each do |batch_data|
+          merge_batch_data_with_parent!(batch_data, batch_data._request.options[:parent_data])
+        end
+      end
+
       # Load additional resources that are requested with include
       def load_include(options, data, sub_includes, references)
         record = record_for_options(options) || self
@@ -195,6 +239,11 @@ class LHS::Record
         data
       end
 
+      # Checks if given raw is paginated or not
+      def paginated?(raw)
+        !!(raw.is_a?(Hash) && raw[total_key] && raw[pagination_key])
+      end
+
       def prepare_options_for_include_all_request!(options)
         if options.is_a?(Array)
           options.each do |option|
@@ -223,6 +272,13 @@ class LHS::Record
           options.merge!(including: sub_includes, referencing: references)
         end
         options || {}
+      end
+
+      def merge_batch_data_with_parent!(batch_data, parent_data)
+        parent_data._raw[items_key].concat batch_data.raw_items
+        parent_data._raw[limit_key] = batch_data._raw[limit_key]
+        parent_data._raw[total_key] = batch_data._raw[total_key]
+        parent_data._raw[pagination_key] = batch_data._raw[pagination_key]
       end
 
       # Merge explicit params nested in 'params' namespace with original hash.
@@ -273,8 +329,26 @@ class LHS::Record
         end
       end
 
+      def options_for_next_batch(record, pagination, options, parent_data = nil)
+        batch_options = []
+        pagination.pages_left.times do |index|
+          page_options = {
+            params: {
+              record.limit_key => pagination.limit,
+              record.pagination_key => pagination.next_offset(index + 1)
+            }
+          }
+          page_options[:parent_data] = parent_data if parent_data
+          batch_options.push(
+            options.deep_dup.deep_merge(page_options)
+          )
+        end
+        batch_options
+      end
+
       # Merge explicit params and take configured endpoints options as base
       def process_options(options, endpoint)
+        options = options.deep_dup
         options[:params].deep_symbolize_keys! if options[:params]
         options[:error_handler] = merge_error_handlers(options[:error_handler]) if options[:error_handler]
         options = (endpoint.options || {}).merge(options)
@@ -318,12 +392,14 @@ class LHS::Record
 
       def single_request(options)
         options ||= {}
+        options = options.dup
         including = options.delete(:including)
         referencing = options.delete(:referencing)
-        options = options.dup
         endpoint = find_endpoint(options[:params])
+        apply_limit!(options) if options[:all]
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
+        load_and_merge_all_the_rest!(data, process_options(options, endpoint)) if paginated?(data._raw) && options[:all]
         handle_includes(including, data, referencing) if including.present? && data.present?
         data
       end

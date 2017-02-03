@@ -15,6 +15,12 @@ class LHS::Record
         Chain.new(self, Parameter.new(hash))
       end
 
+      def all(hash = nil)
+        chain = Chain.new(self, Parameter.new(hash))
+        chain._links.push(Option.new(all: true))
+        chain
+      end
+
       def options(hash = nil)
         Chain.new(self, Option.new(hash))
       end
@@ -169,6 +175,11 @@ class LHS::Record
 
       def where(hash = nil)
         push(Parameter.new(hash))
+      end
+
+      def all(hash = nil)
+        push(Parameter.new(hash))
+        push(Option.new(all: true))
       end
 
       def options(hash = nil)

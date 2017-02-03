@@ -233,12 +233,21 @@ You can apply options to the request chain. Those options will be forwarded to t
 
 **Be careful using methods for batch processing. They could result in a lot of HTTP requests!**
 
-`all` fetches all records from the service by doing multiple requests if necessary.
+`all` fetches all records from the service by doing multiple requests and resolve endpoint pagination if necessary.
 
 ```ruby
 data = Record.all
 data.count # 998
 data.length # 998
+```
+
+`all` is chainable and has the same interface like `where` (See: [Find multiple records](https://github.com/local-ch/lhs#find-multiple-records))
+
+```ruby
+Record.where(color: 'blue').all
+Record.all.where(color: 'blue')
+Record.all(color: 'blue')
+# All three are doing the same thing: fetching all records with the color 'blue' from the endpoint while resolving pagingation if endpoint is paginated
 ```
 
 [Count vs. Length](#count-vs-length)
