@@ -844,6 +844,62 @@ end
 Example.find(1) # GET records/1
 ```
 
+## Testing: How to write tests when using LHS
+
+[WebMock](https://github.com/bblimke/webmock)! 
+
+Best practice is to let LHS fetch your records and Webmock to stub/mock endpoints responses. 
+This follows the [Black Box Testing](https://en.wikipedia.org/wiki/Black-box_testing) approach and prevents you from building up constraints to LHS' internal structures/mechanisms, which will break when we change internal things.
+LHS provides interfaces that result in HTTP requests, this is what you should test.
+
+```ruby
+let(:contracts) do
+  [
+    {number: '1'},
+    {number: '2'},
+    {number: '3'}
+  ]
+end
+
+before(:each) do
+  stub_request(:get, "http://datastore/user/:id/contracts")
+    .to_return(
+      body: {
+        items: contracts,
+        limit: 10,
+        total: contracts.length,
+        offset: 0
+      }.to_json
+    )
+end
+
+it 'displays contracts' do
+  visit 'contracts'
+  contracts.each do |contract|
+    expect(page).to have_content(contract[:number])
+  end
+end
+```
+
+## Where values hash
+
+Returns a hash of where conditions.
+Common to use in tests, as where queries are not performing any HTTP-requests when no data is accessed.
+
+```ruby
+records = Record.where(color: 'blue').where(available: true).where(color: 'red')
+
+expect(
+  records
+).to have_requested(:get, %r{records/})
+  .with(query: hash_including(color: 'blue', available: true))
+# will fail as no http request is made (no data requested)
+
+expect(
+  records.where_values_hash
+).to eq {color: 'red', available: true}
+```
+
 ## License
 
 [GNU Affero General Public License Version 3.](https://www.gnu.org/licenses/agpl-3.0.en.html)
