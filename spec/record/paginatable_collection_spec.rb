@@ -71,6 +71,7 @@ describe LHS::Record do
           body: { items: (201..300).to_a, limit: 100, total: 300, offset: 200 }.to_json
         )
       all = Record.all
+      all.first # fetch/resolve
       assert_requested last_request
       expect(all).to be_kind_of Record
       expect(all._data._proxy).to be_kind_of LHS::Collection

@@ -34,7 +34,7 @@ describe LHS::Record do
       stub_request(:get, 'http://records?color=blue').to_return(body: [].to_json)
       Example.where(color: 'blue')
       expect(
-        -> { Base.all }
+        -> { Base.all.first }
       ).to raise_error(RuntimeError, 'Compilation incomplete. Unable to find value for id.')
     end
   end
@@ -52,7 +52,7 @@ describe LHS::Record do
 
     it 'inherits endpoints based on ruby class_attribute behaviour' do
       request = stub_request(:get, 'http://records?limit=100').to_return(body: [].to_json)
-      Base.all
+      Base.all.first
       assert_requested(request)
 
       request = stub_request(:get, 'http://examples/1').to_return(body: {}.to_json)

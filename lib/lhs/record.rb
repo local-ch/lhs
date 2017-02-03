@@ -1,7 +1,6 @@
 Dir[File.dirname(__FILE__) + '/concerns/record/*.rb'].each { |file| require file }
 
 class LHS::Record
-  include All
   include Batch
   include Chainable
   include Configuration

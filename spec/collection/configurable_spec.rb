@@ -31,7 +31,7 @@ describe LHS::Collection do
 
   context 'lets you configure how to deal with collections' do
     it 'initalises and gives access to collections according to configuration' do
-      results = Search.all(params: { type: :phonebook, size: 10 })
+      results = Search.all(type: :phonebook, size: 10)
       expect(results.count).to eq total
       expect(results.total).to eq total
       expect(results.limit).to eq limit

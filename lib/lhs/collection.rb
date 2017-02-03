@@ -34,6 +34,14 @@ class LHS::Collection < LHS::Proxy
     false
   end
 
+  def raw_items
+    if _raw.is_a?(Array)
+      _raw
+    else
+      _raw[items_key]
+    end
+  end
+
   protected
 
   def method_missing(name, *args, &block)
