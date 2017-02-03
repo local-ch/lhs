@@ -9,14 +9,13 @@ describe LHS::Record do
 
   context 'all' do
     it 'is querying endpoint without pagination when using all' do
-      stub_request(:get, "http://datastore/feedbacks?limit=100").to_return(body: { items: 300.times.map { { foo: 'bar' } }, total: 300}.to_json)
+      stub_request(:get, "http://datastore/feedbacks?limit=100").to_return(body: { items: 300.times.map { { foo: 'bar' } }, total: 300 }.to_json)
       records = Record.all
       expect(records).to be_kind_of Record
       expect(records.size).to eq(300)
     end
 
     context 'is chainable with where and works like where' do
-
       let(:total) { 22 }
       let(:limit) { 10 }
       let!(:first_page_request) do
