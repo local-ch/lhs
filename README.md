@@ -233,7 +233,7 @@ You can apply options to the request chain. Those options will be forwarded to t
 
 **Be careful using methods for batch processing. They could result in a lot of HTTP requests!**
 
-`all` fetches all records from the service by doing multiple requests and resolve endpoint pagination if necessary.
+`all` fetches all records from the service by doing multiple requests and resolving endpoint pagination if necessary.
 
 ```ruby
 data = Record.all
