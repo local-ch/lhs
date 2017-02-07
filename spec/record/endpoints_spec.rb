@@ -69,5 +69,24 @@ describe LHS::Record do
         AnotherRecord.where(campaign_id: 123, entry_id: 123)
       end
     end
+
+    context 'includes data without considering base endpoint of parent record if url is present' do
+      before(:each) do
+        class Contract < LHS::Record
+          endpoint ':datastore/contracts/:id'
+          endpoint ':datastore/entry/:entry_id/contracts'
+        end
+      end
+
+      it 'uses urls instead of trying to find base endpoint of parent class' do
+        stub_request(:get, "#{datastore}/entry/123/contracts?limit=100")
+          .to_return(body: [{ product: { href: "#{datastore}/products/LBC" } }].to_json)
+        stub_request(:get, "#{datastore}/products/LBC")
+          .to_return(body: { name: 'Local Business Card' }.to_json)
+        expect(lambda {
+          Contract.includes(:product).where(entry_id: '123').all.first
+        }).not_to raise_error # Multiple base endpoints found
+      end
+    end
   end
 end
