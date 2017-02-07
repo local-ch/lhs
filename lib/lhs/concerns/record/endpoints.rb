@@ -36,8 +36,10 @@ class LHS::Record
       # Find an endpoint based on the provided parameters.
       # If no parameters are provided it finds the base endpoint
       # otherwise it finds the endpoint that matches the parameters best.
-      def find_endpoint(params = {})
+      def find_endpoint(params = {}, url = nil)
         endpoint = find_best_endpoint(params) if params && params.keys.count > 0
+        endpoint ||= find_endpoint_by_url(url) if url.present?
+        endpoint ||= LHC::Endpoint.new(url) if url.present?
         endpoint ||= find_base_endpoint
         endpoint
       end
@@ -77,6 +79,13 @@ class LHS::Record
       def find_best_endpoint(params)
         sorted_endpoints.find do |endpoint|
           endpoint.placeholders.all? { |match| endpoint.find_value(match, params) }
+        end
+      end
+
+      # Find endpoint by given URL
+      def find_endpoint_by_url(url)
+        sorted_endpoints.find do |endpoint|
+          LHC::Endpoint.match?(url, endpoint.url)
         end
       end
 

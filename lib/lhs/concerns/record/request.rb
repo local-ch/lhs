@@ -292,7 +292,7 @@ class LHS::Record
       def multiple_requests(options)
         options = options.map do |option|
           next unless option.present?
-          process_options(option, find_endpoint(option[:params]))
+          process_options(option, find_endpoint(option[:params], option.fetch(:url, nil)))
         end
         data = LHC.request(options.compact).map do |response|
           LHS::Data.new(response.body, nil, self, response.request)
@@ -395,7 +395,7 @@ class LHS::Record
         options = options.dup
         including = options.delete(:including)
         referencing = options.delete(:referencing)
-        endpoint = find_endpoint(options[:params])
+        endpoint = find_endpoint(options[:params], options.fetch(:url, nil))
         apply_limit!(options) if options[:all]
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
