@@ -115,5 +115,26 @@ describe LHS::Record do
       expect(products_request_page_2).to have_been_requested.at_least_once
       expect(products_request_page_3).to have_been_requested.at_least_once
     end
+
+    context 'includes for an empty array' do
+      before(:each) do
+        class Contract < LHS::Record
+          endpoint 'http://datastore/contracts/:id'
+        end
+        stub_request(:get, "http://datastore/contracts/1")
+          .to_return(body: {
+            options: []
+          }.to_json)
+      end
+
+      it 'includes_all in case of an empty array' do
+        expect(lambda do
+          Contract
+            .includes(:product)
+            .includes_all(:options)
+            .find(1)
+        end).not_to raise_error
+      end
+    end
   end
 end
