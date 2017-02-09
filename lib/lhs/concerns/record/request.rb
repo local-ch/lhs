@@ -60,7 +60,7 @@ class LHS::Record
       def extend_base_collection!(data, addition, key)
         data.each_with_index do |item, i|
           item = item[i] if item.is_a? LHS::Collection
-          link = item[key.to_sym]
+          link = item[key.to_sym] if item.present?
           link.merge_raw!(addition[i]) if link.present?
         end
       end
@@ -94,7 +94,7 @@ class LHS::Record
           target._raw[items_key] = addition.map(&:_raw)
         else
           target._raw[items_key].each_with_index do |item, index|
-            item.merge!(addition[index])
+            item.merge!(addition[index]) if addition[index].present?
           end
         end
       end
@@ -405,7 +405,7 @@ class LHS::Record
       end
 
       def url_option_for(item, key = nil)
-        link = key ? item[key] : item
+        link = item && key ? item[key] : item
         return { url: link.href } if link.present? && link.href.present?
       end
     end
