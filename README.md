@@ -27,6 +27,8 @@ Please store all defined LHS::Records in `app/models` as they are not autoloaded
 
 You setup a LHS::Record by configuring one or multiple endpoints. You can also add request options for an endpoint (see following example).
 
+The following example uses the `LHC::Caching` interceptor from [lhc-core-interceptors](https://github.com/local-ch/lhc-core-interceptors#cache-interceptor).
+
 ```ruby
 class Record < LHS::Record
 
