@@ -175,7 +175,7 @@ class LHS::Record
       def load_and_merge_remaining_objects!(data, options)
         if paginated?(data._raw)
           load_and_merge_paginated_collection!(data, options)
-        elsif data.collection? && paginated?(data.first.try(&:_raw))
+        elsif data.collection? && paginated?(data.first.try(:_raw))
           load_and_merge_set_of_paginated_collections!(data, options)
         end
       end

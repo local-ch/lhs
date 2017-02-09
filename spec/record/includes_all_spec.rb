@@ -117,7 +117,6 @@ describe LHS::Record do
     end
 
     context 'includes for an empty array' do
-
       before(:each) do
         class Contract < LHS::Record
           endpoint 'http://datastore/contracts/:id'
@@ -129,10 +128,12 @@ describe LHS::Record do
       end
 
       it 'includes_all in case of an empty array' do
-        contract = Contract
-          .includes(:product)
-          .includes_all(:options)
-          .find(1)
+        expect(lambda do
+          Contract
+            .includes(:product)
+            .includes_all(:options)
+            .find(1)
+        end).not_to raise_error
       end
     end
   end
