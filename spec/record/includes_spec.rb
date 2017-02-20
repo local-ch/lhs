@@ -470,27 +470,30 @@ describe LHS::Record do
     end
   end
 
-  context 'include and merge arrays' do
+  context 'include and merge arrays when calling find in parallel' do
 
     before(:each) do
       class Place < LHS::Record
         endpoint 'http://datastore/places/:id'
       end
-      stub_request(:get, %r(http://datastore/places/\d))
-        .to_return(body:{
-          category_relations: [{
-            "href": "http://datastore/category/1"
-          }]
+      stub_request(:get, 'http://datastore/places/1')
+        .to_return(body: {
+          category_relations: [{ 'href': 'http://datastore/category/1' }, { 'href': 'http://datastore/category/2' }]
         }.to_json)
-      stub_request(:get, "http://datastore/category/1")
-        .to_return(body: { name: 'Food' }.to_json)
+      stub_request(:get, 'http://datastore/places/2')
+        .to_return(body: {
+          category_relations: [{ 'href': 'http://datastore/category/2' }, { 'href': 'http://datastore/category/1' }]
+        }.to_json)
+      stub_request(:get, "http://datastore/category/1").to_return(body: { name: 'Food' }.to_json)
+      stub_request(:get, "http://datastore/category/2").to_return(body: { name: 'Drinks' }.to_json)
     end
 
     it 'includes and merges linked resources in case of an array of links' do
-      place = Place
+      places = Place
         .includes(:category_relations)
         .find(1, 2)
-      expect(place.category_relations.first.name).to eq 'Food'
+      expect(places[0].category_relations[0].name).to eq 'Food'
+      expect(places[1].category_relations[0].name).to eq 'Drinks'
     end
   end
 end
