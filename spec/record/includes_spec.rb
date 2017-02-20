@@ -469,4 +469,27 @@ describe LHS::Record do
       expect(place.contracts.to_a).to eq([])
     end
   end
+
+  context 'include and merge arrays' do
+
+    before(:each) do
+      class Place < LHS::Record
+        endpoint 'http://datastore/places/:id'
+      end
+      stub_request(:get, "http://datastore/places/1")
+        .to_return(body:{
+          category_relations: [{
+            "href": "http://datastore/categorie/2"
+          }]
+        }.to_json)
+      stub_request(:get, "http://datastore/categorie/2")
+        .to_return(body: { name: 'Food' }.to_json)
+    end
+
+    it 'includes and merges linked resources in case of an array of links' do
+      Place
+        .includes(:category_relations)
+        .find(1)
+    end
+  end
 end
