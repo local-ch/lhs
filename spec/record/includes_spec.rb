@@ -479,17 +479,18 @@ describe LHS::Record do
       stub_request(:get, "http://datastore/places/1")
         .to_return(body:{
           category_relations: [{
-            "href": "http://datastore/categorie/2"
+            "href": "http://datastore/category/2"
           }]
         }.to_json)
-      stub_request(:get, "http://datastore/categorie/2")
+      stub_request(:get, "http://datastore/category/2")
         .to_return(body: { name: 'Food' }.to_json)
     end
 
     it 'includes and merges linked resources in case of an array of links' do
-      Place
+      place = Place
         .includes(:category_relations)
         .find(1)
+      expect(place.category_relations.first.name).to eq 'Food'
     end
   end
 end
