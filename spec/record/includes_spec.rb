@@ -476,15 +476,7 @@ describe LHS::Record do
       class Place < LHS::Record
         endpoint 'http://datastore/places/:id'
       end
-      stub_request(:get, "http://datastore/places/1")
-        .to_return(body:{
-          category_relations: [{
-            "href": "http://datastore/category/1"
-          }, {
-            "href": "http://datastore/category/2"
-          }]
-        }.to_json)
-      stub_request(:get, "http://datastore/places/2")
+      stub_request(:get, %r(http://datastore/places/\d))
         .to_return(body:{
           category_relations: [{
             "href": "http://datastore/category/1"
