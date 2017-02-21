@@ -65,8 +65,8 @@ class LHS::Record
             link.each_with_index do |link, j|
               link.merge_raw!(addition[i + j]) if link.present?
             end
-          else
-            link.merge_raw!(addition[i]) if link.present?
+          elsif link.present?
+            link.merge_raw!(addition[i])
           end
         end
       end
@@ -416,8 +416,8 @@ class LHS::Record
           link.map do |link|
             { url: link.href } if link.present? && link.href.present?
           end.compact
-        else
-          return { url: link.href } if link.present? && link.href.present?
+        elsif link.present? && link.href.present?
+          { url: link.href }
         end
       end
     end
