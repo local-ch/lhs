@@ -62,8 +62,8 @@ class LHS::Record
           item = item[i] if item.is_a? LHS::Collection
           link = item[key.to_sym]
           if link && link.collection?
-            link.each_with_index do |link, j|
-              link.merge_raw!(addition[i + j]) if link.present?
+            link.each_with_index do |item, j|
+              item.merge_raw!(addition[i + j]) if item.present?
             end
           elsif link.present?
             link.merge_raw!(addition[i])
@@ -413,8 +413,8 @@ class LHS::Record
       def url_option_for(item, key = nil)
         link = key ? item[key] : item
         if link && link.collection?
-          link.map do |link|
-            { url: link.href } if link.present? && link.href.present?
+          link.map do |item|
+            { url: item.href } if item.present? && item.href.present?
           end.compact
         elsif link.present? && link.href.present?
           { url: link.href }
