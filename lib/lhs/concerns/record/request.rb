@@ -61,12 +61,11 @@ class LHS::Record
         data.each_with_index do |item, i|
           item = item[i] if item.is_a? LHS::Collection
           link = item[key.to_sym]
-          if link && link.collection?
-            link.each_with_index do |item, j|
-              item.merge_raw!(addition[i + j]) if item.present?
-            end
-          elsif link.present?
-            link.merge_raw!(addition[i])
+          next if link.blank?
+          link.merge_raw!(addition[i]) && next if !link.collection?
+
+          link.each_with_index do |item, j|
+            item.merge_raw!(addition[i + j]) if item.present?
           end
         end
       end
@@ -412,13 +411,12 @@ class LHS::Record
 
       def url_option_for(item, key = nil)
         link = key ? item[key] : item
-        if link && link.collection?
-          link.map do |item|
-            { url: item.href } if item.present? && item.href.present?
-          end.compact
-        elsif link.present? && link.href.present?
-          { url: link.href }
-        end
+        return if link.blank?
+        return { url: link.href } if !link.collection?
+
+        link.map do |item|
+          { url: item.href } if item.present? && item.href.present?
+        end.compact
       end
     end
   end
