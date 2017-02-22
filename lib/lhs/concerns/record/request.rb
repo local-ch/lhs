@@ -61,7 +61,12 @@ class LHS::Record
         data.each_with_index do |item, i|
           item = item[i] if item.is_a? LHS::Collection
           link = item[key.to_sym]
-          link.merge_raw!(addition[i]) if link.present?
+          next if link.blank?
+          link.merge_raw!(addition[i]) && next if !link.collection?
+
+          link.each_with_index do |item, j|
+            item.merge_raw!(addition[i + j]) if item.present?
+          end
         end
       end
 
@@ -320,13 +325,13 @@ class LHS::Record
       def options_for_multiple(data, key = nil)
         data.map do |item|
           url_option_for(item, key)
-        end
+        end.flatten
       end
 
       def options_for_nested_items(data, key = nil)
         data[key].map do |item|
           url_option_for(item)
-        end
+        end.flatten
       end
 
       def options_for_next_batch(record, pagination, options, parent_data = nil)
@@ -406,7 +411,12 @@ class LHS::Record
 
       def url_option_for(item, key = nil)
         link = key ? item[key] : item
-        return { url: link.href } if link.present? && link.href.present?
+        return if link.blank?
+        return { url: link.href } if !link.collection?
+
+        link.map do |item|
+          { url: item.href } if item.present? && item.href.present?
+        end.compact
       end
     end
   end
