@@ -319,8 +319,8 @@ class LHS::Record
         data = LHC.request(options.compact).map do |response|
           LHS::Data.new(response.body, nil, self, response.request)
         end
-        including = LHS::Complex.reduce(options.compact.map{ |options| options.delete(:including) }.compact)
-        referencing = LHS::Complex.reduce(options.compact.map{ |options| options.delete(:referencing) }.compact)
+        including = LHS::Complex.reduce(options.compact.map { |options| options.delete(:including) }.compact)
+        referencing = LHS::Complex.reduce(options.compact.map { |options| options.delete(:referencing) }.compact)
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         data = LHS::Data.new(data, nil, self)
         handle_includes(including, data, referencing) if including.present? && data.present?

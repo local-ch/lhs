@@ -132,10 +132,10 @@ describe LHS::Record do
 
         it 'includes_all in case of an empty array' do
           expect(
-            ->{ Contract.includes(:product).includes_all(:options).find(1) }
+            -> { Contract.includes(:product).includes_all(:options).find(1) }
           ).not_to raise_error
           expect(
-            ->{ Contract.includes(:product).includes_all(:options).find(1, 2) }
+            -> { Contract.includes(:product).includes_all(:options).find(1, 2) }
           ).not_to raise_error
         end
       end
@@ -150,10 +150,10 @@ describe LHS::Record do
 
         it 'includes_all in case of an unexpect objects within array' do
           expect(
-            ->{ Contract.includes(:product).includes_all(:options).find(1) }
+            -> { Contract.includes(:product).includes_all(:options).find(1) }
           ).not_to raise_error
           expect(
-            ->{ Contract.includes(:product).includes_all(:options).find(1, 2) }
+            -> { Contract.includes(:product).includes_all(:options).find(1, 2) }
           ).not_to raise_error
         end
       end
