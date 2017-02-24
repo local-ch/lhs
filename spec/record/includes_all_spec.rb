@@ -121,19 +121,36 @@ describe LHS::Record do
         class Contract < LHS::Record
           endpoint 'http://datastore/contracts/:id'
         end
-        stub_request(:get, "http://datastore/contracts/1")
+        stub_request(:get, %r{http://datastore/contracts/\d})
           .to_return(body: {
-            options: []
+            options: nested_resources
           }.to_json)
       end
 
-      it 'includes_all in case of an empty array' do
-        expect(lambda do
-          Contract
-            .includes(:product)
-            .includes_all(:options)
-            .find(1)
-        end).not_to raise_error
+      context 'empty array' do
+        let(:nested_resources) { [] }
+
+        it 'includes_all in case of an empty array' do
+          expect(
+            ->{ Contract.includes(:product).includes_all(:options).find(1) }
+          ).not_to raise_error
+          expect(
+            ->{ Contract.includes(:product).includes_all(:options).find(1, 2) }
+          ).not_to raise_error
+        end
+      end
+
+      context 'weird array without hrefs' do
+        let(:nested_resources) { [{ type: 'E_COMMERCE' }] }
+
+        it 'includes_all in case of an unexpect objects within array' do
+          expect(
+            ->{ Contract.includes(:product).includes_all(:options).find(1) }
+          ).not_to raise_error
+          expect(
+            ->{ Contract.includes(:product).includes_all(:options).find(1, 2) }
+          ).not_to raise_error
+        end
       end
     end
   end

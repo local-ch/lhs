@@ -9,7 +9,8 @@ class LHS::Record
       def request(options)
         options ||= {}
         options = options.deep_dup
-        if options.is_a? Array
+        if options.is_a?(Array)
+          filter_request_options!(options)
           multiple_requests(options)
         else
           single_request(options)
@@ -17,6 +18,13 @@ class LHS::Record
       end
 
       private
+
+      def filter_request_options!(options)
+        options.each_with_index do |option, index|
+          next if !option || !option.key?(:url) || !option[:url].nil?
+          options[index] = nil
+        end
+      end
 
       # Applies limit to the first request of an all request chain
       # Tries to apply an high value for limit and reacts on the limit
@@ -72,7 +80,7 @@ class LHS::Record
 
       def extend_base_array!(data, addition, key)
         data[key].zip(addition) do |item, additional_item|
-          item._raw.merge!(additional_item._raw)
+          item._raw.merge!(additional_item._raw) if additional_item.present?
         end
       end
 
@@ -159,8 +167,8 @@ class LHS::Record
         return options unless references
         options ||= {}
         if options.is_a?(Array)
-          options.map { |request_options| request_options.merge(references) }
-        else
+          options.map { |request_options| request_options.merge(references) if request_options.present? }
+        elsif options.present?
           options.merge(references)
         end
       end
@@ -216,18 +224,26 @@ class LHS::Record
         begin
           prepare_options_for_include_request!(options, sub_includes, references)
           if references && references[:all] # include all linked resources
-            prepare_options_for_include_all_request!(options)
-            data = load_all_included!(record, options)
-            references.delete(:all) # for this all remote objects have been fetched
-            continue_including(data, sub_includes, references)
+            load_include_all!(options, record, sub_includes, references)
           else # simply request first page/batch
-            data = record.request(options)
-            warn "[WARNING] You included `#{options[:url]}`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints)." if paginated?(data._raw)
-            data
+            load_include_simple!(options, record)
           end
         rescue LHC::NotFound
           LHS::Data.new({}, data, record)
         end
+      end
+
+      def load_include_all!(options, record, sub_includes, references)
+        prepare_options_for_include_all_request!(options)
+        data = load_all_included!(record, options)
+        references.delete(:all) # for this reference all remote objects have been fetched
+        continue_including(data, sub_includes, references)
+      end
+
+      def load_include_simple!(options, record)
+        data = record.request(options)
+        warn "[WARNING] You included `#{options[:url]}`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints)." if paginated?(data._raw)
+        data
       end
 
       # Continues loading included resources after one complete batch/level has been fetched
@@ -263,6 +279,7 @@ class LHS::Record
       # When including all resources on one level, don't forward :includes & :references
       # as we have to fetch all resources on this level first, before we continue_including
       def prepare_option_for_include_all_request!(option)
+        return option unless option.present?
         option[:params] ||= {}
         option[:params].merge!(limit_key => option.fetch(:params, {}).fetch(limit_key, LHS::Pagination::Base::DEFAULT_LIMIT))
         option.delete(:including)
@@ -302,8 +319,8 @@ class LHS::Record
         data = LHC.request(options.compact).map do |response|
           LHS::Data.new(response.body, nil, self, response.request)
         end
-        including = LHS::Complex.reduce options.compact.map { |options| options.delete(:including) }.compact
-        referencing = LHS::Complex.reduce options.compact.map { |options| options.delete(:referencing) }.compact
+        including = LHS::Complex.reduce(options.compact.map{ |options| options.delete(:including) }.compact)
+        referencing = LHS::Complex.reduce(options.compact.map{ |options| options.delete(:referencing) }.compact)
         data = restore_with_nils(data, locate_nils(options)) # nil objects in data provide location information for mapping
         data = LHS::Data.new(data, nil, self)
         handle_includes(including, data, referencing) if including.present? && data.present?
