@@ -141,7 +141,12 @@ describe LHS::Record do
       end
 
       context 'weird array without hrefs' do
-        let(:nested_resources) { [{ type: 'E_COMMERCE' }] }
+        before(:each) do
+          stub_request(:get, "http://datastore/options/1?limit=100")
+            .to_return(body: { type: 'REACH_EXT' }.to_json)
+        end
+
+        let(:nested_resources) { [{ href: 'http://datastore/options/1' }, { type: 'E_COMMERCE' }] }
 
         it 'includes_all in case of an unexpect objects within array' do
           expect(
