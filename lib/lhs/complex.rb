@@ -30,7 +30,7 @@ class LHS::Complex
       merge_into_array!(other)
     elsif data.is_a?(Hash)
       merge_into_hash!(other)
-    else
+    elsif unwrap != other.unwrap
       raise ArgumentError, "Cannot merge #{unwrap} with #{other.unwrap}"
     end
 

@@ -15,6 +15,12 @@ describe LHS::Complex do
     }.to raise_error(ArgumentError)
   end
 
+  it 'does not fail trying to merge primitive types when they are the same' do
+    expect {
+      LHS::Complex.reduce([{ entry: true }, { entry: true }])
+    }.not_to raise_error
+  end
+
   context 'first level' do
     context 'reduces symbols into/with X' do
       it 'reduces symbols into hash' do
