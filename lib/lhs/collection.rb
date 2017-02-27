@@ -17,7 +17,7 @@ class LHS::Collection < LHS::Proxy
   end
 
   def href
-    return _data._raw[:href] if _data.is_a? Hash
+    return _data._raw[:href] if _data._raw.is_a? Hash
     nil
   end
 
