@@ -21,6 +21,10 @@ class LHS::Record
         chain
       end
 
+      def expanded(options = nil)
+        Chain.new(self, Option.new(expanded: options || true))
+      end
+
       def options(hash = nil)
         Chain.new(self, Option.new(hash))
       end
@@ -179,6 +183,10 @@ class LHS::Record
 
       def all(hash = nil)
         push([Parameter.new(hash), Option.new(all: true)])
+      end
+
+      def expanded(options = nil)
+        push(Option.new(expanded: options || true))
       end
 
       def options(hash = nil)
