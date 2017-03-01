@@ -71,6 +71,31 @@ This uses the `:service/v2/records` endpoint, cause `:association_id` was not pr
 
 Uses the `:service/v2/association/:association_id/records` endpoint.
 
+### Expand plain collection of links
+
+Some endpoints could respond a plain list of links without any expanded data. Like search endpoints.
+If you want to have LHS expand those items, use `expanded` as part of a Query-Chain:
+
+```json
+  { 
+    items: [
+      { href: 'http://local.ch/customer/1/accounts/1' },
+      { href: 'http://local.ch/customer/1/accounts/2' },
+      { href: 'http://local.ch/customer/1/accounts/3' }
+    ] 
+  }
+end
+
+```ruby
+  Account.where(customer_id: 123).expanded
+```
+
+You can also apply options to expand in order to apply anything on the requests made to expand the links:
+
+```ruby
+  Account.where(customer_id: 123).expanded(auth: { bearer: access_token })
+```
+
 ## Chaining where statements
 
 LHS supports chaining where statements. 
