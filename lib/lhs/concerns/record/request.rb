@@ -422,8 +422,20 @@ class LHS::Record
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
         load_and_merge_remaining_objects!(data, process_options(options, endpoint)) if paginated?(data._raw) && options[:all]
+        expand_items(data, options[:expanded]) if data.collection? && options[:expanded]
         handle_includes(including, data, referencing) if including.present? && data.present?
         data
+      end
+
+      def expand_items(data, expand_options)
+        expand_options = {} unless expand_options.is_a?(Hash)
+        options = data.map do |item|
+          expand_options.merge(url: item.href)
+        end
+        expanded_data = request(options)
+        data.each_with_index do |item, index|
+          item.merge_raw!(expanded_data[index])
+        end
       end
 
       def url_option_for(item, key = nil)
