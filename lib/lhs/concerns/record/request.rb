@@ -428,8 +428,9 @@ class LHS::Record
       end
 
       def expand_items(data, expand_options)
+        expand_options = {} unless expand_options.is_a?(Hash)
         options = data.map do |item|
-          (expand_options || {}).merge(url: item.href)
+          expand_options.merge(url: item.href)
         end
         expanded_data = request(options)
         data.each_with_index do |item, index|

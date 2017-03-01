@@ -39,4 +39,30 @@ describe LHS::Record do
     assert_requested request_item_1
     assert_requested request_item_2
   end
+
+  context 'without options' do
+
+    let!(:request_item_1) do
+      stub_request(:get, "http://local.ch/v2/records/1")
+        .to_return(body: {
+          name: 'Steve'
+        }.to_json)
+    end
+
+    let!(:request_item_2) do
+      stub_request(:get, "http://local.ch/v2/records/2")
+        .to_return(body: {
+          name: 'John'
+        }.to_json)
+    end
+
+    it 'works also without options' do
+      records = Record.where(color: 'blue').expanded
+      expect(records[0].name).to eq 'Steve'
+      expect(records[1].name).to eq 'John'
+      assert_requested request_collection
+      assert_requested request_item_1
+      assert_requested request_item_2
+    end
+  end
 end
