@@ -91,7 +91,7 @@ end
   Account.where(customer_id: 123).expanded
 ```
 
-You can also apply options to expand in order to apply anything on the requests made to expand the links:
+You can also apply options to `expanded` in order to apply anything on the requests made to expand the links:
 
 ```ruby
   Account.where(customer_id: 123).expanded(auth: { bearer: access_token })
