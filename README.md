@@ -79,9 +79,9 @@ If you want to have LHS expand those items, use `expanded` as part of a Query-Ch
 ```json
   { 
     "items" : [
-      { "href" : "http://local.ch/customer/1/accounts/1" },
-      { "href": "http://local.ch/customer/1/accounts/2" },
-      { "href": "http://local.ch/customer/1/accounts/3" }
+      {"href": "http://local.ch/customer/1/accounts/1"},
+      {"href": "http://local.ch/customer/1/accounts/2"},
+      {"href": "http://local.ch/customer/1/accounts/3"}
     ] 
   }
 end
