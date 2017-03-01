@@ -85,6 +85,7 @@ If you want to have LHS expand those items, use `expanded` as part of a Query-Ch
     ] 
   }
 end
+```
 
 ```ruby
   Account.where(customer_id: 123).expanded
