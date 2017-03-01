@@ -41,7 +41,6 @@ describe LHS::Record do
   end
 
   context 'without options' do
-
     let!(:request_item_1) do
       stub_request(:get, "http://local.ch/v2/records/1")
         .to_return(body: {
