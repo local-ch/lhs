@@ -19,7 +19,6 @@ class LHS::Record
 
 end
 
-
 RSpec.configure do |config|
   config.before(:each) do |spec|
     next if spec.metadata.key?(:cleanup_before) && spec.metadata[:cleanup_before] == false
