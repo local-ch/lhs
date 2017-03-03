@@ -93,8 +93,9 @@ describe LHS::Item do
       user.email = 'steve@local.ch'
       successful_validation
       expect(user.valid?).to eq true
-      expect(user.errors).to be_nil
+      expect(user.errors.messages).to be_empty
     end
+
   end
 
   context 'endpoint does not support validations' do

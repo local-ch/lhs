@@ -53,6 +53,11 @@ class LHS::Errors
     values.flatten.size
   end
 
+  def clear
+    @raw = nil
+    @messages.clear
+  end
+
   delegate :values, to: :messages
 
   delegate :keys, to: :messages
