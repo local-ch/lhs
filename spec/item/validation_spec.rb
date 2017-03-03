@@ -95,7 +95,6 @@ describe LHS::Item do
       expect(user.valid?).to eq true
       expect(user.errors.messages).to be_empty
     end
-
   end
 
   context 'endpoint does not support validations' do

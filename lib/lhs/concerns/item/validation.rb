@@ -7,7 +7,7 @@ class LHS::Item < LHS::Proxy
 
     def valid?(options = {})
       options ||= {}
-      self.errors.clear
+      errors.clear
       endpoint = validation_endpoint
       raise 'No endpoint found to perform validations! See here: https://github.com/local-ch/lhs#validation' unless endpoint
       record = LHS::Record.for_url(endpoint.url)
