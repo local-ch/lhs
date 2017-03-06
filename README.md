@@ -703,7 +703,7 @@ In case you want to add custom validation errors to an instance of LHS::Record:
 
 ```ruby
 user.errors.add(:name, 'The name you provided is not valid.')
-```.
+```
 
 ### Know issue with `ActiveModel::Validations`
 If you are using `ActiveModel::Validations` and add errors to the LHS::Record instance - as described above - then those errors will be overwritten by the errors from `ActiveModel::Validations` when using `save`  or `valid?`. [Open issue](https://github.com/local-ch/lhs/issues/159)
