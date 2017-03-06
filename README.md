@@ -691,7 +691,7 @@ The parameters passed to the `validates` endpoint option are used to perform the
 
 ### Reset validation errors
 
-Clear the error messages. Compatible to [ActiveRecord](https://github.com/rails/rails/blob/6c8cf21584ced73ade45529d11463c74b5a0c58f/activemodel/lib/active_model/errors.rb#L85).
+Clear the error messages. Compatible with [ActiveRecord](https://github.com/rails/rails/blob/6c8cf21584ced73ade45529d11463c74b5a0c58f/activemodel/lib/active_model/errors.rb#L85).
 
 ```ruby
 record.errors.clear
