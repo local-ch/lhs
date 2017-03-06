@@ -157,4 +157,20 @@ describe LHS::Item do
       expect(record.errors['body']).to eq ['parse error']
     end
   end
+
+  describe '#clear' do
+    let(:record) { Record.build(name: 'Steve') }
+
+    before(:each) do
+      stub_request(:post, "#{datastore}/feedbacks")
+        .to_return(status: 400, body: error_format_fields.to_json)
+    end
+
+    it 'resets all errors' do
+      record.save
+      expect(record.errors.any?).to eq true
+      record.errors.clear
+      expect(record.errors.any?).to eq false
+    end
+  end
 end

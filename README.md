@@ -309,15 +309,7 @@ end
   )
 ```
 
-When creation fails, the object contains errors. It provides them through the `errors` attribute:
-
-```ruby
-  record.errors #<LHS::Errors>
-  record.errors.include?(:ratings) # true
-  record.errors[:ratings] # ['REQUIRED_PROPERTY_VALUE']
-  record.errors.messages # {:ratings=>["REQUIRED_PROPERTY_VALUE"], :recommended=>["REQUIRED_PROPERTY_VALUE"]}
-  record.errors.message # ratings must be set when review or name or review_title is set | The property value is required; it cannot be null, empty, or blank."
-```
+See [Validation](#Validation) for handling validation errors when creating records.
 
 ## Create records through associations (nested resources)
 
@@ -680,6 +672,12 @@ user = User.build(email: 'im not an email address')
 unless user.valid?
   fail(user.errors[:email])
 end
+
+user.errors #<LHS::Errors>
+user.errors.include?(:email) # true
+user.errors[:email] # ['REQUIRED_PROPERTY_VALUE']
+user.errors.messages # {:email=>["REQUIRED_PROPERTY_VALUE"]}
+user.errors.message # email must be set when user is created."
 ```
 
 The parameters passed to the `validates` endpoint option are used to perform the validation:
@@ -691,7 +689,15 @@ The parameters passed to the `validates` endpoint option are used to perform the
   endpoint ':service/v2/users', validates: { path: 'validate' }            # will perform a validation via :service/v2/users/validate
 ```
 
-## Custom validation errors
+### Reset validation errors
+
+Clear the error messages. Compatible with [ActiveRecord](https://github.com/rails/rails/blob/6c8cf21584ced73ade45529d11463c74b5a0c58f/activemodel/lib/active_model/errors.rb#L85).
+
+```ruby
+record.errors.clear
+```
+
+### Custom validation errors
 
 In case you want to add custom validation errors to an instance of LHS::Record:
 
