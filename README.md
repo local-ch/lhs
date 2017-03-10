@@ -77,12 +77,12 @@ Some endpoints could respond a plain list of links without any expanded data. Li
 If you want to have LHS expand those items, use `expanded` as part of a Query-Chain:
 
 ```json
-  { 
+  {
     "items" : [
       {"href": "http://local.ch/customer/1/accounts/1"},
       {"href": "http://local.ch/customer/1/accounts/2"},
       {"href": "http://local.ch/customer/1/accounts/3"}
-    ] 
+    ]
   }
 end
 ```
@@ -99,7 +99,7 @@ You can also apply options to `expanded` in order to apply anything on the reque
 
 ## Chaining where statements
 
-LHS supports chaining where statements. 
+LHS supports chaining where statements.
 That allows you to chain multiple where-queries:
 
 ```ruby
@@ -170,7 +170,12 @@ record = Record.where(color: 'blue')
 
 ## Find single records
 
-`find` finds a unique record by uniqe identifier (usualy id).
+`find` finds a unique record by unique identifier (usualy id or href).
+
+```ruby
+  Record.find(123)
+  Record.find('https://api.example.com/records/123')
+```
 
 If no record is found an error is raised.
 
@@ -237,14 +242,14 @@ You can apply options to the request chain. Those options will be forwarded to t
 ```ruby
   # Authenticate with OAuth
   options = { auth: { bearer: '123456' } }
-  
+
   AuthenticatedRecord = Record.options(options)
-  
+
   blue_records = AuthenticatedRecord.where(color: 'blue')
   active_records = AuthenticatedRecord.where(active: true)
 
   AuthenticatedRecord.create(color: 'red')
-  
+
   record = AuthenticatedRecord.find(123)
   # Find resolves the current query and applies all options from the chain
   # All further requests are made from scratch and not based on the previous options
@@ -316,7 +321,7 @@ See [Validation](#Validation) for handling validation errors when creating recor
 ```ruby
   class Review < LHS::Record
     endpoint ':service/reviews'
-  end 
+  end
 
   class Comment < LHS::Record
     endpoint ':service/reviews/:review_id/comments'
@@ -396,7 +401,7 @@ Build and persist new items from scratch are done either with `new` or it's alia
 
 ## Custom setters and getters
 
-Sometimes it is the case that you want to have your custom getters and setters and convert the data to a processable format behind the scenes. 
+Sometimes it is the case that you want to have your custom getters and setters and convert the data to a processable format behind the scenes.
 The initializer will now use custom setter if one is defined:
 
 ```ruby
@@ -889,9 +894,9 @@ Example.find(1) # GET records/1
 
 ## Testing: How to write tests when using LHS
 
-[WebMock](https://github.com/bblimke/webmock)! 
+[WebMock](https://github.com/bblimke/webmock)!
 
-Best practice is to let LHS fetch your records and Webmock to stub/mock endpoints responses. 
+Best practice is to let LHS fetch your records and Webmock to stub/mock endpoints responses.
 This follows the [Black Box Testing](https://en.wikipedia.org/wiki/Black-box_testing) approach and prevents you from building up constraints to LHS' internal structures/mechanisms, which will break when we change internal things.
 LHS provides interfaces that result in HTTP requests, this is what you should test.
 

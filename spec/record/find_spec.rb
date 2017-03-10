@@ -14,12 +14,23 @@ describe LHS::Record do
   end
 
   context 'find' do
-    it 'finds a single unique record' do
-      stub_request(:get, "#{datastore}/feedbacks/z12f-3asm3ngals")
-        .to_return(status: 200, body: load_json(:feedback))
-      record = Record.find('z12f-3asm3ngals')
-      expect(record).to be_kind_of Record
-      expect(record.source_id).to be_kind_of String
+    context 'finds a single unique record' do
+      before(:each) do
+        stub_request(:get, "#{datastore}/feedbacks/z12f-3asm3ngals")
+          .to_return(status: 200, body: load_json(:feedback))
+      end
+
+      it 'by id' do
+        record = Record.find('z12f-3asm3ngals')
+        expect(record).to be_kind_of Record
+        expect(record.source_id).to be_kind_of String
+      end
+
+      it 'by href' do
+        record = Record.find("#{datastore}/feedbacks/z12f-3asm3ngals")
+        expect(record).to be_kind_of Record
+        expect(record.source_id).to be_kind_of String
+      end
     end
 
     it 'raises if nothing was found' do

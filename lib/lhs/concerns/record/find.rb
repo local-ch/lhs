@@ -60,11 +60,18 @@ class LHS::Record
       end
 
       def request_options(args, options)
+        options ||= {}
         if args.is_a? Hash
-          (options || {}).merge(params: args)
+          options.merge(params: args)
+        elsif href?(args)
+          options.merge(url: args)
         else
-          (options || {}).merge(params: { id: args })
+          options.merge(params: { id: args })
         end
+      end
+
+      def href?(str)
+        str.is_a?(String) && %r{^https?://}.match(str)
       end
     end
   end
