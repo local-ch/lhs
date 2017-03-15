@@ -376,7 +376,8 @@ describe LHS::Record do
           .to_return(
             body: {
               items: [{ href: "#{datastore}/places/1" }]
-            }.to_json)
+            }.to_json
+          )
       end
 
       let!(:place_request) do
@@ -385,7 +386,8 @@ describe LHS::Record do
           .to_return(
             body: {
               name: 'Casa Ferlin'
-            }.to_json)
+            }.to_json
+          )
       end
 
       it 'forwards options used to expand those unexpanded items' do
