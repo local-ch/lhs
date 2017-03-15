@@ -334,31 +334,69 @@ describe LHS::Record do
   end
 
   context 'unexpanded response when requesting the included collection' do
-    it 'loads the collection and the single items, if not already expanded' do
+    before(:each) do
       class Customer < LHS::Record
         endpoint ':datastore/customer/:id'
       end
+    end
 
+    let!(:customer_request) do
       stub_request(:get, "#{datastore}/customer/1")
         .to_return(body: {
           places: {
             href: "#{datastore}/places"
           }
         }.to_json)
+    end
 
+    let!(:places_request) do
       stub_request(:get, "#{datastore}/places")
         .to_return(body: {
           items: [{ href: "#{datastore}/places/1" }]
         }.to_json)
+    end
 
-      item_request = stub_request(:get, "#{datastore}/places/1")
+    let!(:place_request) do
+      stub_request(:get, "#{datastore}/places/1")
         .to_return(body: {
           name: 'Casa Ferlin'
         }.to_json)
+    end
 
+    it 'loads the collection and the single items, if not already expanded' do
       place = Customer.includes(:places).find(1).places.first
-      assert_requested(item_request)
+      assert_requested(place_request)
       expect(place.name).to eq 'Casa Ferlin'
+    end
+
+    context 'forwarding options' do
+      let!(:places_request) do
+        stub_request(:get, "#{datastore}/places")
+          .with(headers: { 'Authorization' => 'Bearer 123' })
+          .to_return(
+            body: {
+              items: [{ href: "#{datastore}/places/1" }]
+            }.to_json)
+      end
+
+      let!(:place_request) do
+        stub_request(:get, "#{datastore}/places/1")
+          .with(headers: { 'Authorization' => 'Bearer 123' })
+          .to_return(
+            body: {
+              name: 'Casa Ferlin'
+            }.to_json)
+      end
+
+      it 'forwards options used to expand those unexpanded items' do
+        place = Customer
+          .includes(:places)
+          .references(places: { headers: { 'Authorization' => 'Bearer 123' } })
+          .find(1)
+          .places.first
+        assert_requested(place_request)
+        expect(place.name).to eq 'Casa Ferlin'
+      end
     end
   end
 

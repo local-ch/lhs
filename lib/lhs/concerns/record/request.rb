@@ -125,13 +125,13 @@ class LHS::Record
         end
       end
 
-      def handle_include(included, data, sub_includes = nil, references = nil)
+      def handle_include(included, data, sub_includes = nil, reference = nil)
         return if data.blank? || skip_loading_includes?(data, included)
         options = options_for_data(data, included)
-        options = extend_with_references(options, references)
-        addition = load_include(options, data, sub_includes, references)
+        options = extend_with_reference(options, reference)
+        addition = load_include(options, data, sub_includes, reference)
         extend_raw_data!(data, addition, included)
-        expand_addition!(data, included) if no_expanded_data?(addition)
+        expand_addition!(data, included, options) if no_expanded_data?(addition)
       end
 
       def options_for_data(data, included = nil)
@@ -140,9 +140,10 @@ class LHS::Record
         url_option_for(data, included)
       end
 
-      def expand_addition!(data, included)
+      def expand_addition!(data, included, reference)
         addition = data[included]
         options = options_for_data(addition)
+        options = extend_with_reference(options, reference.except(:url))
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         expanded_data = begin
@@ -163,13 +164,13 @@ class LHS::Record
       end
 
       # Extends request options with options provided for this reference
-      def extend_with_references(options, references)
-        return options unless references
+      def extend_with_reference(options, reference)
+        return options unless reference
         options ||= {}
         if options.is_a?(Array)
-          options.map { |request_options| request_options.merge(references) if request_options.present? }
+          options.map { |request_options| request_options.merge(reference) if request_options.present? }
         elsif options.present?
-          options.merge(references)
+          options.merge(reference)
         end
       end
 
