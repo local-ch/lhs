@@ -41,14 +41,64 @@ describe LHS::Data do
   end
 
   context 'different date time formats' do
-    let(:item) do
-      item = data[0]
-      item._raw[:created_date] = '2016-07-09T13:45:00+00:00'
-      item
+    context 'with numbered time zone' do
+      let(:item) do
+        item = data[0]
+        item._raw[:created_date] = '2016-07-09T13:45:00+02:00'
+        item
+      end
+
+      it 'returns TimeWithZone if string can be parsed as date_time' do
+        expect(item.created_date).to be_kind_of ActiveSupport::TimeWithZone
+      end
+
+      it 'has UTC time zone' do
+        expect(item.created_date.zone).to eq('UTC')
+      end
+
+      it 'has the right time' do
+        expect(item.created_date.hour).to eq(11)
+      end
     end
 
-    it 'returns TimeWithZone if string can be parsed as date_time' do
-      expect(item.created_date).to be_kind_of ActiveSupport::TimeWithZone
+    context 'with lettered time zone' do
+      let(:item) do
+        item = data[0]
+        item._raw[:created_date] = '2016-07-09T13:45:00Z'
+        item
+      end
+
+      it 'returns TimeWithZone if string can be parsed as date_time' do
+        expect(item.created_date).to be_kind_of ActiveSupport::TimeWithZone
+      end
+
+      it 'has UTC time zone' do
+        expect(item.created_date.zone).to eq('UTC')
+      end
+
+      it 'has the right time' do
+        expect(item.created_date.hour).to eq(13)
+      end
+    end
+
+    context 'without seconds' do
+      let(:item) do
+        item = data[0]
+        item._raw[:created_date] = '2016-07-09T13:45Z'
+        item
+      end
+
+      it 'returns TimeWithZone if string can be parsed as date_time' do
+        expect(item.created_date).to be_kind_of ActiveSupport::TimeWithZone
+      end
+
+      it 'has UTC time zone' do
+        expect(item.created_date.zone).to eq('UTC')
+      end
+
+      it 'has the right time' do
+        expect(item.created_date.hour).to eq(13)
+      end
     end
   end
 end
