@@ -11,9 +11,6 @@ rspec-active-support-latest:
     script_defaults:
       template_environment_variables: true
 
-    environment_variables:
-      ACTIVESUPPORT: 5
-
     task_defaults:
       max_trials: 2
       dispatch_storm_delay_duration: 1 Seconds
