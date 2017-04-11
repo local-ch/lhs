@@ -24,6 +24,8 @@ DIGEST=$(echo "$DIGEST $PATH" \
 
 CACHE_SIGNATURE_FILE="/tmp/bundle_cache_signature_${DIGEST}"
 
+echo "ACTIVESUPPORT $ACTIVESUPPORT";
+
 if [ ! -f  $CACHE_SIGNATURE_FILE ] ; then
   if [ -z "${ACTIVESUPPORT+1}" ]; then BUNDLE_GEMFILE=Gemfile.activesupport$ACTIVESUPPORT bundle install; else bundle install; fi
   touch $CACHE_SIGNATURE_FILE
