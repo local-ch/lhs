@@ -15,6 +15,10 @@ DIGEST=$(git ls-tree HEAD --\
   cider-ci.yml cider-ci Gemfile.lock \
   | openssl dgst -sha1 | cut -d ' ' -f 2)
 
+if [ -z "${ACTIVESUPPORT+1}" ]; then 
+  DIGEST=$(echo "$DIGEST $ACTIVESUPPORT")
+fi
+
 DIGEST=$(echo "$DIGEST $PATH" \
  | openssl dgst -sha1 | cut -d ' ' -f 2)
 
