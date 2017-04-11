@@ -17,12 +17,11 @@ scripts:
       set -eux
       mkdir -p tmp/cache
       export PATH=~/.rubies/$RUBY/bin:$PATH
-      bundle exec rspec
+      if [ -z $ACTIVESUPPORT ]; then BUNDLE_GEMFILE=Gemfile.activesupport$ACTIVESUPPORT bundle exec rspec; else bundle exec rspec; fi
     
     start_when:
       'bundled':
         script_key: bundle
-
 
 trial_attachments:
   logs:

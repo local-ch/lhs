@@ -5,7 +5,6 @@ rescue LoadError
 end
 
 require 'rdoc/task'
-
 RDoc::Task.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'LHS'

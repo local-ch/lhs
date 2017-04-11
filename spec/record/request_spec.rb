@@ -13,8 +13,9 @@ describe LHS::Record do
     end
 
     it 'is using params as query params explicitly when provided in params namespace' do
-      stub_request(:get, "#{datastore}/content-ads/123/feedbacks?campaign_id=456").to_return(status: 200)
-      Record.where(campaign_id: 123, params: { campaign_id: '456' })
+      request = stub_request(:get, "#{datastore}/content-ads/123/feedbacks?campaign_id=456").to_return(status: 200)
+      Record.where(campaign_id: 123, params: { campaign_id: '456' }).to_a
+      assert_requested(request)
     end
   end
 end

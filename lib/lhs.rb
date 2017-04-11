@@ -19,7 +19,11 @@ module LHS
   end
 end
 
-Gem.find_files('lhs/**/*.rb').sort.each { |path| require path }
+Gem.find_files('lhs/**/*.rb')
+  .sort
+  .each do |path| 
+    require path if defined?(Rails) || !File.basename(path).include?('railtie.rb')
+  end
 
 # Preload all the LHS::Records that are defined in app/models
 class Engine < Rails::Engine
