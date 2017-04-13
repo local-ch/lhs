@@ -1,3 +1,3 @@
 LHC.configure do |config|
-  config.placeholder(:datastore, 'http://datastore')
+  config.interceptors = [LHC::Caching]
 end

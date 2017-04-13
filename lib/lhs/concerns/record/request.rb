@@ -377,7 +377,20 @@ class LHS::Record
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
         merge_explicit_params!(options[:params])
         options.delete(:params) if options[:params] && options[:params].empty?
+        inject_request_cycle_cache!(options)
         options
+      end
+
+      # Injects options into request, that enable the LHS::Record::RequestCycleCache::Interceptor
+      def inject_request_cycle_cache!(options)
+        if LHC::config.interceptors.include?(LHC::Caching)
+          # Ensure LHS::RequestCycleCache interceptor is prepend
+          interceptors = options[:interceptors] || LHC.config.interceptors
+          interceptors = interceptors.unshift(LHS::Record::RequestCycleCache::Interceptor)
+          options[:interceptors] = interceptors
+        else
+          warn("[WARNING] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor)!")
+        end
       end
 
       # LHC supports only one error handler, merge all error handlers to one
