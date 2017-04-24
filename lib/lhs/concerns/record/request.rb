@@ -383,9 +383,9 @@ class LHS::Record
 
       # Injects options into request, that enable the LHS::Record::RequestCycleCache::Interceptor
       def inject_request_cycle_cache!(options)
-        if LHC::config.interceptors.include?(LHC::Caching)
+        interceptors = options[:interceptors] || LHC.config.interceptors
+        if interceptors.include?(LHC::Caching)
           # Ensure LHS::RequestCycleCache interceptor is prepend
-          interceptors = options[:interceptors] || LHC.config.interceptors
           interceptors = interceptors.unshift(LHS::Record::RequestCycleCache::Interceptor)
           options[:interceptors] = interceptors
         else

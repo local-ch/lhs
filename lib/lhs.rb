@@ -21,8 +21,10 @@ end
 
 Gem.find_files('lhs/**/*.rb')
   .sort
-  .each do |path| 
-    require path if defined?(Rails) || !File.basename(path).include?('railtie.rb')
+  .reject do |path|
+    (!defined?(Rails) && File.basename(path).include?('railtie.rb')) # don't require railtie if Rails is not around
+  end.each do |path|
+    require path
   end
 
 # Preload all the LHS::Records that are defined in app/models
