@@ -61,7 +61,6 @@ describe 'Request Cycle Cache', type: :request do
   end
 
   context 'disabled request cycle cache' do
-
     it 'does not serve from request cycle cache when cache interceptor is not hooked in, and does not warn if request cycle cache is explicitly disabled',
     cleanup_before: false do
       expect(lambda do
