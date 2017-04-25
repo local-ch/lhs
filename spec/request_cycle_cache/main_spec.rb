@@ -2,7 +2,6 @@ require 'rails_helper'
 require 'lhc/test/cache_helper.rb'
 
 describe 'Request Cycle Cache', type: :request do
-
   before(:each) do
     LHS.config.request_cycle_cache_enabled = true
   end
