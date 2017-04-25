@@ -2,6 +2,11 @@ require 'rails_helper'
 require 'lhc/test/cache_helper.rb'
 
 describe 'Request Cycle Cache', type: :request do
+
+  before(:each) do
+    LHS.config.request_cycle_cache_enabled = true
+  end
+
   let!(:request) do
     stub_request(:get, "http://datastore/v2/users/1").to_return(body: { name: 'Steve' }.to_json)
   end
