@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.requirements << 'Ruby >= 2.0.0'
   s.required_ruby_version = '>= 2.0.0'
 
-  s.add_dependency 'lhc', '>= 4.0.2'
+  s.add_dependency 'lhc', '>= 5.0.1'
   s.add_dependency 'activesupport', '> 4.2'
 
   s.add_development_dependency 'rspec-rails', '>= 3.0.0'
