@@ -1,6 +1,8 @@
 require 'lhc'
+Dir[File.dirname(__FILE__) + '/lhs/concerns/lhs/*.rb'].sort.each { |file| require file }
 
 module LHS
+  include Configuration
   class RequireLhsRecords
     def initialize(app)
       @app = app

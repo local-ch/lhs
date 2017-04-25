@@ -8,6 +8,7 @@ module LHS
         private
 
         def prepare_lhs_request_cycle_cache
+          return unless LHS.config.request_cycle_cache_enabled
           LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id = [Time.now.to_f, request.object_id].join('#')
           Rails.logger.error "REQUEST ID #{LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id}"
         end

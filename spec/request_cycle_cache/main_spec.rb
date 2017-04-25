@@ -46,4 +46,29 @@ describe 'Request Cycle Cache', type: :request do
     thread.join
     expect(first_request_id).not_to eq second_request_id
   end
+
+  context 'disabled request cycle cache' do
+
+    before(:each) do
+      LHS.config.request_cycle_cache_enabled = false
+    end
+
+    after(:each) do
+      LHS.config.request_cycle_cache_enabled = true
+    end
+
+    it 'does not serve from request cycle cache when cache interceptor is not hooked in, and does not warn if request cycle cache is explicitly disabled', cleanup_before: false do
+      expect(lambda{ 
+        get '/request_cycle_cache/no_caching_interceptor'
+      }).not_to output(
+        %r{\[WARNING\] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
+      ).to_stderr
+      expect(request).to have_been_made.times(2)
+    end
+
+    it 'DOES NOT serve requests that are exactly the same during one request cycle from the cache, when request cycle cache is disabled', cleanup_before: false do
+      get '/request_cycle_cache/simple'
+      expect(request).to have_been_made.times(2)
+    end
+  end
 end

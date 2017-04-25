@@ -27,15 +27,13 @@ Please store all defined LHS::Records in `app/models` as they are not autoloaded
 
 You setup a LHS::Record by configuring one or multiple endpoints. You can also add request options for an endpoint (see following example).
 
-The following example uses the `LHC::Caching` interceptor from [lhc-core-interceptors](https://github.com/local-ch/lhc-core-interceptors#cache-interceptor).
-
 ```ruby
 class Record < LHS::Record
 
   endpoint ':service/v2/association/:association_id/records'
   endpoint ':service/v2/association/:association_id/records/:id'
-  endpoint ':service/v2/records', cache: true, cache_expires_in: 1.day
-  endpoint ':service/v2/records/:id', cache: true, cache_expires_in: 1.day
+  endpoint ':service/v2/records', auth: { basic: 'PASSWORD' }
+  endpoint ':service/v2/records/:id', auth: { basic: 'PASSWORD' }
 
 end
 ```
@@ -260,6 +258,20 @@ You can apply options to the request chain. Those options will be forwarded to t
   authenticated_record.save
   authenticated_record.destroy
   authenticated_record.update(name: 'Steve')
+```
+
+## Request Cycle Cache
+
+By default, LHS does not perform the same http request during one request cycle multiple times. 
+It uses the [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) as caching mechanism base
+and sets a uniq request id for every request cycle via Railties to ensure data is just cached via one request cycle and not shared with other requests.
+
+The LHS Request Cycle Cache is opt-out, so it's enabled by default and will require you to enable the [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) in your project.
+
+If you want to disable the LHS Request Cycle Cache, simply disable it via configuration:
+
+```ruby
+LHS.config.request_cycle_cache_enabled = false
 ```
 
 ## Batch processing
