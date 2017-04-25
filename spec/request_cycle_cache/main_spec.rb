@@ -2,7 +2,6 @@ require 'rails_helper'
 require 'lhc/test/cache_helper.rb'
 
 describe 'Request Cycle Cache', type: :request do
-
   let!(:request) do
     stub_request(:get, "http://datastore/v2/users/1").to_return(body: { name: 'Steve' }.to_json)
   end
@@ -21,9 +20,9 @@ describe 'Request Cycle Cache', type: :request do
   end
 
   it 'does not serve from request cycle cache when cache interceptor is not hooked in, but logs a warning', cleanup_before: false do
-    expect(lambda{ 
+    expect(lambda do
       get '/request_cycle_cache/no_caching_interceptor'
-    }).to output(
+    end).to output(
       %r{\[WARNING\] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
     ).to_stderr
     expect(request).to have_been_made.times(2)
@@ -48,7 +47,6 @@ describe 'Request Cycle Cache', type: :request do
   end
 
   context 'disabled request cycle cache' do
-
     before(:each) do
       LHS.config.request_cycle_cache_enabled = false
     end
@@ -58,9 +56,9 @@ describe 'Request Cycle Cache', type: :request do
     end
 
     it 'does not serve from request cycle cache when cache interceptor is not hooked in, and does not warn if request cycle cache is explicitly disabled', cleanup_before: false do
-      expect(lambda{ 
+      expect(lambda do
         get '/request_cycle_cache/no_caching_interceptor'
-      }).not_to output(
+      end).not_to output(
         %r{\[WARNING\] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
       ).to_stderr
       expect(request).to have_been_made.times(2)

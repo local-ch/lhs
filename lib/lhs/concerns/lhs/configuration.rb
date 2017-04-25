@@ -5,7 +5,6 @@ module LHS
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       def config
         LHS::Config.instance
       end

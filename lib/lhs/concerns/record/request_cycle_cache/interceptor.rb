@@ -14,7 +14,7 @@ class LHS::Record
         request.options = request.options.merge({
           cache: true,
           cache_expires_in: 5.minutes,
-          cache_race_condition_ttl: 5.second,
+          cache_race_condition_ttl: 5.seconds,
           cache_key: cache_key_for(request)
         }.merge(request.options))
       end
@@ -26,7 +26,7 @@ class LHS::Record
           "LHS_REQUEST_CYCLE_CACHE(#{VERSION})",
           LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id,
           [
-           request.method.upcase,
+            request.method.upcase,
             [
               request.url,
               request.params.presence

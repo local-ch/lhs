@@ -1,7 +1,6 @@
 module LHS
   class Railtie < Rails::Railtie
     initializer "lhs.hook_into_controller_initialization" do
-
       class ActionController::Base
         before_filter :prepare_lhs_request_cycle_cache
 
