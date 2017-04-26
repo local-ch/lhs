@@ -3,6 +3,21 @@ LHS
 
 LHS uses [LHC](//github.com/local-ch/LHC) for http requests.
 
+## Quickstart
+
+```
+gem 'lhs'
+```
+
+LHS comes with Request Cycle Cache – enabled by default. It requires [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) to be enabled:
+
+```ruby
+# intializers/lhc.rb 
+LHC.configure do |config|
+  config.interceptors = [LHC::Caching]
+end
+```
+
 ## Very Short Introduction
 
 Access data that is provided by an http json service with ease using a LHS::Record.
