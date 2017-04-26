@@ -8,14 +8,15 @@ class LHS::Record
     class Interceptor < LHC::Interceptor
 
       VERSION = 1
+      CACHED_METHODS = [:get].freeze
 
       def before_request(request)
-        return unless request.method.to_sym == :get
         request.options = request.options.merge({
           cache: true,
           cache_expires_in: 5.minutes,
           cache_race_condition_ttl: 5.seconds,
-          cache_key: cache_key_for(request)
+          cache_key: cache_key_for(request),
+          cached_methods: CACHED_METHODS
         }.merge(request.options))
       end
 
