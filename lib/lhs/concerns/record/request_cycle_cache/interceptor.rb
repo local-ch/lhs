@@ -24,12 +24,12 @@ class LHS::Record
 
       def cache_key_for(request)
         [
-          "LHS_REQUEST_CYCLE_CACHE(#{VERSION})",
+          "LHS_REQUEST_CYCLE_CACHE(v#{VERSION})",
           request.method.upcase,
           [request.url, request.params.presence].compact.join('?'),
           "REQUEST=#{LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id}",
           "HEADERS=#{request.headers.hash}"
-        ].join(':')
+        ].join(' ')
       end
     end
   end
