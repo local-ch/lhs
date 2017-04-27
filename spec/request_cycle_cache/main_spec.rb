@@ -57,6 +57,8 @@ describe 'Request Cycle Cache', type: :request do
       second_request_id = LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id
     end
     thread.join
+    expect(first_request_id).not_to be_nil
+    expect(second_request_id).not_to be_nil
     expect(first_request_id).not_to eq second_request_id
   end
 
