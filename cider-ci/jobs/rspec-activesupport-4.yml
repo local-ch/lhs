@@ -1,5 +1,5 @@
-rspec:
-  name: 'rspec'
+rspec-active-support-v4:
+  name: 'rspec with ActiveSupport v4'
 
   run_when:
     'some HEAD has been updated':
@@ -12,6 +12,8 @@ rspec:
       template_environment_variables: true
 
     task_defaults:
+      environment_variables:
+        ACTIVESUPPORT: '4'
       max_trials: 2
       dispatch_storm_delay_duration: 1 Seconds
       include:
@@ -21,4 +23,4 @@ rspec:
 
     tasks:
       all-rspec:
-        name: All rspec tests
+        name: All rspec tests, using ActiveSupport v4

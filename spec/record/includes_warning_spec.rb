@@ -37,7 +37,7 @@ describe LHS::Record do
       expect(lambda {
         Customer.includes(:contracts).find(1)
       }).to output(
-        "[WARNING] You included `http://datastore/customers/1/contracts`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints).\n"
+        %r{\[WARNING\] You included `http://datastore/customers/1/contracts`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` \(https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints\)\.}
       ).to_stderr
     end
   end

@@ -16,6 +16,7 @@ class LHS::Record
   include Model
   include Pagination
   include Request
+  include RequestCycleCache
   include Scope
 
   delegate :_proxy, :_endpoint, :merge_raw!, :select, to: :_data
