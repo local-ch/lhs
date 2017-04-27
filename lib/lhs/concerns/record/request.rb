@@ -390,7 +390,7 @@ class LHS::Record
           interceptors = interceptors.unshift(LHS::Record::RequestCycleCache::Interceptor)
           options[:interceptors] = interceptors
         else
-          warn("[WARNING] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor)!")
+          warn(LHS::Record::REQUEST_CYCLE_CACHE_WARNING)
         end
       end
 

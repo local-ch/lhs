@@ -192,7 +192,7 @@ record = Record.where(color: 'blue')
 
 If no record is found an error is raised.
 
-`find` can also be used to find a single uniqe record with parameters:
+`find` can also be used to find a single unique record with parameters:
 
 ```ruby
   Record.find(association_id: 123, id: 456)
@@ -279,13 +279,13 @@ You can apply options to the request chain. Those options will be forwarded to t
 
 By default, LHS does not perform the same http request during one request cycle multiple times. 
 
-It uses the [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) as caching mechanism base and sets a uniq request id for every request cycle via Railties to ensure data is just cached via one request cycle and not shared with other requests.
+It uses the [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) as caching mechanism base and sets a unique request id for every request cycle with Railties to ensure data is just cached within one request cycle and not shared with other requests.
 
 Only GET requests are considered for caching by using LHC Caching Interceptor's `cache_methods` option internaly and considers request headers when caching requests, so requests with different headers are not served from cache.
 
 The LHS Request Cycle Cache is opt-out, so it's enabled by default and will require you to enable the [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) in your project.
 
-If you want to disable the LHS Request Cycle Cache, simply disable it via configuration:
+If you want to disable the LHS Request Cycle Cache, simply disable it within configuration:
 
 ```ruby
 LHS.config.request_cycle_cache_enabled = false
