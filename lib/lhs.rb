@@ -1,6 +1,8 @@
 require 'lhc'
+Dir[File.dirname(__FILE__) + '/lhs/concerns/lhs/*.rb'].sort.each { |file| require file }
 
 module LHS
+  include Configuration
   class RequireLhsRecords
     def initialize(app)
       @app = app
@@ -19,7 +21,13 @@ module LHS
   end
 end
 
-Gem.find_files('lhs/**/*.rb').sort.each { |path| require path }
+Gem.find_files('lhs/**/*.rb')
+  .sort
+  .reject do |path|
+    (!defined?(Rails) && File.basename(path).include?('railtie.rb')) # don't require railtie if Rails is not around
+  end.each do |path|
+    require path
+  end
 
 # Preload all the LHS::Records that are defined in app/models
 class Engine < Rails::Engine

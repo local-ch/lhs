@@ -1,0 +1,26 @@
+rspec-active-support-v5:
+  name: 'rspec with ActiveSupport v5'
+
+  run_when:
+    'some HEAD has been updated':
+      type: branch
+      include_match: ^.*$
+
+  context:
+
+    script_defaults:
+      template_environment_variables: true
+
+    task_defaults:
+      environment_variables:
+        ACTIVESUPPORT: '5'
+      max_trials: 2
+      dispatch_storm_delay_duration: 1 Seconds
+      include:
+        - cider-ci/task_components/ruby.yml
+        - cider-ci/task_components/bundle.yml
+        - cider-ci/task_components/rspec.yml
+
+    tasks:
+      all-rspec:
+        name: All rspec tests, using ActiveSupport v5

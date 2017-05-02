@@ -20,9 +20,8 @@ Gem::Specification.new do |s|
   s.requirements << 'Ruby >= 2.0.0'
   s.required_ruby_version = '>= 2.0.0'
 
-  s.add_dependency 'lhc', '>= 3.6.0'
-  s.add_dependency 'lhc-core-interceptors', '>= 2.0.1'
-  s.add_dependency 'activesupport', '> 4'
+  s.add_dependency 'lhc', '>= 5.0.2'
+  s.add_dependency 'activesupport', '> 4.2'
 
   s.add_development_dependency 'rspec-rails', '>= 3.0.0'
   s.add_development_dependency 'rails', '>= 4.0.0'
@@ -30,7 +29,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'capybara'
-  s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'rubocop', '~> 0.47.0'
   s.add_development_dependency 'json', '>=  1.8.2'
 
   s.license = 'GPL-3'

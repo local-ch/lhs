@@ -16,10 +16,11 @@ AllCops:
     - 'config/unicorn.rb'
     - 'config/compass.rb'
     - 'Rakefile'
+    - 'Gemfile'
 
 Rails:
   Enabled: true
-  
+
 Lint/HandleExceptions:
   Exclude:
     - spec/**/*
