@@ -12,7 +12,7 @@ describe LHS::Record do
     end
 
     context 'for new record' do
-      subject { Feedback.new }
+      subject { Feedback.new(href: '') }
 
       it 'is false' do
         expect(subject.persisted?).to be(false)
