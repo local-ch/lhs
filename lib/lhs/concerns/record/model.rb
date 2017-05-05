@@ -11,7 +11,7 @@ class LHS::Record
     end
 
     def persisted?
-      !href.nil?
+      !href.blank?
     end
 
     included do
