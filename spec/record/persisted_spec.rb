@@ -12,10 +12,20 @@ describe LHS::Record do
     end
 
     context 'for new record' do
-      subject { Feedback.new(href: '') }
+      context 'with a nil href' do
+        subject { Feedback.new }
 
-      it 'is false' do
-        expect(subject.persisted?).to be(false)
+        it 'is false' do
+          expect(subject.persisted?).to be(false)
+        end
+      end
+
+      context 'with an empty href' do
+        subject { Feedback.new(href: '') }
+
+        it 'is false' do
+          expect(subject.persisted?).to be(false)
+        end
       end
     end
 
