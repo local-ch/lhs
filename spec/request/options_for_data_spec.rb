@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Record::Request do
-
   before(:each) do
     class Record < LHS::Record
       endpoint 'http://datastore/feedbacks/:id'
@@ -9,7 +8,6 @@ describe LHS::Record::Request do
   end
 
   context '#options_for_data' do
-    
     it 'extract request options from raw data' do
       options = LHS::Record.send(:url_option_for, LHS::Data.new({ href: 'http://datastore/feedbacks/1' }, nil, Record))
       expect(options[:url]).to eq 'http://datastore/feedbacks/1'
@@ -21,7 +19,7 @@ describe LHS::Record::Request do
     end
 
     it 'extract request options from raw nested data' do
-      options = LHS::Record.send(:url_option_for, LHS::Data.new({ reviews: { href: 'http://datastore/reviews/1' }}, nil, Record), :reviews)
+      options = LHS::Record.send(:url_option_for, LHS::Data.new({ reviews: { href: 'http://datastore/reviews/1' } }, nil, Record), :reviews)
       expect(options[:url]).to eq 'http://datastore/reviews/1'
     end
   end
