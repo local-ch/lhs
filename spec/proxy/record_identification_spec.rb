@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe LHS::Proxy do
-  
   before(:each) do
     class Search < LHS::Record
       endpoint 'http://search/results', items_key: :docs
@@ -13,7 +12,6 @@ describe LHS::Proxy do
   end
 
   context 'identifying records' do
-
     it 'identifies records correctly even if parent record has another configuration set' do
       stub_request(:get, "http://search/results?what=Blumen")
         .to_return(body: {
@@ -25,7 +23,7 @@ describe LHS::Proxy do
         }.to_json)
       stub_request(:get, "http://datastore/places/1/feedbacks?limit=10&offset=0")
         .to_return(body: {
-          items: [{review: 'Nice restaurant'}]
+          items: [{ review: 'Nice restaurant' }]
         }.to_json)
       result = Search.where(what: 'Blumen').includes(place: :feedbacks)
       expect(result.place.feedbacks).to be_kind_of Feedback
