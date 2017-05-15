@@ -24,10 +24,10 @@ class LHS::Proxy
       end
 
       record = LHS::Record.for_url(value[:href]) if value.is_a?(Hash) && value[:href]
-      
+
       access_item(value, record) ||
-      access_collection(value, record) ||
-      convert(value)
+        access_collection(value, record) ||
+        convert(value)
     end
 
     def accessing_item?(value, record)
