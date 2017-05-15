@@ -49,9 +49,20 @@ class LHS::Record
         endpoint = LHS::Endpoint.for_url(url)
         return unless endpoint
         template = endpoint.url
-        new_options = options.deep_merge(params: LHC::Endpoint.values_as_params(template, url))
+        new_options = options.deep_merge(
+          params: LHC::Endpoint.values_as_params(template, url).merge(values_from_get_params(url))
+        )
         new_options[:url] = template
         new_options
+      end
+
+      # Extracts values from url's get parameters
+      # and return them as a ruby hash
+      def values_from_get_params(url)
+        uri = URI.parse(url)
+        return {} unless uri.query.present?
+        params = Rack::Utils.parse_nested_query(uri.query)
+        params
       end
 
       # Extends existing raw data with additionaly fetched data

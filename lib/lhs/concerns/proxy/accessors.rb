@@ -23,9 +23,26 @@ class LHS::Proxy
         value = _data._raw[name.to_s.classify.to_sym] if value.nil?
       end
 
-      return access_item(value) if value.is_a?(Hash)
-      return access_collection(value) if value.is_a?(Array)
+      record = LHS::Record.for_url(value[:href]) if value.is_a?(Hash) && value[:href]
+      if accessing_item?(value, record)
+        return access_item(value, record)
+      elsif accessing_collection?(value, record)
+        return access_collection(value, record)
+      end
       convert(value)
+    end
+
+    def accessing_item?(value, record)
+      return false unless value.is_a?(Hash)
+      return false if record && value[record.items_key].present?
+      return false if !record && value[LHS::Record::Configuration::DEFAULT_ITEMS_KEY].present?
+      true
+    end
+
+    def accessing_collection?(value, record)
+      return true if value.is_a?(Array)
+      return true if value.is_a?(Hash) && record && value[record.items_key].present?
+      return true if value.is_a?(Hash) && !record && value[LHS::Record::Configuration::DEFAULT_ITEMS_KEY].present?
     end
 
     def convert(value)
@@ -39,8 +56,7 @@ class LHS::Proxy
       end
     end
 
-    def access_item(value)
-      record = LHS::Record.for_url(value[:href]) if value[:href]
+    def access_item(value, record)
       data = LHS::Data.new(value, _data)
       if record
         record.new(data)
@@ -49,10 +65,14 @@ class LHS::Proxy
       end
     end
 
-    def access_collection(value)
+    def access_collection(value, record)
       data = LHS::Data.new(value, _data)
       collection = LHS::Collection.new(data)
-      LHS::Data.new(collection, _data)
+      if record
+        record.new(collection)
+      else
+        LHS::Data.new(collection, _data)
+      end
     end
 
     def date?(value)
