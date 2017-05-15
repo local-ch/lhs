@@ -24,11 +24,9 @@ class LHS::Proxy
       end
 
       record = LHS::Record.for_url(value[:href]) if value.is_a?(Hash) && value[:href]
-      if accessing_item?(value, record)
-        return access_item(value, record)
-      elsif accessing_collection?(value, record)
-        return access_collection(value, record)
-      end
+      
+      access_item(value, record) ||
+      access_collection(value, record) ||
       convert(value)
     end
 
@@ -57,22 +55,21 @@ class LHS::Proxy
     end
 
     def access_item(value, record)
-      data = LHS::Data.new(value, _data)
-      if record
-        record.new(data)
-      else
-        data
-      end
+      return unless accessing_item?(value, record)
+      wrap_return(value, record)
     end
 
     def access_collection(value, record)
+      return unless accessing_collection?(value, record)
+      collection_data = LHS::Data.new(value, _data)
+      collection = LHS::Collection.new(collection_data)
+      wrap_return(collection, record)
+    end
+
+    def wrap_return(value, record)
       data = LHS::Data.new(value, _data)
-      collection = LHS::Collection.new(data)
-      if record
-        record.new(collection)
-      else
-        LHS::Data.new(collection, _data)
-      end
+      return record.new(data) if record
+      data
     end
 
     def date?(value)
