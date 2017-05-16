@@ -7,6 +7,8 @@ class LHS::Record
   module Configuration
     extend ActiveSupport::Concern
 
+    DEFAULT_ITEMS_KEY = :items
+
     mattr_accessor :configuration
 
     module ClassMethods
@@ -15,7 +17,7 @@ class LHS::Record
       end
 
       def items_key
-        (@configuration.try(:[], :items_key) || :items).to_sym
+        (@configuration.try(:[], :items_key) || DEFAULT_ITEMS_KEY).to_sym
       end
 
       def limit_key
