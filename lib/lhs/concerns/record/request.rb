@@ -292,8 +292,12 @@ class LHS::Record
       # as we have to fetch all resources on this level first, before we continue_including
       def prepare_option_for_include_all_request!(option)
         return option unless option.present?
+        uri = URI.parse(option[:url])
+        get_params = Rack::Utils.parse_nested_query(uri.query).symbolize_keys.except(limit_key, pagination_key)
         option[:params] ||= {}
+        option[:params].merge! get_params if get_params
         option[:params].merge!(limit_key => option.fetch(:params, {}).fetch(limit_key, LHS::Pagination::Base::DEFAULT_LIMIT))
+        option[:url] = option[:url].gsub("?#{uri.query}", '')
         option.delete(:including)
         option.delete(:referencing)
         option

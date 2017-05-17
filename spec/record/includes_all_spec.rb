@@ -128,7 +128,7 @@ describe LHS::Record do
       end
 
       let!(:contracts_request) do
-        stub_request(:get, "http://datastore/customers/1/contracts?limit=100&offset=0")
+        stub_request(:get, "http://datastore/customers/1/contracts?limit=100")
           .to_return(
             body: {
               items: 10.times.map do
@@ -144,9 +144,16 @@ describe LHS::Record do
       end
 
       it 'overwrites existing pagination paramters if they are already contained in a string' do
+        expect(LHC).to receive(:request).with(url: "http://datastore/customers/1",).and_call_original
+        expect(LHC).to receive(:request).with(
+          url: "http://datastore/customers/1/contracts", 
+          all:true,
+          params:{ limit:100 }
+        ).and_call_original
         customer = Customer
-          .includes_all(contracts: :products)
+          .includes_all(:contracts)
           .find(1)
+
         expect(customer.contracts.first.products.length).to eq amount_of_products
       end
     end
