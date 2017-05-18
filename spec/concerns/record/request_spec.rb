@@ -12,15 +12,15 @@ describe LHS::Record::Request do
 
     it 'calls correct prepare method for a Hash' do
       expect(subject).to receive(:prepare_option_for_include_all_request!)
-        .with({ abc: 'def' }).and_return('ignore')
-      expect(subject.send(:prepare_options_for_include_all_request!, { abc: 'def' })).to eq(abc: 'def')
+        .with(abc: 'def').and_return('ignore')
+      expect(subject.send(:prepare_options_for_include_all_request!, abc: 'def')).to eq(abc: 'def')
     end
 
     it 'calls correct prepare method for a Hash' do
       expect(subject).to receive(:prepare_option_for_include_all_request!)
-        .with({ abc: 'def' }).and_return('ignore')
+        .with(abc: 'def').and_return('ignore')
       expect(subject).to receive(:prepare_option_for_include_all_request!)
-        .with({ hij: 'kel' }).and_return('ignore')
+        .with(hij: 'kel').and_return('ignore')
       expect(subject.send(:prepare_options_for_include_all_request!, [{ abc: 'def' }, { hij: 'kel' }]))
         .to eq([{ abc: 'def' }, { hij: 'kel' }])
     end
@@ -46,7 +46,7 @@ describe LHS::Record::Request do
       option = { param: { abc: 'def' }, url: 'http://ab de.com/resource' }
       expect { subject.send(:prepare_option_for_include_all_request!, option) }
         .to raise_exception(URI::InvalidURIError)
-      expect(option).to eq({ param: { abc: 'def' }, url: 'http://ab de.com/resource' })
+      expect(option).to eq(param: { abc: 'def' }, url: 'http://ab de.com/resource')
     end
 
     it 'keeps current params over url params' do
