@@ -4,6 +4,7 @@ class LHS::Record
 
   module Request
     extend ActiveSupport::Concern
+    include Configuration
 
     module ClassMethods
       def request(options)
@@ -293,16 +294,22 @@ class LHS::Record
       def prepare_option_for_include_all_request!(option)
         return option unless option.present?
         uri = URI.parse(option[:url])
-        get_params = Rack::Utils.parse_nested_query(uri.query).symbolize_keys.except(limit_key, pagination_key)
+        get_params = Rack::Utils.parse_nested_query(uri.query)
+          .symbolize_keys
+          .except(limit_key, pagination_key)
         option[:params] ||= {}
-        option[:params].merge! get_params if get_params
-        option[:params].merge!(limit_key => option.fetch(:params, {}).fetch(limit_key, LHS::Pagination::Base::DEFAULT_LIMIT))
+        option[:params].reverse_merge!(get_params)
+        option[:params][limit_key] ||= LHS::Pagination::Base::DEFAULT_LIMIT
         option[:url] = option[:url].gsub("?#{uri.query}", '')
         option.delete(:including)
         option.delete(:referencing)
         option
+      rescue URI::InvalidURIError
+        option
       end
 
+      def prepare_option_for_include_request!(option, sub_includes, references)
+        option.merge!(including: sub_includes, referencing: references) if sub_includes.present?
       end
 
       def merge_batch_data_with_parent!(batch_data, parent_data)
