@@ -3,25 +3,25 @@ require 'rails_helper'
 describe LHS::Record::Request do
   subject { Class.new { include(LHS::Record::Request) } }
 
-  describe 'prepare_options_for!' do
+  describe 'prepare_options_for_include_all_request' do
     it 'calls correct prepare method for nil' do
-      expect(subject).to receive(:prepare_option_for_testing!)
-        .with(nil, 'arg').and_return('ignore')
-      expect(subject.send(:prepare_options_for!, :testing, nil, 'arg')).to eq({})
+      expect(subject).to receive(:prepare_option_for_include_all_request!)
+        .with(nil).and_return('ignore')
+      expect(subject.send(:prepare_options_for_include_all_request!, nil)).to be_nil
     end
 
     it 'calls correct prepare method for a Hash' do
-      expect(subject).to receive(:prepare_option_for_testing!)
-        .with({ abc: 'def' }, 'arg').and_return('ignore')
-      expect(subject.send(:prepare_options_for!, :testing, { abc: 'def' }, 'arg')).to eq(abc: 'def')
+      expect(subject).to receive(:prepare_option_for_include_all_request!)
+        .with({ abc: 'def' }).and_return('ignore')
+      expect(subject.send(:prepare_options_for_include_all_request!, { abc: 'def' })).to eq(abc: 'def')
     end
 
     it 'calls correct prepare method for a Hash' do
-      expect(subject).to receive(:prepare_option_for_testing!)
-        .with({ abc: 'def' }, 'arg').and_return('ignore')
-      expect(subject).to receive(:prepare_option_for_testing!)
-        .with({ hij: 'kel' }, 'arg').and_return('ignore')
-      expect(subject.send(:prepare_options_for!, :testing, [{ abc: 'def' }, { hij: 'kel' }], 'arg'))
+      expect(subject).to receive(:prepare_option_for_include_all_request!)
+        .with({ abc: 'def' }).and_return('ignore')
+      expect(subject).to receive(:prepare_option_for_include_all_request!)
+        .with({ hij: 'kel' }).and_return('ignore')
+      expect(subject.send(:prepare_options_for_include_all_request!, [{ abc: 'def' }, { hij: 'kel' }]))
         .to eq([{ abc: 'def' }, { hij: 'kel' }])
     end
   end
@@ -40,6 +40,13 @@ describe LHS::Record::Request do
       expect(subject.send(:prepare_option_for_include_all_request!, option))
         .to eq(option)
       expect(option).to eq(param: { abc: 'def' })
+    end
+
+    it 'raises an exception when url invalid' do
+      option = { param: { abc: 'def' }, url: 'http://ab de.com/resource' }
+      expect { subject.send(:prepare_option_for_include_all_request!, option) }
+        .to raise_exception(URI::InvalidURIError)
+      expect(option).to eq({ param: { abc: 'def' }, url: 'http://ab de.com/resource' })
     end
 
     it 'keeps current params over url params' do

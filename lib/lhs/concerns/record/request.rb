@@ -235,7 +235,7 @@ class LHS::Record
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
-          prepare_options_for!(:include_request, options, sub_includes, references)
+          prepare_options_for_include_request!(options, sub_includes, references)
           if references && references[:all] # include all linked resources
             load_include_all!(options, record, sub_includes, references)
           else # simply request first page/batch
@@ -247,7 +247,7 @@ class LHS::Record
       end
 
       def load_include_all!(options, record, sub_includes, references)
-        prepare_options_for!(:include_all_request, options)
+        prepare_options_for_include_all_request!(options)
         data = load_all_included!(record, options)
         references.delete(:all) # for this reference all remote objects have been fetched
         continue_including(data, sub_includes, references)
@@ -278,21 +278,21 @@ class LHS::Record
         !!(raw.is_a?(Hash) && raw[total_key] && raw[pagination_key])
       end
 
-      def prepare_options_for!(prepare_method, options, *args)
+      def prepare_options_for_include_all_request!(options)
         if options.is_a?(Array)
           options.each do |option|
-            send("prepare_option_for_#{prepare_method}!", option, *args)
+            prepare_option_for_include_all_request!(option)
           end
         else
-          send("prepare_option_for_#{prepare_method}!", options, *args)
+          prepare_option_for_include_all_request!(options)
         end
-        options || {}
+        options
       end
 
       # When including all resources on one level, don't forward :includes & :references
       # as we have to fetch all resources on this level first, before we continue_including
       def prepare_option_for_include_all_request!(option)
-        return option unless option.present?
+        return option if option.empty? || option[:url].nil?
         uri = URI.parse(option[:url])
         get_params = Rack::Utils.parse_nested_query(uri.query)
           .symbolize_keys
@@ -304,12 +304,15 @@ class LHS::Record
         option.delete(:including)
         option.delete(:referencing)
         option
-      rescue URI::InvalidURIError
-        option
       end
 
-      def prepare_option_for_include_request!(option, sub_includes, references)
-        option.merge!(including: sub_includes, referencing: references) if sub_includes.present?
+      def prepare_options_for_include_request!(options, sub_includes, references)
+        if options.is_a?(Array)
+          options.each { |option| option.merge!(including: sub_includes, referencing: references) if sub_includes.present? }
+        elsif sub_includes.present?
+          options.merge!(including: sub_includes, referencing: references)
+        end
+        options || {}
       end
 
       def merge_batch_data_with_parent!(batch_data, parent_data)
