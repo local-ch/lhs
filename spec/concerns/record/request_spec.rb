@@ -1,7 +1,12 @@
 require 'rails_helper'
 
 describe LHS::Record::Request do
-  subject { Class.new { include(LHS::Record::Request) } }
+  subject do
+    Class.new do
+      include LHS::Record::Configuration
+      include LHS::Record::Request
+    end
+  end
 
   describe 'prepare_options_for_include_all_request' do
     it 'calls correct prepare method for nil' do

@@ -4,7 +4,6 @@ class LHS::Record
 
   module Request
     extend ActiveSupport::Concern
-    include Configuration
 
     module ClassMethods
       def request(options)
