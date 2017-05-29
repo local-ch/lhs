@@ -16,7 +16,7 @@ class LHS::Item < LHS::Proxy
       run_validation!(record, options, url, params)
       true
     rescue LHC::Error => e
-      self.errors = LHS::Errors.new(e.response)
+      self.errors = LHS::Errors::Base.new(e.response)
       false
     end
     alias validate valid?

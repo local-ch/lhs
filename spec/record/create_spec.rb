@@ -66,7 +66,7 @@ describe LHS::Record do
         stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
           .to_return(status: 400, body: creation_error.to_json)
         feedback = Feedback.create(object.merge(campaign_id: '12345'))
-        expect(feedback.errors).to be_kind_of LHS::Errors
+        expect(feedback.errors).to be_kind_of LHS::Errors::Base
       end
 
       it 'raises an exception when creation failed using create!' do

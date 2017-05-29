@@ -707,7 +707,7 @@ unless user.valid?
   fail(user.errors[:email])
 end
 
-user.errors #<LHS::Errors>
+user.errors #<LHS::Errors::Base>
 user.errors.include?(:email) # true
 user.errors[:email] # ['REQUIRED_PROPERTY_VALUE']
 user.errors.messages # {:email=>["REQUIRED_PROPERTY_VALUE"]}

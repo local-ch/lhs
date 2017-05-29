@@ -186,8 +186,12 @@ describe LHS::Item do
           "message" => "The property value is unsupported. Supported values are: FEMALE, MALE"
         }, {
           "code" => "INCOMPLETE_PROPERTY_VALUE",
-          "path" => ["address", "street"],
+          "path" => ["address", "street", "name"],
           "message" => "The property value is incomplete. It misses some data"
+        }, {
+          "code" => "REQUIRED_PROPERTY_VALUE",
+          "path" => ["address", "street", "additional_line1"],
+          "message" => "The property value is required"
         }]
       }
     end
@@ -196,6 +200,7 @@ describe LHS::Item do
       Record.build(
         reviews: [{ name: 123 }],
         address: {
+          additional_line1: '',
           street: {
             name: 'Förlib'
           }
@@ -215,7 +220,8 @@ describe LHS::Item do
       # expect(record.errors['address.street.name']).to include 'INCOMPLETE_PROPERTY_VALUE'
       # expect(record.errors['reviews.0.name']).to include 'UNSUPPORTED_PROPERTY_VALUE'
       # expect(record.address.street.errors).to be
-      expect(record.address.street.errors).to include 'INCOMPLETE_PROPERTY_VALUE'
+      binding.pry
+      expect(record.address.street.name.errors).to include 'INCOMPLETE_PROPERTY_VALUE'
       expect(record.reviews.first.errors).to be
       expect(record.reviews.first.errors).to include 'UNSUPPORTED_PROPERTY_VALUE'
     end
