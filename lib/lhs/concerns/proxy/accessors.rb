@@ -69,7 +69,7 @@ class LHS::Proxy
     # if errors are existing
     def wrap_return(value, record, name)
       data = LHS::Data.new(value, _data)
-      data.errors = LHS::Errors::Nested.new(errors, name)
+      data.errors = LHS::Errors::Nested.new(errors, name) if errors
       return record.new(data) if record
       data
     end
