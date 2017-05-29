@@ -217,13 +217,15 @@ describe LHS::Item do
 
     it 'forwards errors to nested data' do
       record.save
-      # expect(record.errors['address.street.name']).to include 'INCOMPLETE_PROPERTY_VALUE'
-      # expect(record.errors['reviews.0.name']).to include 'UNSUPPORTED_PROPERTY_VALUE'
-      # expect(record.address.street.errors).to be
-      binding.pry
-      expect(record.address.street.name.errors).to include 'INCOMPLETE_PROPERTY_VALUE'
+      expect(record.errors['address.street.name']).to include 'INCOMPLETE_PROPERTY_VALUE'
+      expect(record.errors['reviews.0.name']).to include 'UNSUPPORTED_PROPERTY_VALUE'
+      expect(record.address.errors).to be
+      expect(record.address.errors['street.name']).to be
+      expect(record.address.street.errors).to be
+      expect(record.address.street.errors[:name]).to include 'INCOMPLETE_PROPERTY_VALUE'
+      expect(record.reviews.errors).to be
       expect(record.reviews.first.errors).to be
-      expect(record.reviews.first.errors).to include 'UNSUPPORTED_PROPERTY_VALUE'
+      expect(record.reviews.first.errors[:name]).to include 'UNSUPPORTED_PROPERTY_VALUE'
     end
   end
 end

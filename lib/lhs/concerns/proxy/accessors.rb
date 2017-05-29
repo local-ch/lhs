@@ -24,9 +24,8 @@ class LHS::Proxy
       end
 
       record = LHS::Record.for_url(value[:href]) if value.is_a?(Hash) && value[:href]
-
       access_item(value, record, name) ||
-        access_collection(value, record) ||
+        access_collection(value, record, name) ||
         convert(value)
     end
 
@@ -59,13 +58,15 @@ class LHS::Proxy
       wrap_return(value, record, name)
     end
 
-    def access_collection(value, record)
+    def access_collection(value, record, name)
       return unless accessing_collection?(value, record)
       collection_data = LHS::Data.new(value, _data)
       collection = LHS::Collection.new(collection_data)
-      wrap_return(collection, record)
+      wrap_return(collection, record, name)
     end
 
+    # Wraps with record and adds nested errors to data,
+    # if errors are existing
     def wrap_return(value, record, name)
       data = LHS::Data.new(value, _data)
       data.errors = LHS::Errors::Nested.new(errors, name)

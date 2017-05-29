@@ -14,7 +14,9 @@ module LHS::Errors
     # Filters base errors by scope
     # and reduces key by given scope name;
     # returns plain array if end of tree is reached
-    def nest(messages, scope)
+    def nest(messages, scope = nil)
+      scope = translate_rails_to_api_scope(scope)
+      return messages unless scope
       messages = messages.select do |key, _|
         key.match(/^#{scope}/)
       end
@@ -38,6 +40,21 @@ module LHS::Errors
         key = element[0].to_s.gsub(/^#{scope}\./, '')
         hash[key.to_sym] = element[1]
         hash
+      end
+    end
+
+    # Translates rails like accessors for collections
+    # like first, second, last to api error paths
+    def translate_rails_to_api_scope(scope)
+      case scope
+      when :first
+        0
+      when :second
+        1
+      when :last
+        value.length - 1
+      else
+        scope
       end
     end
   end

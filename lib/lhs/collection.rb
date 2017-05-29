@@ -48,8 +48,9 @@ class LHS::Collection < LHS::Proxy
   def method_missing(name, *args, &block)
     if _collection.respond_to?(name)
       value = _collection.send(name, *args, &block)
-      return enclose_in_data(value) if value.is_a? Hash
-      value
+      value = enclose_in_data(value) if value.is_a? Hash
+      record = LHS::Record.for_url(value[:href]) if value.is_a?(Hash) && value[:href]
+      wrap_return(value, record, name)
     elsif _data._raw.is_a?(Hash)
       get(name, *args)
     end
