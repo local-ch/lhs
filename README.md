@@ -739,6 +739,38 @@ In case you want to add custom validation errors to an instance of LHS::Record:
 user.errors.add(:name, 'The name you provided is not valid.')
 ```
 
+### Validation errors for nested data
+
+If you work with complex data structures, you sometimes need to have validation errors delegated/scoped to nested data.
+
+This also makes LHS::Records compatible with how Rails or Simpleform renders/builds forms and especially error messages.
+
+```ruby
+# controller.rb
+unless @customer.save
+  @errors = @customer.errors
+end
+
+# view.html
+= form_for @customer, as: :customer do |customer_form|
+  
+  = fields_for 'customer[:address]', @customer.address, do |address_form|
+  
+    = fields_for 'customer[:address][:street]', @customer.address.street, do |street_form|
+
+      = street_form.input :name
+      = street_form.input :house_number
+```
+
+Would render nested forms and would also render nested form errors for nested data structures.
+
+You can also access those nested errors like:
+
+```ruby
+@customer.address.errors
+@customer.address.street.errors
+```
+
 ### Know issue with `ActiveModel::Validations`
 If you are using `ActiveModel::Validations` and add errors to the LHS::Record instance - as described above - then those errors will be overwritten by the errors from `ActiveModel::Validations` when using `save`  or `valid?`. [Open issue](https://github.com/local-ch/lhs/issues/159)
 
