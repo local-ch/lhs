@@ -52,7 +52,7 @@ module LHS::Errors
       when :second
         1
       when :last
-        value.length - 1
+        values.length - 1
       else
         scope
       end

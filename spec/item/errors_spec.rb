@@ -226,6 +226,8 @@ describe LHS::Item do
       expect(record.reviews.errors).to be
       expect(record.reviews.first.errors).to be
       expect(record.reviews.first.errors[:name]).to include 'UNSUPPORTED_PROPERTY_VALUE'
+      expect(record.reviews.last.errors).to be
+      expect(record.reviews.last.errors[:name]).to include 'UNSUPPORTED_PROPERTY_VALUE'
     end
   end
 end
