@@ -1,5 +1,4 @@
 module LHS::Errors
-
   class Nested < Base
 
     def initialize(errors, scope)
@@ -36,10 +35,9 @@ module LHS::Errors
 
     # Removes scope from given messages' key
     def remove_scope(messages, scope)
-      messages.inject({}) do |hash, element|
+      messages.each_with_object({}) do |element, hash|
         key = element[0].to_s.gsub(/^#{scope}\./, '')
         hash[key.to_sym] = element[1]
-        hash
       end
     end
 

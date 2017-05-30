@@ -175,7 +175,6 @@ describe LHS::Item do
   end
 
   context 'nested data' do
-
     let(:body_with_errors) do
       {
         "status" => 400,
