@@ -50,6 +50,7 @@ class LHS::Collection < LHS::Proxy
       value = _collection.send(name, *args, &block)
       value = enclose_in_data(value) if value.is_a? Hash
       record = LHS::Record.for_url(value[:href]) if value.is_a?(Hash) && value[:href]
+      return value if name == :to_a
       wrap_return(value, record, name)
     elsif _data._raw.is_a?(Hash)
       get(name, *args)
