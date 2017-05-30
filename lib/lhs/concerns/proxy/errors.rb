@@ -6,12 +6,16 @@ class LHS::Proxy
     extend ActiveSupport::Concern
 
     included do
-      attr_accessor :errors
+      attr_writer :errors
     end
 
     def initialize(data)
       super(data)
       self.errors = LHS::Errors::Base.new
+    end
+
+    def errors
+      @errors || @errors = LHS::Errors::Base.new
     end
   end
 end
