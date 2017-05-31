@@ -116,6 +116,59 @@ describe LHS::Record do
       expect(products_request_page_3).to have_been_requested.at_least_once
     end
 
+    context 'links already contain pagination parameters' do
+      let!(:customer_request) do
+        stub_request(:get, 'http://datastore/customers/1')
+          .to_return(
+            body: {
+              contracts: { href: 'http://datastore/customers/1/contracts?limit=5&offset=0' }
+            }.to_json
+          )
+      end
+
+      let!(:contracts_request) do
+        stub_request(:get, "http://datastore/customers/1/contracts?limit=100")
+          .to_return(
+            body: {
+              items: 10.times.map do
+                {
+                  products: { href: 'http://datastore/products' }
+                }
+              end,
+              limit: 10,
+              offset: 0,
+              total: amount_of_contracts
+            }.to_json
+          )
+      end
+
+      it 'overwrites existing pagination paramters if they are already contained in a string' do
+        expect(LHC).to receive(:request)
+          .with(url: "http://datastore/customers/1").and_call_original
+
+        expect(LHC).to receive(:request)
+          .with(url: "http://datastore/customers/1/contracts",
+                all: true,
+                params: { limit: 100 }).and_call_original
+
+        expect(LHC).to receive(:request)
+          .with([{ url: "http://datastore/customers/1/contracts",
+                   all: true,
+                   params: { limit: 10, offset: 10 } },
+                 { url: "http://datastore/customers/1/contracts",
+                   all: true,
+                   params: { limit: 10, offset: 20 } },
+                 { url: "http://datastore/customers/1/contracts",
+                   all: true,
+                   params: { limit: 10, offset: 30 } }]).and_call_original
+
+        customer = Customer
+          .includes_all(:contracts)
+          .find(1)
+        expect(customer.contracts.length).to eq amount_of_contracts
+      end
+    end
+
     context 'includes for an empty array' do
       before(:each) do
         class Contract < LHS::Record

@@ -291,9 +291,15 @@ class LHS::Record
       # When including all resources on one level, don't forward :includes & :references
       # as we have to fetch all resources on this level first, before we continue_including
       def prepare_option_for_include_all_request!(option)
-        return option unless option.present?
+        return option if option.empty? || option[:url].nil?
+        uri = URI.parse(option[:url])
+        get_params = Rack::Utils.parse_nested_query(uri.query)
+          .symbolize_keys
+          .except(limit_key, pagination_key)
         option[:params] ||= {}
-        option[:params].merge!(limit_key => option.fetch(:params, {}).fetch(limit_key, LHS::Pagination::Base::DEFAULT_LIMIT))
+        option[:params].reverse_merge!(get_params)
+        option[:params][limit_key] ||= LHS::Pagination::Base::DEFAULT_LIMIT
+        option[:url] = option[:url].gsub("?#{uri.query}", '')
         option.delete(:including)
         option.delete(:referencing)
         option
