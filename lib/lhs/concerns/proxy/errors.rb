@@ -15,7 +15,7 @@ class LHS::Proxy
     end
 
     def errors
-      @errors || @errors = LHS::Errors::Base.new
+      @errors ||= LHS::Errors::Base.new
     end
   end
 end
