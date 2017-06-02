@@ -3,10 +3,11 @@ module LHS::Errors
   class Base
     include Enumerable
 
-    attr_reader :messages, :message, :raw
+    attr_reader :messages, :message, :raw, :record
 
-    def initialize(response = nil)
+    def initialize(response = nil, record = nil)
       @raw = response.body if response
+      @record = record
       @messages = messages_from_response(response)
       @message = message_from_response(response)
     rescue JSON::ParserError
@@ -23,7 +24,7 @@ module LHS::Errors
 
     def add(attribute, message = :invalid, _options = {})
       self[attribute]
-      messages[attribute] << message
+      messages[attribute] << generate_message(attribute, message, options)
     end
 
     def get(key)
@@ -77,6 +78,40 @@ module LHS::Errors
       key = key.to_sym
       messages[key] ||= []
       messages[key].push(value)
+    end
+
+    def generate_message(attribute, message, options)
+      type = options.delete(:message) if options[:message].is_a?(Symbol)
+
+      if @base.class.respond_to?(:i18n_scope)
+        defaults = @base.class.lookup_ancestors.map do |klass|
+          [ :"#{@base.class.i18n_scope}.errors.models.#{klass.model_name.i18n_key}.attributes.#{attribute}.#{type}",
+            :"#{@base.class.i18n_scope}.errors.models.#{klass.model_name.i18n_key}.#{type}" ]
+        end
+      else
+        defaults = []
+      end
+
+      defaults << :"#{@base.class.i18n_scope}.errors.messages.#{type}" if @base.class.respond_to?(:i18n_scope)
+      defaults << :"errors.attributes.#{attribute}.#{type}"
+      defaults << :"errors.messages.#{type}"
+
+      defaults.compact!
+      defaults.flatten!
+
+      key = defaults.shift
+      defaults = options.delete(:message) if options[:message]
+      value = (attribute != :base ? @base.send(:read_attribute_for_validation, attribute) : nil)
+
+      options = {
+        default: defaults,
+        model: @base.model_name.human,
+        attribute: @base.class.human_attribute_name(attribute),
+        value: value,
+        object: @base
+      }.merge!(options)
+
+      I18n.translate(key, options)
     end
 
     def parse_messages(json)

@@ -11,11 +11,11 @@ class LHS::Proxy
 
     def initialize(data)
       super(data)
-      self.errors = LHS::Errors::Base.new
+      self.errors = LHS::Errors::Base.new(nil, record)
     end
 
     def errors
-      @errors ||= LHS::Errors::Base.new
+      @errors ||= LHS::Errors::Base.new(nil, record)
     end
   end
 end

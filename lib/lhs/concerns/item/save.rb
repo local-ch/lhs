@@ -20,7 +20,7 @@ class LHS::Item < LHS::Proxy
         apply_default_creation_options(options, url, data)
       )
     rescue LHC::Error => e
-      self.errors = LHS::Errors::Base.new(e.response)
+      self.errors = LHS::Errors::Base.new(e.response, record)
       raise e
     end
 
@@ -34,19 +34,18 @@ class LHS::Item < LHS::Proxy
     end
 
     def create_and_merge_data!(options)
-      direct_response_data = record_for_persistance.request(options)
+      direct_response_data = record.request(options)
       _data.merge_raw!(direct_response_data)
       response_headers = direct_response_data._request.response.headers
       if response_headers && response_headers['Location']
-        location_data = record_for_persistance.request(options.merge(url: response_headers['Location'], method: :get, body: nil))
+        location_data = record.request(options.merge(url: response_headers['Location'], method: :get, body: nil))
         _data.merge_raw!(location_data)
       end
       true
     end
 
     def endpoint_for_persistance(data, options)
-      record_for_persistance
-        .find_endpoint(merge_data_with_options(data, options))
+      record.find_endpoint(merge_data_with_options(data, options))
     end
 
     def merge_data_with_options(data, options)
@@ -55,10 +54,6 @@ class LHS::Item < LHS::Proxy
       else
         data
       end
-    end
-
-    def record_for_persistance
-      _data.class
     end
 
     def url_for_persistance!(options, data)

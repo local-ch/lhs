@@ -16,6 +16,10 @@ class LHS::Proxy
     self._loaded = false
   end
 
+  def record
+    _data.class
+  end
+
   def load!(options = nil)
     return self if _loaded
     reload!(options)
