@@ -112,7 +112,7 @@ class LHS::Data
   end
 
   def raw_from_input(input)
-    if is_json?(input)
+    if json?(input)
       raw_from_json_string(input)
     elsif defined?(input._raw)
       input._raw
@@ -123,7 +123,7 @@ class LHS::Data
     end
   end
 
-  def is_json?(input)
+  def json?(input)
     input.is_a?(String) && !input.empty? && !!input.match(/^("|\[|'|\{)/)
   end
 
