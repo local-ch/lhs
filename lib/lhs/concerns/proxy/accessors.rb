@@ -18,7 +18,7 @@ class LHS::Proxy
     def get(name, *args)
       name = args.first if name == :[]
       value = _data._raw[name.to_s]
-      if value.nil? && _data._raw.present?
+      if value.nil? && _data._raw.present? && _data._raw.is_a?(Hash)
         value = _data._raw[name.to_sym]
         value = _data._raw[name.to_s.classify.to_sym] if value.nil?
       end
@@ -68,10 +68,19 @@ class LHS::Proxy
     # Wraps with record and adds nested errors to data,
     # if errors are existing
     def wrap_return(value, record, name)
+      return value unless worth_wrapping?(value)
       data = value.is_a?(LHS::Data) || value.is_a?(LHS::Record) ? value : LHS::Data.new(value, _data)
       data.errors = LHS::Errors::Nested.new(errors, name) if errors
       return record.new(data) if record && !value.is_a?(LHS::Record)
       data
+    end
+
+    def worth_wrapping?(value)
+      value.is_a?(LHS::Proxy)     ||
+        value.is_a?(LHS::Data)    ||
+        value.is_a?(LHS::Record)  ||
+        value.is_a?(Hash)         ||
+        value.is_a?(Array)
     end
 
     def date?(value)
