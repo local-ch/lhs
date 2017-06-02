@@ -50,7 +50,8 @@ module LHS::Errors
       when :second
         1
       when :last
-        values.length - 1
+        return values.length - 1 if messages.present?
+        0
       else
         scope
       end
