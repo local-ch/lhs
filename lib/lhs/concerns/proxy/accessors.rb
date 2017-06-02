@@ -68,9 +68,9 @@ class LHS::Proxy
     # Wraps with record and adds nested errors to data,
     # if errors are existing
     def wrap_return(value, record, name)
-      data = value.is_a?(LHS::Data) ? value : LHS::Data.new(value, _data)
+      data = value.is_a?(LHS::Data) || value.is_a?(LHS::Record) ? value : LHS::Data.new(value, _data)
       data.errors = LHS::Errors::Nested.new(errors, name) if errors
-      return record.new(data) if record
+      return record.new(data) if record && !value.is_a?(LHS::Record)
       data
     end
 
