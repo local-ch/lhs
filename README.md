@@ -777,8 +777,8 @@ Just like Activerecord, LHS tries to translate validation error messages.
 If a translation exists for one of the following translation keys, LHS will take a translated error (also in the following order) rather than the plain error message/code:
 
 ```ruby
-lhs.errors.records.customers.attributes.name.unsupported_property_value
-lhs.errors.records.customers.unsupported_property_value
+lhs.errors.records.customer.attributes.name.unsupported_property_value
+lhs.errors.records.customer.unsupported_property_value
 lhs.errors.messages.unsupported_property_value
 lhs.errors.attributes.name.unsupported_property_value
 lhs.errors.fallback_message
