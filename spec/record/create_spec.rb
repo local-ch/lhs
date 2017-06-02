@@ -107,7 +107,7 @@ describe LHS::Record do
 
       it 'are used by create' do
         feedback = Feedback.create(ratings: ratings)
-        expect(feedback.ratings.raw).to eq(converted_ratings)
+        expect(feedback.ratings._raw).to eq(converted_ratings)
       end
 
       it 'can be used directly to change raw data' do

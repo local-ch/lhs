@@ -37,7 +37,7 @@ class LHS::Data
 
   def parent
     if _parent && _parent._record
-      _parent._record.new(_parent)
+      _parent._record.new(_parent, false)
     else
       _parent
     end
