@@ -56,7 +56,7 @@ describe LHS::Record do
 
       it 'are used by initializer' do
         feedback = Rating.new(ratings: { a: 1, b: 2 })
-        expect(feedback.ratings.raw).to eq([{ name: :a, value: 1 }, { name: :b, value: 2 }])
+        expect(feedback.ratings._raw).to eq([{ name: :a, value: 1 }, { name: :b, value: 2 }])
       end
 
       it 'can be used directly to change raw data' do
