@@ -22,7 +22,7 @@ module LHS::Errors
     alias has_key? include?
     alias key? include?
 
-    def add(attribute, message = :invalid, _options = {})
+    def add(attribute, message = :invalid, options = {})
       self[attribute]
       messages[attribute] << generate_message(attribute, message, options)
     end
@@ -32,7 +32,7 @@ module LHS::Errors
     end
 
     def set(key, value)
-      messages[key] = value
+      messages[key] = generate_message(key, value)
     end
 
     delegate :delete, to: :messages
@@ -42,7 +42,7 @@ module LHS::Errors
     end
 
     def []=(attribute, error)
-      self[attribute] << error
+      self[attribute] << generate_message(attribute, error)
     end
 
     def each
@@ -77,41 +77,23 @@ module LHS::Errors
     def add_error(messages, key, value)
       key = key.to_sym
       messages[key] ||= []
-      messages[key].push(value)
+      messages[key].push(generate_message(key, value))
     end
 
-    def generate_message(attribute, message, options)
-      type = options.delete(:message) if options[:message].is_a?(Symbol)
-
-      if @base.class.respond_to?(:i18n_scope)
-        defaults = @base.class.lookup_ancestors.map do |klass|
-          [ :"#{@base.class.i18n_scope}.errors.models.#{klass.model_name.i18n_key}.attributes.#{attribute}.#{type}",
-            :"#{@base.class.i18n_scope}.errors.models.#{klass.model_name.i18n_key}.#{type}" ]
-        end
-      else
-        defaults = []
-      end
-
-      defaults << :"#{@base.class.i18n_scope}.errors.messages.#{type}" if @base.class.respond_to?(:i18n_scope)
-      defaults << :"errors.attributes.#{attribute}.#{type}"
-      defaults << :"errors.messages.#{type}"
-
-      defaults.compact!
-      defaults.flatten!
-
-      key = defaults.shift
-      defaults = options.delete(:message) if options[:message]
-      value = (attribute != :base ? @base.send(:read_attribute_for_validation, attribute) : nil)
-
-      options = {
-        default: defaults,
-        model: @base.model_name.human,
-        attribute: @base.class.human_attribute_name(attribute),
-        value: value,
-        object: @base
-      }.merge!(options)
-
-      I18n.translate(key, options)
+    def generate_message(attribute, message, _options = {})
+      record_name = record.model_name.name.underscore
+      normalize_attribute = attribute.to_s.underscore
+      normalized_message = message.to_s.underscore
+      [
+        ['lhs', 'errors', 'records', record_name, 'attributes', normalize_attribute, normalized_message],
+        ['lhs', 'errors', 'records', record_name, normalized_message],
+        ['lhs', 'errors', 'messages', normalized_message],
+        ['lhs', 'errors', 'attributes', normalize_attribute, normalized_message],
+        ['lhs', 'errors', 'fallback_message']
+      ].detect do |path|
+        key = path.join('.')
+        return I18n.translate(key) if I18n.exists?(key)
+      end || message
     end
 
     def parse_messages(json)
