@@ -16,7 +16,7 @@ class LHS::Item < LHS::Proxy
       run_validation!(record, options, url, params)
       true
     rescue LHC::Error => e
-      self.errors = LHS::Errors::Base.new(e.response)
+      self.errors = LHS::Errors::Base.new(e.response, record)
       false
     end
     alias validate valid?
@@ -51,7 +51,7 @@ class LHS::Item < LHS::Proxy
 
     def validation_endpoint
       endpoint = endpoint_from_link if _data.href # take embeded first
-      endpoint ||= _data._record.find_endpoint(_data._raw)
+      endpoint ||= record.find_endpoint(_data._raw)
       validates = endpoint.options && endpoint.options.fetch(:validates, false)
       raise 'Endpoint does not support validations!' unless validates
       endpoint

@@ -3,10 +3,11 @@ module LHS::Errors
   class Base
     include Enumerable
 
-    attr_reader :messages, :message, :raw
+    attr_reader :messages, :message, :raw, :record
 
-    def initialize(response = nil)
+    def initialize(response = nil, record = nil)
       @raw = response.body if response
+      @record = record
       @messages = messages_from_response(response)
       @message = message_from_response(response)
     rescue JSON::ParserError
@@ -21,9 +22,9 @@ module LHS::Errors
     alias has_key? include?
     alias key? include?
 
-    def add(attribute, message = :invalid, _options = {})
+    def add(attribute, message = :invalid, options = {})
       self[attribute]
-      messages[attribute] << message
+      messages[attribute] << generate_message(attribute, message, options)
     end
 
     def get(key)
@@ -31,7 +32,7 @@ module LHS::Errors
     end
 
     def set(key, value)
-      messages[key] = value
+      messages[key] = generate_message(key, value)
     end
 
     delegate :delete, to: :messages
@@ -41,7 +42,7 @@ module LHS::Errors
     end
 
     def []=(attribute, error)
-      self[attribute] << error
+      self[attribute] << generate_message(attribute, error)
     end
 
     def each
@@ -76,7 +77,27 @@ module LHS::Errors
     def add_error(messages, key, value)
       key = key.to_sym
       messages[key] ||= []
-      messages[key].push(value)
+      messages[key].push(generate_message(key, value))
+    end
+
+    def generate_message(attribute, message, _options = {})
+      find_translated_error_message(attribute, message) || message
+    end
+
+    def find_translated_error_message(attribute, message)
+      record_name = record.model_name.name.underscore
+      normalized_attribute = attribute.to_s.underscore
+      normalized_message = message.to_s.underscore
+      [
+        ['lhs', 'errors', 'records', record_name, 'attributes', normalized_attribute, normalized_message],
+        ['lhs', 'errors', 'records', record_name, normalized_message],
+        ['lhs', 'errors', 'messages', normalized_message],
+        ['lhs', 'errors', 'attributes', normalized_attribute, normalized_message],
+        ['lhs', 'errors', 'fallback_message']
+      ].detect do |path|
+        key = path.join('.')
+        return I18n.translate(key) if I18n.exists?(key)
+      end
     end
 
     def parse_messages(json)

@@ -771,6 +771,19 @@ You can also access those nested errors like:
 @customer.address.street.errors
 ```
 
+### Translation of validation errors
+
+Just like Activerecord, LHS tries to translate validation error messages.
+If a translation exists for one of the following translation keys, LHS will take a translated error (also in the following order) rather than the plain error message/code:
+
+```ruby
+lhs.errors.records.customer.attributes.name.unsupported_property_value
+lhs.errors.records.customer.unsupported_property_value
+lhs.errors.messages.unsupported_property_value
+lhs.errors.attributes.name.unsupported_property_value
+lhs.errors.fallback_message
+```
+
 ### Know issue with `ActiveModel::Validations`
 If you are using `ActiveModel::Validations` and add errors to the LHS::Record instance - as described above - then those errors will be overwritten by the errors from `ActiveModel::Validations` when using `save`  or `valid?`. [Open issue](https://github.com/local-ch/lhs/issues/159)
 
