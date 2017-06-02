@@ -173,4 +173,60 @@ describe LHS::Item do
       expect(record.errors.any?).to eq false
     end
   end
+
+  context 'nested data' do
+    let(:body_with_errors) do
+      {
+        "status" => 400,
+        "message" => "Some data in the request body failed validation. Inspect the field errors for details.",
+        "field_errors" => [{
+          "code" => "UNSUPPORTED_PROPERTY_VALUE",
+          "path" => ["reviews", 0, "name"],
+          "message" => "The property value is unsupported. Supported values are: FEMALE, MALE"
+        }, {
+          "code" => "INCOMPLETE_PROPERTY_VALUE",
+          "path" => ["address", "street", "name"],
+          "message" => "The property value is incomplete. It misses some data"
+        }, {
+          "code" => "REQUIRED_PROPERTY_VALUE",
+          "path" => ["address", "street", "additional_line1"],
+          "message" => "The property value is required"
+        }]
+      }
+    end
+
+    let(:record) do
+      Record.build(
+        reviews: [{ name: 123 }],
+        address: {
+          additional_line1: '',
+          street: {
+            name: 'Förlib'
+          }
+        }
+      )
+    end
+
+    let(:errrors) { record.errors }
+
+    before(:each) do
+      stub_request(:post, "#{datastore}/feedbacks")
+        .to_return(status: 400, body: body_with_errors.to_json)
+    end
+
+    it 'forwards errors to nested data' do
+      record.save
+      expect(record.errors['address.street.name']).to include 'INCOMPLETE_PROPERTY_VALUE'
+      expect(record.errors['reviews.0.name']).to include 'UNSUPPORTED_PROPERTY_VALUE'
+      expect(record.address.errors).to be
+      expect(record.address.errors['street.name']).to be
+      expect(record.address.street.errors).to be
+      expect(record.address.street.errors[:name]).to include 'INCOMPLETE_PROPERTY_VALUE'
+      expect(record.reviews.errors).to be
+      expect(record.reviews.first.errors).to be
+      expect(record.reviews.first.errors[:name]).to include 'UNSUPPORTED_PROPERTY_VALUE'
+      expect(record.reviews.last.errors).to be
+      expect(record.reviews.last.errors[:name]).to include 'UNSUPPORTED_PROPERTY_VALUE'
+    end
+  end
 end

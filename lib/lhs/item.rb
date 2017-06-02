@@ -11,16 +11,7 @@ class LHS::Item < LHS::Proxy
   include Validation
 
   delegate :present?, :blank?, :empty?, to: :_raw
-
-  # prevent clashing with attributes of underlying data
-  attr_accessor :errors
-
   delegate :_raw, to: :_data
-
-  def initialize(data)
-    self.errors = LHS::Errors.new
-    super(data)
-  end
 
   def collection?
     false

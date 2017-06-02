@@ -7,6 +7,8 @@ class LHS::Collection < LHS::Proxy
   include InternalCollection
   include Create
 
+  METHOD_NAMES_EXLCUDED_FROM_WRAPPING = %w(to_a map).freeze
+
   delegate :select, :length, :size, to: :_collection
   delegate :_record, :_raw, to: :_data
   delegate :limit, :count, :total, :offset, :current_page, :start,
@@ -48,8 +50,10 @@ class LHS::Collection < LHS::Proxy
   def method_missing(name, *args, &block)
     if _collection.respond_to?(name)
       value = _collection.send(name, *args, &block)
-      return enclose_in_data(value) if value.is_a? Hash
-      value
+      record = LHS::Record.for_url(value[:href]) if value.is_a?(Hash) && value[:href]
+      value = enclose_item_in_data(value) if value.is_a?(Hash)
+      return value if METHOD_NAMES_EXLCUDED_FROM_WRAPPING.include?(name.to_s)
+      wrap_return(value, record, name)
     elsif _data._raw.is_a?(Hash)
       get(name, *args)
     end
@@ -67,7 +71,9 @@ class LHS::Collection < LHS::Proxy
     :items
   end
 
-  def enclose_in_data(value)
+  # Encloses accessed collection item
+  # by wrapping it in an LHS::Item
+  def enclose_item_in_data(value)
     data = LHS::Data.new(value, _data)
     item = LHS::Item.new(data)
     LHS::Data.new(item, _data)

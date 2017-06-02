@@ -66,7 +66,7 @@ describe LHS::Record do
         stub_request(:post, "#{datastore}/content-ads/12345/feedbacks")
           .to_return(status: 400, body: creation_error.to_json)
         feedback = Feedback.create(object.merge(campaign_id: '12345'))
-        expect(feedback.errors).to be_kind_of LHS::Errors
+        expect(feedback.errors).to be_kind_of LHS::Errors::Base
       end
 
       it 'raises an exception when creation failed using create!' do
@@ -107,7 +107,7 @@ describe LHS::Record do
 
       it 'are used by create' do
         feedback = Feedback.create(ratings: ratings)
-        expect(feedback.ratings.raw).to eq(converted_ratings)
+        expect(feedback.ratings._raw).to eq(converted_ratings)
       end
 
       it 'can be used directly to change raw data' do

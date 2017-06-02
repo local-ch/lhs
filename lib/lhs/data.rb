@@ -37,7 +37,7 @@ class LHS::Data
 
   def parent
     if _parent && _parent._record
-      _parent._record.new(_parent)
+      _parent._record.new(_parent, false)
     else
       _parent
     end
@@ -112,7 +112,7 @@ class LHS::Data
   end
 
   def raw_from_input(input)
-    if input.is_a?(String) && !input.empty?
+    if json?(input)
       raw_from_json_string(input)
     elsif defined?(input._raw)
       input._raw
@@ -121,6 +121,10 @@ class LHS::Data
     else
       raw_from_anything_else(input)
     end
+  end
+
+  def json?(input)
+    input.is_a?(String) && !input.empty? && !!input.match(/^("|\[|'|\{)/)
   end
 
   def raw_from_json_string(input)

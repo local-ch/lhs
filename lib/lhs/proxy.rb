@@ -3,9 +3,9 @@ Dir[File.dirname(__FILE__) + '/concerns/proxy/*.rb'].each { |file| require file 
 # Proxy makes different kind of data accessible
 # If href is present it also alows loading/reloading
 class LHS::Proxy
-
   include Accessors
   include Create
+  include Errors
   include Link
 
   # prevent clashing with attributes of underlying data
