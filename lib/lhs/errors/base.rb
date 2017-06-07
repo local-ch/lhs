@@ -85,19 +85,26 @@ module LHS::Errors
     end
 
     def find_translated_error_message(attribute, message)
-      record_name = record ? record.model_name.name.underscore : nil
       normalized_attribute = attribute.to_s.underscore
       normalized_message = message.to_s.underscore
-      [
-        record_name ? ['lhs', 'errors', 'records', record_name, 'attributes', normalized_attribute, normalized_message] : nil,
-        record_name ? ['lhs', 'errors', 'records', record_name, normalized_message] : nil,
+      messages = []
+      messages = messages_for_record(normalized_attribute, normalized_message) if record
+      messages.concat([
         ['lhs', 'errors', 'messages', normalized_message],
         ['lhs', 'errors', 'attributes', normalized_attribute, normalized_message],
         ['lhs', 'errors', 'fallback_message']
-      ].compact.detect do |path|
+      ]).detect do |path|
         key = path.join('.')
         return I18n.translate(key) if I18n.exists?(key)
       end
+    end
+
+    def messages_for_record(normalized_attribute, normalized_message)
+      record_name = record.model_name.name.underscore
+      [
+        ['lhs', 'errors', 'records', record_name, 'attributes', normalized_attribute, normalized_message],
+        ['lhs', 'errors', 'records', record_name, normalized_message]
+      ]
     end
 
     def parse_messages(json)
