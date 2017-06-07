@@ -228,5 +228,13 @@ describe LHS::Item do
       expect(record.reviews.last.errors).to be
       expect(record.reviews.last.errors[:name]).to include 'UNSUPPORTED_PROPERTY_VALUE'
     end
+
+    context 'accessing no model' do
+      it 'does not raise an error when trying to find error record model name' do
+        expect(lambda do
+          record.reviews.first.errors[:name]
+        end).not_to raise_error(NoMethodError)
+      end
+    end
   end
 end
