@@ -50,7 +50,7 @@ class LHS::Record
         return unless endpoint
         template = endpoint.url
         new_options = options.deep_merge(
-          params: LHC::Endpoint.values_as_params(template, url).merge(values_from_get_params(url))
+          params: LHC::Endpoint.values_as_params(template, url).merge(values_from_get_params(url, options))
         )
         new_options[:url] = template
         new_options
@@ -58,11 +58,21 @@ class LHS::Record
 
       # Extracts values from url's get parameters
       # and return them as a ruby hash
-      def values_from_get_params(url)
-        uri = URI.parse(url)
+      def values_from_get_params(url, options)
+        uri = parse_uri(url, options)
         return {} unless uri.query.present?
         params = Rack::Utils.parse_nested_query(uri.query)
         params
+      end
+
+      def parse_uri(url, options)
+        URI.parse(
+          if url.match(LHC::Endpoint::PLACEHOLDER)
+            compute_url(options[:params])
+          else
+            url
+          end
+        )
       end
 
       # Extends existing raw data with additionaly fetched data
@@ -292,7 +302,7 @@ class LHS::Record
       # as we have to fetch all resources on this level first, before we continue_including
       def prepare_option_for_include_all_request!(option)
         return option if option.empty? || option[:url].nil?
-        uri = URI.parse(option[:url])
+        uri = parse_uri(option[:url], option)
         get_params = Rack::Utils.parse_nested_query(uri.query)
           .symbolize_keys
           .except(limit_key, pagination_key)

@@ -211,5 +211,55 @@ describe LHS::Record do
         end
       end
     end
+
+    context 'include a known/identifyable record' do
+
+      before(:each) do
+        class Contract < LHS::Record
+          endpoint 'http://datastore/contracts/:id'
+        end
+
+        class Entry < LHS::Record
+          endpoint ':datastore/entry/v1/:id.json'
+        end
+
+        LHC.config.placeholder(:datastore, 'http://datastore')
+      end
+
+      let!(:customer_request) do
+        stub_request(:get, %r{http://datastore/customers/\d+})
+          .to_return(
+            body: {
+              contracts: [{ href: 'http://datastore/contracts/1' }, { href: 'http://datastore/contracts/2' }]
+            }.to_json
+          )
+      end
+
+      let!(:contracts_request) do
+        stub_request(:get, %r{http://datastore/contracts/\d+})
+          .to_return(
+            body: {
+              type: 'contract',
+              entry: { href: 'http://datastore/entry/v1/1.json' }
+            }.to_json
+          )
+      end
+
+      let!(:entry_request) do
+        stub_request(:get, %r{http://datastore/entry/v1/\d+.json})
+          .to_return(
+            body: {
+              name: 'Casa Ferlin'
+            }.to_json
+          )
+      end
+
+      it 'loads included identifyable records withou raising exceptions' do
+        customer = Customer.includes_all(contracts: :entry).find(1,2).first
+        expect(customer.contracts.first.href).to eq 'http://datastore/contracts/1'
+        expect(customer.contracts.first.type).to eq 'contract'
+        expect(customer.contracts.first.entry.name).to eq 'Casa Ferlin'
+      end
+    end
   end
 end

@@ -56,12 +56,16 @@ class LHS::Record
 
       # Computes the url from params
       # by identifiying endpoint and compiles it if necessary.
-      # Id in params is threaded in a special way.
       def compute_url!(params)
         endpoint = find_endpoint(params)
         url = endpoint.compile(params)
         endpoint.remove_interpolated_params!(params)
         url
+      end
+
+      def compute_url(params)
+        find_endpoint(params)
+          .compile(params)
       end
 
       private
