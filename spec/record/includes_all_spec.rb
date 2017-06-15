@@ -213,7 +213,6 @@ describe LHS::Record do
     end
 
     context 'include a known/identifyable record' do
-
       before(:each) do
         class Contract < LHS::Record
           endpoint 'http://datastore/contracts/:id'
@@ -255,7 +254,7 @@ describe LHS::Record do
       end
 
       it 'loads included identifyable records withou raising exceptions' do
-        customer = Customer.includes_all(contracts: :entry).find(1,2).first
+        customer = Customer.includes_all(contracts: :entry).find(1, 2).first
         expect(customer.contracts.first.href).to eq 'http://datastore/contracts/1'
         expect(customer.contracts.first.type).to eq 'contract'
         expect(customer.contracts.first.entry.name).to eq 'Casa Ferlin'
