@@ -260,5 +260,83 @@ describe LHS::Record do
         expect(customer.contracts.first.entry.name).to eq 'Casa Ferlin'
       end
     end
+
+    context 'includes all for parallel loaded ids' do
+      before(:each) do
+        class Place < LHS::Record
+          endpoint 'http://datastore/places/:id'
+        end
+      end
+
+      let!(:place_request_1) do
+        stub_request(:get, %r{http://datastore/places/1})
+          .to_return(
+            body: {
+              category_relations: [
+                { href: 'http://datastore/category_relations/1' },
+                { href: 'http://datastore/category_relations/2' }
+              ]
+            }.to_json
+          )
+      end
+
+      let!(:place_request_2) do
+        stub_request(:get, %r{http://datastore/places/2})
+          .to_return(
+            body: {
+              category_relations: []
+            }.to_json
+          )
+      end
+
+      let!(:place_request_3) do
+        stub_request(:get, %r{http://datastore/places/3})
+          .to_return(
+            body: {
+              category_relations: [
+                { href: 'http://datastore/category_relations/1' },
+                { href: 'http://datastore/category_relations/3' }
+              ]
+            }.to_json
+          )
+      end
+
+      let!(:category_relation_request_1) do
+        stub_request(:get, %r{http://datastore/category_relations/1})
+          .to_return(
+            body: {
+              name: "Category 1"
+            }.to_json
+          )
+      end
+
+      let!(:category_relation_request_2) do
+        stub_request(:get, %r{http://datastore/category_relations/2})
+          .to_return(
+            body: {
+              name: "Category 2"
+            }.to_json
+          )
+      end
+
+      let!(:category_relation_request_3) do
+        stub_request(:get, %r{http://datastore/category_relations/3})
+          .to_return(
+            body: {
+              name: "Category 3"
+            }.to_json
+          )
+      end
+
+      let(:category_name) { 'Category Relation' }
+
+      it 'requests places in parallel and includes category relation' do
+        places = Place.includes_all(:category_relations).find(1, 2, 3)
+        expect(places[0].category_relations[0].name).to eq 'Category 1'
+        expect(places[0].category_relations[1].name).to eq 'Category 2'
+        expect(places[2].category_relations[0].name).to eq 'Category 1'
+        expect(places[2].category_relations[1].name).to eq 'Category 3'
+      end
+    end
   end
 end

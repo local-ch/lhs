@@ -241,6 +241,7 @@ class LHS::Record
 
       # Load additional resources that are requested with include
       def load_include(options, data, sub_includes, references)
+        options = options.compact
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
@@ -301,7 +302,7 @@ class LHS::Record
       # When including all resources on one level, don't forward :includes & :references
       # as we have to fetch all resources on this level first, before we continue_including
       def prepare_option_for_include_all_request!(option)
-        return option if option.empty? || option[:url].nil?
+        return option if option.blank? || option[:url].nil?
         uri = parse_uri(option[:url], option)
         get_params = Rack::Utils.parse_nested_query(uri.query)
           .symbolize_keys
