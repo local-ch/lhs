@@ -723,6 +723,15 @@ The parameters passed to the `validates` endpoint option are used to perform the
   endpoint ':service/v2/users', validates: { path: 'validate' }            # will perform a validation via :service/v2/users/validate
 ```
 
+### HTTP Status Codes for validation errors
+
+LHS provides the http status code received when performing validations on a record, through the errors object:
+
+```ruby
+record.save
+record.errors.status_code #400
+```
+
 ### Reset validation errors
 
 Clear the error messages. Compatible with [ActiveRecord](https://github.com/rails/rails/blob/6c8cf21584ced73ade45529d11463c74b5a0c58f/activemodel/lib/active_model/errors.rb#L85).

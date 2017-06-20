@@ -3,13 +3,14 @@ module LHS::Errors
   class Base
     include Enumerable
 
-    attr_reader :messages, :message, :raw, :record
+    attr_reader :messages, :message, :raw, :record, :status_code
 
     def initialize(response = nil, record = nil)
       @raw = response.body if response
       @record = record
       @messages = messages_from_response(response)
       @message = message_from_response(response)
+      @status_code = response.code if response
     rescue JSON::ParserError
       @messages = messages || {}
       @message = 'parse error'
