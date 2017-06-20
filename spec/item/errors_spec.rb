@@ -243,7 +243,6 @@ describe LHS::Item do
     end
 
     context 'with general error fallback message configured' do
-
       before(:each) do
         I18n.reload!
         I18n.backend.store_translations(:en, YAML.safe_load(translation)) if translation.present?
