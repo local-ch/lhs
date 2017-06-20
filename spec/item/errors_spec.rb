@@ -197,7 +197,7 @@ describe LHS::Item do
 
     let(:record) do
       Record.build(
-        reviews: [{ name: 123 }],
+        reviews: [{ name: 123, suggested: false }],
         address: {
           additional_line1: '',
           street: {
@@ -240,6 +240,27 @@ describe LHS::Item do
     it 'provides http status code for errors' do
       record.save
       expect(record.errors.status_code).to eq 400
+    end
+
+    context 'with general error fallback message configured' do
+      before(:each) do
+        I18n.reload!
+        I18n.backend.store_translations(:en, YAML.safe_load(translation)) if translation.present?
+      end
+
+      let(:translation) do
+        %q{
+          lhs:
+            errors:
+              fallback_message: 'This value is wrong'
+        }
+      end
+
+      it 'is capable to access errors/attributes that dont have any validation errors' do
+        record.save
+        expect(record.reviews.first.errors[:suggested]).to be_kind_of Array
+        expect(record.reviews.first.errors[:suggested]).to be_empty
+      end
     end
   end
 end
