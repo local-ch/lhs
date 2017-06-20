@@ -32,23 +32,24 @@ module LHS::Errors
       messages[key]
     end
 
-    def set(key, value)
-      messages[key] = generate_message(key, value)
+    def set(key, message)
+      return if message.blank?
+      messages[key] = [generate_message(key, message)]
     end
 
     delegate :delete, to: :messages
 
     def [](attribute)
-      get(attribute.to_sym) || set(attribute.to_sym, [])
+      get(attribute.to_sym) || messages[attribute] = []
     end
 
-    def []=(attribute, error)
-      self[attribute] << generate_message(attribute, error)
+    def []=(attribute, message)
+      self[attribute] << generate_message(attribute, message)
     end
 
     def each
       messages.each_key do |attribute|
-        self[attribute].each { |error| yield attribute, error }
+        self[attribute].each { |message| yield attribute, message }
       end
     end
 
