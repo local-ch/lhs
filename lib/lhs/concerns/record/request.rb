@@ -87,16 +87,14 @@ class LHS::Record
       end
 
       def extend_base_collection!(data, addition, key)
-        data.each_with_index do |item, i|
-          item = item[i] if item.is_a? LHS::Collection
-          link = item[key.to_sym]
-          next if link.blank?
-          link.merge_raw!(addition[i]) && next if !link.collection?
-
-          link.each_with_index do |item, j|
-            item.merge_raw!(addition[i + j]) if item.present?
+        addition = addition.compact if addition.collection? || addition.is_a?(Array)
+        data
+          .map { |item| item._raw[key] }
+          .flatten
+          .each_with_index do |item, index|
+            item_addition = addition[index]
+            item.merge! item_addition._raw
           end
-        end
       end
 
       def extend_base_array!(data, addition, key)
@@ -241,7 +239,6 @@ class LHS::Record
 
       # Load additional resources that are requested with include
       def load_include(options, data, sub_includes, references)
-        options = options.compact
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         begin
