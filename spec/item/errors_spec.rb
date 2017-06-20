@@ -236,5 +236,10 @@ describe LHS::Item do
         end).not_to raise_error(NoMethodError)
       end
     end
+
+    it 'provides http status code for errors' do
+      record.save
+      expect(record.errors.status_code).to eq 400
+    end
   end
 end
