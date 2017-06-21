@@ -87,14 +87,22 @@ class LHS::Record
       end
 
       def extend_base_collection!(data, addition, key)
+        index = 0
         data.each_with_index do |item, i|
           item = item[i] if item.is_a? LHS::Collection
           link = item[key.to_sym]
           next if link.blank?
-          link.merge_raw!(addition[i]) && next if !link.collection?
 
-          link.each_with_index do |item, j|
-            item.merge_raw!(addition[i + j]) if item.present?
+          if !link.collection? && link.merge_raw!(addition[index])
+            index += 1
+            next
+          end
+
+          link.each do |item|
+            if item.present?
+              item.merge_raw!(addition[index])
+              index += 1
+            end
           end
         end
       end
