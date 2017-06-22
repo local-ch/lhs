@@ -33,14 +33,6 @@ class LHS::Collection < LHS::Proxy
     true
   end
 
-  # def compact
-  #   LHS::Collection.new(
-  #     LHS::Data.new(
-  #       _collection.raw.reject { |item| item.nil? }
-  #     )
-  #   )
-  # end
-
   def item?
     false
   end

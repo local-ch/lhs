@@ -94,7 +94,7 @@ class LHS::Record
           .flatten
           .each_with_index do |item, index|
             item_addition = addition[index]
-            next if item_addition.nil? or item.nil?
+            next if item_addition.nil? || item.nil?
             item.merge! item_addition._raw
           end
       end
