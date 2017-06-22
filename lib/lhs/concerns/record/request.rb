@@ -87,12 +87,14 @@ class LHS::Record
       end
 
       def extend_base_collection!(data, addition, key)
-        addition = addition.compact if addition.collection? || addition.is_a?(Array)
-        data
-          .map { |item| item._raw[key] }
+        data.map do |item|
+          item_raw = item._raw[key]
+          item_raw.blank? ? [nil] : item_raw
+        end
           .flatten
           .each_with_index do |item, index|
             item_addition = addition[index]
+            next if item_addition.nil? or item.nil?
             item.merge! item_addition._raw
           end
       end
