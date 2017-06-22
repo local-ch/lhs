@@ -264,12 +264,14 @@ describe LHS::Record do
   end
 
   context 'arrays' do
-    it 'includes items of arrays' do
+    before(:each) do
       class Place < LHS::Record
         endpoint ':datastore/place'
         endpoint ':datastore/place/:id'
       end
+    end
 
+    let!(:place_request) do
       stub_request(:get, "#{datastore}/place/1")
         .to_return(body: {
           'relations' => [
@@ -277,15 +279,38 @@ describe LHS::Record do
             { 'href' => "#{datastore}/place/relations/3" }
           ]
         }.to_json)
+    end
 
+    let!(:relation_request_1) do
       stub_request(:get, "#{datastore}/place/relations/2")
         .to_return(body: { name: 'Category' }.to_json)
+    end
+
+    let!(:relation_request_2) do
       stub_request(:get, "#{datastore}/place/relations/3")
         .to_return(body: { name: 'ZeFrank' }.to_json)
+    end
 
+    it 'includes items of arrays' do
       place = Place.includes(:relations).find(1)
       expect(place.relations.first.name).to eq 'Category'
       expect(place.relations[1].name).to eq 'ZeFrank'
+    end
+
+    context 'parallel with empty links' do
+      let!(:place_request_2) do
+        stub_request(:get, "#{datastore}/place/2")
+          .to_return(body: {
+            'relations' => []
+          }.to_json)
+      end
+
+      it 'loads places in parallel and merges included data properly' do
+        place = Place.includes(:relations).find(2, 1)
+        expect(place[0].relations.empty?)
+        expect(place[1].relations[0].name).to eq 'Category'
+        expect(place[1].relations[1].name).to eq 'ZeFrank'
+      end
     end
   end
 

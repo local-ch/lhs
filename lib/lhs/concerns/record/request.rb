@@ -87,16 +87,16 @@ class LHS::Record
       end
 
       def extend_base_collection!(data, addition, key)
-        data.each_with_index do |item, i|
-          item = item[i] if item.is_a? LHS::Collection
-          link = item[key.to_sym]
-          next if link.blank?
-          link.merge_raw!(addition[i]) && next if !link.collection?
-
-          link.each_with_index do |item, j|
-            item.merge_raw!(addition[i + j]) if item.present?
-          end
+        data.map do |item|
+          item_raw = item._raw[key]
+          item_raw.blank? ? [nil] : item_raw
         end
+          .flatten
+          .each_with_index do |item, index|
+            item_addition = addition[index]
+            next if item_addition.nil? || item.nil?
+            item.merge! item_addition._raw
+          end
       end
 
       def extend_base_array!(data, addition, key)
@@ -301,7 +301,7 @@ class LHS::Record
       # When including all resources on one level, don't forward :includes & :references
       # as we have to fetch all resources on this level first, before we continue_including
       def prepare_option_for_include_all_request!(option)
-        return option if option.empty? || option[:url].nil?
+        return option if option.blank? || option[:url].nil?
         uri = parse_uri(option[:url], option)
         get_params = Rack::Utils.parse_nested_query(uri.query)
           .symbolize_keys
