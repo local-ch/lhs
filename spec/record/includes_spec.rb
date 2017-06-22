@@ -535,4 +535,27 @@ describe LHS::Record do
       expect(places[1].category_relations[0].name).to eq 'Drinks'
     end
   end
+
+  context '404 for some of the requested resources' do
+    before(:each) do
+      class Place < LHS::Record
+        endpoint 'http://datastore/places/:id'
+      end
+      stub_request(:get, 'http://datastore/places/1')
+        .to_return(body: {
+          category_relations: [{ href: 'http://datastore/category/1' }]}.to_json)
+      stub_request(:get, 'http://datastore/places/2')
+        .to_return(status: 404, body: { status: 404, message: 'the requested resource could not be found' }.to_json)
+      stub_request(:get, "http://datastore/category/1?limit=100").to_return(body: { name: 'Food' }.to_json)
+    end
+
+    it 'includes all' do
+      places = Place
+                 .options(auth: { bearer: 'token' })
+                 .includes_all(:category_relations)
+                 .handle(LHC::NotFound, ->(*) { nil })
+                 .find(1, 2)
+      expect(places.to_a.compact.size).to eq 1
+    end
+  end
 end
