@@ -5,7 +5,7 @@ class LHS::Collection < LHS::Proxy
   include InternalCollection
   include Create
 
-  METHOD_NAMES_EXLCUDED_FROM_WRAPPING = %w(to_a map).freeze
+  METHOD_NAMES_EXLCUDED_FROM_WRAPPING = %w(to_a to_ary map).freeze
 
   delegate :select, :length, :size, to: :_collection
   delegate :_record, :_raw, to: :_data

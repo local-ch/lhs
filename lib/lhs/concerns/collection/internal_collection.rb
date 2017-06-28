@@ -20,6 +20,10 @@ class LHS::Collection < LHS::Proxy
         @record = record
       end
 
+      def to_ary
+        map { |item| item }
+      end
+
       def each(&_block)
         raw.each do |item|
           if item.is_a? Hash
