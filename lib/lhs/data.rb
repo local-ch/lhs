@@ -1,12 +1,16 @@
-require File.join(__dir__, 'proxy.rb')
-Dir[File.dirname(__FILE__) + '/concerns/data/*.rb'].each { |file| require file }
-
 # Data provides functionalities to accesses information
 class LHS::Data
+  autoload :Equality,
+    'lhs/concerns/data/equality'
+  autoload :Json,
+    'lhs/concerns/data/json'
+  autoload :ToHash,
+    'lhs/concerns/data/to_hash'
+
   include Equality
   include Json
   include ToHash
-  include Inspect
+  include LHS::Inspect
 
   delegate :instance_methods, :items_key, :limit_key, :total_key, :pagination_key, to: :class
 

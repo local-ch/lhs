@@ -1,6 +1,42 @@
-Dir[File.dirname(__FILE__) + '/concerns/record/*.rb'].each { |file| require file }
-
 class LHS::Record
+  autoload :Batch,
+    'lhs/concerns/record/batch'
+  autoload :Chainable,
+    'lhs/concerns/record/chainable'
+  autoload :Configuration,
+    'lhs/concerns/record/configuration'
+  autoload :Create,
+    'lhs/concerns/record/create'
+  autoload :Destroy,
+    'lhs/concerns/record/destroy'
+  autoload :Endpoints,
+    'lhs/concerns/record/endpoints'
+  autoload :Equality,
+    'lhs/concerns/record/equality'
+  autoload :Find,
+    'lhs/concerns/record/find'
+  autoload :FindBy,
+    'lhs/concerns/record/find_by'
+  autoload :First,
+    'lhs/concerns/record/first'
+  autoload :Mapping,
+    'lhs/concerns/record/mapping'
+  autoload :Model,
+    'lhs/concerns/record/model'
+  autoload :Pagination,
+    'lhs/concerns/record/pagination'
+  autoload :Request,
+    'lhs/concerns/record/request'
+  autoload :Scope,
+    'lhs/concerns/record/scope'
+
+  module RequestCycleCache
+    autoload :RequestCycleThreadRegistry,
+      'lhs/concerns/record/request_cycle_cache/request_cycle_thread_registry'
+    autoload :Interceptor,
+      'lhs/concerns/record/request_cycle_cache/interceptor'
+  end
+
   include Batch
   include Chainable
   include Configuration
@@ -11,7 +47,7 @@ class LHS::Record
   include Find
   include FindBy
   include First
-  include Inspect
+  include LHS::Inspect
   include Mapping
   include Model
   include Pagination
