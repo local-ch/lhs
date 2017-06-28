@@ -1,4 +1,4 @@
-to_require 'rails_helper'
+require 'rails_helper'
 
 describe LHS::Collection do
   let(:items) { [{ name: 'Steve' }] }
