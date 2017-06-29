@@ -8,11 +8,11 @@ module LHS::Errors
     def initialize(response = nil, record = nil)
       @raw = response.body if response
       @record = record
-      @messages = messages_from_response(response)
+      @messages = messages_from_response(response).with_indifferent_access
       @message = message_from_response(response)
       @status_code = response.code if response
     rescue JSON::ParserError
-      @messages = messages || {}
+      @messages = (messages || {}).with_indifferent_access
       @message = 'parse error'
       add_error(@messages, 'body', 'parse error')
     end
