@@ -1,9 +1,7 @@
-require File.join(__dir__, 'proxy.rb')
-Dir[File.dirname(__FILE__) + '/concerns/collection/*.rb'].each { |file| require file }
-
 # A collection is a special type of data
 # that contains multiple items
 class LHS::Collection < LHS::Proxy
+  autoload :InternalCollection, 'lhs/concerns/collection/internal_collection'
   include InternalCollection
   include Create
 

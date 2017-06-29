@@ -1,9 +1,15 @@
-require File.join(__dir__, 'proxy.rb')
-Dir[File.dirname(__FILE__) + '/concerns/item/*.rb'].each { |file| require file }
-
 # An item is a concrete record.
 # It can be part of another proxy like collection.
 class LHS::Item < LHS::Proxy
+  autoload :Destroy,
+    'lhs/concerns/item/destroy'
+  autoload :Save,
+    'lhs/concerns/item/save'
+  autoload :Update,
+    'lhs/concerns/item/update'
+  autoload :Validation,
+    'lhs/concerns/item/validation'
+
   include Create
   include Destroy
   include Save
