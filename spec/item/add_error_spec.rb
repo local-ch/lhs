@@ -13,7 +13,7 @@ describe LHS::Item do
       subject.errors.add(:name, 'This date is invalid')
       expect(
         subject.errors.first
-      ).to eq [:name, 'This date is invalid']
+      ).to eq ['name', 'This date is invalid']
     end
   end
 end

@@ -40,7 +40,7 @@ describe LHS::Record do
       expect(record.errors.include?(:ratings)).to eq true
       expect(record.errors.include?(:recommended)).to eq true
       expect(record.errors[:ratings]).to eq ['REQUIRED_PROPERTY_VALUE']
-      expect(record.errors.messages).to eq(ratings: ["REQUIRED_PROPERTY_VALUE"], recommended: ["REQUIRED_PROPERTY_VALUE"])
+      expect(record.errors.messages).to eq('ratings' => ["REQUIRED_PROPERTY_VALUE"], 'recommended' => ["REQUIRED_PROPERTY_VALUE"])
       expect(record.errors.message).to eq error_message
     end
 
