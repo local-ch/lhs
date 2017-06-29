@@ -78,7 +78,7 @@ describe LHS::Item do
     it 'allows accessing error messages as a hash with indifferent access' do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_fields.to_json)
-      result = record.save
+      record.save
       expect(record.errors.messages[:ratings]).to be
       expect(record.errors.messages['ratings']).to be
     end
