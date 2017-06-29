@@ -75,6 +75,14 @@ describe LHS::Item do
       expect(record.errors[:recommended]).to eq ['REQUIRED_PROPERTY_VALUE']
     end
 
+    it 'allows accessing error messages as a hash with indifferent access' do
+      stub_request(:post, "#{datastore}/feedbacks")
+        .to_return(status: 400, body: error_format_fields.to_json)
+      result = record.save
+      expect(record.errors.messages[:ratings]).to be
+      expect(record.errors.messages['ratings']).to be
+    end
+
     it 'parses field errors correctly when creation failed' do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_field_errors.to_json)
