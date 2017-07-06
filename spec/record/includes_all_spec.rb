@@ -340,13 +340,20 @@ describe LHS::Record do
     end
   end
 
-  context 'Failing places request' do
+  context 'Linked resources' do
     before(:each) do
       stub_request(:get, 'http://datastore/places/1/contracts?offset=0&limit=10')
         .to_return(
           body: {
             href:  "http://datastore/v2/places/1/contracts?offset=0&limit=10",
             items: [{ href: "http://datastore/v2/contracts/1" }]
+          }.to_json
+        )
+
+      stub_request(:get, "http://datastore/v2/contracts/1")
+        .to_return(
+          body: {
+            customer: { name: 'Swisscom Directories AG' }
           }.to_json
         )
 
@@ -364,16 +371,11 @@ describe LHS::Record do
       end
     end
 
-    let(:lhs_options) { { auth: { bearer: 'token' } } }
-
-    it 'reads all companies' do
+    it 'does not use the root record endpoints when including nested records' do
       place = Place
-        .options(lhs_options)
-        .includes_all(contracts: :product)
-        .references(contracts: lhs_options)
-        .references(contracts: { product: lhs_options })
+        .includes_all(:contracts)
         .find_by(id: 1)
-      expect(place).not_to be nil
+      expect(place.contracts.first.customer.name).to eq 'Swisscom Directories AG'
     end
   end
 end
