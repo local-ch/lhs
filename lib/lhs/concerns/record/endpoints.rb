@@ -63,8 +63,8 @@ class LHS::Record
         url
       end
 
-      def compute_url(params)
-        find_endpoint(params)
+      def compute_url(params, url = nil)
+        find_endpoint(params, url)
           .compile(params)
       end
 
