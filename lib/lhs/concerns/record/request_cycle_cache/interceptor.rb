@@ -5,8 +5,6 @@ class LHS::Record
   module RequestCycleCache
     extend ActiveSupport::Concern
 
-    REQUEST_CYCLE_CACHE_WARNING = "[WARNING] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor)!".freeze
-
     class Interceptor < LHC::Interceptor
 
       VERSION = 1
