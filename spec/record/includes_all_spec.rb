@@ -339,4 +339,41 @@ describe LHS::Record do
       end
     end
   end
+
+  context 'Failing places request' do
+    before(:each) do
+      stub_request(:get, 'http://datastore/places/1/contracts?offset=0&limit=10')
+        .to_return(
+          body: {
+            href:  "http://datastore/v2/places/1/contracts?offset=0&limit=10",
+            items: [{ href: "http://datastore/v2/contracts/1" }]
+          }.to_json
+        )
+
+      stub_request(:get, 'http://datastore/places/1?limit=1')
+        .to_return(
+          body: { href: 'http://datastore/places/1', contracts: { href: 'http://datastore/places/1/contracts?offset=0&limit=10' } }.to_json
+        )
+
+      class Place < LHS::Record
+        endpoint 'http://datastore/places/:id'
+      end
+
+      class Contract < LHS::Record
+        endpoint 'http://datastore/places/:place_id/contracts'
+      end
+    end
+
+    let(:lhs_options) { { auth: { bearer: 'token' } } }
+
+    it 'reads all companies' do
+      place = Place
+        .options(lhs_options)
+        .includes_all(contracts: :product)
+        .references(contracts: lhs_options)
+        .references(contracts: { product: lhs_options })
+        .find_by(id: 1)
+      expect(place).not_to be nil
+    end
+  end
 end
