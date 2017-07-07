@@ -339,4 +339,43 @@ describe LHS::Record do
       end
     end
   end
+
+  context 'Linked resources' do
+    before(:each) do
+      stub_request(:get, 'http://datastore/places/1/contracts?offset=0&limit=10')
+        .to_return(
+          body: {
+            href:  "http://datastore/v2/places/1/contracts?offset=0&limit=10",
+            items: [{ href: "http://datastore/v2/contracts/1" }]
+          }.to_json
+        )
+
+      stub_request(:get, "http://datastore/v2/contracts/1")
+        .to_return(
+          body: {
+            customer: { name: 'Swisscom Directories AG' }
+          }.to_json
+        )
+
+      stub_request(:get, 'http://datastore/places/1?limit=1')
+        .to_return(
+          body: { href: 'http://datastore/places/1', contracts: { href: 'http://datastore/places/1/contracts?offset=0&limit=10' } }.to_json
+        )
+
+      class Place < LHS::Record
+        endpoint 'http://datastore/places/:id'
+      end
+
+      class Contract < LHS::Record
+        endpoint 'http://datastore/places/:place_id/contracts'
+      end
+    end
+
+    it 'does not use the root record endpoints when including nested records' do
+      place = Place
+        .includes_all(:contracts)
+        .find_by(id: 1)
+      expect(place.contracts.first.customer.name).to eq 'Swisscom Directories AG'
+    end
+  end
 end
