@@ -1,3 +1,6 @@
+require 'active_support/core_ext/module'
+require 'active_support/core_ext/hash'
+
 # Like ActiveModel::Errors
 module LHS::Errors
   class Base

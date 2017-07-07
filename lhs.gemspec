@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'lhc', '>= 5.1.1'
   s.add_dependency 'activesupport', '> 4.2'
+  s.add_dependency 'activemodel'
 
   s.add_development_dependency 'rspec-rails', '>= 3.0.0'
   s.add_development_dependency 'rails', '>= 4.0.0'

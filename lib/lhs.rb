@@ -41,7 +41,7 @@ module LHS
     'lhs/record'
 
   include Configuration
-  include AutoloadRecords
+  include AutoloadRecords if defined?(Rails)
 
   require 'lhs/record' # as lhs records in an application are directly inheriting it
 
