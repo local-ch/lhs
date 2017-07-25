@@ -8,6 +8,8 @@ class LHS::Proxy
     # FIXME: Extend the set of keywords
     BLACKLISTED_KEYWORDS = %w(new proxy_association)
 
+    delegate :dig, to: :_raw
+
     private
 
     def set(name, value)
