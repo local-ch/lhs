@@ -31,7 +31,11 @@ class LHS::Data
   # e.g. when loading remote data via link
   def merge_raw!(data)
     return false if data.blank? || !data._raw.is_a?(Hash)
-    _raw.merge! data._raw
+    if _record && _record.item_created_key
+      _raw.merge! data._raw.dig(*_record.item_created_key)
+    else
+      _raw.merge! data._raw
+    end
   end
 
   def _root
