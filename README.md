@@ -855,6 +855,17 @@ class Results < LHS::Record
 end
 ```
 
+In case of paginated resources it's important to know the difference between [count vs. length](#count-vs-length)
+
+## Configuration of Records
+
+```ruby
+class Search < LHS::Record
+  configuration items_key: 'searchResults', total_key: 'total', limit_key: 'limit', pagination_key: 'offset', pagination_strategy: 'offset'
+  endpoint 'https://search'
+end
+```
+
 `items_key` key used to determine items of the current page (e.g. `docs`, `items`, etc.).
 
 `limit_key` key used to work with page limits (e.g. `size`, `limit`, etc.)
@@ -865,7 +876,27 @@ end
 
 `total_key` key used to determine the total amount of items (e.g. `total`, `totalResults`, etc.).
 
-In case of paginated resources it's important to know the difference between [count vs. length](#count-vs-length)
+### Configure complex accessors for nested data (EXPERIMENTAL)
+
+If items, limit, pagination, total etc. is nested in the responding objects, use the complex data structures to for configuring your record.
+
+```
+  response: {
+    offset: 0,
+    max: 50,
+    count: 1,
+    businesses: [
+      {}
+    ]
+  }
+```
+
+```ruby
+  class Business < LHS::Record
+    configuration items_key: [:response, :businesses], limit_key: [:response, :max], pagination_key: [:response, :offset], total_key: [:response, :count], pagination_strategy: :offset
+    endpoint 'http://uberall/businesses'
+  end
+```
 
 ### Pagination Chains
 
