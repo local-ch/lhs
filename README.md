@@ -878,7 +878,7 @@ end
 
 ### Configure complex accessors for nested data (EXPERIMENTAL)
 
-If items, limit, pagination, total etc. is nested in the responding objects, use the complex data structures to for configuring your record.
+If items, limit, pagination, total etc. is nested in the responding objects, use complex data structures for configuring a record.
 
 ```
   response: {
