@@ -25,6 +25,8 @@ module LHS
     'lhs/concerns/inspect'
   autoload :Item,
     'lhs/item'
+  autoload :ItemsHandler,
+    'lhs/concerns/items_handler'
   autoload :Pagination,
     'lhs/pagination/base'
   module Pagination

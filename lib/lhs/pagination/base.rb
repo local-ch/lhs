@@ -17,15 +17,15 @@ module LHS::Pagination
     end
 
     def total
-      data._raw[_record.total_key.to_sym]
+      data._raw.dig(*_record.total_key)
     end
 
     def limit
-      data._raw[_record.limit_key.to_sym] || DEFAULT_LIMIT
+      data._raw.dig(*_record.limit_key) || DEFAULT_LIMIT
     end
 
     def offset
-      data._raw[_record.pagination_key.to_sym].presence || 0
+      data._raw.dig(*_record.pagination_key) || 0
     end
     alias current_page offset
     alias start offset
