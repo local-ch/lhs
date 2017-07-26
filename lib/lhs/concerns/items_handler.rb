@@ -1,7 +1,6 @@
 require 'active_support'
 
 module LHS
-
   module ItemsHandler
     extend ActiveSupport::Concern
 
