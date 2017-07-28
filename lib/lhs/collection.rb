@@ -1,10 +1,14 @@
 # A collection is a special type of data
 # that contains multiple items
 class LHS::Collection < LHS::Proxy
-  autoload :InternalCollection, 'lhs/concerns/collection/internal_collection'
+  autoload :HandleNested,
+    'lhs/concerns/collection/handle_nested'
+  autoload :InternalCollection,
+    'lhs/concerns/collection/internal_collection'
+
+  include HandleNested
   include InternalCollection
   include Create
-  include LHS::ItemsHandler
 
   METHOD_NAMES_EXLCUDED_FROM_WRAPPING = %w(to_a to_ary map).freeze
 
@@ -24,7 +28,7 @@ class LHS::Collection < LHS::Proxy
 
   def _collection
     raw = _data._raw if _data._raw.is_a?(Array)
-    raw ||= _data.access_items(input: _data._raw, record: _record)
+    raw ||= _data.access(input: _data._raw, record: _record)
     Collection.new(raw, _data, _record)
   end
 
@@ -40,7 +44,7 @@ class LHS::Collection < LHS::Proxy
     if _raw.is_a?(Array)
       _raw
     else
-      access_items(input: _raw, record: _record)
+      access(input: _raw, record: _record)
     end
   end
 
@@ -64,11 +68,6 @@ class LHS::Collection < LHS::Proxy
   end
 
   private
-
-  def items_key
-    return _record.items_key if _record
-    :items
-  end
 
   # Encloses accessed collection item
   # by wrapping it in an LHS::Item

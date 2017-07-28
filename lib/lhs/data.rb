@@ -10,7 +10,6 @@ class LHS::Data
   include Equality
   include Json
   include ToHash
-  include LHS::ItemsHandler
   include LHS::Inspect
 
   delegate :instance_methods, :items_key, :limit_key, :total_key, :pagination_key, to: :class
@@ -84,7 +83,7 @@ class LHS::Data
   private
 
   def collection_proxy?(input)
-    (input.is_a?(Hash) && access_items(input: input, record: _record)) ||
+    (input.is_a?(Hash) && LHS::Collection.access(input: input, record: _record)) ||
       input.is_a?(Array) ||
       _raw.is_a?(Array)
   end

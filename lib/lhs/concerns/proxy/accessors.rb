@@ -33,14 +33,14 @@ class LHS::Proxy
 
     def accessing_item?(value, record)
       return false unless value.is_a?(Hash)
-      return false if record && access_items(input: value, record: record).present?
+      return false if record && access(input: value, record: record).present?
       return false if !record && value[:items].present?
       true
     end
 
     def accessing_collection?(value, record)
       return true if value.is_a?(Array)
-      return true if value.is_a?(Hash) && record && access_items(input: value, record: record).present?
+      return true if value.is_a?(Hash) && record && access(input: value, record: record).present?
       return true if value.is_a?(Hash) && !record && value[:items].present?
     end
 
