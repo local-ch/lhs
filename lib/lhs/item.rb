@@ -1,6 +1,8 @@
 # An item is a concrete record.
 # It can be part of another proxy like collection.
 class LHS::Item < LHS::Proxy
+  autoload :Becomes,
+    'lhs/concerns/item/becomes'
   autoload :Destroy,
     'lhs/concerns/item/destroy'
   autoload :Save,
@@ -10,6 +12,7 @@ class LHS::Item < LHS::Proxy
   autoload :Validation,
     'lhs/concerns/item/validation'
 
+  include Becomes
   include Create
   include Destroy
   include Save
