@@ -20,6 +20,12 @@ class LHS::Record
         )
       end
 
+      def item_created_key
+        symbolize_unless_complex(
+          @configuration.try(:[], :item_created_key)
+        )
+      end
+
       def limit_key
         symbolize_unless_complex(
           @configuration.try(:[], :limit_key) || :limit
@@ -49,6 +55,7 @@ class LHS::Record
       private
 
       def symbolize_unless_complex(value)
+        return if value.blank?
         return value.to_sym unless value.is_a?(Array)
         value
       end
