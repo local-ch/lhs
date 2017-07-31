@@ -855,7 +855,20 @@ class Results < LHS::Record
 end
 ```
 
+In case of paginated resources it's important to know the difference between [count vs. length](#count-vs-length)
+
+## Configuration of Records
+
+```ruby
+class Search < LHS::Record
+  configuration items_key: 'searchResults', total_key: 'total', limit_key: 'limit', pagination_key: 'offset', pagination_strategy: 'offset'
+  endpoint 'https://search'
+end
+```
+
 `items_key` key used to determine items of the current page (e.g. `docs`, `items`, etc.).
+
+`item_created_key` key used to merge record data thats nested in the creation response body.
 
 `limit_key` key used to work with page limits (e.g. `size`, `limit`, etc.)
 
@@ -865,7 +878,48 @@ end
 
 `total_key` key used to determine the total amount of items (e.g. `total`, `totalResults`, etc.).
 
-In case of paginated resources it's important to know the difference between [count vs. length](#count-vs-length)
+### Configure complex accessors for nested data (EXPERIMENTAL)
+
+If items, limit, pagination, total etc. is nested in the responding objects, use complex data structures for configuring a record.
+
+```
+  response: {
+    offset: 0,
+    max: 50,
+    count: 1,
+    businesses: [
+      {}
+    ]
+  }
+```
+
+```ruby
+  class Business < LHS::Record
+    configuration items_key: [:response, :businesses], limit_key: [:response, :max], pagination_key: [:response, :offset], total_key: [:response, :count], pagination_strategy: :offset
+    endpoint 'http://uberall/businesses'
+  end
+```
+
+If record data after creation is nested in the response body, configure the record, so that it gets properl merged with the your record instance:
+
+```
+POST /businesses
+  response: {
+    business: {
+      id: 123
+    }
+  }
+```
+
+```ruby
+  class Business < LHS::Record
+    configuration item_created_key: [:response, :business]
+    endpoint 'http://uberall/businesses'
+  end
+
+  business = Business.create(name: 'localsearch')
+  business.id # 123
+```
 
 ### Pagination Chains
 

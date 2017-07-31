@@ -124,11 +124,11 @@ class LHS::Record
       end
 
       def extend_base_item_with_hash_of_items!(target, addition)
-        target._raw[items_key] ||= []
-        if target._raw[items_key].empty?
-          target._raw[items_key] = addition.map(&:_raw)
+        LHS::Collection.nest(input: target._raw, value: [], record: self)
+        if LHS::Collection.access(input: target._raw, record: self).empty?
+          LHS::Collection.nest(input: target._raw, value: addition.map(&:_raw), record: self)
         else
-          target._raw[items_key].each_with_index do |item, index|
+          LHS::Collection.access(input: target._raw, record: self).each_with_index do |item, index|
             item.merge!(addition[index])
           end
         end
@@ -326,7 +326,7 @@ class LHS::Record
       end
 
       def merge_batch_data_with_parent!(batch_data, parent_data)
-        parent_data._raw[items_key].concat batch_data.raw_items
+        parent_data.concat(input: parent_data._raw, items: batch_data.raw_items, record: self)
         parent_data._raw[limit_key] = batch_data._raw[limit_key]
         parent_data._raw[total_key] = batch_data._raw[total_key]
         parent_data._raw[pagination_key] = batch_data._raw[pagination_key]

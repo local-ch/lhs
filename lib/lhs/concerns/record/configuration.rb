@@ -7,8 +7,6 @@ class LHS::Record
   module Configuration
     extend ActiveSupport::Concern
 
-    DEFAULT_ITEMS_KEY = :items
-
     mattr_accessor :configuration
 
     module ClassMethods
@@ -17,25 +15,49 @@ class LHS::Record
       end
 
       def items_key
-        (@configuration.try(:[], :items_key) || DEFAULT_ITEMS_KEY).to_sym
+        symbolize_unless_complex(
+          @configuration.try(:[], :items_key) || :items
+        )
+      end
+
+      def item_created_key
+        symbolize_unless_complex(
+          @configuration.try(:[], :item_created_key)
+        )
       end
 
       def limit_key
-        (@configuration.try(:[], :limit_key) || :limit).to_sym
+        symbolize_unless_complex(
+          @configuration.try(:[], :limit_key) || :limit
+        )
       end
 
       def total_key
-        (@configuration.try(:[], :total_key) || :total).to_sym
+        symbolize_unless_complex(
+          @configuration.try(:[], :total_key) || :total
+        )
       end
 
       # Key used for determine current page
       def pagination_key
-        (@configuration.try(:[], :pagination_key) || :offset).to_sym
+        symbolize_unless_complex(
+          @configuration.try(:[], :pagination_key) || :offset
+        )
       end
 
       # Strategy used for calculationg next pages and navigate pages
       def pagination_strategy
-        (@configuration.try(:[], :pagination_strategy) || :offset).to_sym
+        symbolize_unless_complex(
+          @configuration.try(:[], :pagination_strategy) || :offset
+        )
+      end
+
+      private
+
+      def symbolize_unless_complex(value)
+        return if value.blank?
+        return value.to_sym unless value.is_a?(Array)
+        value
       end
     end
   end
