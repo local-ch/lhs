@@ -670,6 +670,28 @@ record = Record.find('1z-5r1fkaj')
 record.update(recommended: false)
 ```
 
+## Becomes
+
+Based on [ActiveRecord's implementation](http://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-becomes), LHS implements `becomes`, too.
+It's a way to convert records of a certain type A to another certain type B.
+
+_NOTE: RPC-style actions, that are discouraged in REST anyway, are utilizable with this functionality, too. See the following example:_ 
+
+```ruby
+class Location < LHS::Record
+  endpoint 'http://sync/locations'
+  endpoint 'http://sync/locations/:id'
+end
+
+class Synchronization < LHS::Record
+  endpoint 'http://sync/locations/:id/sync'
+end
+
+location = Location.find(1)
+synchronization = location.becomes(Synchronization)
+synchronization.save!
+```
+
 ## Destroy
 
 You can delete records remotely by calling `destroy` on an LHS::Record.
