@@ -33,12 +33,20 @@ class LHS::Proxy
   end
 
   def reload!(options = nil)
-    raise 'No href found' unless _data.href
     options = {} if options.blank?
-
-    data = _data.class.request(options.merge(url: _data.href, method: :get))
+    data = _data.class.request(
+      options.merge(method: :get).merge(reload_options)
+    )
     _data.merge_raw!(data)
     self._loaded = true
     self
+  end
+
+  private
+
+  def reload_options
+    return { url: _data.href } if _data.href
+    return { params: { id: _data.id } } if _data.id
+    {}
   end
 end
