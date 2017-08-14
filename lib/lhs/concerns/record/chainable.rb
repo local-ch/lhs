@@ -273,6 +273,10 @@ class LHS::Record
         end
       end
 
+      def fetch
+        resolve
+      end
+
       protected
 
       def method_missing(name, *args, &block)
