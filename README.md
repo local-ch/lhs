@@ -181,6 +181,14 @@ record = Record.where(color: 'blue')
 
 [List of possible error classes](https://github.com/local-ch/lhc/tree/master/lib/lhc/errors)
 
+## Resolve chains
+
+LHS Chains can be resolved with `fetch`, similiar to ActiveRecord:
+
+```ruby
+record = Record.where(color: 'blue').fetch
+```
+
 ## Find single records
 
 `find` finds a unique record by unique identifier (usualy id or href).
