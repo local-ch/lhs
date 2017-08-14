@@ -17,6 +17,7 @@ class LHS::Proxy
 
   # prevent clashing with attributes of underlying data
   attr_accessor :_data, :_loaded
+  delegate :_record, to: :_data, allow_nil: true
 
   def initialize(data)
     self._data = data
@@ -44,9 +45,13 @@ class LHS::Proxy
 
   private
 
+  def as_record
+    @as_record ||= becomes(_record)
+  end
+
   def reload_options
     return { url: _data.href } if _data.href
-    return { params: { id: _data.id } } if _data.id
+    return { params: { id: as_record.id } } if as_record.id
     {}
   end
 end
