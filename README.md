@@ -186,7 +186,7 @@ record = Record.where(color: 'blue')
 LHS Chains can be resolved with `fetch`, similiar to ActiveRecord:
 
 ```ruby
-record = Record.where(color: 'blue').fetch
+records = Record.where(color: 'blue').fetch
 ```
 
 ## Find single records
