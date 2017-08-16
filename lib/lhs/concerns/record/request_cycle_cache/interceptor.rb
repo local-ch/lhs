@@ -16,7 +16,8 @@ class LHS::Record
           cache_expires_in: 5.minutes,
           cache_race_condition_ttl: 5.seconds,
           cache_key: cache_key_for(request),
-          cached_methods: CACHED_METHODS
+          cached_methods: CACHED_METHODS,
+          short_term_cache: true
         }.merge(request.options))
       end
 
