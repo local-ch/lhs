@@ -151,7 +151,7 @@ module LHS::Errors
     end
 
     def message_from_response(response = nil)
-      return if response.blank? 
+      return if response.blank?
       raise JSON::ParserError if response.body.blank?
       json = JSON.parse(response.body)
       json['message']
