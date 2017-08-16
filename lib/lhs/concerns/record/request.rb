@@ -9,10 +9,11 @@ class LHS::Record
     module ClassMethods
       def request(options)
         options ||= {}
-        options = options.deep_dup
+        options = options.freeze
         if options.is_a?(Array)
-          filter_request_options!(options)
-          multiple_requests(options)
+          multiple_requests(
+            filter_empty_request_options(options)
+          )
         else
           single_request(options)
         end
@@ -20,10 +21,9 @@ class LHS::Record
 
       private
 
-      def filter_request_options!(options)
-        options.each_with_index do |option, index|
-          next if !option || !option.key?(:url) || !option[:url].nil?
-          options[index] = nil
+      def filter_empty_request_options(options)
+        options.each_with_index.map do |option|
+          option if !option || !option.key?(:url) || !option[:url].nil?
         end
       end
 
@@ -399,7 +399,9 @@ class LHS::Record
 
       # Merge explicit params and take configured endpoints options as base
       def process_options(options, endpoint)
+        ignored_errors = options[:ignored_errors]
         options = options.deep_dup
+        options[:ignored_errors] = ignored_errors if ignored_errors.present?
         options[:params].deep_symbolize_keys! if options[:params]
         options[:error_handler] = merge_error_handlers(options[:error_handler]) if options[:error_handler]
         options = (endpoint.options || {}).merge(options)

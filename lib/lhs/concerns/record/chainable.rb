@@ -29,6 +29,10 @@ class LHS::Record
         Chain.new(self, Option.new(hash))
       end
 
+      def ignore(error)
+        Chain.new(self, IgnoredError.new(error))
+      end
+
       def page(page)
         Chain.new(self, Pagination.new(page: page))
       end
@@ -43,6 +47,10 @@ class LHS::Record
 
       def handle(error_class, handler)
         Chain.new(self, ErrorHandling.new(error_class => handler))
+      end
+
+      def ignore(error_class)
+        Chain.new(self, IgnoredError.new(error_class))
       end
 
       def includes(*args)
@@ -106,6 +114,10 @@ class LHS::Record
       def class
         @data.keys.first
       end
+    end
+
+    # IgnoredError: Ignore certain LHC errors when resolving the chain
+    class IgnoredError < Link
     end
 
     # A sequence of links
@@ -191,6 +203,10 @@ class LHS::Record
 
       def options(hash = nil)
         push(Option.new(hash))
+      end
+
+      def ignore(error)
+        push(IgnoredError.new(error))
       end
 
       def page(page)
@@ -300,6 +316,7 @@ class LHS::Record
         options = chain_options
         options = options.deep_merge(params: chain_parameters.merge(chain_pagination))
         options = options.merge(error_handler: chain_error_handler) if chain_error_handler.present?
+        options = options.merge(ignored_errors: chain_ignored_errors) if chain_ignored_errors.present?
         options = options.merge(including: chain_includes) if chain_includes.present?
         options = options.merge(referencing: chain_references) if chain_references.present?
         options
@@ -350,23 +367,29 @@ class LHS::Record
       end
 
       def chain_parameters
-        merge_links(_links.select { |link| link.is_a? Parameter })
+        @chain_parameters ||= merge_links(_links.select { |link| link.is_a? Parameter })
       end
 
       def chain_options
-        merge_links(_links.select { |link| link.is_a? Option })
+        @chain_options ||= merge_links(_links.select { |link| link.is_a? Option })
       end
 
       def chain_error_handler
-        _links.select { |link| link.is_a? ErrorHandling }
+        @chain_error_handler ||= _links.select { |link| link.is_a? ErrorHandling }
+      end
+
+      def chain_ignored_errors
+        @chain_ignored_errors ||= _links
+          .select { |link| link.is_a? IgnoredError }
+          .map { |link| link.data }
       end
 
       def chain_pagination
-        resolve_pagination _links.select { |link| link.is_a? Pagination }
+        @chain_pagination ||= resolve_pagination _links.select { |link| link.is_a? Pagination }
       end
 
       def chain_includes
-        LHS::Complex.reduce(
+        @chain_includes ||= LHS::Complex.reduce(
           _links
             .select { |link| link.is_a?(Include) && link.data.present? }
             .map { |link| link.data }
@@ -374,7 +397,7 @@ class LHS::Record
       end
 
       def chain_references
-        LHS::Complex.reduce(
+        @chain_references ||= LHS::Complex.reduce(
           _links
             .select { |link| link.is_a?(Reference) && link.data.present? }
             .map { |link| link.data }
