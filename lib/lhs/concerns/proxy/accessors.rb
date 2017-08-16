@@ -8,7 +8,7 @@ class LHS::Proxy
     # FIXME: Extend the set of keywords
     BLACKLISTED_KEYWORDS = %w(new proxy_association)
 
-    delegate :dig, to: :_raw
+    delegate :dig, to: :_raw, allow_nil: true
 
     private
 
@@ -19,7 +19,7 @@ class LHS::Proxy
 
     def get(name, *args)
       name = args.first if name == :[]
-      value = _data._raw[name.to_s]
+      value = _data._raw[name.to_s] if _data._raw
       if value.nil? && _data._raw.present? && _data._raw.is_a?(Hash)
         value = _data._raw[name.to_sym]
         value = _data._raw[name.to_s.classify.to_sym] if value.nil?
