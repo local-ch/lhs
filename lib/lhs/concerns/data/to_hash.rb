@@ -6,7 +6,7 @@ class LHS::Data
     extend ActiveSupport::Concern
 
     included do
-      delegate :to_h, :to_hash, to: :_raw
+      delegate :to_h, :to_hash, to: :_raw, allow_nil: true
     end
   end
 end

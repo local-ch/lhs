@@ -19,7 +19,7 @@ class LHS::Item < LHS::Proxy
   include Update
   include Validation
 
-  delegate :present?, :blank?, :empty?, to: :_raw
+  delegate :present?, :blank?, :empty?, to: :_raw, allow_nil: true
   delegate :_raw, to: :_data
 
   def collection?
