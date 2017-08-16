@@ -181,6 +181,16 @@ record = Record.where(color: 'blue')
 
 [List of possible error classes](https://github.com/local-ch/lhc/tree/master/lib/lhc/errors)
 
+If an error handler returns `nil` an empty LHS::Record is returned, not `nil`!
+
+In case you want to ignore errores and continue working with `nil` in those cases,
+please use `ignore`:
+
+```ruby
+record = Record.ignore(LHC::NotFound).find_by(color: 'blue')
+record # nil
+```
+
 ## Resolve chains
 
 LHS Chains can be resolved with `fetch`, similiar to ActiveRecord:
