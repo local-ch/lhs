@@ -89,7 +89,7 @@ describe 'Request Cycle Cache', type: :request do
   end
 
   context 'use: cache' do
-    let!(:old_cache) { LHS.config.request_cycle_cache}
+    let!(:old_cache) { LHS.config.request_cycle_cache }
     before { LHS.config.request_cycle_cache = double('cache') }
     after { LHS.config.request_cycle_cache = old_cache }
 
