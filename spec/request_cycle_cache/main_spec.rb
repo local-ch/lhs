@@ -87,4 +87,17 @@ describe 'Request Cycle Cache', type: :request do
       expect(request).to have_been_made.times(2)
     end
   end
+
+  context 'use: cache' do
+    let!(:old_cache) { LHS.config.request_cycle_cache}
+    before { LHS.config.request_cycle_cache = double('cache') }
+    after { LHS.config.request_cycle_cache = old_cache }
+
+    it 'uses the cache passed in',
+    cleanup_before: true, request_cycle_cache: true do
+      expect(LHS.config.request_cycle_cache).to receive(:fetch).twice.and_return(nil)
+      expect(LHS.config.request_cycle_cache).to receive(:write).twice.and_return(nil)
+      get '/request_cycle_cache/simple'
+    end
+  end
 end

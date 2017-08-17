@@ -12,11 +12,13 @@ class LHS::Record
 
       def before_request(request)
         request.options = request.options.merge({
-          cache: true,
-          cache_expires_in: 5.minutes,
-          cache_race_condition_ttl: 5.seconds,
-          cache_key: cache_key_for(request),
-          cached_methods: CACHED_METHODS
+          cache: {
+            expires_in: 5.minutes,
+            race_condition_ttl: 5.seconds,
+            key: cache_key_for(request),
+            methods: CACHED_METHODS,
+            use: LHS.config.request_cycle_cache
+          }
         }.merge(request.options))
       end
 
