@@ -29,10 +29,6 @@ class LHS::Record
         Chain.new(self, Option.new(hash))
       end
 
-      def ignore(error)
-        Chain.new(self, IgnoredError.new(error))
-      end
-
       def page(page)
         Chain.new(self, Pagination.new(page: page))
       end
@@ -205,8 +201,8 @@ class LHS::Record
         push(Option.new(hash))
       end
 
-      def ignore(error)
-        push(IgnoredError.new(error))
+      def ignore(error_class)
+        push(IgnoredError.new(error_class))
       end
 
       def page(page)
