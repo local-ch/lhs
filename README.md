@@ -1107,7 +1107,7 @@ end
 Add to your spec_helper.rb:
 
 ```ruby
-  require 'lhs/test/request_cycle_cache.rb'
+  require 'lhs/test/request_cycle_cache'
 ```
 
 This will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
