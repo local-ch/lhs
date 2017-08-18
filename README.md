@@ -12,7 +12,7 @@ gem 'lhs'
 LHS comes with Request Cycle Cache – enabled by default. It requires [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) to be enabled:
 
 ```ruby
-# intializers/lhc.rb 
+# intializers/lhc.rb
 LHC.configure do |config|
   config.interceptors = [LHC::Caching]
 end
@@ -295,7 +295,7 @@ You can apply options to the request chain. Those options will be forwarded to t
 
 ## Request Cycle Cache
 
-By default, LHS does not perform the same http request during one request cycle multiple times. 
+By default, LHS does not perform the same http request during one request cycle multiple times.
 
 It uses the [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) as caching mechanism base and sets a unique request id for every request cycle with Railties to ensure data is just cached within one request cycle and not shared with other requests.
 
@@ -307,6 +307,12 @@ If you want to disable the LHS Request Cycle Cache, simply disable it within con
 
 ```ruby
 LHS.config.request_cycle_cache_enabled = false
+```
+
+By default the LHS Request Cycle Cache will use `ActiveSupport::Cache::MemoryStore` as its cache store. Feel free to configure a cache that is better suited for your needs by:
+
+```ruby
+LHS.config.request_cycle_cache = ActiveSupport::Cache::MemoryStore.new
 ```
 
 ## Batch processing
@@ -693,7 +699,7 @@ record.update(recommended: false)
 Based on [ActiveRecord's implementation](http://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-becomes), LHS implements `becomes`, too.
 It's a way to convert records of a certain type A to another certain type B.
 
-_NOTE: RPC-style actions, that are discouraged in REST anyway, are utilizable with this functionality, too. See the following example:_ 
+_NOTE: RPC-style actions, that are discouraged in REST anyway, are utilizable with this functionality, too. See the following example:_
 
 ```ruby
 class Location < LHS::Record
@@ -802,9 +808,9 @@ end
 
 # view.html
 = form_for @customer, as: :customer do |customer_form|
-  
+
   = fields_for 'customer[:address]', @customer.address, do |address_form|
-  
+
     = fields_for 'customer[:address][:street]', @customer.address.street, do |street_form|
 
       = street_form.input :name
