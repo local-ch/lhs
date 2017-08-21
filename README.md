@@ -183,7 +183,7 @@ record = Record.where(color: 'blue')
 
 If an error handler returns `nil` an empty LHS::Record is returned, not `nil`!
 
-In case you want to ignore errores and continue working with `nil` in those cases,
+In case you want to ignore errors and continue working with `nil` in those cases,
 please use `ignore`:
 
 ```ruby
