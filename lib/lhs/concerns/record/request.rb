@@ -22,7 +22,7 @@ class LHS::Record
       private
 
       def filter_empty_request_options(options)
-        options.each_with_index.map do |option|
+        options.map do |option|
           option if !option || !option.key?(:url) || !option[:url].nil?
         end
       end
