@@ -389,7 +389,7 @@ class LHS::Record
       end
 
       def chain_pagination
-        @chain_pagination ||= resolve_pagination _links.select { |link| link.is_a? Pagination }
+        @chain_pagination ||= resolve_pagination(_links.select { |link| link.is_a? Pagination })
       end
 
       def chain_includes
