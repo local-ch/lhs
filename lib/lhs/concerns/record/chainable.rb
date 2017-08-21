@@ -206,9 +206,9 @@ class LHS::Record
       end
 
       def ignore(*error_classes)
-        chain = chain.push(IgnoredError.new(error_classes.shift))
+        chain = push(IgnoredError.new(error_classes.shift))
         error_classes.each do |error_class|
-          chain = chain.push(IgnoredError.new(error_class))
+          chain._links.push(IgnoredError.new(error_class))
         end
         chain
       end
