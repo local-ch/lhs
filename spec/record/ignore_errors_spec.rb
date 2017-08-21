@@ -11,11 +11,8 @@ describe LHS::Record do
   end
 
   context 'ignore errors' do
-    before(:each) do
-      stub_request(:get, "http://local.ch/v2/records?color=blue").to_return(status: 404)
-    end
-
     it 'allows to ignore errors' do
+      stub_request(:get, "http://local.ch/v2/records?color=blue").to_return(status: 404)
       record = Record
         .where(color: 'blue')
         .ignore(LHC::NotFound)
@@ -51,6 +48,33 @@ describe LHS::Record do
     record = Record
       .ignore(LHC::Error)
       .where(color: 'blue')
+      .fetch
+    expect(record).to eq nil
+  end
+
+  it 'can ignore multiple error with one ignore call' do
+    stub_request(:get, "http://local.ch/v2/records?color=blue").to_return(status: 401)
+    record = Record
+      .ignore(LHC::Unauthorized, LHC::NotFound)
+      .where(color: 'blue')
+      .fetch
+    expect(record).to eq nil
+  end
+
+  it 'can ignore multiple error with one ignore call, on chain start' do
+    stub_request(:get, "http://local.ch/v2/records?color=blue").to_return(status: 401)
+    record = Record
+      .ignore(LHC::Unauthorized, LHC::NotFound)
+      .where(color: 'blue')
+      .fetch
+    expect(record).to eq nil
+  end
+
+  it 'can ignore multiple error with one ignore call, also within the chain' do
+    stub_request(:get, "http://local.ch/v2/records?color=blue").to_return(status: 401)
+    record = Record
+      .where(color: 'blue')
+      .ignore(LHC::Unauthorized, LHC::NotFound)
       .fetch
     expect(record).to eq nil
   end

@@ -45,8 +45,12 @@ class LHS::Record
         Chain.new(self, ErrorHandling.new(error_class => handler))
       end
 
-      def ignore(error_class)
-        Chain.new(self, IgnoredError.new(error_class))
+      def ignore(*error_classes)
+        chain = Chain.new(self, IgnoredError.new(error_classes.shift))
+        error_classes.each do |error_class|
+          chain._links.push(IgnoredError.new(error_class))
+        end
+        chain
       end
 
       def includes(*args)
@@ -201,8 +205,12 @@ class LHS::Record
         push(Option.new(hash))
       end
 
-      def ignore(error_class)
-        push(IgnoredError.new(error_class))
+      def ignore(*error_classes)
+        chain = chain.push(IgnoredError.new(error_classes.shift))
+        error_classes.each do |error_class|
+          chain = chain.push(IgnoredError.new(error_class))
+        end
+        chain
       end
 
       def page(page)
