@@ -40,6 +40,7 @@ class LHS::Proxy
     )
     _data.merge_raw!(data)
     self._loaded = true
+    return becomes(_record) if _record
     self
   end
 
