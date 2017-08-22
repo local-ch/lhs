@@ -1112,6 +1112,16 @@ it 'displays contracts' do
 end
 ```
 
+## Test support (caching)
+
+Add to your spec_helper.rb:
+
+```ruby
+  require 'lhs/test/request_cycle_cache'
+```
+
+This will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
+
 ## Where values hash
 
 Returns a hash of where conditions.
