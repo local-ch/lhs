@@ -92,5 +92,14 @@ describe LHS::Record do
       records = Category.limit(10).all(language: 'en').fetch
       expect(records.length).to eq 30
     end
+
+    it 'is able to fetch all remote objects without any current page indicator by simply increasing the offset until response is empty' do
+      stub_batch('http://store/categories?language=en&max=100', 100)
+      stub_batch('http://store/categories?language=en&max=100&offset=100', 100)
+      stub_batch('http://store/categories?language=en&max=100&offset=200', 100)
+      stub_batch('http://store/categories?language=en&max=100&offset=300', 0)
+      records = Category.all(language: 'en').fetch
+      expect(records.length).to eq 300
+    end
   end
 end

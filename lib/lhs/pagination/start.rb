@@ -1,5 +1,7 @@
 class LHS::Pagination::Start < LHS::Pagination::Base
 
+  DEFAULT_OFFSET = 1
+
   def current_page
     (offset + limit - 1) / limit
   end

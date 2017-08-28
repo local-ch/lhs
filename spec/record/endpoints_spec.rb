@@ -81,6 +81,8 @@ describe LHS::Record do
       it 'uses urls instead of trying to find base endpoint of parent class' do
         stub_request(:get, "#{datastore}/entry/123/contracts?limit=100")
           .to_return(body: [{ product: { href: "#{datastore}/products/LBC" } }].to_json)
+        stub_request(:get, "#{datastore}/entry/123/contracts?limit=100&offset=100")
+          .to_return(body: [].to_json)
         stub_request(:get, "#{datastore}/products/LBC")
           .to_return(body: { name: 'Local Business Card' }.to_json)
         expect(lambda {
