@@ -213,6 +213,27 @@ class LHS::Record
           load_and_merge_paginated_collection!(data, options)
         elsif data.collection? && paginated?(data.first.try(:_raw))
           load_and_merge_set_of_paginated_collections!(data, options)
+        else
+          load_and_merge_not_paginated_collection!(data, options)
+        end
+      end
+
+      def load_and_merge_not_paginated_collection!(data, options)
+        return if !options.is_a?(Hash) ||
+            options[:params].blank? ||
+            options[:params][pagination_key].blank? ||
+            options[:params][limit_key].blank?
+        options[:params].merge!(
+          limit_key => options[:params][limit_key],
+          pagination_key => pagination_class.next_offset(
+            options[:params][pagination_key],
+            options[:params][limit_key]
+          )
+        )
+        return if data.length.zero?
+        additional_data = data._record.request(options)
+        additional_data.each do |item_data|
+          data.concat(input: data._raw, items: [item_data], record: self)
         end
       end
 
@@ -466,7 +487,7 @@ class LHS::Record
         apply_limit!(options) if options[:all]
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
-        load_and_merge_remaining_objects!(data, process_options(options, endpoint)) if paginated?(data._raw) && options[:all]
+        load_and_merge_remaining_objects!(data, process_options(options, endpoint)) if options[:all]
         expand_items(data, options[:expanded]) if data.collection? && options[:expanded]
         handle_includes(including, data, referencing) if including.present? && data.present?
         data

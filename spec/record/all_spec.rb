@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  before(:each) do
-    class Record < LHS::Record
-      endpoint 'http://datastore/feedbacks'
-    end
-  end
-
   context 'all' do
+    before(:each) do
+      class Record < LHS::Record
+        endpoint 'http://datastore/feedbacks'
+      end
+    end
+
     it 'is querying endpoint without pagination when using all' do
       stub_request(:get, "http://datastore/feedbacks?limit=100").to_return(body: { items: 300.times.map { { foo: 'bar' } }, total: 300 }.to_json)
       records = Record.all
@@ -56,6 +56,41 @@ describe LHS::Record do
         expect(second_page_request).to have_been_requested.times(1)
         expect(third_page_request).to have_been_requested.times(1)
       end
+    end
+  end
+
+  context 'all without current page indicator' do
+    before(:each) do
+      class Category < LHS::Record
+        configuration(
+          items_key: %i(response results),
+          limit_key: :max,
+          pagination_key: :offset,
+          pagination_strategy: :offset
+        )
+
+        endpoint 'http://store/categories'
+      end
+    end
+
+    def stub_batch(url, items = 10)
+      stub_request(:get, url)
+        .to_return(
+          body: {
+            response: {
+              results: items.times.map { { name: 'category' } }
+            }
+          }.to_json
+        )
+    end
+
+    it 'is able to fetch all remote objects without any current page indicator by simply increasing the offset until response is empty' do
+      stub_batch('http://store/categories?language=en&max=10&offset=0')
+      stub_batch('http://store/categories?language=en&max=10&offset=10')
+      stub_batch('http://store/categories?language=en&max=10&offset=20')
+      stub_batch('http://store/categories?language=en&max=10&offset=30', 0)
+      records = Category.limit(10).all(language: 'en').fetch
+      expect(records.length).to eq 30
     end
   end
 end
