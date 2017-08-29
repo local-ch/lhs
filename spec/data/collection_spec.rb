@@ -16,7 +16,6 @@ describe LHS::Data do
   end
 
   context 'empty collection' do
-
     let(:collection) do
       LHS::Data.new({ items: [] }, nil, Record)
     end
@@ -27,7 +26,7 @@ describe LHS::Data do
     end
 
     it 'returns an empty array or map' do
-      expect(collection.map{ |x| }).to eq []
+      expect(collection.map { |x| }).to eq []
     end
   end
 
