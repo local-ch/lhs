@@ -346,7 +346,10 @@ describe LHS::Record do
         .to_return(
           body: {
             href:  "http://datastore/v2/places/1/contracts?offset=0&limit=10",
-            items: [{ href: "http://datastore/v2/contracts/1" }]
+            items: [{ href: "http://datastore/v2/contracts/1" }],
+            offset: 0,
+            limit: 10,
+            total: 10
           }.to_json
         )
 

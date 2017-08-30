@@ -21,6 +21,15 @@ class LHS::Record
 
       private
 
+      def single_request_load_and_merge_remaining_objects!(data, options, endpoint)
+        return unless options[:all]
+        load_and_merge_remaining_objects!(
+          data: data,
+          options: process_options(options, endpoint),
+          load_not_paginated_collection: true
+        )
+      end
+
       def filter_empty_request_options(options)
         options.map do |option|
           option if !option || !option.key?(:url) || !option[:url].nil?
@@ -208,15 +217,36 @@ class LHS::Record
       # we can evaluate if there are further remote objects remaining
       # and after preparing all the requests that have to be made in order to fetch all
       # remote items during this batch, they are fetched in parallel
-      def load_and_merge_remaining_objects!(data, options)
+      def load_and_merge_remaining_objects!(data:, options:, load_not_paginated_collection: false)
         if paginated?(data._raw)
           load_and_merge_paginated_collection!(data, options)
         elsif data.collection? && paginated?(data.first.try(:_raw))
           load_and_merge_set_of_paginated_collections!(data, options)
+        elsif load_not_paginated_collection
+          load_and_merge_not_paginated_collection!(data, options)
+        end
+      end
+
+      def load_and_merge_not_paginated_collection!(data, options)
+        return if data.length.zero?
+        options = options.is_a?(Hash) ? options : {}
+        limit = options.dig(:params, limit_key) || pagination_class::DEFAULT_LIMIT
+        offset = options.dig(:params, pagination_key) || pagination_class::DEFAULT_OFFSET
+        options[:params] = options.fetch(:params, {}).merge(
+          limit_key => limit,
+          pagination_key => pagination_class.next_offset(
+            offset,
+            limit
+          )
+        )
+        additional_data = data._record.request(options)
+        additional_data.each do |item_data|
+          data.concat(input: data._raw, items: [item_data], record: self)
         end
       end
 
       def load_and_merge_paginated_collection!(data, options)
+        data._raw[limit_key] = data.length if data._raw[limit_key].blank? && !data.length.zero?
         pagination = data._record.pagination(data)
         return data if pagination.pages_left.zero?
         record = data._record
@@ -279,13 +309,13 @@ class LHS::Record
       # paginates itself to ensure all records are fetched
       def load_all_included!(record, options)
         data = record.request(options)
-        load_and_merge_remaining_objects!(data, options)
+        load_and_merge_remaining_objects!(data: data, options: options)
         data
       end
 
       # Checks if given raw is paginated or not
       def paginated?(raw)
-        !!(raw.is_a?(Hash) && raw[total_key] && raw[pagination_key])
+        !!(raw.is_a?(Hash) && raw[total_key])
       end
 
       def prepare_options_for_include_all_request!(options)
@@ -466,7 +496,7 @@ class LHS::Record
         apply_limit!(options) if options[:all]
         response = LHC.request(process_options(options, endpoint))
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
-        load_and_merge_remaining_objects!(data, process_options(options, endpoint)) if paginated?(data._raw) && options[:all]
+        single_request_load_and_merge_remaining_objects!(data, options, endpoint)
         expand_items(data, options[:expanded]) if data.collection? && options[:expanded]
         handle_includes(including, data, referencing) if including.present? && data.present?
         data

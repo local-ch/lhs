@@ -336,6 +336,8 @@ Record.all(color: 'blue')
 # All three are doing the same thing: fetching all records with the color 'blue' from the endpoint while resolving pagingation if endpoint is paginated
 ```
 
+In case an API does not provide pagination information (limit, offset and total), LHS keeps on loading pages when requesting `all` until the first empty page responds.
+
 [Count vs. Length](#count-vs-length)
 
 `find_each` is a more fine grained way to process single records that are fetched in batches.
