@@ -15,6 +15,21 @@ describe LHS::Data do
     end
   end
 
+  context 'empty collection' do
+    let(:collection) do
+      LHS::Data.new({ items: [] }, nil, Record)
+    end
+
+    it 'provides correct count and length' do
+      expect(collection.count).to eq 0
+      expect(collection.length).to eq 0
+    end
+
+    it 'returns an empty array or map' do
+      expect(collection.map { |x| }).to eq []
+    end
+  end
+
   context 'collections' do
     it 'forwards calls to the collection' do
       expect(data.count).to be_kind_of Integer

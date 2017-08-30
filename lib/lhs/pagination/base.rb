@@ -11,14 +11,12 @@ module LHS::Pagination
       self.data = data
     end
 
-    # as standard in Rails' ActiveRecord count is not summing up, but using the number provided from data source
-    def count
-      total
+    def total
+      data._raw.dig(*_record.total_key) || 0
     end
 
-    def total
-      data._raw.dig(*_record.total_key)
-    end
+    # as standard in Rails' ActiveRecord count is not summing up, but using the number provided from data source
+    alias count total
 
     def limit
       data._raw.dig(*_record.limit_key) || DEFAULT_LIMIT
