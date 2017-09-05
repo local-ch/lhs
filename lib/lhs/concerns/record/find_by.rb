@@ -24,9 +24,9 @@ class LHS::Record
         options ||= {}
         params = params.dup.merge(limit: 1).merge(options.fetch(:params, {}))
         data = request(options.merge(params: params))
-        if data._proxy.is_a?(LHS::Collection)
+        if data && data._proxy.is_a?(LHS::Collection)
           data.first || raise(LHC::NotFound.new('No item was found.', data._request.response))
-        else
+        elsif data
           data._record.new(data)
         end
       end
