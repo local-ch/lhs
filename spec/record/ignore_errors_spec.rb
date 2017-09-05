@@ -78,4 +78,34 @@ describe LHS::Record do
       .fetch
     expect(record).to eq nil
   end
+
+  context 'response body' do
+
+    let(:body) { { error_message: 'you are not worthy' }.to_json }
+
+    it 'returns nil also when ignoring errors on find' do
+      stub_request(:get, "http://local.ch/v2/records/1").to_return(status: 500, body: body)
+      record = Record
+        .ignore(LHC::Error)
+        .find(1)
+      expect(record).to eq nil
+    end
+
+    it 'returns nil also when ignoring errors on find' do
+      stub_request(:get, "http://local.ch/v2/records?color=blue").to_return(status: 500, body: body)
+      record = Record
+        .ignore(LHC::Error)
+        .where(color: 'blue')
+        .fetch
+      expect(record).to eq nil
+    end
+
+    it 'returns nil also when ignoring errors on find' do
+      stub_request(:get, "http://local.ch/v2/records?color=blue&limit=1").to_return(status: 500, body: body)
+      record = Record
+        .ignore(LHC::Error)
+        .find_by(color: 'blue')
+      expect(record).to eq nil
+    end
+  end
 end

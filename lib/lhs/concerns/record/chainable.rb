@@ -311,9 +311,9 @@ class LHS::Record
       end
 
       def resolve
-        @resolved ||= @record_class.new(
-          @record_class.request(resolved_options)
-        )
+        return @resolved if defined?(@resolved)
+        response_data = @record_class.request(resolved_options)
+        @resolved = response_data ? @record_class.new(response_data) : nil
       end
 
       def resolved_options

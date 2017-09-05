@@ -29,3 +29,6 @@ Rails/DynamicFindBy:
   
 Metrics/BlockLength:
   Enabled: false
+
+Style/EmptyLinesAroundBlockBody:
+  Enabled: false
