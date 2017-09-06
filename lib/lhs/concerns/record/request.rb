@@ -495,7 +495,7 @@ class LHS::Record
         endpoint = find_endpoint(options[:params], options.fetch(:url, nil))
         apply_limit!(options) if options[:all]
         response = LHC.request(process_options(options, endpoint))
-        return nil if response.error_ignored?
+        return nil if !response.success? && response.error_ignored?
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)
         single_request_load_and_merge_remaining_objects!(data, options, endpoint)
         expand_items(data, options[:expanded]) if data.collection? && options[:expanded]
