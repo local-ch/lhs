@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   let(:handler) { spy('handler') }
+  let(:record_json) { { color: 'blue' }.to_json }
 
   before(:each) do
     class Record < LHS::Record
@@ -79,6 +80,14 @@ describe LHS::Record do
     expect(record).to eq nil
   end
 
+  it 'returns record when ignoring errors on where' do
+    stub_request(:get, 'http://local.ch/v2/records?color=blue').to_return(status: 200, body: record_json)
+    record = Record
+      .ignore(LHC::Error)
+      .where(color: 'blue')
+    expect(record).not_to eq nil
+  end
+
   context 'response body' do
 
     let(:body) { { error_message: 'you are not worthy' }.to_json }
@@ -106,6 +115,14 @@ describe LHS::Record do
         .ignore(LHC::Error)
         .find_by(color: 'blue')
       expect(record).to eq nil
+    end
+
+    it 'returns record when ignoring errors on find' do
+      stub_request(:get, "http://local.ch/v2/records/1").to_return(status: 200, body: record_json)
+      record = Record
+        .ignore(LHC::Error)
+        .find(1)
+      expect(record).not_to eq nil
     end
   end
 end
