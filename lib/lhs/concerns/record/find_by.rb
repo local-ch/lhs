@@ -27,7 +27,7 @@ class LHS::Record
         if data && data._proxy.is_a?(LHS::Collection)
           data.first || raise(LHC::NotFound.new('No item was found.', data._request.response))
         elsif data
-          data._record.new(data)
+          data._record.new(data.unwrap_nested_item)
         end
       end
     end

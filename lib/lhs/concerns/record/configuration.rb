@@ -14,6 +14,12 @@ class LHS::Record
         @configuration = args.freeze || {}
       end
 
+      def item_key
+        symbolize_unless_complex(
+          @configuration.try(:[], :item_key) || :item
+        )
+      end
+
       def items_key
         symbolize_unless_complex(
           @configuration.try(:[], :items_key) || :items

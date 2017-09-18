@@ -914,6 +914,8 @@ class Search < LHS::Record
 end
 ```
 
+`item_key` key used to unwrap the actuall object from within the response body.
+
 `items_key` key used to determine items of the current page (e.g. `docs`, `items`, etc.).
 
 `item_created_key` key used to merge record data thats nested in the creation response body.
@@ -925,6 +927,27 @@ end
 `pagination_strategy` used to configure the strategy used for navigating (e.g. `offset`, `page`, `start`, etc.).
 
 `total_key` key used to determine the total amount of items (e.g. `total`, `totalResults`, etc.).
+
+### Unwrap nested items
+
+```json
+{
+  "response": {
+    "location": {
+      "id": 123
+    }
+  }
+}
+```
+
+```ruby
+class Location < LHS::Record
+  configuration item_key: [:response, :location]
+end
+
+location = Location.find(1)
+location.id # 123
+```
 
 ### Configure complex accessors for nested data (EXPERIMENTAL)
 
