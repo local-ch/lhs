@@ -21,6 +21,7 @@ class LHS::Record
       private
 
       def _find_by(params, options = {})
+        raise(LHS::Unprocessable.new, 'Cannot find Record without an ID') if params.any? && params.all?{ |key, value| value.blank? }
         options ||= {}
         params = params.dup.merge(limit: 1).merge(options.fetch(:params, {}))
         data = request(options.merge(params: params))

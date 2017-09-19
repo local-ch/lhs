@@ -9,8 +9,9 @@ class LHS::Record
       # Find a single uniqe record
       def find(*args)
         args, options = process_args(args)
+        raise(LHS::Unprocessable.new, 'Cannot find Record without an ID') if args.blank? && !args.is_a?(Array)
         data =
-          if args.is_a? Array
+          if args.present? && args.is_a?(Array)
             find_in_parallel(args, options)
           elsif args.is_a? Hash
             find_with_parameters(args, options)
@@ -65,8 +66,10 @@ class LHS::Record
           options.merge(params: args)
         elsif href?(args)
           options.merge(url: args)
-        else
+        elsif args.present?
           options.merge(params: { id: args })
+        else
+          options
         end
       end
 
