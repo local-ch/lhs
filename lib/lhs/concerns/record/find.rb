@@ -17,8 +17,8 @@ class LHS::Record
           else
             find_by_id(args, options)
           end
-        return data if data && (data.is_a?(Array) || !data._record)
-        data ? data._record.new(data) : nil
+        return data if data && (data.is_a?(Array) || !data._record || data.collection?)
+        data ? data._record.new(data.unwrap_nested_item) : nil
       end
 
       private

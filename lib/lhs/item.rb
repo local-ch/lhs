@@ -41,4 +41,11 @@ class LHS::Item < LHS::Proxy
     # We accept every message that does not belong to set of keywords
     BLACKLISTED_KEYWORDS.exclude?(name.to_s)
   end
+
+  def unwrap_nested_item
+    return _data unless _record.item_key
+    nested_data = _data.dig(*_record.item_key)
+    return _data unless nested_data
+    nested_data
+  end
 end
