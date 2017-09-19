@@ -945,7 +945,7 @@ class Location < LHS::Record
   configuration item_key: [:response, :location]
 end
 
-location = Location.find(1)
+location = Location.find(123)
 location.id # 123
 ```
 
