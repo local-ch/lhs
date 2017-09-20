@@ -40,6 +40,9 @@ module LHS
   autoload :Record,
     'lhs/record'
 
+  autoload :Unprocessable,
+    'lhs/unprocessable'
+
   include Configuration
   include AutoloadRecords if defined?(Rails)
 

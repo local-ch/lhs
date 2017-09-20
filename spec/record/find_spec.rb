@@ -33,50 +33,70 @@ describe LHS::Record do
       end
     end
 
-    it 'raises if nothing was found' do
-      stub_request(:get, "#{datastore}/feedbacks/not-existing")
-        .to_return(status: 404)
-      expect { Record.find('not-existing') }.to raise_error LHC::NotFound
+    context 'endpoint without identifier' do
+      before :each do
+        class LatestAGB < LHS::Record
+          endpoint 'agbs/latest'
+        end
+      end
+
+      it 'finds a single unique record' do
+        stub_request(:get, 'http://agbs/latest')
+          .to_return(body: { pdf: 'http://local.ch/1.pdf' }.to_json)
+
+        expect(LatestAGB.find.pdf).to eq 'http://local.ch/1.pdf'
+      end
     end
 
-    it 'finds unique item by providing parameters' do
-      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
-        .to_return(body: "{}")
-      data = Record.find(campaign_id: '123', id: '123')
-      expect(data._proxy).to be_kind_of LHS::Item
-    end
+  end
 
-    it 'returns item in case of backend returning collection' do
-      data = JSON.parse(load_json(:feedbacks))
-      data['items'] = [data['items'].first]
-      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
-        .to_return(body: data.to_json)
-      data = Record.find(campaign_id: '123', id: '123')
-      expect(data._proxy).to be_kind_of LHS::Item
-    end
+  it 'raises if empty id' do
+    expect { Record.find('') }.to raise_error LHS::Unprocessable
+  end
 
-    it 'fails when multiple items where found by parameters' do
-      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
-        .to_return(body: load_json(:feedbacks))
-      expect(lambda {
-        Record.find(campaign_id: '123', id: '123')
-      }).to raise_error LHC::NotFound
-    end
+  it 'raises if nothing was found' do
+    stub_request(:get, "#{datastore}/feedbacks/not-existing")
+      .to_return(status: 404)
+    expect { Record.find('not-existing') }.to raise_error LHC::NotFound
+  end
 
-    it 'fails when no item as found by parameters' do
-      data = JSON.parse(load_json(:feedbacks))
-      data['items'] = []
-      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
-        .to_return(body: data.to_json)
-      expect(lambda {
-        Record.find(campaign_id: '123', id: '123')
-      }).to raise_error LHC::NotFound
-    end
+  it 'finds unique item by providing parameters' do
+    stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
+      .to_return(body: "{}")
+    data = Record.find(campaign_id: '123', id: '123')
+    expect(data._proxy).to be_kind_of LHS::Item
+  end
 
-    it 'raises if nothing was found with parameters' do
-      stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
-        .to_return(status: 404)
-      expect { Record.find(campaign_id: '123', id: '123') }.to raise_error LHC::NotFound
-    end
+  it 'returns item in case of backend returning collection' do
+    data = JSON.parse(load_json(:feedbacks))
+    data['items'] = [data['items'].first]
+    stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
+      .to_return(body: data.to_json)
+    data = Record.find(campaign_id: '123', id: '123')
+    expect(data._proxy).to be_kind_of LHS::Item
+  end
+
+  it 'fails when multiple items where found by parameters' do
+    stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
+      .to_return(body: load_json(:feedbacks))
+    expect(lambda {
+      Record.find(campaign_id: '123', id: '123')
+    }).to raise_error LHC::NotFound
+  end
+
+  it 'fails when no item as found by parameters' do
+    data = JSON.parse(load_json(:feedbacks))
+    data['items'] = []
+    stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
+      .to_return(body: data.to_json)
+    expect(lambda {
+      Record.find(campaign_id: '123', id: '123')
+    }).to raise_error LHC::NotFound
+  end
+
+  it 'raises if nothing was found with parameters' do
+    stub_request(:get, "#{datastore}/content-ads/123/feedbacks/123")
+      .to_return(status: 404)
+    expect { Record.find(campaign_id: '123', id: '123') }.to raise_error LHC::NotFound
   end
 end

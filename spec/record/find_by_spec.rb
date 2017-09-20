@@ -38,6 +38,10 @@ describe LHS::Record do
         Record.find_by(has_reviews: true).id
       ).to eq json['items'].first['id']
     end
+
+    it 'returns nil if empty id' do
+      expect { Record.find_by(id: '') }.to raise_error LHS::Unprocessable
+    end
   end
 
   context 'find_by!' do
