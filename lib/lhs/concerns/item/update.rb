@@ -8,7 +8,7 @@ class LHS::Item < LHS::Proxy
     def update(params, options = nil)
       update!(params, options)
     rescue LHC::Error => e
-      self.errors = LHS::Errors::Base.new(e.response, record)
+      self.errors = LHS::Problems::Errors.new(e.response, record)
       false
     end
 

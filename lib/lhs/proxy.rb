@@ -5,15 +5,15 @@ class LHS::Proxy
     'lhs/concerns/proxy/accessors'
   autoload :Create,
     'lhs/concerns/proxy/create'
-  autoload :Errors,
-    'lhs/concerns/proxy/errors'
+  autoload :Problems,
+    'lhs/concerns/proxy/problems'
   autoload :Link,
     'lhs/concerns/proxy/link'
 
   include Accessors
   include Create
-  include Errors
   include Link
+  include Problems
 
   # prevent clashing with attributes of underlying data
   attr_accessor :_data, :_loaded

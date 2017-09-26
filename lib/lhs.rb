@@ -15,12 +15,6 @@ module LHS
     'lhs/data'
   autoload :Endpoint,
     'lhs/endpoint'
-  autoload :Errors,
-    'lhs/errors/base'
-  module Errors
-    autoload :Nested,
-      'lhs/errors/nested'
-  end
   autoload :Inspect,
     'lhs/concerns/inspect'
   autoload :Item,
@@ -34,6 +28,26 @@ module LHS
       'lhs/pagination/page'
     autoload :Start,
       'lhs/pagination/start'
+  end
+  autoload :Problems,
+    'lhs/problems/base'
+  module Problems
+    autoload :Base,
+      'lhs/problems/base'
+    autoload :Errors,
+      'lhs/problems/errors'
+    autoload :Nested,
+      'lhs/problems/nested/base'
+    module Nested
+      autoload :Base,
+      'lhs/problems/nested/base'
+      autoload :Errors,
+      'lhs/problems/nested/errors'
+      autoload :Warnings,
+      'lhs/problems/nested/warnings'
+    end
+    autoload :Warnings,
+      'lhs/problems/warnings'
   end
   autoload :Proxy,
     'lhs/proxy'
