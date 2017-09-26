@@ -755,7 +755,7 @@ unless user.valid?
   fail(user.errors[:email])
 end
 
-user.errors #<LHS::Errors::Base>
+user.errors #<LHS::Problems::Errors>
 user.errors.include?(:email) # true
 user.errors[:email] # ['REQUIRED_PROPERTY_VALUE']
 user.errors.messages # {:email=>["REQUIRED_PROPERTY_VALUE"]}
@@ -843,6 +843,35 @@ lhs.errors.fallback_message
 
 ### Know issue with `ActiveModel::Validations`
 If you are using `ActiveModel::Validations` and add errors to the LHS::Record instance - as described above - then those errors will be overwritten by the errors from `ActiveModel::Validations` when using `save`  or `valid?`. [Open issue](https://github.com/local-ch/lhs/issues/159)
+
+### Non blocking validation errors, so called warnings
+
+In some cases, you need non blocking meta information about potential problems with the created record, so called warnings.
+
+If the API endpoint implements warnings:
+
+```
+  {
+    field_warnings: [{
+      code: 'WILL_BE_RESIZED',
+      path: ['place', 'photos', 0],
+      message: 'The image will be resized.'
+    }
+  }
+```
+
+LHS makes those warnings available:
+
+```ruby
+  presence = Presence.options(params: { synchronize: false }).create(
+    place: { href: 'http://storage/places/1' }
+  )
+
+  presence.warnings.any? # true
+  presence.place.photos[0].warnings.messages.first # 'The photos will be resized'
+```
+
+Warnings behave like [Validation Errors](#Validation) and implements the same interfaces and methods.
 
 ## Pagination
 

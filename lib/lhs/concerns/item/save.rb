@@ -19,7 +19,7 @@ class LHS::Item < LHS::Proxy
         apply_default_creation_options(options, url, data)
       )
     rescue LHC::Error => e
-      self.errors = LHS::Errors::Base.new(e.response, record)
+      self.errors = LHS::Problems::Errors.new(e.response, record)
       raise e
     end
 
