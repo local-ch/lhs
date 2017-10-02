@@ -12,14 +12,27 @@ class LHS::Item < LHS::Proxy
       false
     end
 
-    def update!(params, options = {})
+    def partial_update(params, options = nil)
+      update!(params, options, true)
+    rescue LHC::Error => e
+      self.errors = LHS::Problems::Errors.new(e.response, record)
+      false
+    end
+
+    def partial_update!(params, options = nil)
+      update!(params, options, true)
+    end
+
+    def update!(params, options = {}, partial_update = false)
       options ||= {}
-      _data.merge_raw!(LHS::Data.new(params, _data.parent, record))
+      partial_data = LHS::Data.new(params, _data.parent, record)
+      _data.merge_raw!(partial_data)
+      data_sent = partial_update ? partial_data : _data
       response_data = record.request(
         options.merge(
           method: :post,
           url: href,
-          body: _data.to_json,
+          body: data_sent.to_json,
           headers: { 'Content-Type' => 'application/json' }
         )
       )
