@@ -978,7 +978,7 @@ location = Location.find(123)
 location.id # 123
 ```
 
-### Configure complex accessors for nested data (EXPERIMENTAL)
+### Configure complex accessors for nested data
 
 If items, limit, pagination, total etc. is nested in the responding objects, use complex data structures for configuring a record.
 
