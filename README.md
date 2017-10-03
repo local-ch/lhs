@@ -760,7 +760,7 @@ or with parameters:
 
 In order to validate LHS::Records before persisting them, you can use the `valid?` (`validate` alias) method.
 
-The specific endpoint has to support validations without peristance. An endpoint has to be enabled (opt-in) for validations in the service configuration.
+The specific endpoint has to support validations without persistance. An endpoint has to be enabled (opt-in) for validations in the service configuration.
 
 ```ruby
 class User < LHS::Record
@@ -860,6 +860,33 @@ lhs.errors.fallback_message
 
 ### Know issue with `ActiveModel::Validations`
 If you are using `ActiveModel::Validations` and add errors to the LHS::Record instance - as described above - then those errors will be overwritten by the errors from `ActiveModel::Validations` when using `save`  or `valid?`. [Open issue](https://github.com/local-ch/lhs/issues/159)
+
+### Blocking errors, original "errors"
+
+The fact that records could have errors is not coupled to any response status code.
+
+LHS makes errors accessible, if they are present:
+
+```
+  {
+    company_name: 'localsearch',
+    field_errors: [{
+      code: 'REQUIRED_PROPERTY_VALUE',
+      path: ['place', 'opening_hours']
+    }
+  }
+```
+
+LHS makes those errors available when accessing `.errors`:
+
+```ruby
+  presence = Presence.create(
+    place: { href: 'http://storage/places/1' }
+  )
+
+  presence.errors.any? # true
+  presence.place.errors.messages[:opening_hours] # ['REQUIRED_PROPERTY_VALUE']
+```
 
 ### Non blocking validation errors, so called warnings
 

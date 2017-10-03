@@ -14,7 +14,8 @@ class LHS::Proxy
     end
 
     def errors
-      @errors ||= LHS::Problems::Errors.new(nil, record)
+      response = _raw.present? && _raw.is_a?(Hash) && _raw[:field_errors] ? OpenStruct.new(body: _raw.to_json) : nil
+      @errors ||= LHS::Problems::Errors.new(response, record)
     end
 
     def warnings
