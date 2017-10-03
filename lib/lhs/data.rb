@@ -28,13 +28,11 @@ class LHS::Data
 
   # merging data
   # e.g. when loading remote data via link
-  def merge_raw!(data)
+  def merge_raw!(data, nested_path = nil)
     return false if data.blank? || !data._raw.is_a?(Hash)
-    if _record && _record.item_created_key
-      _raw.merge! data._raw.dig(*_record.item_created_key)
-    else
-      _raw.merge! data._raw
-    end
+    raw = data._raw.dig(*nested_path) if nested_path
+    raw ||= data._raw
+    _raw.merge! raw
   end
 
   def _root

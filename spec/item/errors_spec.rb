@@ -241,7 +241,7 @@ describe LHS::Item do
       it 'does not raise an error when trying to find error record model name' do
         expect(lambda do
           record.reviews.first.errors[:name]
-        end).not_to raise_error(NoMethodError)
+        end).not_to raise_error
       end
     end
 

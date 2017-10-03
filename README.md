@@ -696,6 +696,23 @@ record = Record.find('1z-5r1fkaj')
 record.update(recommended: false)
 ```
 
+## Partial Update
+
+Often you just want to update a single attribute on an existing record. As ActiveRecord's `update_attribute` skips validation, which is unlikely with api services, and `update_attributes` is just an alias for `update`, LHS introduces `partial_update` for that matter.
+
+`partial_update` will return false if persisting fails. `partial_update!` instead will an raise exception.
+
+`partial_update` always updates the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is updated.
+
+```ruby
+record = Record.find('1z-5r1fkaj')
+record.partial_update(recommended: false)
+# POST /records/1z-5r1fkaj
+{
+  recommended: true
+}
+```
+
 ## Becomes
 
 Based on [ActiveRecord's implementation](http://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-becomes), LHS implements `becomes`, too.
