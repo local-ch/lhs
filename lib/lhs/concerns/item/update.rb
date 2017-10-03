@@ -26,17 +26,20 @@ class LHS::Item < LHS::Proxy
     def update!(params, options = {}, partial_update = false)
       options ||= {}
       partial_data = LHS::Data.new(params, _data.parent, record)
-      _data.merge_raw!(partial_data)
+      nested_path = record.item_created_key ? record.item_created_key : nil
+      _data.merge_raw!(partial_data, nested_path)
       data_sent = partial_update ? partial_data : _data
+      url = href || record.find_endpoint(id: id).compile(id: id)
       response_data = record.request(
         options.merge(
-          method: :post,
-          url: href,
+          method: options.fetch(:method, :post),
+          url: url,
           body: data_sent.to_json,
           headers: { 'Content-Type' => 'application/json' }
         )
       )
-      _data.merge_raw!(response_data)
+      nested_path = record.item_created_key ? record.item_created_key : nil
+      _data.merge_raw!(response_data, nested_path)
       true
     end
   end

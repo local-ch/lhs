@@ -59,4 +59,43 @@ describe LHS::Item do
       expect(-> { item.partial_update!(name: 'Steve') }).to raise_error LHC::ServerError
     end
   end
+
+  context 'records without hrefs and nested items' do
+
+    before(:each) do
+      class Location < LHS::Record
+        endpoint 'http://uberall/locations'
+        endpoint 'http://uberall/locations/:id'
+      end
+    end
+
+    it 'finds and compiles existing endpoints to determine update url' do
+      stub_request(:get, "http://uberall/locations/1").to_return(body: { id: 1 }.to_json)
+      stub_request(:post, "http://uberall/locations/1").to_return(body: { id: 1, listings: [{ directory: 'facebook' }] }.to_json)
+      location = Location.find(1)
+      location.partial_update(autoSync: true)
+      expect(location.autoSync).to eq true
+      expect(location.listings.first.directory).to eq 'facebook'
+    end
+
+    context 'records with nested items' do
+
+      before(:each) do
+        class Location < LHS::Record
+          endpoint 'http://uberall/locations'
+          endpoint 'http://uberall/locations/:id'
+          configuration item_created_key: [:response, :location], item_key: [:response, :location]
+        end
+      end
+
+      it 'finds and compiles existing endpoints to determine update url' do
+        stub_request(:get, "http://uberall/locations/1").to_return(body: { response: { location: { id: 1 } } }.to_json)
+        stub_request(:post, "http://uberall/locations/1").to_return(body: { response: { location: { id: 1, listings: [{ directory: 'facebook' }] } } }.to_json)
+        location = Location.find(1)
+        location.partial_update(autoSync: true)
+        expect(location.autoSync).to eq true
+        expect(location.listings.first.directory).to eq 'facebook'
+      end
+    end
+  end
 end
