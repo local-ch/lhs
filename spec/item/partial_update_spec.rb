@@ -96,6 +96,15 @@ describe LHS::Item do
         expect(location.autoSync).to eq true
         expect(location.listings.first.directory).to eq 'facebook'
       end
+
+      it 'use given update http method' do
+        stub_request(:get, "http://uberall/locations/1").to_return(body: { response: { location: { id: 1 } } }.to_json)
+        stub_request(:patch, "http://uberall/locations/1").to_return(body: { response: { location: { id: 1, listings: [{ directory: 'facebook' }] } } }.to_json)
+        location = Location.find(1)
+        location.partial_update({ autoSync: true }, { method: :patch })
+        expect(location.autoSync).to eq true
+        expect(location.listings.first.directory).to eq 'facebook'
+      end
     end
   end
 end
