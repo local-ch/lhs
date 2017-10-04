@@ -38,7 +38,7 @@ class LHS::Data
   # like item_key for GET etc.
   def unwrap(usecase)
     nested_path = record.send(usecase) if record
-    return LHS::Data.new(self.dig(*nested_path) || self._raw, nil, self.class) if nested_path
+    return LHS::Data.new(dig(*nested_path) || _raw, nil, self.class) if nested_path
     self
   end
 
