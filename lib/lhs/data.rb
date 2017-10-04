@@ -28,11 +28,18 @@ class LHS::Data
 
   # merging data
   # e.g. when loading remote data via link
-  def merge_raw!(data, nested_path = nil)
+  def merge_raw!(data)
     return false if data.blank? || !data._raw.is_a?(Hash)
-    raw = data._raw.dig(*nested_path) if nested_path
-    raw ||= data._raw
-    _raw.merge! raw
+    _raw.merge! data._raw
+  end
+
+  # Unwraps data for certain use cases
+  # like items_created_key for CREATE, UPDATED etc.
+  # like item_key for GET etc.
+  def unwrap(usecase)
+    nested_path = record.send(usecase) if record
+    return LHS::Data.new(self.dig(*nested_path) || self._raw, nil, self.class) if nested_path
+    self
   end
 
   def _root

@@ -21,4 +21,43 @@ describe LHS::Record do
       expect(record.reload!).to be_kind_of Record
     end
   end
+
+  context 'nested items' do
+
+    before(:each) do
+      class Location < LHS::Record
+        endpoint 'http://uberall/locations'
+        endpoint 'http://uberall/locations/:id'
+
+        configuration item_key: [:response, :location], items_key: [:response, :locations]
+      end
+    end
+
+    it 'merges reloads properly' do
+      stub_request(:get, "http://uberall/locations?identifier=http://places/1&limit=1")
+        .to_return(
+          body: {
+            response: {
+              locations: [{
+                id: 1,
+                name: 'Fridolin'
+              }]
+            }
+          }.to_json
+        )
+      location = Location.find_by(identifier: 'http://places/1')
+      stub_request(:get, "http://uberall/locations/1")
+        .to_return(
+          body: {
+            response: {
+              location: {
+                normalizationStatus: 'NORMALIZED'
+              }
+            }
+          }.to_json
+        )
+      location.reload!
+      expect(location.normalizationStatus).to eq 'NORMALIZED'
+    end
+  end
 end
