@@ -38,7 +38,7 @@ class LHS::Proxy
     data = _data.class.request(
       options.merge(method: :get).merge(reload_options)
     )
-    _data.merge_raw!(data)
+    _data.merge_raw!(data.unwrap(:item_key))
     self._loaded = true
     return becomes(_record) if _record
     self
