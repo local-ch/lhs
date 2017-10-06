@@ -17,5 +17,27 @@ describe LHS::Record do
       stub_request(:get, "http://backend/v2/feedbacks/1").to_return(status: 200)
       Record.find(1)
     end
+
+    context 'deep merge endpoint options' do
+
+      before(:each) do
+        class Location < LHS::Record
+          endpoint 'http://uberall/locations', headers: { privateKey: '123' }
+        end
+      end
+
+      it 'deep merges options to not overwrite endpoint options' do
+        stub_request(:get, "http://uberall/locations")
+          .with(
+            headers: {
+              'Privatekey' => '123',
+              'Accept' => 'application/json'
+            }
+          )
+          .to_return(body: [].to_json)
+
+        Location.options(headers: { 'Accept' => 'application/json' }).fetch
+      end
+    end
   end
 end
