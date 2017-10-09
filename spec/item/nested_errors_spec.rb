@@ -3,15 +3,14 @@ require 'rails_helper'
 describe LHS::Item do
 
   context 'nested data' do
-
-    before(:each) do
+    before do
       class Presence < LHS::Record
         endpoint 'http://opm/presences'
       end
       stub_request(:post, "http://opm/presences")
         .to_return(
           body: {
-            listings: [{status: 'CONNECTED'}],
+            listings: [{ status: 'CONNECTED' }],
             field_errors: []
           }.to_json
         )
@@ -19,7 +18,7 @@ describe LHS::Item do
 
     it 'does not raise when accessing nested data' do
       presence = Presence.create
-      expect(->{
+      expect(lambda {
         presence.listings.first
       }).not_to raise_error NoMethodError
     end
