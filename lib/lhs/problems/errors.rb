@@ -21,7 +21,7 @@ module LHS::Problems
       messages = {}
       fields_to_errors(json, messages) if json['fields']
       field_errors_to_errors(json, messages) if json['field_errors']
-      fallback_errors(json, messages) if messages.empty?
+      fallback_errors(json, messages) if messages.empty? && !json['fields'] && !json['field_errors']
       messages
     end
 
