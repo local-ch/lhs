@@ -775,7 +775,8 @@ end
 user.errors #<LHS::Problems::Errors>
 user.errors.include?(:email) # true
 user.errors[:email] # ['REQUIRED_PROPERTY_VALUE']
-user.errors.messages # {:email=>["REQUIRED_PROPERTY_VALUE"]}
+user.errors.messages # {:email=>["Translated error message that this value is required"]}
+user.errors.codes # {:email=>["REQUIRED_PROPERTY_VALUE"]}
 user.errors.message # email must be set when user is created."
 ```
 
@@ -885,7 +886,8 @@ LHS makes those errors available when accessing `.errors`:
   )
 
   presence.errors.any? # true
-  presence.place.errors.messages[:opening_hours] # ['REQUIRED_PROPERTY_VALUE']
+  presence.place.errors.messages[:opening_hours] # ['This field needs to be present']
+  presence.place.errors.codes[:opening_hours] # ['REQUIRED_PROPERTY_VALUE']
 ```
 
 ### Non blocking validation errors, so called warnings
