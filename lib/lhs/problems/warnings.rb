@@ -4,6 +4,7 @@ module LHS::Problems
     def initialize(raw, record = nil)
       @raw = raw
       @record = record
+      @codes = {}.with_indifferent_access
       @messages = warnings_from_raw
     end
 

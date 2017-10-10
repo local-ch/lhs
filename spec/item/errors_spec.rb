@@ -51,6 +51,8 @@ describe LHS::Item do
   end
 
   before(:each) do
+    I18n.reload!
+    I18n.backend.store_translations(:en, {}) if defined? translations
     LHC.config.placeholder(:datastore, datastore)
     class Record < LHS::Record
       endpoint ':datastore/:campaign_id/feedbacks'
