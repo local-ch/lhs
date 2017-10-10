@@ -6,7 +6,7 @@ module LHS::Problems
   class Base
     include Enumerable
 
-    attr_reader :raw, :messages, :record
+    attr_reader :raw, :messages, :codes, :record
 
     def include?(attribute)
       messages[attribute].present?
@@ -55,6 +55,7 @@ module LHS::Problems
     def clear
       @raw = nil
       @messages.clear
+      @codes.clear
     end
 
     delegate :values, to: :messages
@@ -73,6 +74,8 @@ module LHS::Problems
 
     def add_error(messages, key, value)
       key = key.to_sym
+      codes[key] ||= []
+      codes[key].push(value)
       messages[key] ||= []
       messages[key].push(generate_message(key, value))
     end

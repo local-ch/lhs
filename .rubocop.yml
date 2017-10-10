@@ -32,3 +32,6 @@ Metrics/BlockLength:
 
 Style/EmptyLinesAroundBlockBody:
   Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
