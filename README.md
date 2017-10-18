@@ -997,7 +997,7 @@ end
 
 `limit_key` key used to work with page limits (e.g. `size`, `limit`, etc.)
 
-In case the `limit_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `paramter` key, to separated those two use cases:
+In case the `limit_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `paramter` key, to keep those two use cases separated:
 
 ```ruby
   configuration limit_key: { body: [:response, :max], parameter: :max }
@@ -1005,7 +1005,7 @@ In case the `limit_key` parameter differs for where it's located in the body and
 
 `pagination_key` key used to paginate multiple pages (e.g. `offset`, `page`, `startAt` etc.).
 
-In case the `pagination_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `paramter` key, to separated those two use cases:
+In case the `pagination_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `paramter` key, to keep those two use cases separated:
 
 ```ruby
   configuration pagination_key: { body: [:response, :page], parameter: :page }
