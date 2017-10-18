@@ -32,9 +32,10 @@ class LHS::Record
         )
       end
 
-      def limit_key
+      def limit_key(type = nil)
         symbolize_unless_complex(
-          @configuration.try(:[], :limit_key) || :limit
+          pagination_parameter(@configuration.try(:[], :limit_key), type) ||
+          :limit
         )
       end
 
@@ -45,9 +46,10 @@ class LHS::Record
       end
 
       # Key used for determine current page
-      def pagination_key
+      def pagination_key(type = nil)
         symbolize_unless_complex(
-          @configuration.try(:[], :pagination_key) || :offset
+          pagination_parameter(@configuration.try(:[], :pagination_key), type) ||
+          :offset
         )
       end
 
@@ -64,6 +66,11 @@ class LHS::Record
         return if value.blank?
         return value.to_sym unless value.is_a?(Array)
         value
+      end
+
+      def pagination_parameter(configuration, type)
+        return configuration unless configuration.is_a?(Hash)
+        configuration[type]
       end
     end
   end

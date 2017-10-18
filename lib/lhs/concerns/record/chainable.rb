@@ -418,8 +418,8 @@ class LHS::Record
         end
         pagination = @record_class.pagination_class
         {
-          @record_class.pagination_key => pagination.page_to_offset(page, per),
-          @record_class.limit_key => per
+          @record_class.pagination_key(:parameter) => pagination.page_to_offset(page, per),
+          @record_class.limit_key(:parameter) => per
         }
       end
 
