@@ -999,7 +999,7 @@ end
 
 In case the `limit_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `paramter` key, to separated those two use cases:
 
-```
+```ruby
   configuration limit_key: { body: [:response, :max], parameter: :max }
 ```
 
@@ -1007,7 +1007,7 @@ In case the `limit_key` parameter differs for where it's located in the body and
 
 In case the `pagination_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `paramter` key, to separated those two use cases:
 
-```
+```ruby
   configuration pagination_key: { body: [:response, :page], parameter: :page }
 ```
 
