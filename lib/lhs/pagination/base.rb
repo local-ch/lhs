@@ -19,11 +19,11 @@ module LHS::Pagination
     alias count total
 
     def limit
-      data._raw.dig(*_record.limit_key) || DEFAULT_LIMIT
+      data._raw.dig(*_record.limit_key(:body)) || DEFAULT_LIMIT
     end
 
     def offset
-      data._raw.dig(*_record.pagination_key) || self.class::DEFAULT_OFFSET
+      data._raw.dig(*_record.pagination_key(:body)) || self.class::DEFAULT_OFFSET
     end
     alias current_page offset
     alias start offset

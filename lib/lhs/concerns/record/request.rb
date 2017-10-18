@@ -41,7 +41,7 @@ class LHS::Record
       # returned by the endpoint to make further requests
       def apply_limit!(options)
         options[:params] ||= {}
-        options[:params] = options[:params].merge(limit_key => options[:params][limit_key] || LHS::Pagination::Base::DEFAULT_LIMIT)
+        options[:params] = options[:params].merge(limit_key(:parameter) => options[:params][limit_key(:parameter)] || LHS::Pagination::Base::DEFAULT_LIMIT)
       end
 
       # Convert URLs in options to endpoint templates
@@ -230,11 +230,11 @@ class LHS::Record
       def load_and_merge_not_paginated_collection!(data, options)
         return if data.length.zero?
         options = options.is_a?(Hash) ? options : {}
-        limit = options.dig(:params, limit_key) || pagination_class::DEFAULT_LIMIT
-        offset = options.dig(:params, pagination_key) || pagination_class::DEFAULT_OFFSET
+        limit = options.dig(:params, limit_key(:parameter)) || pagination_class::DEFAULT_LIMIT
+        offset = options.dig(:params, pagination_key(:parameter)) || pagination_class::DEFAULT_OFFSET
         options[:params] = options.fetch(:params, {}).merge(
-          limit_key => limit,
-          pagination_key => pagination_class.next_offset(
+          limit_key(:parameter) => limit,
+          pagination_key(:parameter) => pagination_class.next_offset(
             offset,
             limit
           )
@@ -245,8 +245,16 @@ class LHS::Record
         end
       end
 
+      # sets nested data for a source object that needs to be accessed with a given path e.g. [:response, :total]
+      def set_nested_data(source, path, value)
+        return source[path] = value unless path.is_a?(Array)
+        path = path.dup
+        last = path.pop
+        path.inject(source, :fetch)[last] = value
+      end
+
       def load_and_merge_paginated_collection!(data, options)
-        data._raw[limit_key] = data.length if data._raw[limit_key].blank? && !data.length.zero?
+        set_nested_data(data._raw, limit_key(:body), data.length) if data._raw.dig(*limit_key(:body)).blank? && !data.length.zero?
         pagination = data._record.pagination(data)
         return data if pagination.pages_left.zero?
         record = data._record
@@ -315,7 +323,7 @@ class LHS::Record
 
       # Checks if given raw is paginated or not
       def paginated?(raw)
-        !!(raw.is_a?(Hash) && raw[total_key])
+        !!(raw.is_a?(Hash) && raw.dig(*total_key))
       end
 
       def prepare_options_for_include_all_request!(options)
@@ -336,10 +344,10 @@ class LHS::Record
         uri = parse_uri(option[:url], option)
         get_params = Rack::Utils.parse_nested_query(uri.query)
           .symbolize_keys
-          .except(limit_key, pagination_key)
+          .except(limit_key(:parameter), pagination_key(:parameter))
         option[:params] ||= {}
         option[:params].reverse_merge!(get_params)
-        option[:params][limit_key] ||= LHS::Pagination::Base::DEFAULT_LIMIT
+        option[:params][limit_key(:parameter)] ||= LHS::Pagination::Base::DEFAULT_LIMIT
         option[:url] = option[:url].gsub("?#{uri.query}", '')
         option.delete(:including)
         option.delete(:referencing)
@@ -357,9 +365,13 @@ class LHS::Record
 
       def merge_batch_data_with_parent!(batch_data, parent_data)
         parent_data.concat(input: parent_data._raw, items: batch_data.raw_items, record: self)
-        parent_data._raw[limit_key] = batch_data._raw[limit_key]
-        parent_data._raw[total_key] = batch_data._raw[total_key]
-        parent_data._raw[pagination_key] = batch_data._raw[pagination_key]
+        [limit_key(:body), total_key, pagination_key(:body)].each do |pagination_attribute|
+          set_nested_data(
+            parent_data._raw,
+            pagination_attribute,
+            batch_data._raw.dig(*pagination_attribute)
+          )
+        end
       end
 
       # Merge explicit params nested in 'params' namespace with original hash.
@@ -415,8 +427,8 @@ class LHS::Record
         pagination.pages_left.times do |index|
           page_options = {
             params: {
-              record.limit_key => pagination.limit,
-              record.pagination_key => pagination.next_offset(index + 1)
+              record.limit_key(:parameter) => pagination.limit,
+              record.pagination_key(:parameter) => pagination.next_offset(index + 1)
             }
           }
           page_options[:parent_data] = parent_data if parent_data

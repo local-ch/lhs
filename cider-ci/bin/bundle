@@ -22,6 +22,9 @@ fi
 DIGEST=$(echo "$DIGEST $PATH" \
  | openssl dgst -sha1 | cut -d ' ' -f 2)
 
+echo "DIGEST"
+echo "${DIGEST}"
+
 CACHE_SIGNATURE_FILE="/tmp/bundle_cache_signature_${DIGEST}"
 
 if [ ! -f  $CACHE_SIGNATURE_FILE ] ; then
