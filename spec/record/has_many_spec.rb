@@ -22,7 +22,7 @@ describe LHS::Record do
 
     it 'casts the relation into the correct type' do
       stub_request(:get, 'http://uberall/locations/1')
-        .to_return(body:{
+        .to_return(body: {
           listings: [{
             directory: { name: 'Instagram' }
           }]
