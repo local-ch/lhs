@@ -270,7 +270,7 @@ After fetching [single](#find-single-records) or [multiple](#find-multiple-recor
 
 Even though, nested data is automatically casted when accessed, see: [Nested records](#nested-records), sometimes api's don't provide dedicated endpoints to retrive these records.
 
-As those records also don't have href's in this case, nested records can not be casted automatically.
+As those records also don't have an href, nested records can not be casted automatically, when accessed.
 
 Those kind of relations, you can still configure manually:
 
