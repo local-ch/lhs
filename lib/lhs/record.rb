@@ -27,6 +27,8 @@ class LHS::Record
     'lhs/concerns/record/pagination'
   autoload :Request,
     'lhs/concerns/record/request'
+  autoload :Relations,
+    'lhs/concerns/record/relations'
   autoload :Scope,
     'lhs/concerns/record/scope'
 
@@ -52,10 +54,11 @@ class LHS::Record
   include Model
   include Pagination
   include Request
+  include Relations
   include RequestCycleCache
   include Scope
 
-  delegate :_proxy, :_endpoint, :merge_raw!, :select, to: :_data
+  delegate :_proxy, :_endpoint, :merge_raw!, :select, :becomes, to: :_data
 
   def initialize(data = nil, apply_customer_setters = true)
     data = LHS::Data.new({}, nil, self.class) unless data

@@ -1,5 +1,7 @@
 # Data provides functionalities to accesses information
 class LHS::Data
+  autoload :Becomes,
+    'lhs/concerns/data/becomes'
   autoload :Equality,
     'lhs/concerns/data/equality'
   autoload :Json,
@@ -7,6 +9,7 @@ class LHS::Data
   autoload :ToHash,
     'lhs/concerns/data/to_hash'
 
+  include Becomes
   include Equality
   include Json
   include ToHash

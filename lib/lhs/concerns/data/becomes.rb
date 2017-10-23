@@ -1,6 +1,6 @@
 require 'active_support'
 
-class LHS::Item < LHS::Proxy
+class LHS::Data
 
   module Becomes
     extend ActiveSupport::Concern

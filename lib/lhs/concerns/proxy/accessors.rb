@@ -67,8 +67,9 @@ class LHS::Proxy
       wrap_return(collection, record, name)
     end
 
-    # Wraps with record and adds nested errors/warnings to data,
-    # if errors are existing
+    # Wraps the return value with a record class.
+    # Adds errors and warnings if existing.
+    # Returns plain data if no record class was found.
     def wrap_return(value, record, name, args = nil)
       name = args.first if name == :[]
       return value unless worth_wrapping?(value)
@@ -76,6 +77,7 @@ class LHS::Proxy
       data.errors = LHS::Problems::Nested::Errors.new(errors, name) if errors.any?
       data.warnings = LHS::Problems::Nested::Warnings.new(warnings, name) if warnings.any?
       return record.new(data) if record && !value.is_a?(LHS::Record)
+      return data.becomes(_record._relations[name][:record_class_name].constantize) if _record && _record._relations[name]
       data
     end
 

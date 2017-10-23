@@ -266,6 +266,36 @@ After fetching [single](#find-single-records) or [multiple](#find-multiple-recor
   record.parent == records # true
 ```
 
+## Relations
+
+Even though, nested data is automatically casted when accessed, see: [Nested records](#nested-records), sometimes api's don't provide dedicated endpoints to retrive these records.
+
+As those records also don't have an href, nested records can not be casted automatically, when accessed.
+
+Those kind of relations, you can still configure manually:
+
+```ruby
+
+class Location < LHS::Record
+  
+  endpoint 'http://uberall/locations/:id'
+
+  has_many :listings
+
+end
+
+class Listing < LHS::Record
+  
+  def supported?
+    type == 'SUPPORTED'
+  end
+end
+
+Location.find(1).listings.first.supported? # true
+
+```
+
+
 ## Request based options
 
 You can apply options to the request chain. Those options will be forwarded to the request perfomed by the chain/query.
@@ -643,7 +673,7 @@ class LocalEntry < LHS::Record
 end
 ```
 
-### Nested records
+## Nested records
 
 Nested records (in nested data) are automaticaly casted when the href matches any defined endpoint of any LHS::Record.
 

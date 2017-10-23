@@ -17,7 +17,7 @@ class LHS::Proxy
 
   # prevent clashing with attributes of underlying data
   attr_accessor :_data, :_loaded
-  delegate :_record, to: :_data, allow_nil: true
+  delegate :_record, :becomes, to: :_data, allow_nil: true
 
   def initialize(data)
     self._data = data
