@@ -35,3 +35,6 @@ Style/EmptyLinesAroundBlockBody:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+Naming/PredicateName:
+  Enabled: false

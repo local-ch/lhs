@@ -25,7 +25,7 @@ RSpec.configure do |config|
     LHC::Config.instance._cleanup
     LHS::Record::Endpoints.all = {}
     LHS::Record::CHILDREN.each do |child|
-      child.endpoints = [] if !child.name['LHS']
+      child.endpoints = [] if !child.name['LHS'] && defined?(child.endpoints)
       child.configuration({}) if !child.name['LHS']
     end
   end
