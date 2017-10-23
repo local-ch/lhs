@@ -77,7 +77,7 @@ class LHS::Proxy
       data.errors = LHS::Problems::Nested::Errors.new(errors, name) if errors.any?
       data.warnings = LHS::Problems::Nested::Warnings.new(warnings, name) if warnings.any?
       return record.new(data) if record && !value.is_a?(LHS::Record)
-      return data.becomes(_record.relations[name][:record_class_name].constantize) if _record && _record.relations[name]
+      return data.becomes(_record._relations[name][:record_class_name].constantize) if _record && _record._relations[name]
       data
     end
 

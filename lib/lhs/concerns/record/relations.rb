@@ -7,13 +7,13 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     included do
-      class_attribute :relations
-      self.relations = {}
+      class_attribute :_relations
+      self._relations = {}
     end
 
     module ClassMethods
       def has_many(name)
-        relations[name] = { record_class_name: name.to_s.singularize.classify }
+        _relations[name] = { record_class_name: name.to_s.singularize.classify }
       end
     end
   end

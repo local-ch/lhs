@@ -58,7 +58,7 @@ class LHS::Record
   include RequestCycleCache
   include Scope
 
-  delegate :_proxy, :_endpoint, :merge_raw!, :select, to: :_data
+  delegate :_proxy, :_endpoint, :merge_raw!, :select, :becomes, to: :_data
 
   def initialize(data = nil, apply_customer_setters = true)
     data = LHS::Data.new({}, nil, self.class) unless data
