@@ -1,6 +1,3 @@
-require 'pry'
-require 'webmock/rspec'
-
 describe 'LHS' do
   context 'when requiring lhs' do
     it 'does not raise an exception' do
