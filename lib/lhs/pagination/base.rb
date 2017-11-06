@@ -1,3 +1,5 @@
+require 'active_support/core_ext/module/delegation'
+
 # Pagination is used to navigate paginateable collections
 module LHS::Pagination
   class Base
