@@ -12,7 +12,7 @@ class LHS::Collection < LHS::Proxy
 
       attr_accessor :raw
       delegate :length, :size, :last, :sample, :[], :present?, :blank?, :empty?,
-               :<<, :push, to: :raw
+               :<<, :push, :compact, to: :raw
 
       def initialize(raw, parent, record)
         self.raw = raw
