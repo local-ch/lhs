@@ -10,7 +10,7 @@ describe LHS::Collection do
   end
 
   context 'delegates methods to raw' do
-    %w(present? blank? empty?).each do |method|
+    %w(length size last sample present? blank? empty? compact).each do |method|
       it "delegates #{method} to raw" do
         expect(collection.send(method.to_sym)).not_to be_nil
       end
