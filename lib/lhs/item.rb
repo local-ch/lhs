@@ -1,6 +1,7 @@
 # An item is a concrete record.
 # It can be part of another proxy like collection.
 class LHS::Item < LHS::Proxy
+
   autoload :Destroy,
     'lhs/concerns/item/destroy'
   autoload :Save,
@@ -36,7 +37,7 @@ class LHS::Item < LHS::Proxy
 
   def respond_to_missing?(name, _include_all = false)
     # We accept every message that does not belong to set of keywords
-    BLACKLISTED_KEYWORDS.exclude?(name.to_s)
+    !BLACKLISTED_KEYWORDS.include?(name.to_s)
   end
 
   def unwrap_nested_item

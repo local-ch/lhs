@@ -64,7 +64,7 @@ class LHS::Collection < LHS::Proxy
 
   def respond_to_missing?(name, _include_all = false)
     # We accept every message that does not belong to set of keywords and is not a setter
-    BLACKLISTED_KEYWORDS.exclude?(name.to_s) && !name.to_s[/=$/]
+    !BLACKLISTED_KEYWORDS.include?(name.to_s) && !name.to_s[/=$/]
   end
 
   private
