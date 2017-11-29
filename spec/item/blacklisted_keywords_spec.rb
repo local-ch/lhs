@@ -18,8 +18,10 @@ describe LHS::Item do
             items: [{ name: 'Steve' }]
           }.to_json
         )
-      Record.where(color: :blue).map do |record|
-        record.name
+      Record.where(color: :blue).each do |record|
+        expect(record.respond_to_missing?(:new)).to eq false
+        expect(record.respond_to_missing?(:proxy_association)).to eq false
+        expect(record.respond_to_missing?(:name)).to eq true
       end
     end
   end
