@@ -37,7 +37,7 @@ class LHS::Item < LHS::Proxy
 
   def respond_to_missing?(name, _include_all = false)
     # We accept every message that does not belong to set of keywords
-    BLACKLISTED_KEYWORDS.include?(name.to_s)
+    !BLACKLISTED_KEYWORDS.include?(name.to_s)
   end
 
   def unwrap_nested_item
