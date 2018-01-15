@@ -77,7 +77,7 @@ class LHS::Record
 
       def parse_uri(url, options)
         URI.parse(
-          if url.match(LHC::Endpoint::PLACEHOLDER)
+          if url.match(Addressable::Template::EXPRESSION)
             compute_url(options[:params], url)
           else
             url
