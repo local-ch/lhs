@@ -7,16 +7,16 @@ describe LHS::Record do
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
       class Customer < LHS::Record
-        endpoint ':datastore/customers'
-        endpoint ':datastore/customers/:id'
+        endpoint '{+datastore}/customers'
+        endpoint '{+datastore}/customers/{id}'
       end
       class Contract < LHS::Record
-        endpoint ':datastore/contracts'
-        endpoint ':datastore/contracts/:id'
+        endpoint '{+datastore}/contracts'
+        endpoint '{+datastore}/contracts/{id}'
       end
       class Address < LHS::Record
-        endpoint ':datastore/addresses'
-        endpoint ':datastore/addresses/:id'
+        endpoint '{+datastore}/addresses'
+        endpoint '{+datastore}/addresses/{id}'
       end
     end
 

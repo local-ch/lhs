@@ -20,8 +20,8 @@ describe LHS::Collection do
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
-      endpoint ':datastore/:campaign_id/feedbacks'
-      endpoint ':datastore/feedbacks'
+      endpoint '{+datastore}/{campaign_id}/feedbacks'
+      endpoint '{+datastore}/feedbacks'
     end
   end
 
@@ -67,8 +67,8 @@ describe LHS::Collection do
   context 'configured pagination' do
     before(:each) do
       class Record < LHS::Record
-        endpoint ':datastore/:campaign_id/feedbacks'
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/{campaign_id}/feedbacks'
+        endpoint '{+datastore}/feedbacks'
         configuration items_key: 'docs', limit_key: 'size', pagination_key: 'start', pagination_strategy: 'start', total_key: 'totalResults'
       end
     end

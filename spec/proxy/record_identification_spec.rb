@@ -7,7 +7,7 @@ describe LHS::Proxy do
     end
 
     class Feedback < LHS::Record
-      endpoint 'http://datastore/places/:place_id/feedbacks'
+      endpoint 'http://datastore/places/{place_id}/feedbacks'
     end
   end
 

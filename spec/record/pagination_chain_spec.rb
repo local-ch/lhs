@@ -6,7 +6,7 @@ describe LHS::Record do
       before(:each) do
         class Record < LHS::Record
           endpoint 'http://local.ch/records'
-          endpoint 'http://local.ch/records/:id'
+          endpoint 'http://local.ch/records/{id}'
         end
       end
 
@@ -59,7 +59,7 @@ describe LHS::Record do
         class Record < LHS::Record
           configuration pagination_strategy: 'start', pagination_key: 'start'
           endpoint 'http://local.ch/records'
-          endpoint 'http://local.ch/records/:id'
+          endpoint 'http://local.ch/records/{id}'
         end
       end
 
@@ -80,7 +80,7 @@ describe LHS::Record do
         class Record < LHS::Record
           configuration pagination_strategy: 'page', pagination_key: 'page'
           endpoint 'http://local.ch/records'
-          endpoint 'http://local.ch/records/:id'
+          endpoint 'http://local.ch/records/{id}'
         end
       end
 

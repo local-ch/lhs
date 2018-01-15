@@ -20,8 +20,8 @@ describe LHS::Collection do
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
-      endpoint ':datastore/:campaign_id/feedbacks'
-      endpoint ':datastore/feedbacks'
+      endpoint '{+datastore}/{campaign_id}/feedbacks'
+      endpoint '{+datastore}/feedbacks'
     end
   end
 

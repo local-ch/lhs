@@ -8,7 +8,7 @@ describe LHS::Record do
   context 'default pagination behaviour' do
     before(:each) do
       class Record < LHS::Record
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
     end
 
@@ -52,7 +52,7 @@ describe LHS::Record do
     before(:each) do
       class Record < LHS::Record
         configuration pagination_strategy: 'offset', pagination_key: 'offset'
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
     end
 
@@ -132,7 +132,7 @@ describe LHS::Record do
     before(:each) do
       class Record < LHS::Record
         configuration pagination_strategy: 'page', pagination_key: 'page'
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
     end
 
@@ -210,7 +210,7 @@ describe LHS::Record do
     before(:each) do
       class Record < LHS::Record
         configuration pagination_strategy: 'start', pagination_key: 'start'
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
     end
 

@@ -4,11 +4,11 @@ describe LHS::Item do
   before(:each) do
     class Location < LHS::Record
       endpoint 'http://sync/locations'
-      endpoint 'http://sync/locations/:id'
+      endpoint 'http://sync/locations/{id}'
     end
 
     class Synchronization < LHS::Record
-      endpoint 'http://sync/locations/:id/sync'
+      endpoint 'http://sync/locations/{id}/sync'
     end
 
     stub_request(:get, "http://sync/locations/1")

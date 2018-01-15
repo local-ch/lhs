@@ -7,8 +7,8 @@ describe LHS::Record do
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
       class Rating < LHS::Record
-        endpoint ':datastore/content-ads/:campaign_id/feedbacks'
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
     end
 
@@ -29,7 +29,7 @@ describe LHS::Record do
     context 'initialise records with raw data' do
       before(:each) do
         class User < LHS::Record
-          endpoint ':datastore/users'
+          endpoint '{+datastore}/users'
         end
       end
 

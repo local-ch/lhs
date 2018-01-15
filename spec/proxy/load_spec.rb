@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Proxy do
   before(:each) do
     class Record < LHS::Record
-      endpoint ':datastore/v2/feedbacks'
+      endpoint '{+datastore}/v2/feedbacks'
     end
   end
 
@@ -46,7 +46,7 @@ describe LHS::Proxy do
   context 'endpoint options' do
     before(:each) do
       class AnotherRecord < LHS::Record
-        endpoint ':datastore/v2/feedbacks', params: { color: :blue }
+        endpoint '{+datastore}/v2/feedbacks', params: { color: :blue }
       end
     end
 

@@ -3,8 +3,8 @@ require 'rails_helper'
 describe LHS::Item do
   before(:each) do
     class Feedback < LHS::Record
-      endpoint ':datastore/v2/feedbacks'
-      endpoint ':datastore/v2/feedbacks/:id'
+      endpoint '{+datastore}/v2/feedbacks'
+      endpoint '{+datastore}/v2/feedbacks/{id}'
     end
   end
 

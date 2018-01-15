@@ -4,12 +4,12 @@ describe LHS::Record do
   before(:each) do
     class Record < LHS::Record
       endpoint 'http://datastore/records'
-      endpoint 'http://datastore/records/:id'
+      endpoint 'http://datastore/records/{id}'
     end
 
     class AnotherRecord < LHS::Record
       endpoint 'http://datastore/otherrecords'
-      endpoint 'http://datastore/otherrecords/:id'
+      endpoint 'http://datastore/otherrecords/{id}'
 
       def id
         another_id

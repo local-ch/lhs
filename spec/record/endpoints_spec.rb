@@ -7,45 +7,45 @@ describe LHS::Record do
     before(:each) do
       LHC.config.placeholder(:datastore, datastore)
       class Record < LHS::Record
-        endpoint ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
-        endpoint ':datastore/:campaign_id/feedbacks'
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks'
+        endpoint '{+datastore}/{campaign_id}/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
     end
 
     it 'stores all the endpoints by url' do
-      expect(LHS::Record::Endpoints.all[':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks']).to be
-      expect(LHS::Record::Endpoints.all[':datastore/:campaign_id/feedbacks']).to be
-      expect(LHS::Record::Endpoints.all[':datastore/feedbacks']).to be
+      expect(LHS::Record::Endpoints.all['{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks']).to be
+      expect(LHS::Record::Endpoints.all['{+datastore}/{campaign_id}/feedbacks']).to be
+      expect(LHS::Record::Endpoints.all['{+datastore}/feedbacks']).to be
     end
 
     it 'stores the endpoints of the service' do
       expect(Record.endpoints.count).to eq 3
-      expect(Record.endpoints[0].url).to eq ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
-      expect(Record.endpoints[1].url).to eq ':datastore/:campaign_id/feedbacks'
-      expect(Record.endpoints[2].url).to eq ':datastore/feedbacks'
+      expect(Record.endpoints[0].url).to eq '{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks'
+      expect(Record.endpoints[1].url).to eq '{+datastore}/{campaign_id}/feedbacks'
+      expect(Record.endpoints[2].url).to eq '{+datastore}/feedbacks'
     end
 
     it 'finds the endpoint by the one with the most route param hits' do
       expect(
         Record.find_endpoint(campaign_id: '12345').url
-      ).to eq ':datastore/:campaign_id/feedbacks'
+      ).to eq '{+datastore}/{campaign_id}/feedbacks'
       expect(
         Record.find_endpoint(campaign_id: '12345', entry_id: '123').url
-      ).to eq ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
+      ).to eq '{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks'
     end
 
     it 'finds the base endpoint (endpoint with least amount of route params)' do
       expect(
         Record.find_endpoint.url
-      ).to eq ':datastore/feedbacks'
+      ).to eq '{+datastore}/feedbacks'
     end
 
     context 'compute url from endpoint' do
       before(:each) do
         class Feedback < LHS::Record
-          endpoint ':datastore/feedbacks'
-          endpoint ':datastore/feedbacks/:id'
+          endpoint '{+datastore}/feedbacks'
+          endpoint '{+datastore}/feedbacks/{id}'
         end
       end
 
@@ -58,9 +58,9 @@ describe LHS::Record do
     context 'unsorted endpoints' do
       before(:each) do
         class AnotherRecord < LHS::Record
-          endpoint ':datastore/feedbacks'
-          endpoint ':datastore/:campaign_id/feedbacks'
-          endpoint ':datastore/entries/:entry_id/content-ads/:campaign_id/feedbacks'
+          endpoint '{+datastore}/feedbacks'
+          endpoint '{+datastore}/{campaign_id}/feedbacks'
+          endpoint '{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks'
         end
       end
 
@@ -73,8 +73,8 @@ describe LHS::Record do
     context 'includes data without considering base endpoint of parent record if url is present' do
       before(:each) do
         class Contract < LHS::Record
-          endpoint ':datastore/contracts/:id'
-          endpoint ':datastore/entry/:entry_id/contracts'
+          endpoint '{+datastore}/contracts/:id'
+          endpoint '{+datastore}/entry/{entry_id}/contracts'
         end
       end
 
