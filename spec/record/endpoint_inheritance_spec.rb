@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'inherit endpoints' do
     before(:each) do
       class Base < LHS::Record
-        endpoint 'records/:id'
+        endpoint 'records/{id}'
       end
 
       class Example < Base
@@ -22,7 +22,7 @@ describe LHS::Record do
   context 'define endpoints in subclass' do
     before(:each) do
       class Base < LHS::Record
-        endpoint 'records/:id'
+        endpoint 'records/{id}'
       end
 
       class Example < Base
@@ -46,7 +46,7 @@ describe LHS::Record do
       end
 
       class Example < Base
-        endpoint 'examples/:id'
+        endpoint 'examples/{id}'
       end
     end
 

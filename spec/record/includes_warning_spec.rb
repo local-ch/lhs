@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'includes warning' do
     before(:each) do
       class Customer < LHS::Record
-        endpoint 'http://datastore/customers/:id'
+        endpoint 'http://datastore/customers/{id}'
       end
     end
 

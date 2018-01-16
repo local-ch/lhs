@@ -3,9 +3,9 @@ require 'rails_helper'
 describe LHS::Data do
   before(:each) do
     class Record < LHS::Record
-      endpoint ':datastore/v2/entries/:entry_id/content-ads/:campaign_id/feedbacks'
-      endpoint ':datastore/v2/:campaign_id/feedbacks'
-      endpoint ':datastore/v2/feedbacks'
+      endpoint '{+datastore}/v2/entries/{entry_id}/content-ads/{campaign_id}/feedbacks'
+      endpoint '{+datastore}/v2/{campaign_id}/feedbacks'
+      endpoint '{+datastore}/v2/feedbacks'
     end
   end
 

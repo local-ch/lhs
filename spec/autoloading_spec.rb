@@ -7,12 +7,12 @@ describe LHS, type: :request do
     cleanup_before: false do
       all_endpoints = LHS::Record::Endpoints.all
       expect(all_endpoints['http://datastore/v2/users']).to be
-      expect(all_endpoints['http://datastore/v2/users/:id']).to be
+      expect(all_endpoints['http://datastore/v2/users/{id}']).to be
       expect(
         User.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users' }
       ).to be
       expect(
-        User.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users/:id' }
+        User.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users/{id}' }
       ).to be
     end
   end

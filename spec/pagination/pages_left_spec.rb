@@ -12,7 +12,7 @@ describe LHS::Record do
 
   before(:each) do
     class Record < LHS::Record
-      endpoint ':datastore/v2/data'
+      endpoint '{+datastore}/v2/data'
     end
   end
 

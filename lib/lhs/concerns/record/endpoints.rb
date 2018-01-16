@@ -82,7 +82,7 @@ class LHS::Record
       # The best endpoint is the one where all placeholders are interpolated.
       def find_best_endpoint(params)
         sorted_endpoints.find do |endpoint|
-          endpoint.placeholders.all? { |match| endpoint.find_value(match, params) }
+          endpoint.placeholders.all? { |match| endpoint.find_value(match, params).present? }
         end
       end
 

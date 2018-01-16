@@ -9,7 +9,7 @@ describe LHS::Collection do
     LHC.config.placeholder('search', search)
     class Search < LHS::Record
       configuration items_key: :docs, limit_key: :size, pagination_key: :start, pagination_strategy: :start, total_key: :totalResults
-      endpoint ':search/:type'
+      endpoint '{+search}/{type}'
     end
     stub_request(:get, "http://local.ch/search/phonebook?size=10").to_return(
       body: {

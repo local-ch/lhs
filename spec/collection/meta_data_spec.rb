@@ -29,12 +29,12 @@ describe LHS::Collection do
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
     class Feedback < LHS::Record
-      endpoint ':datastore/feedbacks'
-      endpoint ':datastore/feedbacks/:id'
+      endpoint '{+datastore}/feedbacks'
+      endpoint '{+datastore}/feedbacks/{id}'
     end
     class User < LHS::Record
-      endpoint ':datastore/users'
-      endpoint ':datastore/users/:id'
+      endpoint '{+datastore}/users'
+      endpoint '{+datastore}/users/{id}'
     end
   end
 

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Record do
   before(:each) do
     class Record < LHS::Record
-      endpoint 'http://datastore/records/:id'
+      endpoint 'http://datastore/records/{id}'
     end
   end
 

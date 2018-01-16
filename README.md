@@ -20,13 +20,13 @@ end
 
 ## Very Short Introduction
 
-Access data that is provided by an http json service with ease using a LHS::Record.
+Access data that is provided by an http JSON service with ease using a LHS::Record.
 
 ```ruby
 class Record < LHS::Record
 
-  endpoint ':service/v2/records'
-  endpoint ':service/v2/association/:association_id/records'
+  endpoint '{+service}/v2/records'
+  endpoint '{+service}/v2/association/{association_id}/records'
 
 end
 
@@ -36,7 +36,7 @@ record.review # "Lunch was great"
 
 ## Where to store LHS::Records
 
-Please store all defined LHS::Records in `app/models` as they are not autoloaded by rails otherwise.
+Please store all defined LHS::Records in `app/models` as they are not auto loaded by rails otherwise.
 
 ## Endpoints
 
@@ -45,10 +45,10 @@ You setup a LHS::Record by configuring one or multiple endpoints. You can also a
 ```ruby
 class Record < LHS::Record
 
-  endpoint ':service/v2/association/:association_id/records'
-  endpoint ':service/v2/association/:association_id/records/:id'
-  endpoint ':service/v2/records', auth: { basic: 'PASSWORD' }
-  endpoint ':service/v2/records/:id', auth: { basic: 'PASSWORD' }
+  endpoint '{+service}/v2/association/{association_id}/records'
+  endpoint '{+service}/v2/association/{association_id}/records/{id}'
+  endpoint '{+service}/v2/records', auth: { basic: 'PASSWORD' }
+  endpoint '{+service}/v2/records/{id}', auth: { basic: 'PASSWORD' }
 
 end
 ```
@@ -61,8 +61,8 @@ If you try to setup a LHS::Record with clashing endpoints it will immediately ra
 ```ruby
 class Record < LHS::Record
 
-  endpoint ':service/v2/records'
-  endpoint ':service/v2/something_else'
+  endpoint '{+service}/v2/records'
+  endpoint '{+service}/v2/something_else'
 
 end
 # raises: Clashing endpoints.
@@ -76,13 +76,13 @@ You can query a service for records by using `where`.
   Record.where(color: 'blue')
 ```
 
-This uses the `:service/v2/records` endpoint, cause `:association_id` was not provided. In addition it would add `?color=blue` to the get parameters.
+This uses the `{+service}/v2/records` endpoint, cause `{association_id}` was not provided. In addition it would add `?color=blue` to the get parameters.
 
 ```ruby
   Record.where(association_id: 'fq-a81ngsl1d')
 ```
 
-Uses the `:service/v2/association/:association_id/records` endpoint.
+Uses the `{+service}/v2/association/{association_id}/records` endpoint.
 
 ### Expand plain collection of links
 
@@ -118,7 +118,7 @@ That allows you to chain multiple where-queries:
 ```ruby
 class Record < LHS::Record
   endpoint 'records/'
-  endpoint 'records/:id'
+  endpoint 'records/{id}'
 end
 
 records = Record.where(color: 'blue')
@@ -151,12 +151,12 @@ expect(
 
 ## Scopes: Reuse where statements
 
-In order to make common where statements reusable you can organise them in scopes:
+In order to make common where statements reusable you can organize them in scopes:
 
 ```ruby
 class Record < LHS::Record
   endpoint 'records/'
-  endpoint 'records/:id'
+  endpoint 'records/{id}'
   scope :blue, -> { where(color: 'blue') }
   scope :available, ->(state) { where(available: state) }
 end
@@ -171,7 +171,7 @@ One benefit of chains is lazy evaluation. This means they get resolved when data
 
 To simplify error handling with chains, you can also chain error handlers to be resolved, as part of the chain.
 
-In case no matchin error handler is found the error gets re-raised.
+In case no matching error handler is found the error gets re-raised.
 
 ```ruby
 record = Record.where(color: 'blue')
@@ -193,7 +193,7 @@ record # nil
 
 ## Resolve chains
 
-LHS Chains can be resolved with `fetch`, similiar to ActiveRecord:
+LHS Chains can be resolved with `fetch`, similar to ActiveRecord:
 
 ```ruby
 records = Record.where(color: 'blue').fetch
@@ -201,7 +201,7 @@ records = Record.where(color: 'blue').fetch
 
 ## Find single records
 
-`find` finds a unique record by unique identifier (usualy id or href).
+`find` finds a unique record by unique identifier (usually id or href).
 
 ```ruby
   Record.find(123)
@@ -268,7 +268,7 @@ After fetching [single](#find-single-records) or [multiple](#find-multiple-recor
 
 ## Relations
 
-Even though, nested data is automatically casted when accessed, see: [Nested records](#nested-records), sometimes api's don't provide dedicated endpoints to retrive these records.
+Even though, nested data is automatically casted when accessed, see: [Nested records](#nested-records), sometimes api's don't provide dedicated endpoints to retrieve these records.
 
 As those records also don't have an href, nested records can not be casted automatically, when accessed.
 
@@ -277,15 +277,15 @@ Those kind of relations, you can still configure manually:
 ```ruby
 
 class Location < LHS::Record
-  
-  endpoint 'http://uberall/locations/:id'
+
+  endpoint 'http://uberall/locations/{id}'
 
   has_many :listings
 
 end
 
 class Listing < LHS::Record
-  
+
   def supported?
     type == 'SUPPORTED'
   end
@@ -329,7 +329,7 @@ By default, LHS does not perform the same http request during one request cycle 
 
 It uses the [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) as caching mechanism base and sets a unique request id for every request cycle with Railties to ensure data is just cached within one request cycle and not shared with other requests.
 
-Only GET requests are considered for caching by using LHC Caching Interceptor's `cache_methods` option internaly and considers request headers when caching requests, so requests with different headers are not served from cache.
+Only GET requests are considered for caching by using LHC Caching Interceptor's `cache_methods` option internally and considers request headers when caching requests, so requests with different headers are not served from cache.
 
 The LHS Request Cycle Cache is opt-out, so it's enabled by default and will require you to enable the [LHC Caching Interceptor](https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md) in your project.
 
@@ -374,7 +374,7 @@ In case an API does not provide pagination information (limit, offset and total)
 
 ```ruby
 Record.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |record|
-  # Iterates over each record. Starts with record nr. 50 and fetches 20 records each batch.
+  # Iterates over each record. Starts with record no. 50 and fetches 20 records each batch.
   record
   break if record.some_attribute == some_value
 end
@@ -383,7 +383,7 @@ end
 `find_in_batches` is used by `find_each` and processes batches.
 ```ruby
 Record.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }) do |records|
-  # Iterates over multiple records (batch size is 20). Starts with record nr. 50 and fetches 20 records each batch.
+  # Iterates over multiple records (batch size is 20). Starts with record no. 50 and fetches 20 records each batch.
   records
   break if records.first.name == some_value
 end
@@ -405,11 +405,11 @@ See [Validation](#Validation) for handling validation errors when creating recor
 
 ```ruby
   class Review < LHS::Record
-    endpoint ':service/reviews'
+    endpoint '{+service}/reviews'
   end
 
   class Comment < LHS::Record
-    endpoint ':service/reviews/:review_id/comments'
+    endpoint '{+service}/reviews/{review_id/}comments'
   end
 ```
 
@@ -417,20 +417,20 @@ See [Validation](#Validation) for handling validation errors when creating recor
 ```ruby
   review = Review.find(1)
   # Review#1
-  # :href => ':service/reviews/1
+  # :href => '{+service}/reviews/1
   # :text => 'Simply awesome'
-  # :comment => { :href => ':service/reviews/1/comments }
+  # :comment => { :href => '{+service}/reviews/1/comments }
 
   review.comment.create(text: 'Thank you!')
   # Comment#1
-  # :href => ':service/reviews/1/comments
+  # :href => '{+service}/reviews/1/comments
   # :text => 'Thank you!'
 
   review
   # Review#1
-  # :href => ':service/reviews/1
+  # :href => '{+service}/reviews/1
   # :text => 'Simply awesome'
-  # :comment => { :href => ':service/reviews/1/comments, :text => 'Thank you!' }
+  # :comment => { :href => '{+service}/reviews/1/comments, :text => 'Thank you!' }
 ```
 
 If the item already exists `ArgumentError` is raised.
@@ -439,40 +439,40 @@ If the item already exists `ArgumentError` is raised.
 ```ruby
   review = Review.includes(:comments).find(1)
   # Review#1
-  # :href => ':service/reviews/1'
+  # :href => '{+service}/reviews/1'
   # :text => 'Simply awesome'
-  # :comments => { :href => ':service/reviews/1/comments, :items => [] }
+  # :comments => { :href => '{+service}/reviews/1/comments, :items => [] }
 
   review.comments.create(text: 'Thank you!')
   # Comment#1
-  # :href => ':service/reviews/1/comments/1'
+  # :href => '{+service}/reviews/1/comments/1'
   # :text => 'Thank you!'
 
   review
   # Review#1
-  # :href => ':service/reviews/1'
+  # :href => '{+service}/reviews/1'
   # :text => 'Simply awesome'
-  # :comments => { :href => ':service/reviews/1/comments, :items => [{ :href => ':service/reviews/1/comments/1', :text => 'Thank you!' }] }
+  # :comments => { :href => '{+service}/reviews/1/comments, :items => [{ :href => '{+service}/reviews/1/comments/1', :text => 'Thank you!' }] }
 ```
 
 ### Not expanded collection
 ```ruby
   review = Review.find(1)
   # Review#1
-  # :href => ':service/reviews/1'
+  # :href => '{+service}/reviews/1'
   # :text => 'Simply awesome'
-  # :comments => { :href => ':service/reviews/1/comments' }
+  # :comments => { :href => '{+service}/reviews/1/comments' }
 
   review.comments.create(text: 'Thank you!')
   # Comment#1
-  # :href => ':service/reviews/1/comments/1'
+  # :href => '{+service}/reviews/1/comments/1'
   # :text => 'Thank you!'
 
   review
   # Review#1
-  # :href => ':service/reviews/1
+  # :href => '{+service}/reviews/1
   # :text => 'Simply awesome'
-  # :comments => { :href => ':service/reviews/1/comments', :items => [{ :href => ':service/reviews/1/comments/1', :text => 'Thank you!' }] }
+  # :comments => { :href => '{+service}/reviews/1/comments', :items => [{ :href => '{+service}/reviews/1/comments/1', :text => 'Thank you!' }] }
 ```
 
 ## Build new records
@@ -632,15 +632,15 @@ The [Auth Inteceptor](https://github.com/local-ch/lhc-core-interceptors#auth-int
 ```ruby
 class Favorite < LHS::Record
 
-  endpoint ':service/:user_id/favorites', auth: { basic: { username: 'steve', password: 'can' } }
-  endpoint ':service/:user_id/favorites/:id', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint '{+service}/{user_id}/favorites', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint '{+service}/{user_id}/favorites/:id', auth: { basic: { username: 'steve', password: 'can' } }
 
 end
 
 class Place < LHS::Record
 
-  endpoint ':service/v2/places', auth: { basic: { username: 'steve', password: 'can' } }
-  endpoint ':service/v2/places/:id', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint '{+service}/v2/places', auth: { basic: { username: 'steve', password: 'can' } }
+  endpoint '{+service}/v2/places/{id}', auth: { basic: { username: 'steve', password: 'can' } }
 
 end
 
@@ -660,7 +660,7 @@ Provide options to the requests made to include referenced resources:
 
 ## Map data
 
-To influence how data is accessed/provied, you can use mappings to either map deep nested data or to manipulate data when its accessed. Simply create methods inside the LHS::Record. They can access underlying data:
+To influence how data is accessed/provided, you can use mappings to either map deep nested data or to manipulate data when its accessed. Simply create methods inside the LHS::Record. They can access underlying data:
 
 ```ruby
 class LocalEntry < LHS::Record
@@ -675,11 +675,11 @@ end
 
 ## Nested records
 
-Nested records (in nested data) are automaticaly casted when the href matches any defined endpoint of any LHS::Record.
+Nested records (in nested data) are automatically casted when the href matches any defined endpoint of any LHS::Record.
 
 ```ruby
 class Place < LHS::Record
-  endpoint ':service/v2/places'
+  endpoint '{+service}/v2/places'
 
   def name
     addresses.first.business.identities.first.name
@@ -687,7 +687,7 @@ class Place < LHS::Record
 end
 
 class Favorite < LHS::Record
-  endpoint ':service/v2/favorites'
+  endpoint '{+service}/v2/favorites'
 end
 
 favorite = Favorite.includes(:place).find(1)
@@ -753,11 +753,11 @@ _NOTE: RPC-style actions, that are discouraged in REST anyway, are utilizable wi
 ```ruby
 class Location < LHS::Record
   endpoint 'http://sync/locations'
-  endpoint 'http://sync/locations/:id'
+  endpoint 'http://sync/locations/{id}'
 end
 
 class Synchronization < LHS::Record
-  endpoint 'http://sync/locations/:id/sync'
+  endpoint 'http://sync/locations/{id}/sync'
 end
 
 location = Location.find(1)
@@ -790,14 +790,14 @@ or with parameters:
 
 In order to validate LHS::Records before persisting them, you can use the `valid?` (`validate` alias) method.
 
-The specific endpoint has to support validations without persistance. An endpoint has to be enabled (opt-in) for validations in the service configuration.
+The specific endpoint has to support validations without persistence. An endpoint has to be enabled (opt-in) for validations in the service configuration.
 
 ```ruby
 class User < LHS::Record
-  endpoint ':service/v2/users', validates: { params: { persist: false } }
+  endpoint '{+service}/v2/users', validates: { params: { persist: false } }
 end
 
-user = User.build(email: 'im not an email address')
+user = User.build(email: 'i\'m not an email address')
 unless user.valid?
   fail(user.errors[:email])
 end
@@ -813,10 +813,10 @@ user.errors.message # email must be set when user is created."
 The parameters passed to the `validates` endpoint option are used to perform the validation:
 
 ```ruby
-  endpoint ':service/v2/users', validates: { params: { persist: false } }  # will add ?persist=false to the request
-  endpoint ':service/v2/users', validates: { params: { publish: false } }  # will add ?publish=false to the request
-  endpoint ':service/v2/users', validates: { params: { validates: true } } # will add ?validates=true to the request
-  endpoint ':service/v2/users', validates: { path: 'validate' }            # will perform a validation via :service/v2/users/validate
+  endpoint '{+service}/v2/users', validates: { params: { persist: false } }  # will add ?persist=false to the request
+  endpoint '{+service}/v2/users', validates: { params: { publish: false } }  # will add ?publish=false to the request
+  endpoint '{+service}/v2/users', validates: { params: { validates: true } } # will add ?validates=true to the request
+  endpoint '{+service}/v2/users', validates: { path: 'validate' }            # will perform a validation via :service/v2/users/validate
 ```
 
 ### HTTP Status Codes for validation errors
@@ -953,7 +953,7 @@ Warnings behave like [Validation Errors](#Validation) and implements the same in
 
 LHS supports paginated APIs and it also supports various pagination strategies and by providing configuration possibilities.
 
-LHS diffentiates between the *pagination strategy* (how items/pages are navigated) itself and *pagination keys* (how stuff is named).
+LHS differentiates between the *pagination strategy* (how items/pages are navigated) itself and *pagination keys* (how stuff is named).
 
 *Example 1 "offset"-strategy (default configuration)*
 ```ruby
@@ -1019,7 +1019,7 @@ class Search < LHS::Record
 end
 ```
 
-`item_key` key used to unwrap the actuall object from within the response body.
+`item_key` key used to unwrap the actual object from within the response body.
 
 `items_key` key used to determine items of the current page (e.g. `docs`, `items`, etc.).
 
@@ -1027,7 +1027,7 @@ end
 
 `limit_key` key used to work with page limits (e.g. `size`, `limit`, etc.)
 
-In case the `limit_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `paramter` key, to keep those two use cases separated:
+In case the `limit_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `parameter` key, to keep those two use cases separated:
 
 ```ruby
   configuration limit_key: { body: [:response, :max], parameter: :max }
@@ -1035,7 +1035,7 @@ In case the `limit_key` parameter differs for where it's located in the body and
 
 `pagination_key` key used to paginate multiple pages (e.g. `offset`, `page`, `startAt` etc.).
 
-In case the `pagination_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `paramter` key, to keep those two use cases separated:
+In case the `pagination_key` parameter differs for where it's located in the body and how it's provided as get parameter, when retreiving pages, provide a hash with `body` and `parameter` key, to keep those two use cases separated:
 
 ```ruby
   configuration pagination_key: { body: [:response, :page], parameter: :page }
@@ -1125,7 +1125,7 @@ The applied pagination strategy depends on the actual configured pagination, so 
 
 ```ruby
   class Record < LHS::Record
-    endpoint ':service/records'
+    endpoint '{+service}/records'
     configuration pagination_strategy: 'page'
   end
   Record.page(3).per(20).where(color: 'blue')
@@ -1134,7 +1134,7 @@ The applied pagination strategy depends on the actual configured pagination, so 
 
 ```ruby
   class Record < LHS::Record
-    endpoint ':service/records'
+    endpoint '{+service}/records'
     configuration pagination_strategy: 'start'
   end
   Record.page(3).per(20).where(color: 'blue')
@@ -1172,7 +1172,7 @@ When endpoints provide indicators for current page position with links (like `ne
 
 How to configure endpoints for automatic collection detection?
 
-LHS detects autmatically if the responded data is a single business object or a set of business objects (collection).
+LHS detects automatically if the responded data is a single business object or a set of business objects (collection).
 
 Conventionally, when the responds contains an `items` key `{ items: [] }` it's treated as a collection, but also if the responds contains a plain raw array: `[{ href: '' }]` it's also treated as a collection.
 
@@ -1196,7 +1196,7 @@ Rails `form_for` view-helper can be used in combination with instances of LHS::R
 
 ## Count vs. Length
 
-The behaviour of `count` and `length` is based on ActiveRecord's behaviour.
+The behavior of `count` and `length` is based on ActiveRecord's behavior.
 
 `count` Determine the number of elements by taking the number of total elements that is provided by the endpoint/api.
 
@@ -1208,7 +1208,7 @@ You can inherit from previously defined records and also inherit endpoints that 
 
 ```
 class Base < LHS::Record
-  endpoint 'records/:id'
+  endpoint 'records/{id}'
 end
 
 class Example < Base

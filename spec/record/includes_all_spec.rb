@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'includes all' do
     before(:each) do
       class Customer < LHS::Record
-        endpoint 'http://datastore/customers/:id'
+        endpoint 'http://datastore/customers/{id}'
       end
     end
 
@@ -172,7 +172,7 @@ describe LHS::Record do
     context 'includes for an empty array' do
       before(:each) do
         class Contract < LHS::Record
-          endpoint 'http://datastore/contracts/:id'
+          endpoint 'http://datastore/contracts/{id}'
         end
         stub_request(:get, %r{http://datastore/contracts/\d})
           .to_return(body: {
@@ -215,11 +215,11 @@ describe LHS::Record do
     context 'include a known/identifiable record' do
       before(:each) do
         class Contract < LHS::Record
-          endpoint 'http://datastore/contracts/:id'
+          endpoint 'http://datastore/contracts/{id}'
         end
 
         class Entry < LHS::Record
-          endpoint ':datastore/entry/v1/:id.json'
+          endpoint '{+datastore}/entry/v1/{id}.json'
         end
 
         LHC.config.placeholder(:datastore, 'http://datastore')
@@ -264,7 +264,7 @@ describe LHS::Record do
     context 'includes all for parallel loaded ids' do
       before(:each) do
         class Place < LHS::Record
-          endpoint 'http://datastore/places/:id'
+          endpoint 'http://datastore/places/{id}'
         end
       end
 
@@ -366,11 +366,11 @@ describe LHS::Record do
         )
 
       class Place < LHS::Record
-        endpoint 'http://datastore/places/:id'
+        endpoint 'http://datastore/places/{id}'
       end
 
       class Contract < LHS::Record
-        endpoint 'http://datastore/places/:place_id/contracts'
+        endpoint 'http://datastore/places/{place_id}/contracts'
       end
     end
 

@@ -8,7 +8,7 @@ describe LHS::Collection do
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
     class Account < LHS::Record
-      endpoint ':datastore/accounts'
+      endpoint '{+datastore}/accounts'
     end
     stub_request(:get, "http://local.ch/v2/accounts")
       .to_return(body: response_data.to_json)

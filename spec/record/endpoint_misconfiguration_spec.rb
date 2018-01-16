@@ -6,8 +6,8 @@ describe LHS::Record do
       expect(
         lambda {
           class Record < LHS::Record
-            endpoint ':datastore/v2/feedbacks'
-            endpoint ':datastore/v2/reviews'
+            endpoint '{+datastore}/v2/feedbacks'
+            endpoint '{+datastore}/v2/reviews'
           end
         }
       ).to raise_error(/Clashing endpoints/)
@@ -15,8 +15,8 @@ describe LHS::Record do
       expect(
         lambda {
           class Record < LHS::Record
-            endpoint ':datastore/v2/:campaign_id/feedbacks'
-            endpoint ':datastore/v2/:campaign_id/reviews'
+            endpoint '{+datastore}/v2/{campaign_id}/feedbacks'
+            endpoint '{+datastore}/v2/{campaign_id}/reviews'
           end
         }
       ).to raise_error(/Clashing endpoints/)

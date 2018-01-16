@@ -12,7 +12,7 @@ describe LHS::Record do
   before(:each) do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
-      endpoint ':datastore/records/'
+      endpoint '{+datastore}/records/'
 
       def uppercase_name
         name.upcase

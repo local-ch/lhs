@@ -7,7 +7,7 @@ describe LHS::Record do
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
       class Feedback < LHS::Record
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
     end
 
