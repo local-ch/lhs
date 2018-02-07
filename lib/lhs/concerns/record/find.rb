@@ -18,8 +18,13 @@ class LHS::Record
           else
             find_by_id(args, options)
           end
-        return data if data && (data.is_a?(Array) || !data._record || data.collection?)
-        data ? data._record.new(data.unwrap_nested_item) : nil
+        return nil if data.nil?
+        return data if !data._record
+        if data.collection?
+          data.map { |record| data._record.new(record.unwrap_nested_item) }
+        else
+          data._record.new(data.unwrap_nested_item)
+        end
       end
 
       private
