@@ -61,7 +61,7 @@ describe LHS::Record do
     it 'is also applicable to create' do
       stub_request(:post, 'http://datastore/v2/records').to_return(body: {}.to_json)
       expect(LHC).to receive(:request)
-        .with(options.merge(method: :post, url: "http://datastore/v2/records", body: {name: 'Steve'}, headers: { 'Content-Type' => 'application/json' }))
+        .with(options.merge(method: :post, url: "http://datastore/v2/records", body: { name: 'Steve' }, headers: { 'Content-Type' => 'application/json' }))
         .and_call_original
       Record.options(options).create(name: 'Steve')
     end
