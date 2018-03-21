@@ -43,7 +43,7 @@ class LHS::Item < LHS::Proxy
           url: url,
           method: :post,
           params: params,
-          body: _data.to_json,
+          body: _data,
           headers: { 'Content-Type' => 'application/json' }
         )
       )

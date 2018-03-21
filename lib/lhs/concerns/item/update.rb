@@ -33,7 +33,7 @@ class LHS::Item < LHS::Proxy
         options.merge(
           method: options.fetch(:method, :post),
           url: url,
-          body: data_sent.to_json,
+          body: data_sent,
           headers: { 'Content-Type' => 'application/json' }
         )
       )
