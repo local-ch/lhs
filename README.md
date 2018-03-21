@@ -401,7 +401,29 @@ end
 
 See [Validation](#Validation) for handling validation errors when creating records.
 
-## Create records through associations (nested resources)
+### Endpoint paramters and paramter injection during creation
+
+LHS injects body parameters to generate target urls, used for creation requests:
+
+```ruby
+class Favorite << LHS::Record
+  endpoint '{+datastore}/content-ads/{content_ad_id}/feedbacks'
+end
+
+Favorite.create(content_ad_id: 51232, text: 'Great Restaurant!')
+# POST http://datastore/content_ads/51232
+# body: '{ "text" : "Great Restaurant!" }'
+```
+
+Because API's usually reject body paramters for foreign key attributes:
+
+```
+Not allowed to set or change foreign key: content_ad_id!
+```
+
+We remove it from the body, if the information was instead transported through the URL.
+
+### Create records through associations (nested resources)
 
 ```ruby
   class Review < LHS::Record
@@ -413,7 +435,7 @@ See [Validation](#Validation) for handling validation errors when creating recor
   end
 ```
 
-### Item
+#### Item
 ```ruby
   review = Review.find(1)
   # Review#1
@@ -435,7 +457,7 @@ See [Validation](#Validation) for handling validation errors when creating recor
 
 If the item already exists `ArgumentError` is raised.
 
-### Expanded collection
+#### Expanded collection
 ```ruby
   review = Review.includes(:comments).find(1)
   # Review#1
@@ -455,7 +477,7 @@ If the item already exists `ArgumentError` is raised.
   # :comments => { :href => '{+service}/reviews/1/comments, :items => [{ :href => '{+service}/reviews/1/comments/1', :text => 'Thank you!' }] }
 ```
 
-### Not expanded collection
+#### Not expanded collection
 ```ruby
   review = Review.find(1)
   # Review#1
@@ -483,6 +505,10 @@ Build and persist new items from scratch are done either with `new` or it's alia
   record = Record.new(recommended: true)
   record.save
 ```
+
+### Endpoint parameters and paramter injection for saving records
+
+See: [Endpoint paramters and paramter injection during creation](#endpoint-paramters-and-paramter-injection-during-creation)
 
 ## Custom setters and getters
 
@@ -725,6 +751,32 @@ You can persist changes with `save`. `save` will return `false` if persisting fa
 record = Record.find('1z-5r1fkaj')
 record.update(recommended: false)
 ```
+
+### Endpoint paramters and paramter injection during updates
+
+LHS injects body parameters to generate target urls, used for update requests:
+
+```ruby
+class Customer << LHS::Record
+  endpoint '{+customers}/{id}'
+end
+
+customer = Customer.find(123)
+# GET http://customers/123
+# { id: '123', name: 'My old company name' }
+
+customer.update(name: 'My new company name')
+# POST http://customers/123
+# body: { "name": 'My new company name' }
+```
+
+Because API's usually reject body paramters for primary identifiers:
+
+```
+Not allowed to change primary id!
+```
+
+We remove it from the body, if the information was instead transported through the URL.
 
 ## Partial Update
 
