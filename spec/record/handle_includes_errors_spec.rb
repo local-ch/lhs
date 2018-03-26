@@ -21,7 +21,7 @@ describe LHS::Record do
       .to_return(status: 404)
   end
 
-  it 'allows to chain error handling' do
+  it 'allows to pass error_handling for includes to LHC' do
     handler = ->(_) { return { deleted: true } }
     record = Record.includes(:other).references(other: { error_handler: { LHC::NotFound => handler } }).find(id: 1)
 
