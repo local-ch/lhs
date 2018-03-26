@@ -5,26 +5,26 @@ describe LHS::Record do
 
   before(:each) do
     class Record < LHS::Record
-      endpoint 'http://local.ch/v2/records'
+      endpoint 'http://local.ch/v2/records/{id}'
     end
     class NestedRecord < LHS::Record
-      endpoint 'http://local.ch/v2/other_records/:id'
+      endpoint 'http://local.ch/v2/other_records/{id}'
     end
-    stub_request(:get, "http://local.ch/v2/records")
+    stub_request(:get, "http://local.ch/v2/records/1")
       .to_return(body: {
-        items: [{
-          other: {
-            href: 'http://local.ch/v2/other_records/2'
-          }
-        }]
+        href: 'http://local.ch/v2/records/1',
+        other: {
+          href: 'http://local.ch/v2/other_records/2'
+        }
       }.to_json)
     stub_request(:get, "http://local.ch/v2/other_records/2")
       .to_return(status: 404)
   end
 
   it 'allows to chain error handling' do
-    handler = ->(){ binding.pry }
-    records = Record.includes(:other).references(other: { error_handler: { LHC::NotFound => handler } }).where.fetch
-    binding.pry
+    handler = ->(_) { return { deleted: true } }
+    record = Record.includes(:other).references(other: { error_handler: { LHC::NotFound => handler } }).find(id: 1)
+
+    expect(record.other.deleted).to be(true)
   end
 end
