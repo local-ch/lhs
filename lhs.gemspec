@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.requirements << 'Ruby >= 2.3.0'
   s.required_ruby_version = '>= 2.3.0'
 
-  s.add_dependency 'lhc', '~> 9.1.1'
+  s.add_dependency 'lhc', '~> 9.1.2.pre'
   s.add_dependency 'activesupport', '> 4.2'
   s.add_dependency 'activemodel'
 
