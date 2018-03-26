@@ -474,6 +474,7 @@ class LHS::Record
           return_data = nil
           error_class = LHC::Error.find(response)
           error = error_class.new(error_class, response)
+          binding.pry
           handlers = handlers.to_a.select { |error_handler| error.is_a? error_handler.class }
           raise(error) unless handlers.any?
           handlers.each do |handler|
