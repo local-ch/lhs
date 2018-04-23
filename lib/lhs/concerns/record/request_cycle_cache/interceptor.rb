@@ -10,7 +10,7 @@ class LHS::Record
       VERSION = 1
       CACHED_METHODS = [:get].freeze
 
-      def before_request
+      def before_request(request)
         request.options = request.options.merge({
           cache: {
             expires_in: 5.minutes,
