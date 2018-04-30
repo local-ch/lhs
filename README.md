@@ -430,7 +430,7 @@ end
   )
 ```
 
-See [Validation](#Validation) for handling validation errors when creating records.
+See [Validation](#validation) for handling validation errors when creating records.
 
 ### Endpoint paramters and paramter injection during creation
 
@@ -872,6 +872,8 @@ or with parameters:
 ## Validation
 
 In order to validate LHS::Records before persisting them, you can use the `valid?` (`validate` alias) method.
+
+It's not recommended to validate records anywhere but with the endpoint that also provides to create them.
 
 The specific endpoint has to support validations without persistence. An endpoint has to be enabled (opt-in) for validations in the service configuration.
 
