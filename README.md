@@ -53,8 +53,39 @@ class Record < LHS::Record
 end
 ```
 
-Please use placeholders when configuring endpoints also for hosts. Otherwise LHS will match them strictly, which can result in problems when mixing URLs containing `http`, `https` or no protocol at all.
-[https://github.com/local-ch/lhc/blob/master/docs/configuration.md#placeholders](LHC Placeholder Configuration)
+### Configuring endpoint hosts
+
+Please use placeholders when configuring hosts for endpoints. Otherwise LHS will match them strictly, which can result in problems when a services dynamically returns `hrefs` and mixes `http`, `https` or no protocol at all. See: [LHC Placeholder Configuration](https://github.com/local-ch/lhc/blob/master/docs/configuration.md#placeholders)
+
+Please DO NOT mix host placeholders with endpoints (paths), LHS need to know what part of an endpoint is a host and what part of an endpoint is a path, if you use a placeholders in your records endpoint configuration:
+
+**DO**
+```ruby
+LHC.configure do |config|
+  config.placeholder(:search_service, 'http://tel.search.ch')
+end
+
+class Record < LHS::Record
+
+  endpoint '{+search_service}/api/search.json'
+
+end
+```
+
+**DON'T**
+```ruby
+LHC.configure do |config|
+  config.placeholder(:search_service, 'http://tel.search.ch/api/search.json')
+end
+
+class Record < LHS::Record
+
+  endpoint '{+search_service}'
+  
+end
+```
+
+### Endpoint clashing
 
 If you try to setup a LHS::Record with clashing endpoints it will immediately raise an exception.
 
