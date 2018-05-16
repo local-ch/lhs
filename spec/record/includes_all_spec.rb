@@ -381,4 +381,88 @@ describe LHS::Record do
       expect(place.contracts.first.customer.name).to eq 'Swisscom Directories AG'
     end
   end
+
+  context 'nested includes_all' do
+    context 'with optional children' do
+      before do
+        class Favorite < LHS::Record
+          endpoint 'http://datastore/favorites'
+        end
+
+        class Place < LHS::Record
+          endpoint 'http://datastore/places/{id}'
+        end
+
+        class Contract < LHS::Record
+          endpoint 'http://datastore/places/{place_id}/contracts'
+        end
+
+        stub_request(:get, %r{http://datastore/favorites})
+          .to_return(
+            body: {
+              items: [{
+                href: "http://datastore/favorites/1",
+                place: {
+                  href: "http://datastore/places/1"
+                }
+              }, {
+                href: "http://datastore/favorite/2",
+                place: {
+                  href: "http://datastore/places/2"
+                }
+              }],
+              total: 2,
+              offset: 0,
+              limit: 100
+            }.to_json
+          )
+
+        stub_request(:get, %r{http://datastore/places/1})
+          .to_return(
+            body: {
+              href: "http://datastore/places/1",
+              name: 'Place 1',
+              contracts: {
+                href: "http://datastore/places/1/contracts"
+              }
+            }.to_json
+          )
+
+        stub_request(:get, %r{http://datastore/places/1/contracts})
+          .to_return(
+            body: {
+              items: [{
+                href: "http://datastore/places/1/contracts/1",
+                name: 'Contract 1'
+              }],
+              total: 1,
+              offset: 0,
+              limit: 10
+            }.to_json
+          )
+
+        stub_request(:get, %r{http://datastore/places/2})
+          .to_return(
+            body: {
+              href: "http://datastore/places/2",
+              name: 'Place 2'
+            }.to_json
+          )
+      end
+
+      it 'includes nested objects when they exist' do
+        favorites = Favorite.includes(:place).includes_all(place: :contracts).all
+
+        expect(favorites.first.place.name).to eq('Place 1')
+        expect(favorites.first.place.contracts.first.name).to eq('Contract 1')
+      end
+
+      it 'does not include nested objects when they are not there' do
+        favorites = Favorite.includes(:place).includes_all(place: :contracts).all
+
+        expect(favorites.last.place.name).to eq('Place 2')
+        expect(favorites.last.place.contracts).to be(nil)
+      end
+    end
+  end
 end
