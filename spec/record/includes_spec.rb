@@ -560,4 +560,32 @@ describe LHS::Record do
       expect(places[1].category_relations[0].name).to eq 'Drinks'
     end
   end
+
+  context 'single href with array response' do
+    it 'extends base items with arrays' do
+      class Place < LHS::Record
+        endpoint '{+datastore}/place'
+        endpoint '{+datastore}/place/{id}'
+      end
+
+      stub_request(:get, "#{datastore}/place/1")
+        .to_return(body: [
+          {
+            'contracts' => {
+              'href' => "#{datastore}/place/1/contacts"
+            }
+          }
+        ].to_json)
+
+      stub_request(:get, "#{datastore}/place/1/contacts")
+        .to_return(body: [
+          { 'href' => "#{datastore}/place/1/contracts/1", 'info' => 'Contract 1' },
+          { 'href' => "#{datastore}/place/1/contracts/2", 'info' => 'Contract 2' }
+        ].to_json)
+
+      place = Place.includes(:contracts).find(1)
+      expect(place.contracts.length).to eq 2
+      expect(place.contracts.first.info).to eq 'Contract 1'
+    end
+  end
 end
