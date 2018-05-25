@@ -105,8 +105,17 @@ class LHS::Record
           .each_with_index do |item, index|
             item_addition = addition[index]
             next if item_addition.nil? || item.nil?
-            item.merge! item_addition._raw
+            if item_addition._raw.is_a?(Array)
+              extend_base_collection_with_array!(item, item_addition._raw)
+            else
+              item.merge! item_addition._raw
+            end
           end
+      end
+
+      def extend_base_collection_with_array!(item, addition)
+        item[items_key] ||= []
+        item[items_key].concat(addition)
       end
 
       def extend_base_array!(data, addition, key)
@@ -190,7 +199,14 @@ class LHS::Record
         if addition.item?
           (addition._raw.keys - [:href]).empty?
         elsif addition.collection?
-          addition.all? { |item| item && (item._raw.keys - [:href]).empty? }
+          addition.all? do |item|
+            next if item.blank?
+            if item._raw.is_a?(Hash)
+              (item._raw.keys - [:href]).empty?
+            elsif item._raw.is_a?(Array)
+              item.any? { |item| (item._raw.keys - [:href]).empty? }
+            end
+          end
         end
       end
 
