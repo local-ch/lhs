@@ -1,3 +1,3 @@
 module LHS
-  VERSION = '15.2.2-favorites.1'
+  VERSION = '15.2.3-favorites.1'
 end
