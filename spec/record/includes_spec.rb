@@ -563,29 +563,45 @@ describe LHS::Record do
 
   context 'single href with array response' do
     it 'extends base items with arrays' do
-      class Place < LHS::Record
-        endpoint '{+datastore}/place'
-        endpoint '{+datastore}/place/{id}'
+      class Sector < LHS::Record
+        endpoint '{+datastore}/sectors'
+        endpoint '{+datastore}/sectors/{id}'
       end
 
-      stub_request(:get, "#{datastore}/place/1")
+      stub_request(:get, "#{datastore}/sectors")
+        .with(query: hash_including(key: 'my_service'))
         .to_return(body: [
           {
-            'contracts' => {
-              'href' => "#{datastore}/place/1/contacts"
-            }
+            href: "#{datastore}/sectors/1",
+            services: {
+              href: "#{datastore}/sectors/1/services"
+            },
+            keys: [
+              {
+                key: 'my_service',
+                language: 'de'
+              }
+            ]
           }
         ].to_json)
 
-      stub_request(:get, "#{datastore}/place/1/contacts")
+      stub_request(:get, "#{datastore}/sectors/1/services")
         .to_return(body: [
-          { 'href' => "#{datastore}/place/1/contracts/1", 'info' => 'Contract 1' },
-          { 'href' => "#{datastore}/place/1/contracts/2", 'info' => 'Contract 2' }
+          {
+            href: "#{datastore}/services/s1",
+            price_in_cents: 9900,
+            key: 'my_service_service_1'
+          },
+          {
+            href: "#{datastore}/services/s2",
+            price_in_cents: 19900,
+            key: 'my_service_service_2'
+          }
         ].to_json)
 
-      place = Place.includes(:contracts).find(1)
-      expect(place.contracts.length).to eq 2
-      expect(place.contracts.first.info).to eq 'Contract 1'
+      sector = Sector.includes(:services).find_by(key: 'my_service')
+      expect(sector.services.length).to eq 2
+      expect(sector.services.first.key).to eq 'my_service_service_1'
     end
   end
 end
