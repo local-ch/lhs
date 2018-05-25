@@ -82,10 +82,18 @@ describe LHS::Record::Request do
           all: true,
           auth: { bearer: 'xxx' },
           params: { limit: 100 }
-        }
+        },
+        nil,
+        {
+          url: 'http://localhost:3000/test/resource?abc=def&limit=1&offset=3&test=3',
+          all: true,
+          auth: { bearer: 'xxx' },
+          params: { limit: 100 }
+        },
       ]
     end
-    let(:data) do
+
+    let(:data_array) do
       [
         LHS::Record.new,
         nil,
@@ -93,8 +101,12 @@ describe LHS::Record::Request do
       ]
     end
 
-    it 'returns even if data has nil elements' do
-      expect(subject.send(:load_and_merge_set_of_paginated_collections!, data, options)).to eq('asdf')
+    let(:data) do
+      LHS::Record.new(data_array)
+    end
+
+    it 'does not raise an error when data has nil objects' do
+      expect(subject.send(:load_and_merge_set_of_paginated_collections!, data, options)).to_not be_nil
     end
   end
 end
