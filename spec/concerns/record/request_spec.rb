@@ -89,7 +89,7 @@ describe LHS::Record::Request do
           all: true,
           auth: { bearer: 'xxx' },
           params: { limit: 100 }
-        },
+        }
       ]
     end
 
@@ -97,7 +97,7 @@ describe LHS::Record::Request do
       [
         LHS::Record.new,
         nil,
-        LHS::Record.new,
+        LHS::Record.new
       ]
     end
 
