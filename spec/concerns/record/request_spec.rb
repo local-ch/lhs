@@ -73,4 +73,40 @@ describe LHS::Record::Request do
                            params: { limit: 100 })
     end
   end
+
+  describe 'load_and_merge_set_of_paginated_collections!' do
+    let(:options) do
+      [
+        {
+          url: 'http://localhost:3000/test/resource?abc=def&limit=1&offset=3&test=1',
+          all: true,
+          auth: { bearer: 'xxx' },
+          params: { limit: 100 }
+        },
+        nil,
+        {
+          url: 'http://localhost:3000/test/resource?abc=def&limit=1&offset=3&test=3',
+          all: true,
+          auth: { bearer: 'xxx' },
+          params: { limit: 100 }
+        }
+      ]
+    end
+
+    let(:data_array) do
+      [
+        LHS::Record.new,
+        nil,
+        LHS::Record.new
+      ]
+    end
+
+    let(:data) do
+      LHS::Record.new(data_array)
+    end
+
+    it 'does not raise an error when data has nil objects' do
+      expect(subject.send(:load_and_merge_set_of_paginated_collections!, data, options)).to_not be_nil
+    end
+  end
 end

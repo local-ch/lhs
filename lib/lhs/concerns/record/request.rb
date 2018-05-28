@@ -267,14 +267,18 @@ class LHS::Record
 
       def load_and_merge_set_of_paginated_collections!(data, options)
         options_for_this_batch = []
+        data_record = data._record
+        data = data.compact
         options.compact.each_with_index do |_, index|
           record = data[index]._record
           pagination = record.pagination(data[index])
           next if pagination.pages_left.zero?
           options_for_this_batch.push(options_for_next_batch(record, pagination, options[index], data[index]))
         end
-        data._record.request(options_for_this_batch.flatten).each do |batch_data|
-          merge_batch_data_with_parent!(batch_data, batch_data._request.options[:parent_data])
+        if data_record.present?
+          data_record.request(options_for_this_batch.flatten).each do |batch_data|
+            merge_batch_data_with_parent!(batch_data, batch_data._request.options[:parent_data])
+          end
         end
       end
 
