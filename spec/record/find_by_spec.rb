@@ -48,7 +48,7 @@ describe LHS::Record do
         class Record < LHS::Record
           endpoint '{+datastore}/feedbacks/{id}'
           configuration(
-            limit_key: { body: %i[response max], parameter: :max },
+            limit_key: { body: %i[response max], parameter: :max }
           )
         end
       end
