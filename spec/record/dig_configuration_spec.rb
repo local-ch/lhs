@@ -3,7 +3,13 @@ require 'rails_helper'
 describe LHS::Record do
   before(:each) do
     class Business < LHS::Record
-      configuration items_key: [:response, :businesses], limit_key: [:response, :max], pagination_key: [:response, :offset], total_key: [:response, :count], pagination_strategy: :offset
+      configuration(
+        items_key: [:response, :businesses],
+        total_key: [:response, :count],
+        limit_key: { body: [:response, :max] },
+        pagination_key: { body: [:response, :offset] },
+        pagination_strategy: :offset
+      )
       endpoint 'http://uberall/businesses'
     end
   end
