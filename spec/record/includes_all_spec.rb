@@ -518,7 +518,6 @@ describe LHS::Record do
 
         expect(favorites.last.place.name).to eq('Place 3')
         expect(favorites.last.place.contracts.first.name).to eq('Contract 3')
-        binding.pry
       end
     end
   end
