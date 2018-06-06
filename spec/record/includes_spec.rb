@@ -560,4 +560,48 @@ describe LHS::Record do
       expect(places[1].category_relations[0].name).to eq 'Drinks'
     end
   end
+
+  context 'single href with array response' do
+    it 'extends base items with arrays' do
+      class Sector < LHS::Record
+        endpoint '{+datastore}/sectors'
+        endpoint '{+datastore}/sectors/{id}'
+      end
+
+      stub_request(:get, "#{datastore}/sectors")
+        .with(query: hash_including(key: 'my_service'))
+        .to_return(body: [
+          {
+            href: "#{datastore}/sectors/1",
+            services: {
+              href: "#{datastore}/sectors/1/services"
+            },
+            keys: [
+              {
+                key: 'my_service',
+                language: 'de'
+              }
+            ]
+          }
+        ].to_json)
+
+      stub_request(:get, "#{datastore}/sectors/1/services")
+        .to_return(body: [
+          {
+            href: "#{datastore}/services/s1",
+            price_in_cents: 9900,
+            key: 'my_service_service_1'
+          },
+          {
+            href: "#{datastore}/services/s2",
+            price_in_cents: 19900,
+            key: 'my_service_service_2'
+          }
+        ].to_json)
+
+      sector = Sector.includes(:services).find_by(key: 'my_service')
+      expect(sector.services.length).to eq 2
+      expect(sector.services.first.key).to eq 'my_service_service_1'
+    end
+  end
 end
