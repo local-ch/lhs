@@ -384,19 +384,8 @@ describe LHS::Record do
 
   context 'nested includes_all' do
     context 'with optional children' do
-      before do
-        class Favorite < LHS::Record
-          endpoint 'http://datastore/favorites'
-        end
 
-        class Place < LHS::Record
-          endpoint 'http://datastore/places/{id}'
-        end
-
-        class Contract < LHS::Record
-          endpoint 'http://datastore/places/{place_id}/contracts'
-        end
-
+      let(:favorites_request_stub) do
         stub_request(:get, %r{http://datastore/favorites})
           .to_return(
             body: {
@@ -410,13 +399,20 @@ describe LHS::Record do
                 place: {
                   href: "http://datastore/places/2"
                 }
+              }, {
+                href: "http://datastore/favorite/3",
+                place: {
+                  href: "http://datastore/places/3"
+                }
               }],
-              total: 2,
+              total: 3,
               offset: 0,
               limit: 100
             }.to_json
           )
+      end
 
+      let(:place1_request_stub) do
         stub_request(:get, %r{http://datastore/places/1})
           .to_return(
             body: {
@@ -427,7 +423,32 @@ describe LHS::Record do
               }
             }.to_json
           )
+      end
 
+      let(:place2_request_stub) do
+        stub_request(:get, %r{http://datastore/places/2})
+          .to_return(
+            body: {
+              href: "http://datastore/places/2",
+              name: 'Place 2'
+            }.to_json
+          )
+      end
+
+      let(:place3_request_stub) do
+        stub_request(:get, %r{http://datastore/places/3})
+          .to_return(
+            body: {
+              href: "http://datastore/places/3",
+              name: 'Place 3',
+              contracts: {
+                href: "http://datastore/places/3/contracts"
+              }
+            }.to_json
+          )
+      end
+
+      let(:contracts_request_for_place1_stub) do
         stub_request(:get, %r{http://datastore/places/1/contracts})
           .to_return(
             body: {
@@ -440,14 +461,42 @@ describe LHS::Record do
               limit: 10
             }.to_json
           )
+      end
 
-        stub_request(:get, %r{http://datastore/places/2})
+      let(:contracts_request_for_place3_stub) do
+        stub_request(:get, %r{http://datastore/places/3/contracts})
           .to_return(
             body: {
-              href: "http://datastore/places/2",
-              name: 'Place 2'
+              items: [{
+                href: "http://datastore/places/3/contracts/1",
+                name: 'Contract 3'
+              }],
+              total: 1,
+              offset: 0,
+              limit: 10
             }.to_json
           )
+      end
+
+      before do
+        class Favorite < LHS::Record
+          endpoint 'http://datastore/favorites'
+        end
+
+        class Place < LHS::Record
+          endpoint 'http://datastore/places/{id}'
+        end
+
+        class Contract < LHS::Record
+          endpoint 'http://datastore/places/{place_id}/contracts'
+        end
+
+        favorites_request_stub
+        place1_request_stub
+        place2_request_stub
+        place3_request_stub
+        contracts_request_for_place1_stub
+        contracts_request_for_place3_stub
       end
 
       it 'includes nested objects when they exist' do
@@ -460,8 +509,16 @@ describe LHS::Record do
       it 'does not include nested objects when they are not there' do
         favorites = Favorite.includes(:place).includes_all(place: :contracts).all
 
-        expect(favorites.last.place.name).to eq('Place 2')
-        expect(favorites.last.place.contracts).to be(nil)
+        expect(favorites[1].place.name).to eq('Place 2')
+        expect(favorites[1].place.contracts).to be(nil)
+      end
+
+      it 'does include and merges objects after nil objects in collections' do
+        favorites = Favorite.includes(:place).includes_all(place: :contracts).all
+
+        expect(favorites.last.place.name).to eq('Place 3')
+        expect(favorites.last.place.contracts.first.name).to eq('Contract 3')
+        binding.pry
       end
     end
   end
