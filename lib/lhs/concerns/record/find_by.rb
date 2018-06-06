@@ -23,7 +23,7 @@ class LHS::Record
       def _find_by(params, options = {})
         raise(LHS::Unprocessable.new, 'Cannot find Record without an ID') if params.any? && params.all? { |_, value| value.blank? }
         options ||= {}
-        params = params.dup.merge(limit: 1).merge(options.fetch(:params, {}))
+        params = params.dup.merge(limit_key(:parameter) => 1).merge(options.fetch(:params, {}))
         data = request(options.merge(params: params))
         if data && data._proxy.is_a?(LHS::Collection)
           data.first || raise(LHC::NotFound.new('No item was found.', data._request.response))

@@ -283,7 +283,8 @@ class LHS::Record
 
       def load_and_merge_set_of_paginated_collections!(data, options)
         options_for_this_batch = []
-        options.compact.each_with_index do |_, index|
+        options.each_with_index do |element, index|
+          next if element.nil?
           record = data[index]._record
           pagination = record.pagination(data[index])
           next if pagination.pages_left.zero?
