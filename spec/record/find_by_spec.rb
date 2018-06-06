@@ -42,6 +42,25 @@ describe LHS::Record do
     it 'returns nil if empty id' do
       expect { Record.find_by(id: '') }.to raise_error LHS::Unprocessable
     end
+
+    context 'when record has custom configurations for limit_key' do
+      before :each do
+        class Record < LHS::Record
+          endpoint '{+datastore}/feedbacks/{id}'
+          configuration(
+            limit_key: { body: %i[response max], parameter: :max }
+          )
+        end
+      end
+
+      it 'finds a single record with max parameter' do
+        stub_request(:get, "#{datastore}/feedbacks/z12f-3asm3ngals?max=1")
+          .to_return(status: 200, body: load_json(:feedback))
+        record = Record.find_by(id: 'z12f-3asm3ngals')
+        expect(record.source_id).to be_kind_of String
+        expect(record).to be_kind_of Record
+      end
+    end
   end
 
   context 'find_by!' do
