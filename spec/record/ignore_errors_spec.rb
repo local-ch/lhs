@@ -7,7 +7,7 @@ describe LHS::Record do
   before(:each) do
     class Record < LHS::Record
       endpoint 'http://local.ch/v2/records'
-      endpoint 'http://local.ch/v2/records/:id'
+      endpoint 'http://local.ch/v2/records/{id}'
     end
   end
 

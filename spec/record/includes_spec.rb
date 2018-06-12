@@ -26,16 +26,16 @@ describe LHS::Record do
   context 'singlelevel includes' do
     before(:each) do
       class LocalEntry < LHS::Record
-        endpoint ':datastore/local-entries'
-        endpoint ':datastore/local-entries/:id'
+        endpoint '{+datastore}/local-entries'
+        endpoint '{+datastore}/local-entries/{id}'
       end
       class User < LHS::Record
-        endpoint ':datastore/users'
-        endpoint ':datastore/users/:id'
+        endpoint '{+datastore}/users'
+        endpoint '{+datastore}/users/{id}'
       end
       class Favorite < LHS::Record
-        endpoint ':datastore/favorites'
-        endpoint ':datastore/favorites/:id'
+        endpoint '{+datastore}/favorites'
+        endpoint '{+datastore}/favorites/{id}'
       end
       stub_request(:get, "#{datastore}/local-entries/1")
         .to_return(body: { company_name: 'local.ch' }.to_json)
@@ -74,8 +74,8 @@ describe LHS::Record do
   context 'multilevel includes' do
     before(:each) do
       class Feedback < LHS::Record
-        endpoint ':datastore/feedbacks'
-        endpoint ':datastore/feedbacks/:id'
+        endpoint '{+datastore}/feedbacks'
+        endpoint '{+datastore}/feedbacks/{id}'
       end
       stub_campaign_request
       stub_entry_request
@@ -153,7 +153,7 @@ describe LHS::Record do
 
       before(:each) do
         class Entry < LHS::Record
-          endpoint ':datastore/local-entries/:id'
+          endpoint '{+datastore}/local-entries/{id}'
         end
         LHC.config.interceptors = [interceptor]
       end
@@ -169,12 +169,12 @@ describe LHS::Record do
     context 'includes not present in response' do
       before :each do
         class Parent < LHS::Record
-          endpoint ':datastore/local-parents'
-          endpoint ':datastore/local-parents/:id'
+          endpoint '{+datastore}/local-parents'
+          endpoint '{+datastore}/local-parents/{id}'
         end
 
         class OptionalChild < LHS::Record
-          endpoint ':datastore/local-children/:id'
+          endpoint '{+datastore}/local-children/{id}'
         end
       end
 
@@ -224,8 +224,8 @@ describe LHS::Record do
   context 'links pointing to nowhere' do
     it 'sets nil for links that cannot be included' do
       class Feedback < LHS::Record
-        endpoint ':datastore/feedbacks'
-        endpoint ':datastore/feedbacks/:id'
+        endpoint '{+datastore}/feedbacks'
+        endpoint '{+datastore}/feedbacks/{id}'
       end
 
       stub_request(:get, "#{datastore}/feedbacks/123")
@@ -247,11 +247,11 @@ describe LHS::Record do
     before(:each) do
       module Services
         class LocalEntry < LHS::Record
-          endpoint ':datastore/local-entries'
+          endpoint '{+datastore}/local-entries'
         end
 
         class Feedback < LHS::Record
-          endpoint ':datastore/feedbacks'
+          endpoint '{+datastore}/feedbacks'
         end
       end
       stub_request(:get, "http://local.ch/v2/feedbacks?id=123")
@@ -266,8 +266,8 @@ describe LHS::Record do
   context 'arrays' do
     before(:each) do
       class Place < LHS::Record
-        endpoint ':datastore/place'
-        endpoint ':datastore/place/:id'
+        endpoint '{+datastore}/place'
+        endpoint '{+datastore}/place/{id}'
       end
     end
 
@@ -317,8 +317,8 @@ describe LHS::Record do
   context 'empty collections' do
     it 'skips including empty collections' do
       class Place < LHS::Record
-        endpoint ':datastore/place'
-        endpoint ':datastore/place/:id'
+        endpoint '{+datastore}/place'
+        endpoint '{+datastore}/place/{id}'
       end
 
       stub_request(:get, "#{datastore}/place/1")
@@ -337,8 +337,8 @@ describe LHS::Record do
   context 'extend items with arrays' do
     it 'extends base items with arrays' do
       class Place < LHS::Record
-        endpoint ':datastore/place'
-        endpoint ':datastore/place/:id'
+        endpoint '{+datastore}/place'
+        endpoint '{+datastore}/place/{id}'
       end
 
       stub_request(:get, "#{datastore}/place/1")
@@ -361,7 +361,7 @@ describe LHS::Record do
   context 'unexpanded response when requesting the included collection' do
     before(:each) do
       class Customer < LHS::Record
-        endpoint ':datastore/customer/:id'
+        endpoint '{+datastore}/customer/{id}'
       end
     end
 
@@ -430,12 +430,12 @@ describe LHS::Record do
   context 'includes with options' do
     before(:each) do
       class Customer < LHS::Record
-        endpoint ':datastore/customers/:id'
-        endpoint ':datastore/customers'
+        endpoint '{+datastore}/customers/{id}'
+        endpoint '{+datastore}/customers'
       end
 
       class Place < LHS::Record
-        endpoint ':datastore/places'
+        endpoint '{+datastore}/places'
       end
 
       stub_request(:get, "#{datastore}/places?forwarded_params=123")
@@ -476,7 +476,7 @@ describe LHS::Record do
   context 'more complex examples' do
     before(:each) do
       class Place < LHS::Record
-        endpoint 'http://datastore/places/:id'
+        endpoint 'http://datastore/places/{id}'
       end
     end
 
@@ -538,7 +538,7 @@ describe LHS::Record do
   context 'include and merge arrays when calling find in parallel' do
     before(:each) do
       class Place < LHS::Record
-        endpoint 'http://datastore/places/:id'
+        endpoint 'http://datastore/places/{id}'
       end
       stub_request(:get, 'http://datastore/places/1')
         .to_return(body: {
@@ -558,6 +558,50 @@ describe LHS::Record do
         .find(1, 2)
       expect(places[0].category_relations[0].name).to eq 'Food'
       expect(places[1].category_relations[0].name).to eq 'Drinks'
+    end
+  end
+
+  context 'single href with array response' do
+    it 'extends base items with arrays' do
+      class Sector < LHS::Record
+        endpoint '{+datastore}/sectors'
+        endpoint '{+datastore}/sectors/{id}'
+      end
+
+      stub_request(:get, "#{datastore}/sectors")
+        .with(query: hash_including(key: 'my_service'))
+        .to_return(body: [
+          {
+            href: "#{datastore}/sectors/1",
+            services: {
+              href: "#{datastore}/sectors/1/services"
+            },
+            keys: [
+              {
+                key: 'my_service',
+                language: 'de'
+              }
+            ]
+          }
+        ].to_json)
+
+      stub_request(:get, "#{datastore}/sectors/1/services")
+        .to_return(body: [
+          {
+            href: "#{datastore}/services/s1",
+            price_in_cents: 9900,
+            key: 'my_service_service_1'
+          },
+          {
+            href: "#{datastore}/services/s2",
+            price_in_cents: 19900,
+            key: 'my_service_service_2'
+          }
+        ].to_json)
+
+      sector = Sector.includes(:services).find_by(key: 'my_service')
+      expect(sector.services.length).to eq 2
+      expect(sector.services.first.key).to eq 'my_service_service_1'
     end
   end
 end

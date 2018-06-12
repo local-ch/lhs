@@ -26,7 +26,7 @@ class LHS::Item < LHS::Proxy
     private
 
     def apply_default_creation_options(options, url, data)
-      options = options.merge(method: :post, url: url, body: data.to_json)
+      options = options.merge(method: :post, url: url, body: data)
       options[:headers] ||= {}
       options[:headers].merge!('Content-Type' => 'application/json')
       options

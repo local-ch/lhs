@@ -23,7 +23,7 @@ describe LHS::Record do
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
       class Feedback < LHS::Record
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
       stub_request(:get, 'http://local.ch/v2/feedbacks?entry_id=1')
         .to_return(body: body_json)

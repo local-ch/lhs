@@ -100,7 +100,7 @@ describe LHS::Item do
   context 'endpoint does not support validations' do
     before(:each) do
       class Favorite < LHS::Record
-        endpoint ':datastore/v2/favorites'
+        endpoint '{+datastore}/v2/favorites'
       end
     end
 
@@ -114,7 +114,7 @@ describe LHS::Item do
   context 'generate validation url from locally passed params' do
     before(:each) do
       class User < LHS::Record
-        endpoint 'http://datastore/v2/users/:user_id', validates: { params: { persist: false } }
+        endpoint 'http://datastore/v2/users/{user_id}', validates: { params: { persist: false } }
       end
     end
 

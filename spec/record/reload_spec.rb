@@ -4,7 +4,7 @@ describe LHS::Record do
   before(:each) do
     class Record < LHS::Record
       endpoint 'http://datastore/records'
-      endpoint 'http://datastore/records/:id'
+      endpoint 'http://datastore/records/{id}'
     end
   end
 
@@ -27,7 +27,7 @@ describe LHS::Record do
     before(:each) do
       class Location < LHS::Record
         endpoint 'http://uberall/locations'
-        endpoint 'http://uberall/locations/:id'
+        endpoint 'http://uberall/locations/{id}'
 
         configuration item_key: [:response, :location], items_key: [:response, :locations]
       end

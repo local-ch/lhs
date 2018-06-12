@@ -6,7 +6,7 @@ describe LHS::Record do
       before do
         LHC.config.placeholder('datastore', datastore)
         class Feedback < LHS::Record
-          endpoint ':datastore/content-ads/:campaign_id/feedbacks'
+          endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
         end
       end
 

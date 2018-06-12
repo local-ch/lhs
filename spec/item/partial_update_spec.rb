@@ -3,8 +3,8 @@ require 'rails_helper'
 describe LHS::Item do
   before(:each) do
     class Record < LHS::Record
-      endpoint ':datastore/v2/:campaign_id/feedbacks'
-      endpoint ':datastore/v2/feedbacks'
+      endpoint '{+datastore}/v2/{campaign_id}/feedbacks'
+      endpoint '{+datastore}/v2/feedbacks'
     end
   end
 
@@ -65,7 +65,7 @@ describe LHS::Item do
     before(:each) do
       class Location < LHS::Record
         endpoint 'http://uberall/locations'
-        endpoint 'http://uberall/locations/:id'
+        endpoint 'http://uberall/locations/{id}'
       end
     end
 
@@ -83,7 +83,7 @@ describe LHS::Item do
       before(:each) do
         class Location < LHS::Record
           endpoint 'http://uberall/locations'
-          endpoint 'http://uberall/locations/:id'
+          endpoint 'http://uberall/locations/{id}'
           configuration item_created_key: [:response, :location], item_key: [:response, :location]
         end
       end

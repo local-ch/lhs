@@ -6,11 +6,11 @@ describe LHS::Record do
 
     it 'is possible to load records twice' do
       class Feedback < LHS::Record
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
 
       class Feedback < LHS::Record
-        endpoint ':datastore/feedbacks'
+        endpoint '{+datastore}/feedbacks'
       end
     end
   end

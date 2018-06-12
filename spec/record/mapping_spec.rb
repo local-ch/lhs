@@ -7,8 +7,8 @@ describe LHS::Record do
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
       class LocalEntry < LHS::Record
-        endpoint ':datastore/local-entries'
-        endpoint ':datastore/local-entries/:id'
+        endpoint '{+datastore}/local-entries'
+        endpoint '{+datastore}/local-entries/{id}'
       end
     end
 
@@ -50,7 +50,7 @@ describe LHS::Record do
 
     it 'clones mappings when using include' do
       class Agb < LHS::Record
-        endpoint ":datastore/agbs/active?agb_type=CC_TOU"
+        endpoint "{+datastore}/agbs/active?agb_type=CC_TOU"
         def pdf_url
           self['binary_url_pdf_de']
         end
@@ -84,8 +84,8 @@ describe LHS::Record do
         end
       end
       class Favorite < LHS::Record
-        endpoint ':datastore/favorites'
-        endpoint ':datastore/favorites/:id'
+        endpoint '{+datastore}/favorites'
+        endpoint '{+datastore}/favorites/{id}'
       end
       stub_request(:get, "#{datastore}/local-entries/1")
         .to_return(body: { company_name: 'local.ch' }.to_json)

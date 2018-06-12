@@ -7,8 +7,8 @@ describe LHS::Record do
     before(:each) do
       LHC.config.placeholder('datastore', datastore)
       class LocalEntry < LHS::Record
-        endpoint ':datastore/local-entries'
-        endpoint ':datastore/local-entries/:id'
+        endpoint '{+datastore}/local-entries'
+        endpoint '{+datastore}/local-entries/{id}'
       end
     end
 

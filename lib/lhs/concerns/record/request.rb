@@ -77,7 +77,7 @@ class LHS::Record
 
       def parse_uri(url, options)
         URI.parse(
-          if url.match(LHC::Endpoint::PLACEHOLDER)
+          if url.match(Addressable::Template::EXPRESSION)
             compute_url(options[:params], url)
           else
             url
@@ -105,8 +105,17 @@ class LHS::Record
           .each_with_index do |item, index|
             item_addition = addition[index]
             next if item_addition.nil? || item.nil?
-            item.merge! item_addition._raw
+            if item_addition._raw.is_a?(Array)
+              extend_base_collection_with_array!(item, item_addition._raw)
+            else
+              item.merge! item_addition._raw
+            end
           end
+      end
+
+      def extend_base_collection_with_array!(item, addition)
+        item[items_key] ||= []
+        item[items_key].concat(addition)
       end
 
       def extend_base_array!(data, addition, key)
@@ -190,7 +199,14 @@ class LHS::Record
         if addition.item?
           (addition._raw.keys - [:href]).empty?
         elsif addition.collection?
-          addition.all? { |item| item && (item._raw.keys - [:href]).empty? }
+          addition.all? do |item|
+            next if item.blank?
+            if item._raw.is_a?(Hash)
+              (item._raw.keys - [:href]).empty?
+            elsif item._raw.is_a?(Array)
+              item.any? { |item| (item._raw.keys - [:href]).empty? }
+            end
+          end
         end
       end
 
@@ -267,7 +283,8 @@ class LHS::Record
 
       def load_and_merge_set_of_paginated_collections!(data, options)
         options_for_this_batch = []
-        options.each_with_index do |_, index|
+        options.each_with_index do |element, index|
+          next if element.nil?
           record = data[index]._record
           pagination = record.pagination(data[index])
           next if pagination.pages_left.zero?
@@ -474,9 +491,9 @@ class LHS::Record
           return_data = nil
           error_class = LHC::Error.find(response)
           error = error_class.new(error_class, response)
-          handlers = handlers.to_a.select { |error_handler| error.is_a? error_handler.class }
+          handlers = handlers.map(&:to_a).to_a.select { |handler_error_class, _| error.is_a? handler_error_class }
           raise(error) unless handlers.any?
-          handlers.each do |handler|
+          handlers.each do |_, handler|
             handlers_return = handler.call(response)
             return_data = handlers_return if handlers_return.present?
           end

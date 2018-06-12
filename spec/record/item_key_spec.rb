@@ -5,7 +5,7 @@ describe LHS::Record do
     class Location < LHS::Record
       configuration item_key: [:response, :location]
       endpoint 'http://uberall/location'
-      endpoint 'http://uberall/location/:id'
+      endpoint 'http://uberall/location/{id}'
     end
   end
 

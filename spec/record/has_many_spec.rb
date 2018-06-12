@@ -18,7 +18,7 @@ describe LHS::Record do
     before(:each) do
       class Location < LHS::Record
         endpoint 'http://uberall/locations'
-        endpoint 'http://uberall/locations/:id'
+        endpoint 'http://uberall/locations/{id}'
         has_many :listings
       end
 
@@ -49,7 +49,7 @@ describe LHS::Record do
       module Uberall
         class Location < LHS::Record
           endpoint 'http://uberall/locations'
-          endpoint 'http://uberall/locations/:id'
+          endpoint 'http://uberall/locations/{id}'
           has_many :listings, class_name: 'Uberall::Listing'
         end
       end

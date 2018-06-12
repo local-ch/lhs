@@ -5,7 +5,7 @@ describe LHS::Record do
     before(:each) do
       class Record < LHS::Record
         endpoint 'http://datastore/history'
-        endpoint 'http://datastore/history/:id'
+        endpoint 'http://datastore/history/{id}'
       end
     end
 

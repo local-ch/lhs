@@ -114,6 +114,10 @@ class LHS::Record
       def class
         @data.keys.first
       end
+
+      def to_a
+        [self.class, handler]
+      end
     end
 
     # IgnoredError: Ignore certain LHC errors when resolving the chain
