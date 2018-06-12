@@ -30,7 +30,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'capybara'
-  s.add_development_dependency 'rubocop', '~> 0.47.0'
+  s.add_development_dependency 'rubocop', '~> 0.57.1'
+  s.add_development_dependency 'rubocop-rspec', '~> 1.26.0'
   s.add_development_dependency 'json', '>=  1.8.2'
 
   s.license = 'GPL-3'
