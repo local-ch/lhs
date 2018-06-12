@@ -26,7 +26,7 @@ describe LHS::Collection do
 
   let(:datastore) { 'http://local.ch/v2' }
 
-  before(:each) do
+  before do
     LHC.config.placeholder('datastore', datastore)
     class Feedback < LHS::Record
       endpoint '{+datastore}/feedbacks'

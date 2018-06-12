@@ -61,7 +61,7 @@ class LHS::Record
   delegate :_proxy, :_endpoint, :merge_raw!, :select, :becomes, to: :_data
 
   def initialize(data = nil, apply_customer_setters = true)
-    data = LHS::Data.new({}, nil, self.class) unless data
+    data ||= LHS::Data.new({}, nil, self.class)
     data = LHS::Data.new(data, nil, self.class) unless data.is_a?(LHS::Data)
     define_singleton_method(:_data) { data }
     apply_custom_setters! if apply_customer_setters

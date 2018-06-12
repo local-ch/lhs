@@ -17,7 +17,7 @@ describe LHS::Collection do
 
   let(:datastore) { 'http://local.ch/v2' }
 
-  before(:each) do
+  before do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/{campaign_id}/feedbacks'
@@ -65,7 +65,7 @@ describe LHS::Collection do
   end
 
   context 'configured pagination' do
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint '{+datastore}/{campaign_id}/feedbacks'
         endpoint '{+datastore}/feedbacks'

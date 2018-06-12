@@ -14,7 +14,7 @@ describe LHS::Collection do
       }
     end
 
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'http://datastore/records`'
       end

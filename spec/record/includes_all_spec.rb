@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'includes all' do
-    before(:each) do
+    before do
       class Customer < LHS::Record
         endpoint 'http://datastore/customers/{id}'
       end
@@ -170,7 +170,7 @@ describe LHS::Record do
     end
 
     context 'includes for an empty array' do
-      before(:each) do
+      before do
         class Contract < LHS::Record
           endpoint 'http://datastore/contracts/{id}'
         end
@@ -194,7 +194,7 @@ describe LHS::Record do
       end
 
       context 'weird array without hrefs' do
-        before(:each) do
+        before do
           stub_request(:get, "http://datastore/options/1?limit=100")
             .to_return(body: { type: 'REACH_EXT' }.to_json)
         end
@@ -213,7 +213,7 @@ describe LHS::Record do
     end
 
     context 'include a known/identifiable record' do
-      before(:each) do
+      before do
         class Contract < LHS::Record
           endpoint 'http://datastore/contracts/{id}'
         end
@@ -262,7 +262,7 @@ describe LHS::Record do
     end
 
     context 'includes all for parallel loaded ids' do
-      before(:each) do
+      before do
         class Place < LHS::Record
           endpoint 'http://datastore/places/{id}'
         end
@@ -341,7 +341,7 @@ describe LHS::Record do
   end
 
   context 'Linked resources' do
-    before(:each) do
+    before do
       stub_request(:get, 'http://datastore/places/1/contracts?offset=0&limit=10')
         .to_return(
           body: {

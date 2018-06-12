@@ -10,7 +10,7 @@ describe 'Request Cycle Cache', type: :request do
     stub_request(:get, "http://datastore/v2/users/2").to_return(body: { name: 'Peter' }.to_json)
   end
 
-  before(:each) do
+  before do
     class User < LHS::Record
       endpoint 'http://datastore/v2/users'
       endpoint 'http://datastore/v2/users/{id}'
@@ -90,6 +90,7 @@ describe 'Request Cycle Cache', type: :request do
 
   context 'use: cache' do
     let!(:old_cache) { LHS.config.request_cycle_cache }
+
     before { LHS.config.request_cycle_cache = double('cache', fetch: nil, write: nil) }
     after { LHS.config.request_cycle_cache = old_cache }
 

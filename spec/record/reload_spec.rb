@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint 'http://datastore/records'
       endpoint 'http://datastore/records/{id}'
@@ -24,7 +24,7 @@ describe LHS::Record do
 
   context 'nested items' do
 
-    before(:each) do
+    before do
       class Location < LHS::Record
         endpoint 'http://uberall/locations'
         endpoint 'http://uberall/locations/{id}'

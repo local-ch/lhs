@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Record do
   context 'pagination chain' do
     context 'default pagination (offset)' do
-      before(:each) do
+      before do
         class Record < LHS::Record
           endpoint 'http://local.ch/records'
           endpoint 'http://local.ch/records/{id}'
@@ -55,7 +55,7 @@ describe LHS::Record do
     end
 
     context 'start pagination' do
-      before(:each) do
+      before do
         class Record < LHS::Record
           configuration pagination_strategy: 'start', pagination_key: 'start'
           endpoint 'http://local.ch/records'
@@ -76,7 +76,7 @@ describe LHS::Record do
     end
 
     context 'page pagination' do
-      before(:each) do
+      before do
         class Record < LHS::Record
           configuration pagination_strategy: 'page', pagination_key: 'page'
           endpoint 'http://local.ch/records'

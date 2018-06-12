@@ -1,10 +1,13 @@
 require 'rails_helper'
 
 describe LHS::Proxy do
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint '{+datastore}/v2/feedbacks'
     end
+
+    stub_request(:get, 'http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12d')
+      .to_return(status: 200, body: load_json(:localina_content_ad))
   end
 
   let(:json) do
@@ -23,19 +26,14 @@ describe LHS::Proxy do
     item.campaign
   end
 
-  before(:each) do
-    stub_request(:get, 'http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12d')
-      .to_return(status: 200, body: load_json(:localina_content_ad))
-  end
-
   context 'load' do
     it 'is loading data remotely when not present yet' do
-      expect(link.load!.id).to be
-      expect(link.id).to be
+      expect(link.load!.id).to be_present
+      expect(link.id).to be_present
     end
 
     it 'can be reloaded' do
-      expect(link.load!.id).to be
+      expect(link.load!.id).to be_present
       stub_request(:get, 'http://local.ch/v2/content-ads/51dfc5690cf271c375c5a12d')
         .to_return(status: 404)
       expect(-> { link.reload!.id })
@@ -44,7 +42,7 @@ describe LHS::Proxy do
   end
 
   context 'endpoint options' do
-    before(:each) do
+    before do
       class AnotherRecord < LHS::Record
         endpoint '{+datastore}/v2/feedbacks', params: { color: :blue }
       end

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Record do
   let(:datastore) { 'http://local.ch/v2' }
 
-  before(:each) do
+  before do
     LHC.config.placeholder(:datastore, datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
@@ -44,7 +44,7 @@ describe LHS::Record do
     end
 
     context 'when record has custom configurations for limit_key' do
-      before :each do
+      before do
         class Record < LHS::Record
           endpoint '{+datastore}/feedbacks/{id}'
           configuration(

@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'creation failed' do
     let(:datastore) { 'http://local.ch/v2' }
 
-    before(:each) do
+    before do
       LHC.config.placeholder(:datastore, datastore)
       class Record < LHS::Record
         endpoint '{+datastore}/{campaign_id}/feedbacks'
@@ -35,7 +35,7 @@ describe LHS::Record do
         .to_return(status: 400, body: creation_error.to_json)
       record = Record.create(name: 'Steve')
       expect(record).to be_kind_of Record
-      expect(record.errors).to be
+      expect(record.errors).to be_present
       expect(record.name).to eq 'Steve'
       expect(record.errors.include?(:ratings)).to eq true
       expect(record.errors.include?(:recommended)).to eq true

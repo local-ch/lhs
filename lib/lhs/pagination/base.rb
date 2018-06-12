@@ -27,7 +27,6 @@ module LHS::Pagination
     def offset
       data._raw.dig(*_record.pagination_key(:body)) || self.class::DEFAULT_OFFSET
     end
-    alias current_page offset
     alias start offset
 
     def pages_left

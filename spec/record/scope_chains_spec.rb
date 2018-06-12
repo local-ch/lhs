@@ -9,7 +9,7 @@ describe LHS::Record do
     { body: [{ name: 'Steve' }] }
   end
 
-  before(:each) do
+  before do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/records/'

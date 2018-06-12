@@ -5,7 +5,7 @@ describe LHS::Collection do
   let(:limit) { 10 }
   let(:total) { 20 }
 
-  before(:each) do
+  before do
     LHC.config.placeholder('search', search)
     class Search < LHS::Record
       configuration items_key: :docs, limit_key: :size, pagination_key: :start, pagination_strategy: :start, total_key: :totalResults

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'inherit endpoints' do
-    before(:each) do
+    before do
       class Base < LHS::Record
         endpoint 'records/{id}'
       end
@@ -20,7 +20,7 @@ describe LHS::Record do
   end
 
   context 'define endpoints in subclass' do
-    before(:each) do
+    before do
       class Base < LHS::Record
         endpoint 'records/{id}'
       end
@@ -40,7 +40,7 @@ describe LHS::Record do
   end
 
   context 'clashing endpoints between super and subclass' do
-    before(:each) do
+    before do
       class Base < LHS::Record
         endpoint 'records'
       end

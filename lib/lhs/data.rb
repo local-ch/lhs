@@ -18,7 +18,8 @@ class LHS::Data
   delegate :instance_methods, :items_key, :limit_key, :total_key, :pagination_key, to: :class
 
   # prevent clashing with attributes of underlying data
-  attr_accessor :_proxy, :_raw, :_parent, :_record, :_request, :_endpoint
+  attr_accessor :_proxy, :_parent, :_record, :_request, :_endpoint
+  attr_reader :_raw
 
   def initialize(input, parent = nil, record = nil, request = nil, endpoint = nil)
     self._raw = raw_from_input(input)
@@ -47,12 +48,12 @@ class LHS::Data
 
   def _root
     root = self
-    root = root._parent while root && root._parent
+    root = root._parent while root&._parent
     root
   end
 
   def parent
-    if _parent && _parent._record
+    if _parent&._record
       _parent._record.new(_parent, false)
     else
       _parent
@@ -65,7 +66,7 @@ class LHS::Data
 
   # enforce internal data structure to have deep symbolized keys
   def _raw=(raw)
-    raw.to_hash.deep_symbolize_keys! if raw && raw.respond_to?(:to_hash)
+    raw.to_hash.deep_symbolize_keys! if raw&.respond_to?(:to_hash)
     @_raw = raw
   end
 

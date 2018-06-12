@@ -91,7 +91,7 @@ class LHS::Complex
     end
 
     # add it to the array if there was no hash to merge it
-    data.push(other) if !data.any? { |element| element.data.is_a?(Hash) }
+    data.push(other) if data.none? { |element| element.data.is_a?(Hash) }
   end
 
   def merge_into_hash!(other)

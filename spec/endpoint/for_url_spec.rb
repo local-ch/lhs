@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Endpoint do
   context 'for url' do
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint '{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks'
         endpoint '{+datastore}/{campaign_id}/feedbacks'

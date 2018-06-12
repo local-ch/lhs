@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Record do
   let(:datastore) { 'http://local.ch/v2' }
 
-  before(:each) do
+  before do
     LHC.config.placeholder(:datastore, datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
@@ -17,7 +17,7 @@ describe LHS::Record do
         .to_return(status: 200, body: load_json(:feedback))
       record = Record.first
       expect(record).to be_kind_of Record
-      expect(record.source_id).to be
+      expect(record.source_id).to be_present
     end
 
     it 'returns nil if no record was found' do

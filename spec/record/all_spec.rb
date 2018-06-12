@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'all' do
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'http://datastore/feedbacks'
       end
@@ -60,7 +60,7 @@ describe LHS::Record do
   end
 
   context 'all without current page indicator' do
-    before(:each) do
+    before do
       class Category < LHS::Record
         configuration(
           items_key: %i(response results),
@@ -84,7 +84,7 @@ describe LHS::Record do
         )
     end
 
-    it 'is able to fetch all remote objects without any current page indicator by simply increasing the offset until response is empty' do
+    it 'is able to fetch all remote objects without any current page indicator by simply increasing the offset until response is empty with a limit' do
       stub_batch('http://store/categories?language=en&max=10&offset=0')
       stub_batch('http://store/categories?language=en&max=10&offset=10')
       stub_batch('http://store/categories?language=en&max=10&offset=20')

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   let(:datastore) { 'http://local.ch/v2' }
-  before(:each) { LHC.config.placeholder('datastore', datastore) }
+  before { LHC.config.placeholder('datastore', datastore) }
 
   let(:stub_campaign_request) do
     stub_request(:get, "#{datastore}/content-ads/51dfc5690cf271c375c5a12d")
@@ -24,7 +24,7 @@ describe LHS::Record do
   end
 
   context 'singlelevel includes' do
-    before(:each) do
+    before do
       class LocalEntry < LHS::Record
         endpoint '{+datastore}/local-entries'
         endpoint '{+datastore}/local-entries/{id}'
@@ -72,7 +72,7 @@ describe LHS::Record do
   end
 
   context 'multilevel includes' do
-    before(:each) do
+    before do
       class Feedback < LHS::Record
         endpoint '{+datastore}/feedbacks'
         endpoint '{+datastore}/feedbacks/{id}'
@@ -151,7 +151,7 @@ describe LHS::Record do
 
       let(:interceptor) { spy('interceptor') }
 
-      before(:each) do
+      before do
         class Entry < LHS::Record
           endpoint '{+datastore}/local-entries/{id}'
         end
@@ -167,7 +167,7 @@ describe LHS::Record do
     end
 
     context 'includes not present in response' do
-      before :each do
+      before do
         class Parent < LHS::Record
           endpoint '{+datastore}/local-parents'
           endpoint '{+datastore}/local-parents/{id}'
@@ -239,12 +239,12 @@ describe LHS::Record do
 
       feedback = Feedback.includes(campaign: :entry).find(123)
       expect(feedback.campaign._raw.keys.count).to eq 1
-      expect(feedback.campaign.href).to be
+      expect(feedback.campaign.href).to be_present
     end
   end
 
   context 'modules' do
-    before(:each) do
+    before do
       module Services
         class LocalEntry < LHS::Record
           endpoint '{+datastore}/local-entries'
@@ -264,7 +264,7 @@ describe LHS::Record do
   end
 
   context 'arrays' do
-    before(:each) do
+    before do
       class Place < LHS::Record
         endpoint '{+datastore}/place'
         endpoint '{+datastore}/place/{id}'
@@ -307,7 +307,7 @@ describe LHS::Record do
 
       it 'loads places in parallel and merges included data properly' do
         place = Place.includes(:relations).find(2, 1)
-        expect(place[0].relations.empty?)
+        expect(place[0].relations.empty?).to be true
         expect(place[1].relations[0].name).to eq 'Category'
         expect(place[1].relations[1].name).to eq 'ZeFrank'
       end
@@ -359,7 +359,7 @@ describe LHS::Record do
   end
 
   context 'unexpanded response when requesting the included collection' do
-    before(:each) do
+    before do
       class Customer < LHS::Record
         endpoint '{+datastore}/customer/{id}'
       end
@@ -428,7 +428,7 @@ describe LHS::Record do
   end
 
   context 'includes with options' do
-    before(:each) do
+    before do
       class Customer < LHS::Record
         endpoint '{+datastore}/customers/{id}'
         endpoint '{+datastore}/customers'
@@ -474,7 +474,7 @@ describe LHS::Record do
   end
 
   context 'more complex examples' do
-    before(:each) do
+    before do
       class Place < LHS::Record
         endpoint 'http://datastore/places/{id}'
       end
@@ -536,7 +536,7 @@ describe LHS::Record do
   end
 
   context 'include and merge arrays when calling find in parallel' do
-    before(:each) do
+    before do
       class Place < LHS::Record
         endpoint 'http://datastore/places/{id}'
       end

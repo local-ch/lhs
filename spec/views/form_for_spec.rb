@@ -6,7 +6,7 @@ describe 'form_for helper' do
     endpoint '{+datastore}/v2/feedbacks'
   end
 
-  before(:each) do
+  before do
     assign(:instance, Feedback.new)
   end
 

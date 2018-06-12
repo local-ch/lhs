@@ -15,7 +15,10 @@ RSpec/DescribedClass:
 RSpec/AnyInstance:
   Enabled: false
 
-Style/MethodMissing:
+Style/MethodMissingSuper:
+  Enabled: false
+
+Style/MissingRespondToMissing:
   Enabled: false
 
 Rails/OutputSafety:
@@ -26,15 +29,18 @@ Style/SignalException:
 
 Rails/DynamicFindBy:
   Enabled: false
-  
+
 Metrics/BlockLength:
   Enabled: false
 
-Style/EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
 RSpec/MultipleExpectations:
   Enabled: false
 
 Naming/PredicateName:
+  Enabled: false
+
+RSpec/MessageSpies:
   Enabled: false

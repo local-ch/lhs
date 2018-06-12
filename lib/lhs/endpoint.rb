@@ -5,6 +5,6 @@ class LHS::Endpoint
     template, record = LHS::Record::Endpoints.all.detect do |template, _record|
       LHC::Endpoint.match?(url, template)
     end
-    record.endpoints.detect { |endpoint| endpoint.url == template } if record
+    record&.endpoints&.detect { |endpoint| endpoint.url == template }
   end
 end

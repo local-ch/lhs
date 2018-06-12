@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'create' do
     let(:datastore) { 'http://local.ch/v2' }
 
-    before(:each) do
+    before do
       LHC.config.placeholder('datastore', datastore)
       class Feedback < LHS::Record
         endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
@@ -79,7 +79,7 @@ describe LHS::Record do
     end
 
     context 'custom setters' do
-      before(:each) do
+      before do
         class Feedback
           def ratings=(ratings)
             _raw[:ratings] = ratings.map { |k, v| { name: k.to_s, value: v } }
@@ -117,7 +117,7 @@ describe LHS::Record do
       end
 
       context 'and custom getters' do
-        before(:each) do
+        before do
           class Feedback
             def ratings
               Hash[_raw[:ratings].map { |r| [r[:name].to_sym, r[:value]] }]
@@ -133,7 +133,7 @@ describe LHS::Record do
     end
 
     context 'location header' do
-      before(:each) do
+      before do
         class ContactPerson < LHS::Record
           endpoint 'http://datastore/contact_persons'
         end

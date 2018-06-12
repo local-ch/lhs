@@ -6,7 +6,7 @@ describe LHS::Collection do
   let(:collection) { Record.where }
 
   context 'to_ary' do
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'http://datastore/records`'
       end
@@ -25,7 +25,7 @@ describe LHS::Collection do
     let(:subject) { collection.to_ary }
 
     it 'returns an array' do
-      expect(subject).to be
+      expect(subject).to be_present
       expect(subject).to be_kind_of Array
       expect(subject[0]).to be_kind_of Record
       expect(subject[0].name).to eq 'Steve'

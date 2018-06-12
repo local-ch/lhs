@@ -9,7 +9,7 @@ describe LHS::Data do
     LHS::Data.new(raw, nil, Record)
   end
 
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint '{+datastore}/v2/data'
     end

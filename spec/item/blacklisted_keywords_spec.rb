@@ -3,7 +3,7 @@ require 'lhs'
 
 describe LHS::Item do
 
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint 'http://datastore/v2/records'
     end

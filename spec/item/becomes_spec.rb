@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Item do
-  before(:each) do
+  before do
     class Location < LHS::Record
       endpoint 'http://sync/locations'
       endpoint 'http://sync/locations/{id}'

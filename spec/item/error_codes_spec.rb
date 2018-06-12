@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Item do
   context 'error codes' do
-    before(:each) do
+    before do
       I18n.reload!
       I18n.backend.store_translations(:en, YAML.safe_load(translation)) if translation.present?
       class Record < LHS::Record

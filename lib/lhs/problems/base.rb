@@ -67,7 +67,7 @@ module LHS::Problems
     end
 
     def empty?
-      all? { |_k, v| v && v.empty? && !v.is_a?(String) }
+      all? { |_k, v| v&.empty? && !v.is_a?(String) }
     end
 
     private

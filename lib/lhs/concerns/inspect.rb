@@ -30,7 +30,7 @@ module LHS
       current = self
       path = []
       _collect_parents_for_inspect!(path, current)
-      return unless path.present?
+      return if path.blank?
       "> #{path.reverse.join(' > ')}"
     end
 

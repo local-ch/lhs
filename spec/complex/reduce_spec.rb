@@ -171,7 +171,7 @@ describe LHS::Complex do
       )
     end
 
-    it 'reduces another complex multi-level example' do
+    it 'reduces another complex multi-level example (single plus array)' do
       expect(LHS::Complex.reduce([
         { entries: :products },
         { entries: [:customer, :contracts] }
@@ -180,7 +180,7 @@ describe LHS::Complex do
       )
     end
 
-    it 'reduces another complex multi-level example' do
+    it 'reduces another complex multi-level example (single hash plus array)' do
       expect(LHS::Complex.reduce([
         { entries: { customer: :contracts } },
         { entries: [:customer, :content_ads] }
