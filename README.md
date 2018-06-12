@@ -326,6 +326,29 @@ Location.find(1).listings.first.supported? # true
 
 ```
 
+### Options
+
+In case you have to configure relations, the following relation options are available:
+
+`class_name`: Specify the class name of the relation. Use it only if that name can't be inferred from the relation name. So has_many :photos will by default be linked to the Photo class, but if the real class name is e.g. UberallPhoto or namespaced Uberall::Photo, you'll have to specify it with this option.
+
+e.g.
+
+```ruby
+module Uberall
+  class Location < LHS::Record
+    endpoint 'http://uberall/locations'
+    endpoint 'http://uberall/locations/:id'
+    
+    has_many :photos, class_name: 'Uberall::Photo'
+  end
+end
+
+module Uberall
+  class Photo < LHS::Record
+  end
+end
+```
 
 ## Request based options
 

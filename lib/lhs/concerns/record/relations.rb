@@ -12,8 +12,10 @@ class LHS::Record
     end
 
     module ClassMethods
-      def has_many(name)
-        _relations[name] = { record_class_name: name.to_s.singularize.classify }
+      def has_many(*options)
+        name = options[0]
+        options = options[1] || {}
+        _relations[name] = { record_class_name: options.fetch(:class_name, name.to_s.singularize.classify) }
       end
     end
   end
