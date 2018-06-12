@@ -30,5 +30,9 @@ describe LHS::Collection do
       expect(subject[0]).to be_kind_of Record
       expect(subject[0].name).to eq 'Steve'
     end
+
+    it 'responds to to_ary' do
+      expect(subject.respond_to?(:to_ary)).to eq true
+    end
   end
 end
