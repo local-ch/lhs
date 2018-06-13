@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  before(:each) do
+  before do
     class Business < LHS::Record
       configuration item_created_key: [:response, :business], limit_key: [:response, :max], pagination_key: [:response, :offset], total_key: [:response, :count], pagination_strategy: :offset
       endpoint 'http://uberall/businesses'

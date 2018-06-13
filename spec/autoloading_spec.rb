@@ -6,14 +6,14 @@ describe LHS, type: :request do
         because it's necessary for endpoint-to-record-class-discovery",
     cleanup_before: false do
       all_endpoints = LHS::Record::Endpoints.all
-      expect(all_endpoints['http://datastore/v2/users']).to be
-      expect(all_endpoints['http://datastore/v2/users/{id}']).to be
+      expect(all_endpoints['http://datastore/v2/users']).to be_present
+      expect(all_endpoints['http://datastore/v2/users/{id}']).to be_present
       expect(
         User.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users' }
-      ).to be
+      ).to be_present
       expect(
         User.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users/{id}' }
-      ).to be
+      ).to be_present
     end
   end
 end

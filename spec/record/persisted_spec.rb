@@ -4,7 +4,7 @@ describe LHS::Record do
   context '#persisted?' do
     let(:datastore) { 'http://local.ch/v2' }
 
-    before(:each) do
+    before do
       LHC.config.placeholder('datastore', datastore)
       class Feedback < LHS::Record
         endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
@@ -32,6 +32,7 @@ describe LHS::Record do
     context 'for saved record' do
       let(:campaign_id) { 'aaa' }
       let(:parameters) { { recommended: true } }
+
       subject { Feedback.new(parameters.merge(campaign_id: campaign_id)) }
 
       before do

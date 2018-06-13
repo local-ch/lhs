@@ -5,7 +5,7 @@ describe LHS::Record do
     'http://datastore/v2'
   end
 
-  before(:each) do
+  before do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/records', validates: { persist: false }
@@ -73,7 +73,7 @@ describe LHS::Record do
       end
 
       context 'save' do
-        before(:each) do
+        before do
           stub_request(:post, 'http://datastore/v2/records/123').to_return(body: {}.to_json)
           expect(LHC).to receive(:request)
             .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: { href: 'http://datastore/v2/records/123' }, headers: { "Content-Type" => "application/json" }))
@@ -98,7 +98,7 @@ describe LHS::Record do
       end
 
       context 'destroy' do
-        before(:each) do
+        before do
           stub_request(:delete, 'http://datastore/v2/records/123').to_return(body: {}.to_json)
           expect(LHC).to receive(:request)
             .with(options.merge(method: :delete, url: "http://datastore/v2/records/123"))
@@ -115,7 +115,7 @@ describe LHS::Record do
       end
 
       context 'update' do
-        before(:each) do
+        before do
           stub_request(:post, "http://datastore/v2/records/123").to_return(body: {}.to_json)
           body = LHS::Data.new({ href: 'http://datastore/v2/records/123', name: 'steve' }, nil, Record)
           expect(LHC).to receive(:request)
@@ -141,7 +141,7 @@ describe LHS::Record do
       end
 
       context 'valid' do
-        before(:each) do
+        before do
           stub_request(:post, 'http://datastore/v2/records?persist=false').to_return(body: {}.to_json)
           body = LHS::Data.new({ href: 'http://datastore/v2/records/123' }, nil, Record)
           expect(LHC).to receive(:request)

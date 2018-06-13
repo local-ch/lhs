@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'new' do
     let(:datastore) { 'http://local.ch/v2' }
 
-    before(:each) do
+    before do
       LHC.config.placeholder('datastore', datastore)
       class Rating < LHS::Record
         endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
@@ -27,7 +27,7 @@ describe LHS::Record do
     end
 
     context 'initialise records with raw data' do
-      before(:each) do
+      before do
         class User < LHS::Record
           endpoint '{+datastore}/users'
         end
@@ -46,7 +46,7 @@ describe LHS::Record do
     end
 
     context 'custom setters' do
-      before(:each) do
+      before do
         class Rating
           def ratings=(ratings)
             _raw[:ratings] = ratings.map { |k, v| { name: k, value: v } }
@@ -66,7 +66,7 @@ describe LHS::Record do
       end
 
       context 'that do not affect raw data' do
-        before(:each) do
+        before do
           class Rating
             attr_accessor :listing
           end
@@ -86,7 +86,7 @@ describe LHS::Record do
       end
 
       context 'and custom getters' do
-        before(:each) do
+        before do
           class Rating
             def ratings
               Hash[_raw[:ratings].map { |r| [r[:name], r[:value]] }]

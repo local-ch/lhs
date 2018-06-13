@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Item do
-  before(:each) do
+  before do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/v2/{campaign_id}/feedbacks'
@@ -40,7 +40,7 @@ describe LHS::Item do
     end
 
     context 'includes and empty response' do
-      before(:each) do
+      before do
         class AnotherRecord < LHS::Record
           endpoint '{+datastore}/v2/:campaign_id/restaurants'
         end

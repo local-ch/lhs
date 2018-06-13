@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint 'http://datastore/feedbacks/{id}'
     end
@@ -10,7 +10,7 @@ describe LHS::Record do
   context 'url pattern' do
     let(:datastore) { 'http://local.ch/v2' }
 
-    before(:each) do
+    before do
       LHC.config.placeholder(:datastore, datastore)
       class Record < LHS::Record
         endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
@@ -26,7 +26,7 @@ describe LHS::Record do
   end
 
   context '#convert_options_to_endpoint' do
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'http://datastore/feedbacks/{id}', params: { tracking: 123 }
       end

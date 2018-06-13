@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Item do
-  before(:each) do
+  before do
     class Feedback < LHS::Record
       endpoint 'http://datastore/v2/feedbacks/{id}'
     end
@@ -37,7 +37,7 @@ describe LHS::Item do
       end
 
       context 'without the object' do
-        before(:each) do
+        before do
           stub_request(:get, "http://datastore/v2/feedbacks/1")
             .to_return(body: {
               review: {
@@ -56,7 +56,7 @@ describe LHS::Item do
       end
 
       context 'with existing item' do
-        before(:each) do
+        before do
           stub_request(:get, "http://datastore/v2/feedbacks/1")
             .to_return(body: {
               review: {
@@ -92,7 +92,7 @@ describe LHS::Item do
       end
 
       context 'when expanded' do
-        before(:each) do
+        before do
           stub_request(:get, "http://datastore/v2/feedbacks/1")
             .to_return(body: {
               reviews: {
@@ -114,7 +114,7 @@ describe LHS::Item do
       end
 
       context 'when not expanded' do
-        before(:each) do
+        before do
           stub_request(:get, "http://datastore/v2/feedbacks/1")
             .to_return(body: {
               reviews: {

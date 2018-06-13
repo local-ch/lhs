@@ -50,7 +50,7 @@ describe LHS::Item do
     '<html></html>'
   end
 
-  before(:each) do
+  before do
     I18n.reload!
     I18n.backend.store_translations(:en, {}) if defined? translations
     LHC.config.placeholder(:datastore, datastore)
@@ -68,7 +68,7 @@ describe LHS::Item do
         .to_return(status: 400, body: error_format_fields.to_json)
       result = record.save
       expect(result).to eq false
-      expect(record.errors).to be
+      expect(record.errors).to be_present
       expect(record.errors.any?).to eq true
       expect(record.name).to eq 'Steve'
       expect(record.errors.include?(:ratings)).to eq true
@@ -81,8 +81,8 @@ describe LHS::Item do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_fields.to_json)
       record.save
-      expect(record.errors.messages[:ratings]).to be
-      expect(record.errors.messages['ratings']).to be
+      expect(record.errors.messages[:ratings]).to be_present
+      expect(record.errors.messages['ratings']).to be_present
     end
 
     it 'parses field errors correctly when creation failed' do
@@ -90,7 +90,7 @@ describe LHS::Item do
         .to_return(status: 400, body: error_format_field_errors.to_json)
       result = record.save
       expect(result).to eq false
-      expect(record.errors).to be
+      expect(record.errors).to be_present
       expect(record.errors.any?).to eq true
       expect(record.errors.include?(:gender)).to eq true
       expect(record.errors.include?(:"contract.entry_id")).to eq true
@@ -102,7 +102,7 @@ describe LHS::Item do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_fields.to_json)
       expect { record.save! }.to raise_error(LHC::BadRequest)
-      expect(record.errors).to be
+      expect(record.errors).to be_present
       expect(record.errors.any?).to eq true
       expect(record.name).to eq 'Steve'
       expect(record.errors.include?(:ratings)).to eq true
@@ -118,12 +118,12 @@ describe LHS::Item do
         .to_return(status: 400, body: error_format_field_errors.to_json)
       record = Record.build
       record.save
-      expect(record.errors.raw).to be
+      expect(record.errors.raw).to be_present
       expect(record.errors.any?).to eq true
       json = JSON.parse(record.errors.raw)
-      expect(json['status']).to be
-      expect(json['message']).to be
-      expect(json['field_errors']).to be
+      expect(json['status']).to be_present
+      expect(json['message']).to be_present
+      expect(json['field_errors']).to be_present
     end
   end
 
@@ -135,7 +135,7 @@ describe LHS::Item do
       record.name = 'Steve'
       result = record.save
       expect(result).to eq false
-      expect(record.errors).to be
+      expect(record.errors).to be_present
       expect(record.errors.any?).to eq true
       expect(record.errors['error']).to eq ['missing_token']
       expect(record.errors['error_description']).to eq ['Bearer token is missing']
@@ -149,7 +149,7 @@ describe LHS::Item do
       record.name = 'Steve'
       result = record.save
       expect(result).to eq false
-      expect(record.errors).to be
+      expect(record.errors).to be_present
       expect(record.errors.any?).to eq true
       expect(record.errors['body']).to eq ['parse error']
     end
@@ -162,7 +162,7 @@ describe LHS::Item do
       record.name = 'Steve'
       result = record.save
       expect(result).to eq false
-      expect(record.errors).to be
+      expect(record.errors).to be_present
       expect(record.errors.any?).to eq true
       expect(record.errors['body']).to eq ['parse error']
     end
@@ -171,7 +171,7 @@ describe LHS::Item do
   describe '#clear' do
     let(:record) { Record.build(name: 'Steve') }
 
-    before(:each) do
+    before do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: error_format_fields.to_json)
     end
@@ -219,7 +219,7 @@ describe LHS::Item do
 
     let(:errrors) { record.errors }
 
-    before(:each) do
+    before do
       stub_request(:post, "#{datastore}/feedbacks")
         .to_return(status: 400, body: body_with_errors.to_json)
     end
@@ -228,14 +228,14 @@ describe LHS::Item do
       record.save
       expect(record.errors['address.street.name']).to include 'INCOMPLETE_PROPERTY_VALUE'
       expect(record.errors['reviews.0.name']).to include 'UNSUPPORTED_PROPERTY_VALUE'
-      expect(record.address.errors).to be
-      expect(record.address.errors['street.name']).to be
-      expect(record.address.street.errors).to be
+      expect(record.address.errors).to be_present
+      expect(record.address.errors['street.name']).to be_present
+      expect(record.address.street.errors).to be_present
       expect(record.address.street.errors[:name]).to include 'INCOMPLETE_PROPERTY_VALUE'
-      expect(record.reviews.errors).to be
-      expect(record.reviews.first.errors).to be
+      expect(record.reviews.errors).to be_present
+      expect(record.reviews.first.errors).to be_present
       expect(record.reviews.first.errors[:name]).to include 'UNSUPPORTED_PROPERTY_VALUE'
-      expect(record.reviews.last.errors).to be
+      expect(record.reviews.last.errors).to be_present
       expect(record.reviews.last.errors[:name]).to include 'UNSUPPORTED_PROPERTY_VALUE'
     end
 
@@ -253,7 +253,7 @@ describe LHS::Item do
     end
 
     context 'with general error fallback message configured' do
-      before(:each) do
+      before do
         I18n.reload!
         I18n.backend.store_translations(:en, YAML.safe_load(translation)) if translation.present?
       end

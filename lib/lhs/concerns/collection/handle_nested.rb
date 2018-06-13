@@ -34,7 +34,7 @@ class LHS::Collection < LHS::Proxy
       # Takes configured items key to access collection of items
       # of falls back to the default key
       def items_key(record)
-        record && record.items_key || LHS::Record.items_key
+        record&.items_key || LHS::Record.items_key
       end
     end
   end

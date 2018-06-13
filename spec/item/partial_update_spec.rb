@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Item do
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint '{+datastore}/v2/{campaign_id}/feedbacks'
       endpoint '{+datastore}/v2/feedbacks'
@@ -62,7 +62,7 @@ describe LHS::Item do
 
   context 'records without hrefs and nested items' do
 
-    before(:each) do
+    before do
       class Location < LHS::Record
         endpoint 'http://uberall/locations'
         endpoint 'http://uberall/locations/{id}'
@@ -80,7 +80,7 @@ describe LHS::Item do
 
     context 'records with nested items' do
 
-      before(:each) do
+      before do
         class Location < LHS::Record
           endpoint 'http://uberall/locations'
           endpoint 'http://uberall/locations/{id}'

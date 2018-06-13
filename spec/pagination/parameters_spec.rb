@@ -3,7 +3,7 @@ require 'webrick'
 
 describe LHS::Record do
 
-  before(:each) do
+  before do
     class Location < LHS::Record
       endpoint 'http://uberall/locations'
       configuration(

@@ -16,7 +16,7 @@ describe LHS::Collection do
 
     let(:subject) { collection.to_a }
 
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'http://datastore/records`'
       end

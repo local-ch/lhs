@@ -140,7 +140,7 @@ class LHS::Record
       attr_accessor :_links
 
       def self.unfold(args)
-        args.size == 1 ? args[0] : args
+        (args.size == 1) ? args[0] : args
       end
 
       def initialize(record_class, link, record = nil)

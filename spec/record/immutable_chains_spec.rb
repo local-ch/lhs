@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint 'http://local.ch/v2/records'
     end

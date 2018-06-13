@@ -5,7 +5,7 @@ describe LHS::Record do
     'http://datastore/v2'
   end
 
-  before(:each) do
+  before do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'

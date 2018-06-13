@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'set options for an endpoint' do
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'backend/v2/feedbacks/{id}', cache_expires_in: 1.day, retry: 2, cache: true
       end
@@ -20,7 +20,7 @@ describe LHS::Record do
 
     context 'deep merge endpoint options' do
 
-      before(:each) do
+      before do
         class Location < LHS::Record
           endpoint 'http://uberall/locations', headers: { privateKey: '123' }
         end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Proxy do
-  before(:each) do
+  before do
     class Search < LHS::Record
       endpoint 'http://search/results', items_key: :docs
     end

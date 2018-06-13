@@ -5,7 +5,7 @@ describe LHS::Collection do
   let(:items) { [{ name: 'Steve' }] }
   let(:collection) { Account.where }
 
-  before(:each) do
+  before do
     LHC.config.placeholder('datastore', datastore)
     class Account < LHS::Record
       endpoint '{+datastore}/accounts'

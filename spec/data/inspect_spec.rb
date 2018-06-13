@@ -6,7 +6,7 @@ describe LHS::Data do
       expect(data.inspect).to eq string.gsub(/  +/, '').strip
     end
 
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'http://local.ch/records'
         endpoint 'http://local.ch/records/{id}'

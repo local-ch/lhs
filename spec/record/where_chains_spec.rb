@@ -9,7 +9,7 @@ describe LHS::Record do
     { body: [{ name: 'Steve' }] }
   end
 
-  before(:each) do
+  before do
     LHC.config.placeholder('datastore', datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/records/'
@@ -21,7 +21,7 @@ describe LHS::Record do
   end
 
   context 'where chains' do
-    before(:each) do
+    before do
       stub_request(:get, "http://datastore/v2/records/?available=true&color=blue&range=%3E26")
         .to_return(response)
     end
@@ -43,7 +43,7 @@ describe LHS::Record do
   end
 
   context 'multiple parameters' do
-    before(:each) do
+    before do
       stub_request(:get, "http://datastore/v2/records/?parameter=last").to_return(response)
     end
 

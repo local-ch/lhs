@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'endpoints' do
     let(:datastore) { 'http://local.ch/v2' }
 
-    before(:each) do
+    before do
       LHC.config.placeholder(:datastore, datastore)
       class Record < LHS::Record
         endpoint '{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks'
@@ -14,9 +14,9 @@ describe LHS::Record do
     end
 
     it 'stores all the endpoints by url' do
-      expect(LHS::Record::Endpoints.all['{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks']).to be
-      expect(LHS::Record::Endpoints.all['{+datastore}/{campaign_id}/feedbacks']).to be
-      expect(LHS::Record::Endpoints.all['{+datastore}/feedbacks']).to be
+      expect(LHS::Record::Endpoints.all['{+datastore}/entries/{entry_id}/content-ads/{campaign_id}/feedbacks']).to be_present
+      expect(LHS::Record::Endpoints.all['{+datastore}/{campaign_id}/feedbacks']).to be_present
+      expect(LHS::Record::Endpoints.all['{+datastore}/feedbacks']).to be_present
     end
 
     it 'stores the endpoints of the service' do
@@ -42,7 +42,7 @@ describe LHS::Record do
     end
 
     context 'compute url from endpoint' do
-      before(:each) do
+      before do
         class Feedback < LHS::Record
           endpoint '{+datastore}/feedbacks'
           endpoint '{+datastore}/feedbacks/{id}'
@@ -56,7 +56,7 @@ describe LHS::Record do
     end
 
     context 'unsorted endpoints' do
-      before(:each) do
+      before do
         class AnotherRecord < LHS::Record
           endpoint '{+datastore}/feedbacks'
           endpoint '{+datastore}/{campaign_id}/feedbacks'
@@ -71,7 +71,7 @@ describe LHS::Record do
     end
 
     context 'includes data without considering base endpoint of parent record if url is present' do
-      before(:each) do
+      before do
         class Contract < LHS::Record
           endpoint '{+datastore}/contracts/:id'
           endpoint '{+datastore}/entry/{entry_id}/contracts'

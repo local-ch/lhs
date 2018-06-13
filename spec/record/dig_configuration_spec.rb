@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  before(:each) do
+  before do
     class Business < LHS::Record
       configuration(
         items_key: [:response, :businesses],

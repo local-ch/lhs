@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Item do
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint '{+datastore}/v2/{campaign_id}/feedbacks'
       endpoint '{+datastore}/v2/feedbacks'
@@ -23,7 +23,7 @@ describe LHS::Item do
   context 'endpoint options' do
     let(:headers) { { 'X-Header' => 'VALUE' } }
 
-    before(:each) do
+    before do
       class RecordWithOptions < LHS::Record
         endpoint 'http://datastore/records', headers: { 'X-Header' => 'VALUE' }
       end

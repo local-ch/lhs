@@ -72,7 +72,7 @@ describe LHS::Item do
         .to_return(status: 400, body: validation_errors.to_json)
     end
 
-    before(:each) do
+    before do
       class User < LHS::Record
         endpoint 'http://datastore/v2/users', validates: { params: { persist: false } }
       end
@@ -84,7 +84,7 @@ describe LHS::Item do
       user.email = 'not a valid email'
       failing_validation
       expect(user.valid?).to eq false
-      expect(user.errors[:email]).to be
+      expect(user.errors[:email]).to be_present
     end
 
     it 'gets reset when revalidation' do
@@ -98,7 +98,7 @@ describe LHS::Item do
   end
 
   context 'endpoint does not support validations' do
-    before(:each) do
+    before do
       class Favorite < LHS::Record
         endpoint '{+datastore}/v2/favorites'
       end
@@ -112,7 +112,7 @@ describe LHS::Item do
   end
 
   context 'generate validation url from locally passed params' do
-    before(:each) do
+    before do
       class User < LHS::Record
         endpoint 'http://datastore/v2/users/{user_id}', validates: { params: { persist: false } }
       end

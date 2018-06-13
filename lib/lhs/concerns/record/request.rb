@@ -54,7 +54,7 @@ class LHS::Record
       end
 
       def convert_options_to_endpoint(options)
-        return unless options.present?
+        return if options.blank?
         url = options[:url]
         endpoint = LHS::Endpoint.for_url(url)
         return unless endpoint
@@ -70,7 +70,7 @@ class LHS::Record
       # and return them as a ruby hash
       def values_from_get_params(url, options)
         uri = parse_uri(url, options)
-        return {} unless uri.query.present?
+        return {} if uri.query.blank?
         params = Rack::Utils.parse_nested_query(uri.query)
         params
       end
@@ -401,7 +401,7 @@ class LHS::Record
 
       def multiple_requests(options)
         options = options.map do |option|
-          next unless option.present?
+          next if option.blank?
           process_options(option, find_endpoint(option[:params], option.fetch(:url, nil)))
         end
         data = LHC.request(options.compact).map do |response|
@@ -461,12 +461,12 @@ class LHS::Record
         ignored_errors = options[:ignored_errors]
         options = options.deep_dup
         options[:ignored_errors] = ignored_errors if ignored_errors.present?
-        options[:params].deep_symbolize_keys! if options[:params]
+        options[:params]&.deep_symbolize_keys!
         options[:error_handler] = merge_error_handlers(options[:error_handler]) if options[:error_handler]
         options = (endpoint.options || {}).deep_merge(options)
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
         merge_explicit_params!(options[:params])
-        options.delete(:params) if options[:params] && options[:params].empty?
+        options.delete(:params) if options[:params]&.empty?
         inject_request_cycle_cache!(options)
         options
       end

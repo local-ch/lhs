@@ -4,7 +4,7 @@ describe LHS::Record do
 
   let(:listing) { location.listings.first }
 
-  before(:each) do
+  before do
     stub_request(:get, 'http://uberall/locations/1')
       .to_return(body: {
         listings: [{
@@ -15,7 +15,7 @@ describe LHS::Record do
 
   context 'has_many' do
 
-    before(:each) do
+    before do
       class Location < LHS::Record
         endpoint 'http://uberall/locations'
         endpoint 'http://uberall/locations/{id}'
@@ -45,7 +45,7 @@ describe LHS::Record do
 
   context 'custom class_name' do
 
-    before(:each) do
+    before do
       module Uberall
         class Location < LHS::Record
           endpoint 'http://uberall/locations'

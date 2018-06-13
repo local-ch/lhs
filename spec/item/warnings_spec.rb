@@ -2,13 +2,11 @@ require 'rails_helper'
 
 describe LHS::Item do
 
-  before(:each) do
+  before do
     class Presence < LHS::Record
       endpoint 'http://opm/presence'
     end
-  end
 
-  before(:each) do
     I18n.reload!
     I18n.backend.store_translations(:en, YAML.safe_load(%q{
       lhs:

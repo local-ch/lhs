@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'cast nested data' do
     let(:datastore) { 'http://local.ch/v2' }
 
-    before(:each) do
+    before do
       LHC.config.placeholder('datastore', datastore)
       class Customer < LHS::Record
         endpoint '{+datastore}/customers'

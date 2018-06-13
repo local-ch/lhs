@@ -4,7 +4,7 @@ describe LHS::Record do
   context 'mapping' do
     let(:datastore) { 'http://local.ch/v2' }
 
-    before(:each) do
+    before do
       LHC.config.placeholder('datastore', datastore)
       class LocalEntry < LHS::Record
         endpoint '{+datastore}/local-entries'

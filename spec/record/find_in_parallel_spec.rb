@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  before(:each) do
+  before do
     class Record < LHS::Record
       endpoint 'http://datastore/records/{id}'
     end
   end
 
   context 'find in parallel' do
-    before(:each) do
+    before do
       stub_request(:get, "http://datastore/records/1").to_return(status: 200, body: { id: 1 }.to_json)
       stub_request(:get, "http://datastore/records/3").to_return(status: 200, body: { id: 3 }.to_json)
     end

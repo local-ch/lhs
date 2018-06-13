@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'pagination links' do
-    before(:each) do
+    before do
       class Customer < LHS::Record
         endpoint 'http://datastore/customer'
       end

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LHS::Record do
   let(:datastore) { 'http://local.ch/v2' }
 
-  before(:each) do
+  before do
     LHC.config.placeholder(:datastore, datastore)
     class Record < LHS::Record
       endpoint '{+datastore}/content-ads/{campaign_id}/feedbacks'
@@ -15,7 +15,7 @@ describe LHS::Record do
 
   context 'find' do
     context 'finds a single unique record' do
-      before(:each) do
+      before do
         stub_request(:get, "#{datastore}/feedbacks/z12f-3asm3ngals")
           .to_return(status: 200, body: load_json(:feedback))
       end
@@ -34,7 +34,7 @@ describe LHS::Record do
     end
 
     context 'endpoint without identifier' do
-      before :each do
+      before do
         class LatestAGB < LHS::Record
           endpoint 'agbs/latest'
         end

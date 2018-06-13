@@ -26,7 +26,7 @@ module AutoloadRecords
         end
 
         def self.require_records
-          Dir.glob(Rails.root.join('app/models/**/*.rb')).each do |file|
+          Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file|
             require_dependency file if File.read(file).match('LHS::Record')
           end
         end

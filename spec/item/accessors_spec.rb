@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Item do
   context 'accessors' do
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'http://datastore/records'
       end

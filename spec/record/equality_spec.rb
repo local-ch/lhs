@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'equality' do
-    before(:each) do
+    before do
       class Record < LHS::Record
         endpoint 'http://local.ch/records'
       end

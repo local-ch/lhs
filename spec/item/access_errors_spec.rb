@@ -4,7 +4,7 @@ describe LHS::Item do
 
   context 'make errors available' do
 
-    before(:each) do
+    before do
       class Presence < LHS::Record
         endpoint 'http://opm/presences'
       end
