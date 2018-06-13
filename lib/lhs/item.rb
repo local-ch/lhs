@@ -28,6 +28,14 @@ class LHS::Item < LHS::Proxy
     true
   end
 
+  def respond_to?(sym, include_all = false)
+    if sym == :to_ary
+      false
+    else
+      super(sym, include_all)
+    end
+  end
+
   protected
 
   def method_missing(name, *args, &_block)
