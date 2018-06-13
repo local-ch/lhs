@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  
+
   context 'options' do
     before do
       class Record < LHS::Record
