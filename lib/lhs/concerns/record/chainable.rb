@@ -7,6 +7,7 @@ class LHS::Record
 
     # You can start new option chains for already fetched records (needed for save, update, valid etc.)
     def options(hash = nil)
+      return method_missing(:options) if hash.nil?
       Chain.new(self.class, Option.new(hash), self)
     end
 
