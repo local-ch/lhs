@@ -19,11 +19,7 @@ class LHS::Record
         _relations[name] = { record_class_name: options.fetch(:class_name, name.to_s.singularize.classify) }
       end
 
-      def has_one(*options)
-        name = options[0]
-        options = options[1] || {}
-        _relations[name] = { record_class_name: options.fetch(:class_name, name.to_s.singularize.classify) }
-      end
+      alias has_one has_many
     end
   end
 end
