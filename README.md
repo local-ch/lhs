@@ -303,8 +303,9 @@ Even though, nested data is automatically casted when accessed, see: [Nested rec
 
 As those records also don't have an href, nested records can not be casted automatically, when accessed.
 
-Those kind of relations, you can still configure manually:
+Those kind of relations, you can still configure manually, using `has_many` and `has_one`:
 
+### Relations
 ```ruby
 
 class Location < LHS::Record
@@ -323,6 +324,27 @@ class Listing < LHS::Record
 end
 
 Location.find(1).listings.first.supported? # true
+
+```
+
+```ruby
+
+class Transaction < LHS::Record
+
+  endpoint 'http://myservice/transaction/{id}'
+
+  has_one :user
+
+end
+
+class User < LHS::Record
+
+  def email
+    self[:email_address]
+  end
+end
+
+Transaction.find(1).user.email_address # steve@local.ch
 
 ```
 
