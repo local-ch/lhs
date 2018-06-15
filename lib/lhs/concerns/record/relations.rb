@@ -12,7 +12,6 @@ class LHS::Record
     end
 
     module ClassMethods
-
       def has_many(*options)
         name = options[0]
         options = options[1] || {}
