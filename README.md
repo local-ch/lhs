@@ -268,6 +268,28 @@ If no record is found, `nil` is returned.
 
 `first!` raises LHC::NotFound if nothing was found.
 
+`first` can also be used with options:
+
+```ruby
+Record.first(params: { color: :blue })
+```
+
+`last` is an alias for finding the last record without parameters.
+
+```ruby
+  Record.last
+```
+
+If no record is found, `nil` is returned.
+
+`last!` raises LHC::NotFound if nothing was found.
+
+`last` can also be used with options:
+
+```ruby
+Record.last(params: { color: :blue })
+```
+
 # Find multiple single records in parallel
 
 In case you want to fetch multiple records by id in parallel, you can also do this with `find`:
