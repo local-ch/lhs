@@ -75,7 +75,7 @@ class LHS::Collection < LHS::Proxy
   # Encloses accessed collection item
   # by wrapping it in an LHS::Item
   def enclose_item_in_data(value)
-    data = LHS::Data.new(value, _data)
+    data = LHS::Data.new(value, _data, _record)
     item = LHS::Item.new(data)
     LHS::Data.new(item, _data)
   end
