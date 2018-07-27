@@ -338,11 +338,6 @@ class LHS::Record
         data
       end
 
-      # Checks if given raw is paginated or not
-      def paginated?(raw)
-        !!(raw.is_a?(Hash) && raw.dig(*total_key))
-      end
-
       def prepare_options_for_include_all_request!(options)
         if options.is_a?(Array)
           options.each do |option|

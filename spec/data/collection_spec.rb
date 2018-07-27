@@ -33,8 +33,8 @@ describe LHS::Data do
   context 'collections' do
     it 'forwards calls to the collection' do
       expect(data.count).to be_kind_of Integer
-      expect(data[0]).to be_kind_of LHS::Data
-      expect(data.sample).to be_kind_of LHS::Data
+      expect(data[0]).to be_kind_of Record
+      expect(data.sample).to be_kind_of Record
     end
 
     it 'provides a total method to get the number of total records' do
