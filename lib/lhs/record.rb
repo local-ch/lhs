@@ -19,6 +19,8 @@ class LHS::Record
     'lhs/concerns/record/find_by'
   autoload :First,
     'lhs/concerns/record/first'
+  autoload :Last,
+    'lhs/concerns/record/last'
   autoload :Mapping,
     'lhs/concerns/record/mapping'
   autoload :Model,
@@ -49,6 +51,7 @@ class LHS::Record
   include Find
   include FindBy
   include First
+  include Last
   include LHS::Inspect
   include Mapping
   include Model

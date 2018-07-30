@@ -27,9 +27,11 @@ class LHS::Collection < LHS::Proxy
   end
 
   def _collection
-    raw = _data._raw if _data._raw.is_a?(Array)
-    raw ||= _data.access(input: _data._raw, record: _record)
-    Collection.new(raw, _data, _record)
+    @_collection ||= begin
+      raw = _data._raw if _data._raw.is_a?(Array)
+      raw ||= _data.access(input: _data._raw, record: _record)
+      Collection.new(raw, _data, _record)
+    end
   end
 
   def collection?
@@ -54,6 +56,7 @@ class LHS::Collection < LHS::Proxy
     if _collection.respond_to?(name)
       value = _collection.send(name, *args, &block)
       record = LHS::Record.for_url(value[:href]) if value.is_a?(Hash) && value[:href]
+      record ||= _record
       value = enclose_item_in_data(value) if value.is_a?(Hash)
       return value if METHOD_NAMES_EXLCUDED_FROM_WRAPPING.include?(name.to_s)
       wrap_return(value, record, name, args)
@@ -72,7 +75,7 @@ class LHS::Collection < LHS::Proxy
   # Encloses accessed collection item
   # by wrapping it in an LHS::Item
   def enclose_item_in_data(value)
-    data = LHS::Data.new(value, _data)
+    data = LHS::Data.new(value, _data, _record)
     item = LHS::Item.new(data)
     LHS::Data.new(item, _data)
   end

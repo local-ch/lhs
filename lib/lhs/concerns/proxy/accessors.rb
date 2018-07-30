@@ -73,10 +73,10 @@ class LHS::Proxy
     def wrap_return(value, record, name, args = nil)
       name = args.first if name == :[]
       return value unless worth_wrapping?(value)
-      data = (value.is_a?(LHS::Data) || value.is_a?(LHS::Record)) ? value : LHS::Data.new(value, _data)
+      data = (value.is_a?(LHS::Data) || value.is_a?(LHS::Record)) ? value : LHS::Data.new(value, _data, _record, _request)
       data.errors = LHS::Problems::Nested::Errors.new(errors, name) if errors.any?
       data.warnings = LHS::Problems::Nested::Warnings.new(warnings, name) if warnings.any?
-      return record.new(data) if record && !value.is_a?(LHS::Record)
+      return data.becomes(record) if record && !value.is_a?(LHS::Record)
       return data.becomes(_record._relations[name][:record_class_name].constantize) if _record && _record._relations[name]
       data
     end

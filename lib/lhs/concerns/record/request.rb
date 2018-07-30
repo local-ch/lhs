@@ -282,16 +282,22 @@ class LHS::Record
       end
 
       def load_and_merge_set_of_paginated_collections!(data, options)
-        options_for_this_batch = []
+        options_for_next_batch = []
         options.each_with_index do |element, index|
           next if element.nil?
           record = data[index]._record
           pagination = record.pagination(data[index])
           next if pagination.pages_left.zero?
-          options_for_this_batch.push(options_for_next_batch(record, pagination, options[index], data[index]))
+          options_for_next_batch.push(
+            options_for_next_batch(record, pagination, options[index]).tap do |options|
+              options.each do |option|
+                option[:merge_with_index] = index
+              end
+            end
+          )
         end
-        data._record.request(options_for_this_batch.flatten).each do |batch_data|
-          merge_batch_data_with_parent!(batch_data, batch_data._request.options[:parent_data])
+        data._record.request(options_for_next_batch.flatten).each do |batch_data|
+          merge_batch_data_with_parent!(batch_data, data[batch_data._request.options[:merge_with_index]])
         end
       end
 
@@ -336,11 +342,6 @@ class LHS::Record
         data = record.request(options)
         load_and_merge_remaining_objects!(data: data, options: options)
         data
-      end
-
-      # Checks if given raw is paginated or not
-      def paginated?(raw)
-        !!(raw.is_a?(Hash) && raw.dig(*total_key))
       end
 
       def prepare_options_for_include_all_request!(options)
@@ -439,7 +440,7 @@ class LHS::Record
         end.flatten
       end
 
-      def options_for_next_batch(record, pagination, options, parent_data = nil)
+      def options_for_next_batch(record, pagination, options)
         batch_options = []
         pagination.pages_left.times do |index|
           page_options = {
@@ -448,7 +449,6 @@ class LHS::Record
               record.pagination_key(:parameter) => pagination.next_offset(index + 1)
             }
           }
-          page_options[:parent_data] = parent_data if parent_data
           batch_options.push(
             options.deep_dup.deep_merge(page_options)
           )
