@@ -7,7 +7,7 @@ describe 'Request Cycle Cache', type: :request do
       .to_return(status: 404)
   end
 
-  it 'handles errors in rails controllers', cleanup_before: false do
+  it 'handles errors in rails controllers', dummy_models: true do
     get '/error_handling_with_chains/handle'
     expect(request).to have_been_made.once
     expect(response.body).to include('There was an error')
