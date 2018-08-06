@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get 'request_cycle_cache/no_caching_interceptor' => 'request_cycle_cache#no_caching_interceptor'
   get 'request_cycle_cache/parallel' => 'request_cycle_cache#parallel'
   get 'request_cycle_cache/headers' => 'request_cycle_cache#headers'
-  
+
   # Error handling with chains
   get 'error_handling_with_chains/handle' => 'error_handling_with_chains#handle'
 end
