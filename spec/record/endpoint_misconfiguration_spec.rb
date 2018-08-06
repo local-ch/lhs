@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'misconfiguration of endpoints' do
-    it 'fails trying to add clashing endpoints' do
+    it 'fails trying to add ambiguous endpoints' do
       expect(
         lambda {
           class Record < LHS::Record
@@ -10,7 +10,7 @@ describe LHS::Record do
             endpoint '{+datastore}/v2/reviews'
           end
         }
-      ).to raise_error(/Clashing endpoints/)
+      ).to raise_error(/Ambiguous endpoints/)
 
       expect(
         lambda {
@@ -19,7 +19,7 @@ describe LHS::Record do
             endpoint '{+datastore}/v2/{campaign_id}/reviews'
           end
         }
-      ).to raise_error(/Clashing endpoints/)
+      ).to raise_error(/Ambiguous endpoints/)
     end
   end
 end

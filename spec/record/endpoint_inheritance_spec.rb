@@ -39,7 +39,7 @@ describe LHS::Record do
     end
   end
 
-  context 'clashing endpoints between super and subclass' do
+  context 'ambiguous endpoints between super and subclass' do
     before do
       class Base < LHS::Record
         endpoint 'records'
