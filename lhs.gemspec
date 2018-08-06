@@ -8,9 +8,9 @@ Gem::Specification.new do |s|
   s.name        = "lhs"
   s.version     = LHS::VERSION
   s.authors     = ['https://github.com/local-ch/lhs/graphs/contributors']
-  s.email       = ['ws-operations@local.ch']
+  s.email       = ['web@localsearch.ch']
   s.homepage    = 'https://github.com/local-ch/lhs'
-  s.summary     = 'Rails gem providing an easy, active-record-like interface for http json services'
+  s.summary     = 'REST services accelerator: Rails gem providing an easy, active-record-like interface for http (hypermedia) json services'
   s.description = s.summary
 
   s.files        = `git ls-files`.split("\n")
