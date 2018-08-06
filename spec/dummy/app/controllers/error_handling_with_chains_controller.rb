@@ -1,6 +1,8 @@
 class ErrorHandlingWithChainsController < ApplicationController
   def handle
-    @records = Record.handle(LHC::Error, ->(error) { error_callback(error) }).find(id: 1)
+    @records = Record
+      .handle(LHC::Error, ->(error) { error_callback(error) })
+      .where(color: 'blue')
   end
 
   private

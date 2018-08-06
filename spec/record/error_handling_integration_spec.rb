@@ -3,7 +3,7 @@ require 'lhc/test/cache_helper.rb'
 
 describe 'Request Cycle Cache', type: :request do
   let!(:request) do
-    stub_request(:get, "http://datastore/v2/records/1")
+    stub_request(:get, "http://datastore/v2/records?color=blue")
       .to_return(status: 404)
   end
 
