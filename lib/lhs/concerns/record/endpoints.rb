@@ -44,13 +44,13 @@ class LHS::Record
         endpoint
       end
 
-      # Prevent clashing endpoints.
+      # Prevent ambiguous endpoints
       def sanity_check(new_endpoint)
         endpoints.each do |existing_endpoint|
           invalid = existing_endpoint.placeholders.sort == new_endpoint.placeholders.sort &&
             existing_endpoint.url != new_endpoint.url
           next unless invalid
-          raise "Clashing endpoints! Cannot differentiate between #{existing_endpoint.url} and #{new_endpoint.url}"
+          raise "Ambiguous endpoints! Cannot differentiate between #{existing_endpoint.url} and #{new_endpoint.url}"
         end
       end
 
