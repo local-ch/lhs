@@ -800,7 +800,7 @@ end
 
 To simplify error handling with chains, you can also chain error handlers to be resolved, as part of the chain.
 
-If you need to render some different view in Rails based on an LHS error during rendering the view, please proceed as following:
+If you need to render some different view in Rails based on an LHS error raised during rendering the view, please proceed as following:
 
 ```ruby
 # app/controllers/some_controller.rb
