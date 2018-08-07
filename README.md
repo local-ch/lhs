@@ -807,7 +807,7 @@ If you need to render some different view in Rails based on an LHS error raised 
 
 def show
   @records = Record
-    .handle(LHC::Error, ->(error){ set_error(error) })
+    .handle(LHC::Error, ->(error){ handle_error(error) })
     .where(color: 'blue')
   render 'show'
   render_error if @error
@@ -815,7 +815,7 @@ end
 
 private
 
-def set_error(error)
+def handle_error(error)
   @error = error
   nil
 end
