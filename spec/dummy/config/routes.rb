@@ -8,5 +8,6 @@ Rails.application.routes.draw do
   get 'request_cycle_cache/headers' => 'request_cycle_cache#headers'
 
   # Error handling with chains
-  get 'error_handling_with_chains/handle' => 'error_handling_with_chains#handle'
+  get 'error_handling_with_chains/fetch_in_controller' => 'error_handling_with_chains#fetch_in_controller'
+  get 'error_handling_with_chains/fetch_in_view' => 'error_handling_with_chains#fetch_in_view'
 end
