@@ -800,18 +800,28 @@ end
 
 To simplify error handling with chains, you can also chain error handlers to be resolved, as part of the chain.
 
-In case no matching error handler is found the error gets re-raised.
+If you need to render some different view in Rails based on an LHS error during rendering the view, please proceed as following:
 
 ```ruby
 # app/controllers/some_controller.rb
 
-record = Record.where(color: 'blue')
-  .handle(LHC::BadRequest, ->(error){ handle_error(error) })
+def show
+  @records = Record
+    .handle(LHC::Error, ->(error){ handle_error(error) })
+    .where(color: 'blue')
+  render 'show'
+  render_error if @error
+end
 
 private
 
-def handle_error(error)
+def set_error(error)
   @error = error
+  nil
+end
+
+def render_error
+  self.response_body = nil # required to not raise AbstractController::DoubleRenderError
   render 'error'
 end
 ```
@@ -819,6 +829,8 @@ end
 > GET https://service.example.com/records?color=blue
 < 406
 ```
+
+In case no matching error handler is found the error gets re-raised.
 
 -> Read more about [LHC error types/classes](https://github.com/local-ch/lhc#exceptions)
 
