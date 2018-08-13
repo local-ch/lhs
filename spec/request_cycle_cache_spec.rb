@@ -21,7 +21,7 @@ describe 'Request Cycle Cache', type: :request do
   end
 
   it 'serves requests that are exactly the same during one request cycle from the cache',
-  cleanup_before: false, request_cycle_cache: true do
+  dummy_models: true, request_cycle_cache: true do
     get '/request_cycle_cache/simple'
     expect(request).to have_been_made.once
 
@@ -31,7 +31,7 @@ describe 'Request Cycle Cache', type: :request do
   end
 
   it 'does not serve from request cycle cache when cache interceptor is not hooked in, but logs a warning',
-  cleanup_before: false, request_cycle_cache: true do
+  dummy_models: true, request_cycle_cache: true do
     expect(lambda do
       get '/request_cycle_cache/no_caching_interceptor'
     end).to output(
@@ -41,14 +41,14 @@ describe 'Request Cycle Cache', type: :request do
   end
 
   it 'serves requests also from cache when LHS/LHC makes requests in parallel',
-  cleanup_before: false, request_cycle_cache: true do
+  dummy_models: true, request_cycle_cache: true do
     get '/request_cycle_cache/parallel'
     expect(request).to have_been_made.once
     expect(second_request).to have_been_made.once
   end
 
   it 'sets different uniq request ids as base for request cycle caching for different requests',
-  cleanup_before: false, request_cycle_cache: true do
+  dummy_models: true, request_cycle_cache: true do
     get '/request_cycle_cache/simple'
     first_request_id = LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id
     second_request_id = nil
@@ -64,7 +64,7 @@ describe 'Request Cycle Cache', type: :request do
 
   context 'disabled request cycle cache' do
     it 'does not serve from request cycle cache when cache interceptor is not hooked in, and does not warn if request cycle cache is explicitly disabled',
-    cleanup_before: false do
+    dummy_models: true do
       expect(lambda do
         get '/request_cycle_cache/no_caching_interceptor'
       end).not_to output(
@@ -74,7 +74,7 @@ describe 'Request Cycle Cache', type: :request do
     end
 
     it 'DOES NOT serve requests that are exactly the same during one request cycle from the cache, when request cycle cache is disabled',
-    cleanup_before: false do
+    dummy_models: true do
       get '/request_cycle_cache/simple'
       expect(request).to have_been_made.times(2)
     end
@@ -82,7 +82,7 @@ describe 'Request Cycle Cache', type: :request do
 
   context 'headers' do
     it 'considers the request headers when setting the cache key',
-    cleanup_before: false, request_cycle_cache: true do
+    dummy_models: true, request_cycle_cache: true do
       get '/request_cycle_cache/headers'
       expect(request).to have_been_made.times(2)
     end
@@ -95,7 +95,7 @@ describe 'Request Cycle Cache', type: :request do
     after { LHS.config.request_cycle_cache = old_cache }
 
     it 'uses the cache passed in',
-    cleanup_before: true, request_cycle_cache: true do
+    dummy_models: true, request_cycle_cache: true do
       expect(LHS.config.request_cycle_cache).to receive(:fetch).at_least(:once)
       expect(LHS.config.request_cycle_cache).to receive(:write).at_least(:once)
       get '/request_cycle_cache/simple'

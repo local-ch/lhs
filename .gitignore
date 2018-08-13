@@ -36,3 +36,4 @@ Gemfile.*.lock
 bower.json
 
 spec/dummy/log/test.log
+spec/dummy/tmp
