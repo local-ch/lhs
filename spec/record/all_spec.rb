@@ -101,5 +101,31 @@ describe LHS::Record do
       records = Category.all(language: 'en').fetch
       expect(records.length).to eq 300
     end
+
+    it 'outputs a warning, if all is requested, but endpoint does not implement pagination meta data' do
+      stub_batch('http://store/categories?language=en&max=100', 100)
+      stub_batch('http://store/categories?language=en&max=100&offset=100', 100)
+      stub_batch('http://store/categories?language=en&max=100&offset=200', 100)
+      stub_batch('http://store/categories?language=en&max=100&offset=300', 0)
+      expect(-> { Category.all(language: 'en').fetch }).to output(
+        %r{\[Warning\] "all" has been requested, but endpoint does not provide pagination meta data. If you just want to fetch the first response, use "where" or "fetch".}
+      ).to_stderr
+    end
+
+    context 'with record set to not paginated' do
+      before do
+        class Record < LHS::Record
+          configuration paginated: false
+          endpoint 'http://datastore/records'
+        end
+      end
+
+      it 'just fetches the first response' do
+        stub_request(:get, "http://datastore/records")
+          .to_return(body: [{ name: 'Steve' }].to_json)
+        records = Record.all
+        expect(records.first.name).to eq 'Steve'
+      end
+    end
   end
 end

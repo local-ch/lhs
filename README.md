@@ -269,6 +269,20 @@ GET https://service.example.com/records/1
 
 ### Find multiple records
 
+#### fetch
+
+In case you want to just fetch the records endpoint, without applying any further queries or want to handle pagination, you can simply call `fetch`:
+
+```ruby
+# app/controllers/some_controller.rb
+
+records = Record.fetch
+
+```
+```
+  GET https://service.example.com/records
+```
+
 #### where
 
 You can query a service for records by using `where`:
@@ -322,6 +336,52 @@ records = Record.blue.available(true)
 ```
 ```
 GET https://service.example.com/records?color=blue&available=true
+```
+
+#### all
+
+You can fetch all remote records by using `all`. Pagination will be performed automatically (See: [Record pagination](#record-pagination))
+
+```ruby
+# app/controllers/some_controller.rb
+
+records = Record.all
+
+```
+```
+  GET https://service.example.com/records?limit=100
+  GET https://service.example.com/records?limit=100&offset=100
+  GET https://service.example.com/records?limit=100&offset=200
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+records.size # 300
+
+```
+
+#### all with unpaginated endpoints
+
+In case your record endpoints are not implementing any pagination, configure it to be `paginated: false`. Pagination will not be performed automatically in those cases:
+
+```ruby
+# app/models/record.rb
+
+class Record < LHS::Record
+  configuration paginated: false
+end
+
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+records = Record.all
+
+```
+```
+  GET https://service.example.com/records
 ```
 
 #### Retrieve the amount of a collection of items: count vs. length

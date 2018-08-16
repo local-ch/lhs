@@ -16,6 +16,10 @@ class LHS::Record
         Chain.new(self, Parameter.new(hash))
       end
 
+      def fetch
+        Chain.new(self, nil).fetch
+      end
+
       def all(hash = nil)
         chain = Chain.new(self, Parameter.new(hash))
         chain._links.push(Option.new(all: true))

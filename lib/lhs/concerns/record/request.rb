@@ -22,7 +22,7 @@ class LHS::Record
       private
 
       def single_request_load_and_merge_remaining_objects!(data, options, endpoint)
-        return unless options[:all]
+        return if options[:all].blank? || !paginated
         load_and_merge_remaining_objects!(
           data: data,
           options: process_options(options, endpoint),
@@ -40,6 +40,7 @@ class LHS::Record
       # Tries to apply an high value for limit and reacts on the limit
       # returned by the endpoint to make further requests
       def apply_limit!(options)
+        return if !paginated || options[:all].blank?
         options[:params] ||= {}
         options[:params] = options[:params].merge(limit_key(:parameter) => options[:params][limit_key(:parameter)] || LHS::Pagination::Base::DEFAULT_LIMIT)
       end
@@ -239,6 +240,7 @@ class LHS::Record
         elsif data.collection? && paginated?(data.first.try(:_raw))
           load_and_merge_set_of_paginated_collections!(data, options)
         elsif load_not_paginated_collection
+          warn('[Warning] "all" has been requested, but endpoint does not provide pagination meta data. If you just want to fetch the first response, use "where" or "fetch".')
           load_and_merge_not_paginated_collection!(data, options)
         end
       end
@@ -522,7 +524,7 @@ class LHS::Record
         including = options.delete(:including)
         referencing = options.delete(:referencing)
         endpoint = find_endpoint(options[:params], options.fetch(:url, nil))
-        apply_limit!(options) if options[:all]
+        apply_limit!(options)
         response = LHC.request(process_options(options, endpoint))
         return nil if !response.success? && response.error_ignored?
         data = LHS::Data.new(response.body, nil, self, response.request, endpoint)

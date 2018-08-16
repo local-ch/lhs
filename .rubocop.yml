@@ -44,3 +44,6 @@ Naming/PredicateName:
 
 RSpec/MessageSpies:
   Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
