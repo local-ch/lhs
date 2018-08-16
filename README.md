@@ -1,4 +1,4 @@
-mLHS
+LHS
 ===
 
 LHS uses [LHC](//github.com/local-ch/LHC) for advanced http requests.
