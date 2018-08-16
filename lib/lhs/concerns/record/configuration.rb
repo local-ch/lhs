@@ -60,6 +60,12 @@ class LHS::Record
         )
       end
 
+      # Allows record to be configured as not paginated,
+      # as by default it's considered paginated
+      def paginated
+        @configuration.fetch(:paginated, true)
+      end
+
       private
 
       def symbolize_unless_complex(value)
