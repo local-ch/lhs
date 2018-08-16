@@ -63,6 +63,7 @@ class LHS::Record
       # Allows record to be configured as not paginated,
       # as by default it's considered paginated
       def paginated
+        return true if @configuration.blank?
         @configuration.fetch(:paginated, true)
       end
 
