@@ -16,9 +16,9 @@ describe LHS::Record do
     end
   end
 
-  context 'explicit pagination paramters for retreiving pages' do
+  context 'explicit pagination parameters for retrieving pages' do
 
-    it 'uses explicit parameters when retreiving pages' do
+    it 'uses explicit parameters when retrieving pages' do
       stub_request(:get, "http://uberall/locations?max=100")
         .to_return(body: {
           response: {
