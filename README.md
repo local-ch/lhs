@@ -271,7 +271,7 @@ GET https://service.example.com/records/1
 
 #### fetch
 
-In case you want to just fetch the records endpoint, without applying any further queries, you can simply call `fetch`:
+In case you want to just fetch the records endpoint, without applying any further queries or want to handle pagination, you can simply call `fetch`:
 
 ```ruby
 # app/controllers/some_controller.rb
