@@ -1,7 +1,7 @@
 LHS
 ===
 
-LHS ia a Rails-Gem, providing an ActiveRecord like interface to access HTTP-JSON-Services from Rails Applications. Special features provided by this gem are: Multiple endpoint configuration per resource, active-record-like query-chains, scopes, error handling, relations, request cycle cache, batch processing, including linked resources (hypermedia), data maps (data accessing), nested-resource handling, active-model-like backend validation conversion, formbuilder-compatible, 3 type of pagination support, service configuration per resource, kaminari-support and much more.
+LHS ia a Rails-Gem, providing an ActiveRecord like interface to access HTTP-JSON-Services from Rails Applications. Special features provided by this gem are: Multiple endpoint configuration per resource, active-record-like query-chains, scopes, error handling, relations, request cycle cache, batch processing, including linked resources (hypermedia), data maps (data accessing), nested-resource handling, ActiveModel like backend validation conversion, formbuilder-compatible, three types of pagination support, service configuration per resource, kaminari-support and much more.
 
 LHS uses [LHC](//github.com/local-ch/LHC) for advanced http requests.
 
