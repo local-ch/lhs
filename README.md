@@ -1094,7 +1094,7 @@ Record.all
 ```
 GET https://service.example.com/records?limit=100
 {
-  items: [{...}, ...]
+  items: [{...}, ...],
   total: 300,
   limit: 100,
   offset: 0
@@ -1127,7 +1127,7 @@ Record.all
 ```
 GET https://service.example.com/records?limit=100
 {
-  items: [{...}, ...]
+  items: [{...}, ...],
   total: 300,
   limit: 100,
   page: 1
@@ -1161,7 +1161,7 @@ Record.all
 ```
 GET https://service.example.com/records?limit=100
 {
-  items: [{...}, ...]
+  items: [{...}, ...],
   total: 300,
   limit: 100,
   page: 1
