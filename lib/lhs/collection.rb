@@ -50,6 +50,11 @@ class LHS::Collection < LHS::Proxy
     end
   end
 
+  def respond_to?(sym, include_all = false)
+    return false if %i[to_model].include?(sym)
+    super(sym, include_all)
+  end
+
   protected
 
   def method_missing(name, *args, &block)
