@@ -25,5 +25,9 @@ describe LHS::Item do
     it 'is false for proxy_association' do
       expect(item.respond_to?(:proxy_association)).to be(false)
     end
+
+    it 'is false for to_model' do
+      expect(item.respond_to?(:to_model)).to be(false)
+    end
   end
 end

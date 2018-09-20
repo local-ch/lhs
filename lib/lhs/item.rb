@@ -29,11 +29,8 @@ class LHS::Item < LHS::Proxy
   end
 
   def respond_to?(sym, include_all = false)
-    if sym == :to_ary
-      false
-    else
-      super(sym, include_all)
-    end
+    return false if %i[to_ary to_model].include?(sym)
+    super(sym, include_all)
   end
 
   protected

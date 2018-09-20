@@ -14,5 +14,9 @@ describe LHS::Collection do
     it 'forwards calls to raw collection' do
       expect(collection.respond_to?(:first)).to be(true)
     end
+
+    it 'is false for to_model' do
+      expect(collection.respond_to?(:to_model)).to be(false)
+    end
   end
 end
