@@ -86,7 +86,7 @@ describe LHS::Item do
 
           class AppointmentProposal < LHS::Record
             def appointments_attributes=(attributes)
-              self.appointments = attributes.map { |attribute| {'date_time': attribute[:date]} }
+              self.appointments = attributes.map { |attribute| { 'date_time': attribute[:date] } }
             end
           end
         end
