@@ -25,9 +25,9 @@ class LHS::Item < LHS::Proxy
 
     def update!(params, options = {}, partial_update = false)
       options ||= {}
-      partial_data = LHS::Data.new(params, _data.parent, record)
-      _data.merge_raw!(partial_data)
-      data_sent = partial_update ? partial_data : _data
+      partial_record = _record.new(LHS::Data.new(params, _data.parent, _record))
+      _data.merge_raw!(partial_record._data)
+      data_sent = partial_update ? partial_record._data : _data
       url = href || record.find_endpoint(id: id).compile(id: id)
       response_data = record.request(
         options.merge(

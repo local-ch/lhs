@@ -48,6 +48,64 @@ describe LHS::Item do
       expect(item.name).to eq 'Andrea'
       expect(item.likes).not_to eq 'Banana'
     end
+
+    context 'with custom setters' do
+      before do
+        class Booking < LHS::Record
+          endpoint 'http://bookings/bookings'
+
+          def appointments=(appointments)
+            super(
+              appointments.map { |appointment| appointment[:id] }
+            )
+          end
+        end
+      end
+
+      let(:item) do
+        Booking.new(id: 'abc')
+      end
+
+      it 'updates data using custom setters before send to backend' do
+        stub_request(:post, "http://bookings/bookings")
+          .with(body: {
+            id: 'abc',
+            appointments: [1, 2, 3]
+          }.to_json)
+          .to_return(status: 200)
+        item.update(appointments: [{ id: 1 }, { id: 2 }, { id: 3 }])
+        expect(item.appointments.to_a).to eq([1, 2, 3])
+      end
+
+      context 'with nested items' do
+        before do
+          class Booking < LHS::Record
+            endpoint 'http://bookings/bookings'
+            has_one :appointment_proposal
+          end
+
+          class AppointmentProposal < LHS::Record
+            def appointments_attributes=(attributes)
+              self.appointments = attributes.map { |attribute| { 'date_time': attribute[:date] } }
+            end
+          end
+        end
+
+        let(:item) do
+          Booking.new(id: 'abc', appointment_proposal: { appointments: [] })
+        end
+
+        it 'updates data using custom setters before send to backend' do
+          stub_request(:post, "http://bookings/bookings")
+            .with(body: {
+              appointments: [{ date_time: '2018-01-18' }]
+            }.to_json)
+            .to_return(status: 200)
+          item.appointment_proposal.update(appointments_attributes: [{ date: '2018-01-18' }])
+          expect(item.appointment_proposal.appointments.as_json).to eq([{ 'date_time' => '2018-01-18' }])
+        end
+      end
+    end
   end
 
   context 'update!' do

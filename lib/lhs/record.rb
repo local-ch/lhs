@@ -7,6 +7,8 @@ class LHS::Record
     'lhs/concerns/record/configuration'
   autoload :Create,
     'lhs/concerns/record/create'
+  autoload :CustomSetters,
+    'lhs/concerns/record/custom_setters'
   autoload :Destroy,
     'lhs/concerns/record/destroy'
   autoload :Endpoints,
@@ -45,6 +47,7 @@ class LHS::Record
   include Chainable
   include Configuration
   include Create
+  include CustomSetters
   include Destroy
   include Endpoints
   include Equality
@@ -86,17 +89,5 @@ class LHS::Record
 
   def respond_to_missing?(name, include_all = false)
     _data.respond_to_missing?(name, include_all)
-  end
-
-  private
-
-  def apply_custom_setters!
-    return if !_data.item? || !_data._raw.respond_to?(:keys)
-    raw = _data._raw
-    custom_setters = raw.keys.find_all { |key| public_methods.include?("#{key}=".to_sym) }
-    custom_setters.each do |setter|
-      value = raw.delete(setter)
-      send("#{setter}=", value)
-    end
   end
 end
