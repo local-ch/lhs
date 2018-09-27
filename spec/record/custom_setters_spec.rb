@@ -10,7 +10,7 @@ describe LHS::Record do
           endpoint 'https://bookings'
 
           def appointment_attributes=(params)
-            self.appointments = params.map{ |item| item[:id] }
+            self.appointments = params.map { |item| item[:id] }
           end
         end
       end
@@ -28,7 +28,7 @@ describe LHS::Record do
           endpoint 'https://bookings'
 
           def appointment_attributes=(params)
-            self[:appointments] = params.map{ |item| item[:id] }
+            self[:appointments] = params.map { |item| item[:id] }
           end
         end
       end
