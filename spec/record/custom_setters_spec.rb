@@ -24,7 +24,7 @@ describe LHS::Record do
     context 'assign values directly by using square brackets' do
 
       before do
-        class Booking < LHS::Record
+        class BookingAppointments < LHS::Record
           endpoint 'https://bookings'
 
           def appointment_attributes=(params)
@@ -34,7 +34,7 @@ describe LHS::Record do
       end
 
       it 'allows to change raw in custom setters' do
-        booking = Booking.new(appointment_attributes: [{ id: 1 }])
+        booking = BookingAppointments.new(appointment_attributes: [{ id: 1 }])
         expect(booking.appointments.to_a).to eq [1]
       end
     end
