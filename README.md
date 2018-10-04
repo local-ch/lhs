@@ -567,7 +567,7 @@ GET https://service.example.com/favorites/123
 GET https://service.example.com/places/456
 ```
 
-If automatic detection of nested records does not work, make sure your Records are stored in `app/models`! See: (Insallation/Startup checklist)[#installation-startup-checklist]
+If automatic detection of nested records does not work, make sure your Records are stored in `app/models`! See: [Insallation/Startup checklist](#installationstartup-checklist)
 
 ##### Relations / Associations
 
@@ -1877,7 +1877,7 @@ When fetching records with LHS, you can specify in advance all the linked resour
 
 With `includes` or `includes_all` (to enforce fetching all remote objects for paginated endpoints), LHS ensures that all matching and explicitly linked resources are loaded and merged.
 
-Including linked resources/records is heavily influenced by [http://guides.rubyonrails.org/active_record_class_querying](http://guides.rubyonrails.org/active_record_class_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glo
+Including linked resources/records is heavily influenced by [http://guides.rubyonrails.org/active_record_class_querying](http://guides.rubyonrails.org/active_record_class_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glory.
 
 #### Ensure the whole linked collection is included: includes_all
 
