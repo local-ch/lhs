@@ -567,7 +567,7 @@ GET https://service.example.com/favorites/123
 GET https://service.example.com/places/456
 ```
 
-If automatic detection of nested records does not work, make sure your Records are stored in `app/models`! See: [Insallation/Startup checklist](#installation-startup-checklist)
+If automatic detection of nested records does not work, make sure your Records are stored in `app/models`! See: [Insallation/Startup checklist](#installationstartup-checklist)
 
 ##### Relations / Associations
 
