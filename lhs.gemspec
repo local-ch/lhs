@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activemodel'
   s.add_dependency 'activesupport', '> 4.2'
-  s.add_dependency 'lhc', '~> 9.2'
+  s.add_dependency 'lhc', '~> 10.0'
 
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'json', '>=  1.8.2'
