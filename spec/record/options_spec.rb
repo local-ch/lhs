@@ -61,7 +61,7 @@ describe LHS::Record do
     it 'is also applicable to create' do
       stub_request(:post, 'http://datastore/v2/records').to_return(body: {}.to_json)
       expect(LHC).to receive(:request)
-        .with(options.merge(method: :post, url: "http://datastore/v2/records", body: { name: 'Steve' }, headers: { 'Content-Type' => 'application/json' }))
+        .with(options.merge(method: :post, url: "http://datastore/v2/records", body: { name: 'Steve' }, headers: {}))
         .and_call_original
       Record.options(options).create(name: 'Steve')
     end
@@ -76,7 +76,7 @@ describe LHS::Record do
         before do
           stub_request(:post, 'http://datastore/v2/records/123').to_return(body: {}.to_json)
           expect(LHC).to receive(:request)
-            .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: { href: 'http://datastore/v2/records/123' }, headers: { "Content-Type" => "application/json" }))
+            .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: { href: 'http://datastore/v2/records/123' }, headers: {}))
             .and_call_original
         end
 
@@ -119,7 +119,7 @@ describe LHS::Record do
           stub_request(:post, "http://datastore/v2/records/123").to_return(body: {}.to_json)
           body = LHS::Data.new({ href: 'http://datastore/v2/records/123', name: 'steve' }, nil, Record)
           expect(LHC).to receive(:request)
-            .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: body, headers: { "Content-Type" => "application/json" }))
+            .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: body))
             .and_call_original
         end
 
@@ -145,7 +145,7 @@ describe LHS::Record do
           stub_request(:post, 'http://datastore/v2/records?persist=false').to_return(body: {}.to_json)
           body = LHS::Data.new({ href: 'http://datastore/v2/records/123' }, nil, Record)
           expect(LHC).to receive(:request)
-            .with(options.merge(url: '{+datastore}/records', method: :post, params: { persist: false }, body: body, headers: { "Content-Type" => "application/json" }))
+            .with(options.merge(url: '{+datastore}/records', method: :post, params: { persist: false }, body: body))
             .and_call_original
         end
 
