@@ -44,11 +44,11 @@ describe LHS::Collection do
 
     it 'passes options to the requests made' do
       request = stub_request(:get, "http://local.ch/v2/feedbacks?limit=100&offset=1")
-        .with(headers: {'Authorization' => 'Bearer 123'})
+        .with(headers: { 'Authorization' => 'Bearer 123' })
         .to_return(body: {
           items: []
         }.to_json)
-      Record.find_each(headers: { 'Authorization' => 'Bearer 123' }) {|record| }
+      Record.find_each(headers: { 'Authorization' => 'Bearer 123' }) { |record| }
       expect(request).to have_been_made
     end
   end
