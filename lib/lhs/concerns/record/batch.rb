@@ -19,11 +19,13 @@ class LHS::Record
       # Process batches of entries
       def find_in_batches(options = {})
         raise 'No block given' unless block_given?
-        start = options[:start] || 1
-        batch_size = options[:batch_size] || LHS::Pagination::Base::DEFAULT_LIMIT
-        params = options[:params] || {}
+        options = options.dup
+        start = options.delete(:start) || 1
+        batch_size = options.delete(:batch_size) || LHS::Pagination::Base::DEFAULT_LIMIT
         loop do # as suggested by Matz
-          data = request(params: params.merge(limit_key(:parameter) => batch_size, pagination_key(:parameter) => start))
+          options = options.dup
+          options[:params] = (options[:params] || {}).merge(limit_key(:parameter) => batch_size, pagination_key(:parameter) => start)
+          data = request(options)
           batch_size = data._raw.dig(*limit_key(:body))
           left = data._raw.dig(*total_key).to_i - data._raw.dig(*pagination_key(:body)).to_i - data._raw.dig(*limit_key(:body)).to_i
           yield new(data)

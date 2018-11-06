@@ -2077,7 +2077,7 @@ In case an API does not provide pagination information in the repsponse data (li
 `find_each` is a more fine grained way to process single records that are fetched in batches.
 
 ```ruby
-Record.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |record|
+Record.find_each(start: 50, batch_size: 20, params: { has_reviews: true }, headers: { 'Authorization': 'Bearer 123' }) do |record|
   # Iterates over each record. Starts with record no. 50 and fetches 20 records each batch.
   record
   break if record.some_attribute == some_value
@@ -2089,7 +2089,7 @@ end
 `find_in_batches` is used by `find_each` and processes batches.
 
 ```ruby
-Record.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }) do |records|
+Record.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }, headers: { 'Authorization': 'Bearer 123' }) do |records|
   # Iterates over multiple records (batch size is 20). Starts with record no. 50 and fetches 20 records each batch.
   records
   break if records.first.name == some_value
