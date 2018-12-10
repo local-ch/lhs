@@ -13,6 +13,7 @@ class LHS::Proxy
     private
 
     def set(name, value)
+      clear_cache!
       key = name.to_s.gsub(/=$/, '')
       _data._raw[key.to_sym] = value
     end
@@ -76,10 +77,11 @@ class LHS::Proxy
       data = (value.is_a?(LHS::Data) || value.is_a?(LHS::Record)) ? value : LHS::Data.new(value, _data, _record, _request)
       data.errors = LHS::Problems::Nested::Errors.new(errors, name) if errors.any?
       data.warnings = LHS::Problems::Nested::Warnings.new(warnings, name) if warnings.any?
-      return data.becomes(record) if record && !value.is_a?(LHS::Record)
       if _record && _record._relations[name]
         klass = _record._relations[name][:record_class_name].constantize
         return cache.compute_if_absent(klass) { data.becomes(klass) }
+      elsif record && !value.is_a?(LHS::Record)
+        return data.becomes(record)
       end
       data
     end
@@ -110,6 +112,10 @@ class LHS::Proxy
 
     def cache
       @cache ||= Concurrent::Map.new
+    end
+
+    def clear_cache!
+      @cache = nil
     end
   end
 end
