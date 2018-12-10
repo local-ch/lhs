@@ -77,7 +77,10 @@ class LHS::Proxy
       data.errors = LHS::Problems::Nested::Errors.new(errors, name) if errors.any?
       data.warnings = LHS::Problems::Nested::Warnings.new(warnings, name) if warnings.any?
       return data.becomes(record) if record && !value.is_a?(LHS::Record)
-      return data.becomes(_record._relations[name][:record_class_name].constantize) if _record && _record._relations[name]
+      if _record && _record._relations[name]
+        klass = _record._relations[name][:record_class_name].constantize
+        return cache.compute_if_absent(klass) { data.becomes(klass) }
+      end
       data
     end
 
@@ -103,6 +106,10 @@ class LHS::Proxy
 
     def date_time_regex
       /(?<date>\d{4}-\d{2}-\d{2})?(?<time>T\d{2}:\d{2}(:\d{2}(\.\d*.\d{2}:\d{2})*)?)?/
+    end
+
+    def cache
+      @cache ||= Concurrent::Map.new
     end
   end
 end

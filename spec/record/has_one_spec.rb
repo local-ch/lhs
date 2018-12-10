@@ -6,12 +6,14 @@ describe LHS::Record do
   let(:user) { transaction.user }
 
   before do
-    stub_request(:get, 'http://myservice/transactions/1')
-      .to_return(body: {
-        user: {
-          email_address: 'steve@local.ch'
-        }
-      }.to_json)
+    [1, 2].each do |id|
+      stub_request(:get, "http://myservice/transactions/#{id}")
+        .to_return(body: {
+          user: {
+            email_address: 'steve@local.ch'
+          }
+        }.to_json)
+    end
   end
 
   context 'has_one' do
@@ -39,6 +41,13 @@ describe LHS::Record do
     it 'keeps hirachy when casting it to another class on access' do
       expect(user._root._raw).to eq transaction._raw
       expect(user.parent._raw).to eq transaction._raw
+    end
+
+    it 'the relation is cached in memory' do
+      object_id = transaction.user.object_id
+      expect(transaction.user.object_id).to eql(object_id)
+      transaction2 = Transaction.find(2)
+      expect(transaction2.user.object_id).not_to eql(object_id)
     end
   end
 
