@@ -194,4 +194,55 @@ describe LHS::Item do
       expect(errors[:name]).to eq ['UNSUPPORTED_PROPERTY_VALUE']
     end
   end
+
+  context 'error translation for nested record' do
+    before do
+      class AppointmentProposal < LHS::Record
+        endpoint 'http://dataste/appointment_proposals'
+        endpoint 'http://dataste/appointment_proposals/{id}'
+
+        has_many :appointments
+      end
+
+      class Appointment < LHS::Record
+      end
+
+      stub_request(:get, 'http://dataste/appointment_proposals/1')
+        .to_return(body: {
+          appointments: [
+            { 'date_time' => '13.12.2018' }
+          ]
+        }.to_json)
+
+      stub_request(:post, 'http://dataste/appointment_proposals')
+        .to_return(
+          status: 400,
+          body: {
+            field_errors: [{
+              'code' => 'DATE_PROPERTY_NOT_IN_FUTURE',
+              'path' => ['appointments', 0, 'date_time']
+            }]
+          }.to_json
+        )
+    end
+
+    let(:translation) do
+      %q{
+        lhs:
+          errors:
+            records:
+              appointment:
+                attributes:
+                  date_time:
+                    date_property_not_in_future: 'You cannot select a date in the past.'
+      }
+    end
+
+    it 'translates errors automatically when they are around' do
+      appointment_proposal = AppointmentProposal.find(1)
+      appointment_proposal.update('appointments_attributes' => { '0' => { 'date_time' => '13.12.2018' } })
+      appointment = appointment_proposal.appointments[0]
+      expect(appointment.errors[:date_time]).to eq ['You cannot select a date in the past.']
+    end
+  end
 end
