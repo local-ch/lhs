@@ -210,7 +210,8 @@ describe LHS::Item do
       stub_request(:get, 'http://dataste/appointment_proposals/1')
         .to_return(body: {
           appointments: [
-            { 'date_time' => '13.12.2018' }
+            { 'date_time' => '13.12.2018' },
+            { 'date_time' => '18.10.2028' }
           ]
         }.to_json)
 
@@ -231,16 +232,23 @@ describe LHS::Item do
         lhs:
           errors:
             records:
-              appointment:
+              appointment_proposal:
                 attributes:
-                  date_time:
-                    date_property_not_in_future: 'You cannot select a date in the past.'
+                  appointments:
+                    date_time:
+                      date_property_not_in_future: 'You cannot select a date in the past.'
       }
     end
 
     it 'translates errors automatically when they are around' do
       appointment_proposal = AppointmentProposal.find(1)
-      appointment_proposal.update('appointments_attributes' => { '0' => { 'date_time' => '13.12.2018' } })
+      appointment_proposal.update(
+        'appointments_attributes' => {
+          '0' => { 'date_time' => '13.12.2018' },
+          '1' => { 'date_time' => '18.10.2028' }
+        }
+      )
+      appointment_proposal.appointments
       appointment = appointment_proposal.appointments[0]
       expect(appointment.errors[:date_time]).to eq ['You cannot select a date in the past.']
     end
