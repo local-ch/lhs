@@ -57,7 +57,13 @@ describe LHS::Item do
     class Record < LHS::Record
       endpoint '{+datastore}/{campaign_id}/feedbacks'
       endpoint '{+datastore}/feedbacks'
+
+      has_many :reviews
+      has_one :address
     end
+
+    class Review < LHS::Record; end
+    class Address < LHS::Record; end
   end
 
   context 'save failed' do

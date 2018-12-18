@@ -79,9 +79,11 @@ class LHS::Proxy
       data.warnings = LHS::Problems::Nested::Warnings.new(warnings, name) if warnings.any?
       if _record && _record._relations[name]
         klass = _record._relations[name][:record_class_name].constantize
-        return cache.compute_if_absent(klass) { data.becomes(klass, data.errors) }
+        return cache.compute_if_absent(klass) do
+          data.becomes(klass, errors: data.errors, warnings: data.warnings)
+        end
       elsif record && !value.is_a?(LHS::Record)
-        return data.becomes(record, data.errors)
+        return data.becomes(record, errors: data.errors, warnings: data.warnings)
       end
       data
     end

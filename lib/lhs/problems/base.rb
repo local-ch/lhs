@@ -87,7 +87,6 @@ module LHS::Problems
 
     def find_translated_message(attribute, message, problem_type)
       normalized_attribute = attribute.to_s.underscore
-      normalized_attribute.slice!(/\d+\./)
       normalized_message = message.to_s.underscore
       messages = []
       messages = messages_for_record(normalized_attribute, normalized_message, problem_type) if record
