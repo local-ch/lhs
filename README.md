@@ -1327,7 +1327,7 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 
 ##### create
 
-`create` will return false if persisting fails. `create!` instead will an raise exception.
+`create` will return false if persisting fails. `create!` instead will raise an exception.
 
 `create` always builds the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is build.
 
@@ -1462,7 +1462,7 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 `update` persists the whole object after new parameters are applied through arguments.
 
-`update` will return false if persisting fails. `update!` instead will an raise exception.
+`update` will return false if persisting fails. `update!` instead will raise an exception.
 
 `update` always updates the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is updated.
 
@@ -1493,7 +1493,7 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 `partial_update` updates just the provided parameters.
 
-`partial_update` will return false if persisting fails. `partial_update!` instead will an raise exception.
+`partial_update` will return false if persisting fails. `partial_update!` instead will raise an exception.
 
 `partial_update` always updates the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is updated.
 
