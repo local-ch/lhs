@@ -91,6 +91,14 @@ describe LHS::Record do
       expect(record).to eq nil
     end
 
+    it 'returns nil also when ignoring errors on find with parameters' do
+      stub_request(:get, "http://local.ch/v2/records/1").to_return(status: 500, body: body)
+      record = Record
+        .ignore(LHC::Error)
+        .find(id: 1)
+      expect(record).to eq nil
+    end
+
     it 'returns nil also when ignoring errors on fetch' do
       stub_request(:get, "http://local.ch/v2/records?color=blue").to_return(status: 500, body: body)
       record = Record
