@@ -57,13 +57,7 @@ describe LHS::Item do
     class Record < LHS::Record
       endpoint '{+datastore}/{campaign_id}/feedbacks'
       endpoint '{+datastore}/feedbacks'
-
-      has_many :reviews
-      has_one :address
     end
-
-    class Review < LHS::Record; end
-    class Address < LHS::Record; end
   end
 
   context 'save failed' do
@@ -277,6 +271,52 @@ describe LHS::Item do
         expect(record.reviews.first.errors[:suggested]).to be_kind_of Array
         expect(record.reviews.first.errors[:suggested]).to be_empty
       end
+    end
+  end
+
+  context 'forwards errors to nested data when associations are defined' do
+    before do
+      class AppointmentProposal < LHS::Record
+        endpoint 'http://dataste/appointment_proposals'
+        endpoint 'http://dataste/appointment_proposals/{id}'
+
+        has_many :appointments
+      end
+
+      class Appointment < LHS::Record
+      end
+
+      stub_request(:get, 'http://dataste/appointment_proposals/1')
+        .to_return(body: {
+          appointments: [
+            { 'date_time' => '13.12.2018' },
+            { 'date_time' => '18.10.2028' }
+          ]
+        }.to_json)
+
+      stub_request(:post, 'http://dataste/appointment_proposals')
+        .to_return(
+          status: 400,
+          body: {
+            field_errors: [{
+              'code' => 'DATE_PROPERTY_NOT_IN_FUTURE',
+              'path' => ['appointments', 0, 'date_time']
+            }]
+          }.to_json
+        )
+    end
+
+    it 'translates errors automatically when they are around' do
+      appointment_proposal = AppointmentProposal.find(1)
+      appointment_proposal.update(
+        'appointments_attributes' => {
+          '0' => { 'date_time' => '13.12.2018' },
+          '1' => { 'date_time' => '18.10.2028' }
+        }
+      )
+      appointment_proposal.appointments
+      appointment = appointment_proposal.appointments[0]
+      expect(appointment.errors[:date_time]).to eq ['DATE_PROPERTY_NOT_IN_FUTURE']
     end
   end
 end
