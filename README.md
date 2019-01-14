@@ -741,6 +741,33 @@ GET https://service.example.com/search?q=Starbucks
 {... docs: [... {...  address: 'Bahnhofstrasse 5, 8000 Zürich' }] }
 ```
 
+#### Load additional data based on retrieved data
+
+In order to load linked data from already retrieved data, you can use `load!` (or `reload!`).
+
+```ruby
+# app/controllers/some_controller.rb
+
+record = Record.find(1)
+record.associated_thing.load!
+```
+```
+GET https://things/4
+{ name: "Steve" }
+```
+```ruby
+# app/controllers/some_controller.rb
+record.associated_thing.name # Steve
+
+record.associated_thing.load! # Does NOT create another request, as it is already loaded
+record.associated_thing.reload! # Does request the data again from remote
+
+```
+```
+GET https://things/4
+{ name: "Steve" }
+```
+
 ### Chain complex queries
 
 > [Method chaining](https://en.wikipedia.org/wiki/Method_chaining), also known as named parameter idiom, is a common syntax for invoking multiple method calls in object-oriented programming languages. Each method returns an object, allowing the calls to be chained together without requiring variables to store the intermediate results
