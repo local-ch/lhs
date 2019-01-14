@@ -38,3 +38,5 @@ if [ ! -f  $CACHE_SIGNATURE_FILE ] ; then
   touch $CACHE_SIGNATURE_FILE
 fi
 
+echo "bundle install"
+bundle install
