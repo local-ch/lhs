@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LHS::Problems
   module Nested
     class Errors < LHS::Problems::Errors
