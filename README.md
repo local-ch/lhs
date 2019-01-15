@@ -1709,6 +1709,9 @@ lhs.errors.attributes.<attribute_name>.<error_code>
 e.g. lhs.errors.attributes.name.unsupported_property_value
 
 lhs.errors.fallback_message
+
+lhs.errors.records.<record_name>.attributes.<collection>.<attribute_name>.<error_code>
+e.g. lhs.errors.records.appointment_proposal.attributes.appointments.date_time.date_property_not_in_future
 ```
 
 ##### Validation error types: errors vs. warnings
