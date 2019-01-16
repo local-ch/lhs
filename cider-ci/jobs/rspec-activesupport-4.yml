@@ -14,6 +14,7 @@ rspec-active-support-v4:
     task_defaults:
       environment_variables:
         ACTIVESUPPORT: '4'
+        BUNDLER: '_1.17.3_'
       max_trials: 2
       dispatch_storm_delay_duration: 1 Seconds
       include:
