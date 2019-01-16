@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # An endpoint is used as source to fetch objects
 class LHS::Endpoint
 

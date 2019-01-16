@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LHS::Pagination::Start < LHS::Pagination::Base
 
   DEFAULT_OFFSET = 1

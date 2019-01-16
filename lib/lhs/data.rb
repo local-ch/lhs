@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Data provides functionalities to accesses information
 class LHS::Data
   autoload :Becomes,

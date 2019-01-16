@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Proxy makes different kind of data accessible
 # If href is present it also alows loading/reloading
 class LHS::Proxy

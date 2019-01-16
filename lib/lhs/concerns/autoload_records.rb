@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
 # Preload all the LHS::Records that are defined in app/models/*

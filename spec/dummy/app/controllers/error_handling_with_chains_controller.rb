@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ErrorHandlingWithChainsController < ApplicationController
 
   # Example where the query chain is resolved
