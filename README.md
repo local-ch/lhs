@@ -508,7 +508,7 @@ LHS detects automatically if the responded data is a single business object or a
 
 Conventionally, when the responds contains an `items` key `{ items: [] }` it's treated as a collection, but also if the responds contains a plain raw array: `[{ href: '' }]` it's also treated as a collection.
 
-If you need to configure the attribute of the response providing the collection, configure `items_key` as explained here: (Determine collections from the response body)[#determine-collections-from-the-response-body]
+If you need to configure the attribute of the response providing the collection, configure `items_key` as explained here: [Determine collections from the response body](#determine-collections-from-the-response-body)
 
 #### Map complex data for easy access
 
