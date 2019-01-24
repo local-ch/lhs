@@ -1880,7 +1880,7 @@ When fetching records with LHS, you can specify in advance all the linked resour
 
 With `includes` or `includes_all` (to enforce fetching all remote objects for paginated endpoints), LHS ensures that all matching and explicitly linked resources are loaded and merged.
 
-Including linked resources/records is heavily influenced by [http://guides.rubyonrails.org/active_record_class_querying](http://guides.rubyonrails.org/active_record_class_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glory.
+Including linked resources/records is heavily influenced by [https://guides.rubyonrails.org/active_record_querying.html](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glory.
 
 #### Ensure the whole linked collection is included: includes_all
 
@@ -2101,7 +2101,7 @@ end
 
 ### Convert/Cast specific record types: becomes
 
-Based on [ActiveRecord's implementation](http://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-becomes), LHS implements `becomes`, too.
+Based on [ActiveRecord's implementation](https://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-becomes), LHS implements `becomes`, too.
 
 It's a way to convert records of a certain type A to another certain type B.
 
