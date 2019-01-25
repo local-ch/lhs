@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
 class LHS::Record
@@ -11,11 +13,14 @@ class LHS::Record
 
     mattr_accessor :all
 
+    included do
+      class_attribute :endpoints unless defined? endpoints
+      self.endpoints = []
+    end
+
     module ClassMethods
       # Adds the endpoint to the list of endpoints.
       def endpoint(url, options = nil)
-        class_attribute :endpoints unless defined? endpoints
-        self.endpoints ||= []
         self.endpoints = endpoints.clone
         validates_deprecation_check!(options)
         endpoint = LHC::Endpoint.new(url, options)

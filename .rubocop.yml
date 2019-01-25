@@ -47,3 +47,6 @@ RSpec/MessageSpies:
 
 Style/RegexpLiteral:
   Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true

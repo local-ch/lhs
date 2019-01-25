@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Complex is the main data structure for includes:
 # Can be for example :place, [:place, :customer],
 # [{ places: [:customer] }, { places: { customer: :contract }}]

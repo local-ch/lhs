@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe LHS::Record do
@@ -88,6 +90,14 @@ describe LHS::Record do
       record = Record
         .ignore(LHC::Error)
         .find(1)
+      expect(record).to eq nil
+    end
+
+    it 'returns nil also when ignoring errors on find with parameters' do
+      stub_request(:get, "http://local.ch/v2/records/1").to_return(status: 500, body: body)
+      record = Record
+        .ignore(LHC::Error)
+        .find(id: 1)
       expect(record).to eq nil
     end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A collection is a special type of data
 # that contains multiple items
 class LHS::Collection < LHS::Proxy

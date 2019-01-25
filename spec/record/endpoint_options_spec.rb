@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe LHS::Record do
@@ -31,12 +33,12 @@ describe LHS::Record do
           .with(
             headers: {
               'Privatekey' => '123',
-              'Accept' => 'application/json'
+              'X-Custom' => '123'
             }
           )
           .to_return(body: [].to_json)
 
-        Location.options(headers: { 'Accept' => 'application/json' }).fetch
+        Location.options(headers: { 'X-Custom' => '123' }).fetch
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
 class LHS::Proxy
@@ -13,6 +15,7 @@ class LHS::Proxy
     private
 
     def set(name, args)
+      clear_cache!
       return set_attribute_directly(name, args.try(:first)) if name != :[]=
       key = args[0]
       value = args[1]
@@ -80,11 +83,17 @@ class LHS::Proxy
     def wrap_return(value, record, name, args = nil)
       name = args.first if name == :[]
       return value unless worth_wrapping?(value)
-      data = (value.is_a?(LHS::Data) || value.is_a?(LHS::Record)) ? value : LHS::Data.new(value, _data, _record, _request)
+      data = (value.is_a?(LHS::Data) || value.is_a?(LHS::Record)) ? value : LHS::Data.new(value, _data, record, _request)
       data.errors = LHS::Problems::Nested::Errors.new(errors, name) if errors.any?
       data.warnings = LHS::Problems::Nested::Warnings.new(warnings, name) if warnings.any?
-      return data.becomes(record) if record && !value.is_a?(LHS::Record)
-      return data.becomes(_record._relations[name][:record_class_name].constantize) if _record && _record._relations[name]
+      if _record && _record._relations[name]
+        klass = _record._relations[name][:record_class_name].constantize
+        return cache.compute_if_absent(klass) do
+          data.becomes(klass, errors: data.errors, warnings: data.warnings)
+        end
+      elsif record && !value.is_a?(LHS::Record)
+        return data.becomes(record, errors: data.errors, warnings: data.warnings)
+      end
       data
     end
 
@@ -110,6 +119,14 @@ class LHS::Proxy
 
     def date_time_regex
       /(?<date>\d{4}-\d{2}-\d{2})?(?<time>T\d{2}:\d{2}(:\d{2}(\.\d*.\d{2}:\d{2})*)?)?/
+    end
+
+    def cache
+      @cache ||= Concurrent::Map.new
+    end
+
+    def clear_cache!
+      @cache = nil
     end
   end
 end

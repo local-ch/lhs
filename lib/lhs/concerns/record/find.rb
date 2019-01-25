@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
 class LHS::Record
@@ -43,6 +45,7 @@ class LHS::Record
       end
 
       def get_unique_item!(data)
+        return if data.nil?
         if data._proxy.is_a?(LHS::Collection)
           raise LHC::NotFound.new('Requested unique item. Multiple were found.', data._request.response) if data.length > 1
           data.first || raise(LHC::NotFound.new('No item was found.', data._request.response))

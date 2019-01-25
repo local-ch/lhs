@@ -508,7 +508,7 @@ LHS detects automatically if the responded data is a single business object or a
 
 Conventionally, when the responds contains an `items` key `{ items: [] }` it's treated as a collection, but also if the responds contains a plain raw array: `[{ href: '' }]` it's also treated as a collection.
 
-If you need to configure the attribute of the response providing the collection, configure `items_key` as explained here: (Determine collections from the response body)[#determine-collections-from-the-response-body]
+If you need to configure the attribute of the response providing the collection, configure `items_key` as explained here: [Determine collections from the response body](#determine-collections-from-the-response-body)
 
 #### Map complex data for easy access
 
@@ -567,7 +567,7 @@ GET https://service.example.com/favorites/123
 GET https://service.example.com/places/456
 ```
 
-If automatic detection of nested records does not work, make sure your Records are stored in `app/models`! See: (Insallation/Startup checklist)[#installation-startup-checklist]
+If automatic detection of nested records does not work, make sure your Records are stored in `app/models`! See: [Insallation/Startup checklist](#installationstartup-checklist)
 
 ##### Relations / Associations
 
@@ -1327,7 +1327,7 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 
 ##### create
 
-`create` will return false if persisting fails. `create!` instead will an raise exception.
+`create` will return false if persisting fails. `create!` instead will raise an exception.
 
 `create` always builds the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is build.
 
@@ -1462,7 +1462,7 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 `update` persists the whole object after new parameters are applied through arguments.
 
-`update` will return false if persisting fails. `update!` instead will an raise exception.
+`update` will return false if persisting fails. `update!` instead will raise an exception.
 
 `update` always updates the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is updated.
 
@@ -1493,7 +1493,7 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 `partial_update` updates just the provided parameters.
 
-`partial_update` will return false if persisting fails. `partial_update!` instead will an raise exception.
+`partial_update` will return false if persisting fails. `partial_update!` instead will raise an exception.
 
 `partial_update` always updates the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is updated.
 
@@ -1709,6 +1709,9 @@ lhs.errors.attributes.<attribute_name>.<error_code>
 e.g. lhs.errors.attributes.name.unsupported_property_value
 
 lhs.errors.fallback_message
+
+lhs.errors.records.<record_name>.attributes.<collection>.<attribute_name>.<error_code>
+e.g. lhs.errors.records.appointment_proposal.attributes.appointments.date_time.date_property_not_in_future
 ```
 
 ##### Validation error types: errors vs. warnings
@@ -1909,7 +1912,7 @@ When fetching records with LHS, you can specify in advance all the linked resour
 
 With `includes` or `includes_all` (to enforce fetching all remote objects for paginated endpoints), LHS ensures that all matching and explicitly linked resources are loaded and merged.
 
-Including linked resources/records is heavily influenced by [http://guides.rubyonrails.org/active_record_class_querying](http://guides.rubyonrails.org/active_record_class_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glo
+Including linked resources/records is heavily influenced by [https://guides.rubyonrails.org/active_record_querying.html](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glory.
 
 #### Ensure the whole linked collection is included: includes_all
 
@@ -2109,7 +2112,7 @@ In case an API does not provide pagination information in the repsponse data (li
 `find_each` is a more fine grained way to process single records that are fetched in batches.
 
 ```ruby
-Record.find_each(start: 50, batch_size: 20, params: { has_reviews: true }) do |record|
+Record.find_each(start: 50, batch_size: 20, params: { has_reviews: true }, headers: { 'Authorization': 'Bearer 123' }) do |record|
   # Iterates over each record. Starts with record no. 50 and fetches 20 records each batch.
   record
   break if record.some_attribute == some_value
@@ -2121,7 +2124,7 @@ end
 `find_in_batches` is used by `find_each` and processes batches.
 
 ```ruby
-Record.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }) do |records|
+Record.find_in_batches(start: 50, batch_size: 20, params: { has_reviews: true }, headers: { 'Authorization': 'Bearer 123' }) do |records|
   # Iterates over multiple records (batch size is 20). Starts with record no. 50 and fetches 20 records each batch.
   records
   break if records.first.name == some_value
@@ -2130,7 +2133,7 @@ end
 
 ### Convert/Cast specific record types: becomes
 
-Based on [ActiveRecord's implementation](http://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-becomes), LHS implements `becomes`, too.
+Based on [ActiveRecord's implementation](https://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-becomes), LHS implements `becomes`, too.
 
 It's a way to convert records of a certain type A to another certain type B.
 
@@ -2320,5 +2323,5 @@ expect(
 
 ## License
 
-[GNU Affero General Public License Version 3.](https://www.gnu.org/licenses/agpl-3.0.en.html)
+[GNU General Public License Version 3.](https://www.gnu.org/licenses/gpl-3.0.en.html)
 

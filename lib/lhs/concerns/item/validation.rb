@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
 class LHS::Item < LHS::Proxy
@@ -43,8 +45,7 @@ class LHS::Item < LHS::Proxy
           url: url,
           method: :post,
           params: params,
-          body: _data,
-          headers: { 'Content-Type' => 'application/json' }
+          body: _data
         )
       )
     end

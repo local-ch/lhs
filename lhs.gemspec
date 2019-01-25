@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.push File.expand_path("../lib", __FILE__)
 
 # Maintain your gem's version:
@@ -22,7 +24,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activemodel'
   s.add_dependency 'activesupport', '> 4.2'
-  s.add_dependency 'lhc', '~> 9.2'
+  s.add_dependency 'lhc', '~> 10.1.1'
 
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'json', '>=  1.8.2'
