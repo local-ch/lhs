@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/module'
 require 'active_support/core_ext/hash'
 
@@ -86,7 +88,7 @@ module LHS::Problems
     end
 
     def find_translated_message(attribute, message, problem_type)
-      normalized_attribute = attribute.to_s.underscore
+      normalized_attribute = attribute.to_s.underscore.gsub(/\.[\d+\.]/, '')
       normalized_message = message.to_s.underscore
       messages = []
       messages = messages_for_record(normalized_attribute, normalized_message, problem_type) if record

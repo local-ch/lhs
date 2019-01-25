@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LHS
   class Railtie < Rails::Railtie
     initializer "lhs.hook_into_controller_initialization" do

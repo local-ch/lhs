@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RequestCycleCacheController < ApplicationController
   def simple
     User.find(1) # first request

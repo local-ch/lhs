@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.configure do |config|
   config.before do |spec|
     enabled = spec.metadata.key?(:request_cycle_cache) && spec.metadata[:request_cycle_cache] == true

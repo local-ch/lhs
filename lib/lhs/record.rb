@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LHS::Record
   autoload :Batch,
     'lhs/concerns/record/batch'
