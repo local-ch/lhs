@@ -13,11 +13,14 @@ class LHS::Record
 
     mattr_accessor :all
 
+    included do
+      class_attribute :endpoints unless defined? endpoints
+      self.endpoints = []
+    end
+
     module ClassMethods
       # Adds the endpoint to the list of endpoints.
       def endpoint(url, options = nil)
-        class_attribute :endpoints unless defined? endpoints
-        self.endpoints ||= []
         self.endpoints = endpoints.clone
         validates_deprecation_check!(options)
         endpoint = LHC::Endpoint.new(url, options)
@@ -104,6 +107,7 @@ class LHS::Record
       # A base endpoint is the one thats has the least amont of placeholers.
       # There cannot be multiple base endpoints.
       def find_base_endpoint
+        return unless self.endpoints.present?
         endpoints = self.endpoints.group_by do |endpoint|
           endpoint.placeholders.length
         end

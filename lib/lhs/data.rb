@@ -27,7 +27,7 @@ class LHS::Data
     self._raw = raw_from_input(input)
     self._parent = parent
     self._record = record
-    self._proxy = proxy_from_input(input)
+    self._proxy = proxy_from_input(input, record)
     self._request = request
     self._endpoint = endpoint
   end
@@ -63,7 +63,7 @@ class LHS::Data
   end
 
   def class
-    _root._record
+    _record || _root._record
   end
 
   # enforce internal data structure to have deep symbolized keys
@@ -120,7 +120,7 @@ class LHS::Data
     _root == self
   end
 
-  def proxy_from_input(input)
+  def proxy_from_input(input, record)
     if input.is_a? LHS::Proxy
       input
     elsif collection_proxy?(raw_from_input(input))
