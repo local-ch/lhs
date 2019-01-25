@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
   s.test_files   = `git ls-files -- spec/*`.split("\n")
   s.require_paths = ['lib']
 
-  s.requirements << 'Ruby >= 2.3.0'
-  s.required_ruby_version = '>= 2.3.0'
+  s.requirements << 'Ruby >= 2.6.0'
+  s.required_ruby_version = '>= 2.6.0'
 
   s.add_dependency 'activemodel'
   s.add_dependency 'activesupport', '> 4.2'
