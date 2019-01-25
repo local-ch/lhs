@@ -63,7 +63,7 @@ class LHS::Data
   end
 
   def class
-    _root._record
+    _record || _root._record
   end
 
   # enforce internal data structure to have deep symbolized keys
