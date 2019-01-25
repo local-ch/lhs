@@ -107,7 +107,6 @@ class LHS::Record
       # A base endpoint is the one thats has the least amont of placeholers.
       # There cannot be multiple base endpoints.
       def find_base_endpoint
-        return unless self.endpoints.present?
         endpoints = self.endpoints.group_by do |endpoint|
           endpoint.placeholders.length
         end
