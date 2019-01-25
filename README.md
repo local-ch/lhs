@@ -48,8 +48,11 @@ record.review # "Lunch was great
             * [Ambiguous endpoints](#ambiguous-endpoints)
          * [Record inheritance](#record-inheritance)
          * [Find multiple records](#find-multiple-records)
+            * [fetch](#fetch)
             * [where](#where)
             * [Reuse/Dry where statements: Use scopes](#reusedry-where-statements-use-scopes)
+            * [all](#all)
+            * [all with unpaginated endpoints](#all-with-unpaginated-endpoints)
             * [Retrieve the amount of a collection of items: count vs. length](#retrieve-the-amount-of-a-collection-of-items-count-vs-length)
          * [Find single records](#find-single-records)
             * [find](#find)
@@ -65,6 +68,7 @@ record.review # "Lunch was great
                   * [has_one](#has_one)
             * [Unwrap nested items from the response body](#unwrap-nested-items-from-the-response-body)
             * [Determine collections from the response body](#determine-collections-from-the-response-body)
+            * [Load additional data based on retrieved data](#load-additional-data-based-on-retrieved-data)
          * [Chain complex queries](#chain-complex-queries)
             * [Chain where queries](#chain-where-queries)
             * [Expand plain collections of links: expanded](#expand-plain-collections-of-links-expanded)
@@ -739,6 +743,33 @@ search_result.first.address # Bahnhofstrasse 5, 8000 Zürich
 ```
 GET https://service.example.com/search?q=Starbucks
 {... docs: [... {...  address: 'Bahnhofstrasse 5, 8000 Zürich' }] }
+```
+
+#### Load additional data based on retrieved data
+
+In order to load linked data from already retrieved data, you can use `load!` (or `reload!`).
+
+```ruby
+# app/controllers/some_controller.rb
+
+record = Record.find(1)
+record.associated_thing.load!
+```
+```
+GET https://things/4
+{ name: "Steve" }
+```
+```ruby
+# app/controllers/some_controller.rb
+record.associated_thing.name # Steve
+
+record.associated_thing.load! # Does NOT create another request, as it is already loaded
+record.associated_thing.reload! # Does request the data again from remote
+
+```
+```
+GET https://things/4
+{ name: "Steve" }
 ```
 
 ### Chain complex queries
