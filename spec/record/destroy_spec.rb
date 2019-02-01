@@ -11,7 +11,7 @@ describe LHS::Record do
       end
     end
 
-    let(:entry) { { what: 'Cafe', where: 'Zurich' } }
+    let(:entry) { { id: '132', what: 'Cafe', where: 'Zurich' } }
 
     it 'allows to destroy by parameters directly' do
       stub_request(:delete, "http://datastore/history?what=Cafe&where=Zurich")
@@ -32,6 +32,14 @@ describe LHS::Record do
         .with(headers: { 'Authorization' => 'Bearer 123' })
         .to_return(body: entry.to_json)
       deleted_entry = Record.options(headers: { 'Authorization' => 'Bearer 123' }).destroy(1)
+      expect(deleted_entry.to_h).to eq entry
+    end
+
+    it 'chains without parameter' do
+      stub_request(:delete, "http://datastore/history/1")
+        .with(headers: { 'Authorization' => 'Bearer 123' })
+        .to_return(body: entry.to_json)
+      deleted_entry = Record.options(headers: { 'Authorization' => 'Bearer 123' }).destroy
       expect(deleted_entry.to_h).to eq entry
     end
   end
