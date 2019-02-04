@@ -60,5 +60,22 @@ describe LHS::Item do
         item.destroy
       end
     end
+
+    context 'when item does not have any href' do
+      let(:json) do
+        {
+          items: [{
+            id: '934394348r', # TODO dynamic
+            name: 'asdf'
+          }]
+        }.to_json
+      end
+
+      it 'destroys the item on the backend' do
+        stub_request(:delete, "#{datastore}/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ")
+          .to_return(status: 200)
+        expect(item.destroy._raw).to eq item._raw
+      end
+    end
   end
 end
