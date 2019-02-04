@@ -48,14 +48,6 @@ class LHS::Item < LHS::Proxy
       record.find_endpoint(merge_data_with_options(data, options))
     end
 
-    def merge_data_with_options(data, options)
-      if options && options[:params]
-        data.merge(options[:params])
-      else
-        data
-      end
-    end
-
     def url_for_persistance!(options, data)
       return href if href.present?
       endpoint = endpoint_for_persistance(data, options)
