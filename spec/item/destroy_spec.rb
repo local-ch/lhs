@@ -62,19 +62,51 @@ describe LHS::Item do
     end
 
     context 'when item does not have any href' do
-      let(:json) do
+      let(:business_data) do
         {
-          items: [{
-            id: '934394348r', # TODO dynamic
-            name: 'asdf'
-          }]
-        }.to_json
+          id: '12345',
+          name: 'localsearch'
+        }
       end
 
-      it 'destroys the item on the backend' do
-        stub_request(:delete, "#{datastore}/v2/feedbacks/0sdaetZ-OWVg4oBiBJ-7IQ")
-          .to_return(status: 200)
-        expect(item.destroy._raw).to eq item._raw
+      let(:business_collection) do
+        [business_data]
+      end
+
+      before do
+        class Business < LHS::Record
+          endpoint 'https://uberall/businesses'
+          endpoint 'https://uberall/businesses/{id}'
+        end
+
+        stub_request(:get, "https://uberall/businesses")
+          .to_return(body: business_collection.to_json)
+
+        stub_request(:delete, "https://uberall/businesses/12345")
+          .to_return(body: {
+            status: 'SUCCESS',
+            response: {
+              success: true
+            }
+          }.to_json)
+      end
+
+      it "destroys the item using it's own id (data)" do
+        business = Business.fetch.first
+        expect(business.destroy._raw).to eq business_data
+      end
+
+      context 'item does not have an id' do
+        let(:business_data) do
+          {
+            name: 'localsearch'
+          }
+        end
+
+        it 'destroy the item using the id passed as options' do
+          business = Business.fetch.first
+          expect(business.destroy(params: { id: '12345' })._raw).to eq business_data
+        end
       end
     end
   end
