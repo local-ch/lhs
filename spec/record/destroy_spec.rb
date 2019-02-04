@@ -27,6 +27,13 @@ describe LHS::Record do
       expect(deleted_entry.to_h).to eq entry
     end
 
+    it 'allows to destroy without any parameter' do
+      stub_request(:delete, "http://datastore/history/1")
+        .to_return(body: entry.to_json)
+      deleted_entry = Record.destroy
+      expect(deleted_entry.to_h).to eq entry
+    end
+
     it 'chains' do
       stub_request(:delete, "http://datastore/history/1")
         .with(headers: { 'Authorization' => 'Bearer 123' })
