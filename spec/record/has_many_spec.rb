@@ -45,6 +45,52 @@ describe LHS::Record do
     end
   end
 
+  # TODO rename context
+  context 'has_many v2' do
+    before do
+      class Place < LHS::Record
+        endpoint 'https://datastore/places/{id}', followlocation: true, headers: { 'Prefer' => 'redirect-strategy=redirect-over-not-found' }
+        has_many :available_assets
+      end
+
+      class AvailableAsset < LHS::Record
+      end
+
+      stub_request(:get, place_hash[:href])
+        .to_return(body: place_hash.to_json)
+
+      stub_request(:get, "http://datastore/places/#{place_id}/available-assets?limit=100")
+        .to_return(body: {
+          total: available_assets.size,
+          items: available_assets
+        }.to_json)
+    end
+
+    let(:place_id) { SecureRandom.urlsafe_base64 }
+
+    let(:place_hash) do
+      {
+        href: "https://datastore/places/#{place_id}",
+        id: place_id,
+        available_assets: { href: "http://datastore/places/#{place_id}/available-assets?offset=0&limit=10" }
+      }
+    end
+
+    let(:available_asset_hash) do
+      { asset_code: 'OPENING_HOURS' }
+    end
+
+    let(:available_assets) { [available_asset_hash] }
+
+    it 'has many available assets' do
+      place = Place
+        .options(auth: { bearer: 'XYZ' })
+        .includes_all(:available_assets).find(place_id)
+        binding.pry
+      expect(place.available_assets.first).to be_a(AvailableAsset)
+    end
+  end
+
   context 'custom class_name' do
 
     before do
