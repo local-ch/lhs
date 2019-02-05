@@ -45,8 +45,8 @@ describe LHS::Record do
     end
   end
 
-  # TODO rename context
-  context 'has_many v2' do
+  # TODO move
+  context 'clearing cache when including associations' do
     before do
       class Place < LHS::Record
         endpoint 'https://datastore/places/{id}', followlocation: true, headers: { 'Prefer' => 'redirect-strategy=redirect-over-not-found' }
@@ -82,7 +82,7 @@ describe LHS::Record do
 
     let(:available_assets) { [available_asset_hash] }
 
-    it 'has many available assets' do
+    it 'clears the cache when using find' do
       place = Place
         .options(auth: { bearer: 'XYZ' })
         .includes_all(:available_assets)
