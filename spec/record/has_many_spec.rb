@@ -85,8 +85,8 @@ describe LHS::Record do
     it 'has many available assets' do
       place = Place
         .options(auth: { bearer: 'XYZ' })
-        .includes_all(:available_assets).find(place_id)
-        binding.pry
+        .includes_all(:available_assets)
+        .find(place_id)
       expect(place.available_assets.first).to be_a(AvailableAsset)
     end
   end
