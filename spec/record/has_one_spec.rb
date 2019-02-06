@@ -20,7 +20,6 @@ describe LHS::Record do
   end
 
   context 'has_one' do
-
     before do
       class Transaction < LHS::Record
         endpoint 'http://myservice/transactions'
@@ -48,23 +47,6 @@ describe LHS::Record do
     it 'keeps hirachy when casting it to another class on access' do
       expect(user._root._raw).to eq transaction._raw
       expect(user.parent._raw).to eq transaction._raw
-    end
-
-    it 'caches the relation in memory' do
-      allow(LHS::Record).to receive(:for_url).and_return(User)
-      user_object_id = transaction.user.object_id
-      expect(transaction.user.object_id).to eql(user_object_id)
-      transaction2 = Transaction.find(2)
-      expect(transaction2.user.object_id).not_to eql(user_object_id)
-    end
-
-    it 'recalculates cache for relation when it was modified' do
-      allow(LHS::Record).to receive(:for_url).and_return(Comment)
-      expect(user.comments).to be_blank
-      comments_object_id = user.comments.object_id
-      user.comments = [Comment.new]
-      expect(user.comments.object_id).not_to eql(comments_object_id)
-      expect(user.comments).not_to be_blank
     end
   end
 
