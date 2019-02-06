@@ -56,9 +56,6 @@ describe LHS::Record do
       class AvailableAsset < LHS::Record
       end
 
-      stub_request(:get, place_hash[:href])
-        .to_return(body: place_hash.to_json)
-
       stub_request(:get, "http://datastore/places/#{place_id}/available-assets?limit=100")
         .to_return(body: {
           total: available_assets.size,
@@ -83,10 +80,32 @@ describe LHS::Record do
     let(:available_assets) { [available_asset_hash] }
 
     it 'clears the cache when using find' do
+      stub_request(:get, place_hash[:href])
+        .to_return(body: place_hash.to_json)
       place = Place
         .options(auth: { bearer: 'XYZ' })
         .includes_all(:available_assets)
         .find(place_id)
+      expect(place.available_assets.first).to be_a(AvailableAsset)
+    end
+
+    it 'clears the cache when using where' do
+      stub_request(:get, place_hash[:href])
+        .to_return(body: place_hash.to_json)
+      place = Place
+        .options(auth: { bearer: 'XYZ' })
+        .includes_all(:available_assets)
+        .where(id: place_id)
+      expect(place.available_assets.first).to be_a(AvailableAsset)
+    end
+
+    it 'clears the cache when using find_by' do
+      stub_request(:get, "https://datastore/places/#{place_id}?limit=1")
+        .to_return(body: place_hash.to_json)
+      place = Place
+        .options(auth: { bearer: 'XYZ' })
+        .includes_all(:available_assets)
+        .find_by(id: place_id)
       expect(place.available_assets.first).to be_a(AvailableAsset)
     end
   end
