@@ -46,7 +46,6 @@ describe LHS::Record do
   end
 
   context 'custom class_name' do
-
     before do
       module Uberall
         class Location < LHS::Record
