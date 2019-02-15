@@ -384,6 +384,47 @@ describe LHS::Record do
     end
   end
 
+  context 'Linked single (unpaginated) resource' do
+    before do
+      stub_request(:get, "http://datastore/localEntry/v1/1.json?&limit=100")
+        .to_return(
+          body: {
+            local_entry_id: '1'
+          }.to_json
+        )
+
+      stub_request(:get, 'http://datastore/places/1?limit=1')
+        .to_return(
+          body: {
+            href: 'http://datastore/places/1',
+            local_entry: { href: 'http://datastore/localEntry/v1/1.json?&limit=100' }
+          }.to_json
+        )
+
+      class Place < LHS::Record
+        endpoint 'http://datastore/places/{id}'
+      end
+
+      class LocalEntry < LHS::Record
+        endpoint 'http://datastore/localEntry/v1/{id}.json'
+      end
+    end
+
+    it 'is not interpreted as collection (GREEN)' do
+      place = Place
+        .includes(:local_entry)
+        .find_by(id: 1)
+      expect(place.local_entry.local_entry_id).to eq '1'
+    end
+
+    it 'is not interpreted as collection (RED)' do
+      place = Place
+        .includes_all(:local_entry)
+        .find_by(id: 1)
+      expect(place.local_entry.local_entry_id).to eq '1'
+    end
+  end
+
   context 'nested includes_all' do
     context 'with optional children' do
 
