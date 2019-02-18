@@ -34,9 +34,11 @@ class LHS::Item < LHS::Proxy
     end
 
     def create_and_merge_data!(options)
-      direct_response_data = record.request(options)
-      _data.merge_raw!(direct_response_data.unwrap(:item_created_key))
-      response_headers = direct_response_data._request.response.headers
+      response_data = record.request(options)
+      if response_data.present?
+        _data.merge_raw!(response_data.unwrap(:item_created_key))
+        response_headers = response_data._request.response.headers
+      end
       if response_headers && response_headers['Location']
         location_data = record.request(options.merge(url: response_headers['Location'], method: :get, body: nil))
         _data.merge_raw!(location_data.unwrap(:item_created_key))
