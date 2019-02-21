@@ -88,6 +88,7 @@ describe LHS::Item do
 
           class AppointmentProposal < LHS::Record
             endpoint 'http://bookings/bookings'
+
             def appointments_attributes=(attributes)
               self.appointments = attributes.map { |attribute| { 'date_time': attribute[:date] } }
             end
@@ -135,7 +136,7 @@ describe LHS::Item do
         stub_request(:get, 'http://host/v2/parents/bbb/children/ccc/grand_children/aaa')
           .to_return(status: 200, body: data.to_json)
         stub_request(:post, 'http://host/v2/parents/bbb/children/ccc/grand_children/aaa')
-          .with(body: item._raw.merge(name: 'Steve').to_json)
+          .with(body: { name: 'Steve' }.to_json)
 
         grand_child = GrandChild.find(parent_id: 'bbb', child_id: 'ccc', id: 'aaa')
         expect(grand_child.name).to eq('Lorem')
