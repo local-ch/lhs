@@ -2,3 +2,4 @@ source 'https://rubygems.org/'
 
 gemspec
 gem 'activesupport', '~> 4.2.11'
+gem 'rails', '~> 4.2.11'
