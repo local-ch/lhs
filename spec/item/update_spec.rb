@@ -109,6 +109,34 @@ describe LHS::Item do
         end
       end
     end
+
+    context 'with many placeholders' do
+      before do
+        class Record < LHS::Record
+          endpoint 'http://host/v2/parents/{parent_id}/records'
+          endpoint 'http://host/v2/parents/{parent_id}/records/{id}'
+        end
+      end
+
+      let(:data) do
+        {
+          id: "aaa",
+          parent_id: "bbb",
+          content: "Lorem"
+        }
+      end
+
+      let(:item) do
+        Record.new(data)
+      end
+
+      it 'persists changes on the backend' do
+        # stub_request(:put, '{+datastore}/v2/{parent_id}/feedbacks/{id}')
+        #   .with(body: item._raw.merge(name: 'Steve').to_json)
+        result = item.update(content: 'Steve')
+        expect(result).to eq true
+      end
+    end
   end
 
   context 'update!' do
