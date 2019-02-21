@@ -3,9 +3,15 @@
 require 'active_support'
 
 class LHS::Item < LHS::Proxy
+  autoload :EndpointLookup,
+    'lhs/concerns/item/endpoint_lookup'
 
   module Update
     extend ActiveSupport::Concern
+
+    included do
+      include EndpointLookup
+    end
 
     def update(params, options = nil)
       update!(params, options)
@@ -26,11 +32,12 @@ class LHS::Item < LHS::Proxy
     end
 
     def update!(params, options = {}, partial_update = false)
-      options ||= {}
+      options = options.present? ? options.dup : {}
       partial_record = _record.new(LHS::Data.new(params, _data.parent, _record))
       _data.merge_raw!(partial_record._data)
-      data_sent = partial_update ? partial_record._data : _data
-      url = href || record.find_endpoint(_data.to_h).compile(_data.to_h)
+      data = _data._raw.dup
+      url = url_for_persistance!(data, options)
+      data_sent = partial_update ? partial_record._data : data
       response_data = record.request(
         options.merge(
           method: options.fetch(:method, :post),
