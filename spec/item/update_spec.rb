@@ -112,9 +112,9 @@ describe LHS::Item do
 
     context 'with many placeholders' do
       before do
-        class Record < LHS::Record
-          endpoint 'http://host/v2/parents/{parent_id}/records'
-          endpoint 'http://host/v2/parents/{parent_id}/records/{id}'
+        class Child < LHS::Record
+          endpoint 'http://host/v2/parents/{parent_id}/childs'
+          endpoint 'http://host/v2/parents/{parent_id}/childs/{id}'
         end
       end
 
@@ -122,18 +122,23 @@ describe LHS::Item do
         {
           id: "aaa",
           parent_id: "bbb",
-          content: "Lorem"
+          name: "Lorem"
         }
       end
 
       let(:item) do
-        Record.new(data)
+        Child.new(data)
       end
 
       it 'persists changes on the backend' do
-        # stub_request(:put, '{+datastore}/v2/{parent_id}/feedbacks/{id}')
-        #   .with(body: item._raw.merge(name: 'Steve').to_json)
-        result = item.update(content: 'Steve')
+        stub_request(:get, 'http://host/v2/parents/bbb/childs/aaa')
+          .to_return(status: 200, body: data.to_json)
+        stub_request(:put, 'http://host/v2/parents/bbb/childs/aaa')
+          .with(body: item._raw.merge(name: 'Steve').to_json)
+
+        child = Child.find(parent_id: 'bbb', id: 'aaa')
+        expect(child.name).to eq('Lorem')
+        result = child.update(name: 'Steve')
         expect(result).to eq true
       end
     end
