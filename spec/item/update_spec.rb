@@ -133,7 +133,7 @@ describe LHS::Item do
       it 'persists changes on the backend' do
         stub_request(:get, 'http://host/v2/parents/bbb/childs/aaa')
           .to_return(status: 200, body: data.to_json)
-        stub_request(:put, 'http://host/v2/parents/bbb/childs/aaa')
+        stub_request(:post, 'http://host/v2/parents/bbb/childs/aaa')
           .with(body: item._raw.merge(name: 'Steve').to_json)
 
         child = Child.find(parent_id: 'bbb', id: 'aaa')

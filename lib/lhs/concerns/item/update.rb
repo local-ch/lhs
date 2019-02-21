@@ -30,7 +30,7 @@ class LHS::Item < LHS::Proxy
       partial_record = _record.new(LHS::Data.new(params, _data.parent, _record))
       _data.merge_raw!(partial_record._data)
       data_sent = partial_update ? partial_record._data : _data
-      url = href || record.find_endpoint(id: id).compile(id: id)
+      url = href || record.find_endpoint(_data.to_h).compile(_data.to_h)
       response_data = record.request(
         options.merge(
           method: options.fetch(:method, :post),
