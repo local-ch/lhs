@@ -254,7 +254,7 @@ Record.fetch
 GET https://service.example.com/records
 ```
 
-**Be aware that, if you configure ambigious endpoints accross multiple classes, the order of things is not deteministic. Ambigious endpoints accross multiple classes needs to be avoided.**
+**Be aware that, if you configure ambigious endpoints accross multiple classes, the order of things is not deteministic. Ambigious endpoints accross multiple classes need to be avoided.**
 
 ### Record inheritance
 
