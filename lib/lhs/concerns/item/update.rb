@@ -35,9 +35,10 @@ class LHS::Item < LHS::Proxy
       options = options.present? ? options.dup : {}
       partial_record = _record.new(LHS::Data.new(params, _data.parent, _record))
       _data.merge_raw!(partial_record._data)
-      data = _data.dup
-      url = url_for_persistance!(data._raw, options)
-      data_sent = partial_update ? partial_record._data : data
+      data = _data._raw.dup
+      partial_data = partial_record._data._raw.dup
+      url = url_for_persistance!(data, options)
+      data_sent = partial_update ? partial_data.extract!(*data.keys) : data
       response_data = record.request(
         options.merge(
           method: options.fetch(:method, :post),

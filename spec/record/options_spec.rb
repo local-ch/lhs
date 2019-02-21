@@ -119,7 +119,7 @@ describe LHS::Record do
       context 'update' do
         before do
           stub_request(:post, "http://datastore/v2/records/123").to_return(body: {}.to_json)
-          body = LHS::Data.new({ href: 'http://datastore/v2/records/123', name: 'steve' }, nil, Record)
+          body = { href: 'http://datastore/v2/records/123', name: 'steve' }
           expect(LHC).to receive(:request)
             .with(options.merge(method: :post, url: "http://datastore/v2/records/123", body: body))
             .and_call_original
