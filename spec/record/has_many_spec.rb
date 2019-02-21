@@ -106,12 +106,14 @@ describe LHS::Record do
 
       stub_request(:get, "https://categories/categories/1")
         .to_return(body: {
+          href: 'https://categories/categories/1',
           category_name: 'Pizza'
         }.to_json)
     end
 
     it 'explicit association configuration overrules href class casting' do
       place = Place.includes(:categories).find(1)
+      expect(place.categories.first).to be_kind_of NewCategory
       expect(place.categories.first.name).to eq('Pizza')
     end
   end
