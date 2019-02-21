@@ -73,4 +73,42 @@ describe LHS::Record do
       expect(user.email).to eq 'steve@local.ch'
     end
   end
+
+  context 'explicit association class configuration overrules href class casting' do
+    before do
+      class Place < LHS::Record
+        endpoint 'http://places/places/{id}'
+        has_one :category, class_name: 'NewCategory'
+      end
+
+      class NewCategory < LHS::Record
+        endpoint 'http://newcategories/newcategories/{id}'
+
+        def name
+          self['category_name']
+        end
+      end
+
+      class Category < LHS::Record
+        endpoint 'http://categories/categories/{id}'
+      end
+
+      stub_request(:get, "http://places/places/1")
+        .to_return(body: {
+          category: {
+            href: 'https://categories/categories/1'
+          }
+        }.to_json)
+
+      stub_request(:get, "https://categories/categories/1")
+        .to_return(body: {
+          category_name: 'Pizza'
+        }.to_json)
+    end
+
+    it 'explicit association configuration overrules href class casting' do
+      place = Place.includes(:category).find(1)
+      expect(place.category.name).to eq('Pizza')
+    end
+  end
 end
