@@ -112,9 +112,9 @@ describe LHS::Item do
 
     context 'with many placeholders' do
       before do
-        class Child < LHS::Record
-          endpoint 'http://host/v2/parents/{parent_id}/childs'
-          endpoint 'http://host/v2/parents/{parent_id}/childs/{id}'
+        class GrandChild < LHS::Record
+          endpoint 'http://host/v2/parents/{parent_id}/children/{child_id}/grand_children'
+          endpoint 'http://host/v2/parents/{parent_id}/children/{child_id}/grand_children/{id}'
         end
       end
 
@@ -122,23 +122,24 @@ describe LHS::Item do
         {
           id: "aaa",
           parent_id: "bbb",
+          child_id: 'ccc',
           name: "Lorem"
         }
       end
 
       let(:item) do
-        Child.new(data)
+        GrandChild.new(data)
       end
 
       it 'persists changes on the backend' do
-        stub_request(:get, 'http://host/v2/parents/bbb/childs/aaa')
+        stub_request(:get, 'http://host/v2/parents/bbb/children/ccc/grand_children/aaa')
           .to_return(status: 200, body: data.to_json)
-        stub_request(:post, 'http://host/v2/parents/bbb/childs/aaa')
+        stub_request(:post, 'http://host/v2/parents/bbb/children/ccc/grand_children/aaa')
           .with(body: item._raw.merge(name: 'Steve').to_json)
 
-        child = Child.find(parent_id: 'bbb', id: 'aaa')
-        expect(child.name).to eq('Lorem')
-        result = child.update(name: 'Steve')
+        grand_child = GrandChild.find(parent_id: 'bbb', child_id: 'ccc', id: 'aaa')
+        expect(grand_child.name).to eq('Lorem')
+        result = grand_child.update(name: 'Steve')
         expect(result).to eq true
       end
     end
