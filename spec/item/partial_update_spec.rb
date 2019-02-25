@@ -53,6 +53,48 @@ describe LHS::Item do
     end
   end
 
+  context 'with many placeholders' do
+    before do
+      class GrandChild < LHS::Record
+        endpoint 'http://host/v2/parents/{parent_id}/children/{child_id}/grand_children'
+        endpoint 'http://host/v2/parents/{parent_id}/children/{child_id}/grand_children/{id}'
+      end
+    end
+
+    let(:data) do
+      {
+        id: "aaa",
+        parent_id: "bbb",
+        child_id: 'ccc',
+        name: "Lorem"
+      }
+    end
+
+    let(:item) do
+      GrandChild.new(data)
+    end
+
+    it 'persists changes on the backend' do
+      stub_request(:get, 'http://host/v2/parents/bbb/children/ccc/grand_children/aaa')
+        .to_return(status: 200, body: data.to_json)
+      stub_request(:post, 'http://host/v2/parents/bbb/children/ccc/grand_children/aaa')
+        .with(body: { name: 'Steve' }.to_json)
+
+      grand_child = GrandChild.find(parent_id: 'bbb', child_id: 'ccc', id: 'aaa')
+      expect(grand_child.name).to eq('Lorem')
+      result = grand_child.partial_update(name: 'Steve')
+      expect(result).to eq true
+    end
+
+    it 'persists changes on the backend removing placeholder from body' do
+      stub_request(:post, 'http://host/v2/parents/bbb/children/ccc/grand_children/kkkk')
+        .with(body: { name: 'Steve' }.to_json)
+
+      result = item.partial_update(name: 'Steve', id: 'kkkk')
+      expect(result).to eq true
+    end
+  end
+
   context 'update!' do
     it 'raises if something goes wrong' do
       stub_request(:post, item.href)
