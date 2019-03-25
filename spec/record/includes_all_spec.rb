@@ -561,7 +561,7 @@ describe LHS::Record do
       place = Place
         .includes_all(customer: :addresses)
         .find(1)
-      expect(place.customer.addresses.map(&:no)).to eq [1,2]
+      expect(place.customer.addresses.map(&:no)).to eq [1, 2]
     end
   end
 end
