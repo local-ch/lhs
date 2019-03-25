@@ -147,7 +147,7 @@ class LHS::Record
       def extend_base_item_with_hash_of_items!(target, addition)
         LHS::Collection.nest(input: target._raw, value: [], record: self)
         if LHS::Collection.access(input: target._raw, record: self).empty?
-          LHS::Collection.nest(input: target._raw, value: addition.map(&:_raw), record: self)
+          LHS::Collection.nest(input: target._raw, value: addition.compact.map(&:_raw), record: self)
         else
           LHS::Collection.access(input: target._raw, record: self).each_with_index do |item, index|
             item.merge!(addition[index])
@@ -242,7 +242,7 @@ class LHS::Record
           load_and_merge_paginated_collection!(data, options)
         elsif data.collection? && paginated?(data.first.try(:_raw))
           load_and_merge_set_of_paginated_collections!(data, options)
-        elsif load_not_paginated_collection
+        elsif load_not_paginated_collection && data.collection?
           warn('[Warning] "all" has been requested, but endpoint does not provide pagination meta data. If you just want to fetch the first response, use "where" or "fetch".')
           load_and_merge_not_paginated_collection!(data, options)
         end
