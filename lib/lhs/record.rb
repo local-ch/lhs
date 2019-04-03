@@ -83,6 +83,12 @@ class LHS::Record
     new(data)
   end
 
+  # Override Object#dup because it doesn't support copying any singleton
+  # methods, which leads to missing `_data` method when you execute `dup`.
+  def dup
+    clone
+  end
+
   protected
 
   def method_missing(name, *args, &block)
