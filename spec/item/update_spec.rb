@@ -88,10 +88,14 @@ describe LHS::Item do
 
           class AppointmentProposal < LHS::Record
             endpoint 'http://bookings/bookings'
+            has_many :appointments
 
             def appointments_attributes=(attributes)
-              self.appointments = attributes.map { |attribute| { 'date_time': attribute[:date] } }
+              self.appointments = attributes.map { |attribute| Appointment.new('date_time': attribute[:date]) }
             end
+          end
+
+          class Appointment < LHS::Record
           end
         end
 
