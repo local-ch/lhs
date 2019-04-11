@@ -39,7 +39,7 @@ describe LHS::Record do
     it 'is also applicable to find' do
       stub_request(:get, 'http://datastore/v2/records?id=123').to_return(body: {}.to_json)
       expect(LHC).to receive(:request)
-        .with(options.merge(params: { id: "123" }, url: 'http://datastore/v2/records'))
+        .with(options.merge(params: { id: "123" }, url: 'http://datastore/v2/records', source: %r{#{__FILE__}}))
         .and_call_original
       Record.options(options).find('123')
     end
@@ -47,7 +47,7 @@ describe LHS::Record do
     it 'is also applicable to find_by' do
       stub_request(:get, 'http://datastore/v2/records?id=123&limit=1').to_return(body: {}.to_json)
       expect(LHC).to receive(:request)
-        .with(options.merge(params: { id: "123", limit: 1 }, url: 'http://datastore/v2/records'))
+        .with(options.merge(params: { id: "123", limit: 1 }, url: 'http://datastore/v2/records', source: %r{#{__FILE__}}))
         .and_call_original
       Record.options(options).find_by(id: '123')
     end

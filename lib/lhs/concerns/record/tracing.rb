@@ -11,8 +11,13 @@ class LHS::Record
 
       # Needs to be called directly from the first method (level) within LHS
       def trace!(options = {})
+        return options unless Rails.logger.level == 0
+
         (options || {}).tap do |options|
-          options[:source] = caller[3]
+          source = caller.detect do |source|
+            !source.match?(%r{/\lhs\/lib\/lhs})
+          end
+          options[:source] = source
         end
       end
     end

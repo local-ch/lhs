@@ -8,6 +8,7 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
+
       # Fetch some record by parameters
       def find_by(params = {}, options = nil)
         _find_by(params, trace!(options))
