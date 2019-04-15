@@ -8,7 +8,6 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       # Needs to be called directly from the first method (level) within LHS
       def trace!(options = {})
         return options unless Rails.logger.level == 0
