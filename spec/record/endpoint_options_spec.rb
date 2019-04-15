@@ -10,6 +10,13 @@ describe LHS::Record do
       end
     end
 
+    around do |example|
+      original_level     = Rails.logger.level
+      Rails.logger.level = 0
+      example.run
+      Rails.logger.level = original_level
+    end
+
     it 'stores endpoints with options' do
       expect(Record.endpoints[0].options).to eq(cache_expires_in: 86400, retry: 2, cache: true)
     end

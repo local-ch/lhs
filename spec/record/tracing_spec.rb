@@ -5,6 +5,14 @@ require 'rails_helper'
 describe LHS::Record do
 
   context 'tracing' do
+
+    around do |example|
+      original_level     = Rails.logger.level
+      Rails.logger.level = 0
+      example.run
+      Rails.logger.level = original_level
+    end
+
     context 'with level set to debug' do
       context 'with non-paginated methods' do
 
@@ -22,13 +30,6 @@ describe LHS::Record do
             expect(arguments[:source]).to include(__FILE__)
             spy(:response)
           end
-        end
-
-        around do |example|
-          original_level     = Rails.logger.level
-          Rails.logger.level = 0
-          example.run
-          Rails.logger.level = original_level
         end
 
         %w[find find_by find_by! first first! last!].each do |method|

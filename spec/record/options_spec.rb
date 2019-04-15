@@ -14,6 +14,13 @@ describe LHS::Record do
     end
   end
 
+  around do |example|
+    original_level     = Rails.logger.level
+    Rails.logger.level = 0
+    example.run
+    Rails.logger.level = original_level
+  end
+
   let(:options) { { auth: { bearer: '123' }, validates: { persist: false } } }
   let(:params) { { name: 'Steve' } }
 
