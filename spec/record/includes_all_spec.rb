@@ -144,16 +144,9 @@ describe LHS::Record do
           )
       end
 
-      around do |example|
-        original_level     = Rails.logger.level
-        Rails.logger.level = 0
-        example.run
-        Rails.logger.level = original_level
-      end
-
       it 'overwrites existing pagination paramters if they are already contained in a string' do
         expect(LHC).to receive(:request)
-          .with(url: "http://datastore/customers/1", source: %r{#{__FILE__}}).and_call_original
+          .with(url: "http://datastore/customers/1").and_call_original
 
         expect(LHC).to receive(:request)
           .with(url: "http://datastore/customers/1/contracts",
