@@ -14,7 +14,7 @@ class LHS::Record
 
         (options || {}).tap do |options|
           source = caller.detect do |source|
-            !source.match?(%r{/\lhs\/lib\/lhs})
+            !source.match?(%r{/\/lib\/lhs})
           end
           options[:source] = source
         end
