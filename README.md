@@ -131,6 +131,7 @@ record.review # "Lunch was great
       * [Request Cycle Cache](#request-cycle-cache)
          * [Change store for LHS' request cycle cache](#change-store-for-lhs-request-cycle-cache)
          * [Disable request cycle cache](#disable-request-cycle-cache)
+      * [Request tracing](#request-tracing)
       * [Testing with LHS](#testing-with-lhs)
          * [Test helper for request cycle cache](#test-helper-for-request-cycle-cache)
          * [Test query chains](#test-query-chains)
@@ -2241,6 +2242,34 @@ LHC.configure do |config|
   config.request_cycle_cache_enabled = false
 end
 ```
+## Request tracing
+
+While on `:debug` Rails logging level, explicit finder method calls, i.e. `find find_by find_by! first first! last last!` trigger automatic source tracing. Source code lines where such commands originate are being reported in the logfile.
+
+Following links does not trigger tracing.
+
+This will be automatically traced:
+```ruby
+code = AccessCode.find(access_code: params[:access_code]) 
+```
+```
+Called from onboarding/app/controllers/concerns/access_code_concern.rb:11:in `access_code'
+```
+However, this call won't get traced:
+```ruby
+code.places
+```
+
+```ruby
+{ 
+  token: "XYZABCDEF",
+  places:
+    [
+      { href: "http://storage-stg.preprod-local.ch/v2/places/egZelgYhdlg" }
+    ]
+}
+```
+
 
 ## Testing with LHS
 
