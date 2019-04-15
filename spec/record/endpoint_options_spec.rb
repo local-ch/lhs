@@ -20,8 +20,7 @@ describe LHS::Record do
           cache_expires_in: 1.day,
           retry: 2,
           cache: true,
-          url: 'backend/v2/feedbacks/1',
-          source: %r{#{__FILE__}}
+          url: 'backend/v2/feedbacks/1'
         ).and_call_original
 
       stub_request(:get, "http://backend/v2/feedbacks/1").to_return(status: 200)
