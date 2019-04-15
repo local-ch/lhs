@@ -5,15 +5,15 @@ require 'rails_helper'
 describe LHS::Record do
 
   context 'tracing' do
-
-    around do |example|
-      original_level     = Rails.logger.level
-      Rails.logger.level = 0
-      example.run
-      Rails.logger.level = original_level
-    end
-
     context 'with level set to debug' do
+
+      around do |example|
+        original_level     = Rails.logger.level
+        Rails.logger.level = 0
+        example.run
+        Rails.logger.level = original_level
+      end
+
       context 'with non-paginated methods' do
 
         let(:request) do
@@ -85,7 +85,9 @@ describe LHS::Record do
       end
     end
 
-    context 'with level set to other than debug' do
+    # test.rb sets config.log_level = :warn purposefully so that only those tests which need tracing can override
+    # log_level to debug to enable it
+    context 'with level set to other than debug (default in test)' do
       context 'non-paginated methods' do
 
         before do
@@ -97,13 +99,6 @@ describe LHS::Record do
             expect(arguments).not_to include(:source)
             spy(:response)
           end
-        end
-
-        around do |example|
-          original_level     = Rails.logger.level
-          Rails.logger.level = 5
-          example.run
-          Rails.logger.level = original_level
         end
 
         %w[find find_by find_by! first first! last!].each do |method|
@@ -153,13 +148,6 @@ describe LHS::Record do
             expect(arguments).not_to include(:source)
             spy(:response)
           end
-        end
-
-        around do |example|
-          original_level     = Rails.logger.level
-          Rails.logger.level = 5
-          example.run
-          Rails.logger.level = original_level
         end
 
         it 'does not forward tracing options to lhc' do
