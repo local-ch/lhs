@@ -8,7 +8,7 @@ describe LHS::Record do
     context 'with level set to debug' do
 
       before do
-        allow(Rails.logger).to receive(:level).and_return(0)
+        allow(LHS.config).to receive(:trace).and_return(true)
       end
 
       context 'with non-paginated methods' do
@@ -83,8 +83,6 @@ describe LHS::Record do
       end
     end
 
-    # test.rb sets config.log_level = :warn purposefully so that only those tests which need tracing can override
-    # log_level to debug to enable it
     context 'with level set to other than debug (default in test)' do
       context 'non-paginated methods' do
 

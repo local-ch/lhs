@@ -10,7 +10,7 @@ class LHS::Record
     module ClassMethods
       # Needs to be called directly from the first method (level) within LHS
       def trace!(options = {})
-        return options unless Rails.logger.level == 0
+        return options unless LHS.config.trace
 
         (options || {}).tap do |options|
           source = caller.detect do |source|

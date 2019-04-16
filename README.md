@@ -2244,23 +2244,46 @@ end
 ```
 ## Request tracing
 
-While on `:debug` Rails logging level, explicit finder method calls, i.e. `find find_by find_by! first first! last last!` trigger automatic source tracing. Source code lines where such commands originate are being reported in the logfile.
+LHS supports tracing the source (in your application code) of http requests being made with methods like `find find_by find_by! first first! last last!`.
 
-Following links does not trigger tracing.
+Following links, and using `includes` are not traced (just yet).
 
-This will be automatically traced:
+In order to enable tracing you need to enable it via LHS configuration:
+
 ```ruby
-code = AccessCode.find(access_code: params[:access_code]) 
+LHC.configure do |config|
+  config.trace = Rails.env.development? || Rails.logger.level == 0 # debug
+end
+```
+
+```ruby
+# app/controllers/application_controller.rb
+
+code = Code.find(code: params[:code])
 ```
 ```
 Called from onboarding/app/controllers/concerns/access_code_concern.rb:11:in `access_code'
 ```
-However, this call won't get traced:
+
+However, following links and includes won't get traced (just yet):
+
 ```ruby
-code.places
+# app/controllers/application_controller.rb
+
+code = Code.includes(:places).find(123)
+```
+
+```
+# Nothing is traced
+{
+  places: [...]
+}
 ```
 
 ```ruby
+code.places
+```
+```
 { 
   token: "XYZABCDEF",
   places:
@@ -2269,7 +2292,6 @@ code.places
     ]
 }
 ```
-
 
 ## Testing with LHS
 
