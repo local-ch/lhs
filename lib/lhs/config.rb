@@ -14,4 +14,11 @@ class LHS::Config
       self.request_cycle_cache ||= ActiveSupport::Cache::MemoryStore.new
     end
   end
+
+  def reset
+    self.request_cycle_cache_enabled = nil
+    self.trace = nil
+    self.request_cycle_cache = nil
+    initialize
+  end
 end
