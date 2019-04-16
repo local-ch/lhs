@@ -5,7 +5,7 @@ require 'rails_helper'
 describe LHS::Record do
 
   context 'tracing' do
-    context 'with level set to debug' do
+    context 'with tracing enabled' do
 
       before do
         allow(LHS.config).to receive(:trace).and_return(true)
@@ -83,7 +83,7 @@ describe LHS::Record do
       end
     end
 
-    context 'with level set to other than debug (default in test)' do
+    context 'tracing disabled (default)' do
       context 'non-paginated methods' do
 
         before do
@@ -135,7 +135,9 @@ describe LHS::Record do
                 offset: 0
               }.to_json
             )
+        end
 
+        it 'does not forward tracing options to lhc' do
           # for first pagination requets (first-1)
           expect(LHC).to receive(:request).and_call_original
 
@@ -144,9 +146,7 @@ describe LHS::Record do
             expect(arguments).not_to include(:source)
             spy(:response)
           end
-        end
 
-        it 'does not forward tracing options to lhc' do
           Place.last
         end
       end
