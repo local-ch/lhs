@@ -7,11 +7,8 @@ describe LHS::Record do
   context 'tracing' do
     context 'with level set to debug' do
 
-      around do |example|
-        original_level     = Rails.logger.level
-        Rails.logger.level = 0
-        example.run
-        Rails.logger.level = original_level
+      before do
+        allow(Rails.logger).to receive(:level).and_return(0)
       end
 
       context 'with non-paginated methods' do
@@ -80,6 +77,7 @@ describe LHS::Record do
         end
 
         it 'forwards tracing options to lhc' do
+          # binding.pry
           Place.last
         end
       end
