@@ -46,7 +46,6 @@ describe LHS::Record do
   end
 
   context 'custom class_name' do
-
     before do
       module Uberall
         class Location < LHS::Record
@@ -76,6 +75,46 @@ describe LHS::Record do
     it 'keeps hirachy when casting it to another class on access' do
       expect(listing._root._raw).to eq location._raw
       expect(listing.parent.parent._raw).to eq location._raw
+    end
+  end
+
+  context 'explicit association class configuration overrules href class casting' do
+    before do
+      class Place < LHS::Record
+        endpoint 'http://places/places/{id}'
+        has_many :categories, class_name: 'NewCategory'
+      end
+
+      class NewCategory < LHS::Record
+        endpoint 'http://newcategories/newcategories/{id}'
+
+        def name
+          self['category_name']
+        end
+      end
+
+      class Category < LHS::Record
+        endpoint 'http://categories/categories/{id}'
+      end
+
+      stub_request(:get, "http://places/places/1")
+        .to_return(body: {
+          categories: [{
+            href: 'https://categories/categories/1'
+          }]
+        }.to_json)
+
+      stub_request(:get, "https://categories/categories/1")
+        .to_return(body: {
+          href: 'https://categories/categories/1',
+          category_name: 'Pizza'
+        }.to_json)
+    end
+
+    it 'explicit association configuration overrules href class casting' do
+      place = Place.includes(:categories).find(1)
+      expect(place.categories.first).to be_kind_of NewCategory
+      expect(place.categories.first.name).to eq('Pizza')
     end
   end
 end

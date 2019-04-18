@@ -57,4 +57,12 @@ class LHS::Proxy
     return { params: { id: as_record.id } } if as_record.id
     {}
   end
+
+  def merge_data_with_options(data, options)
+    if options && options[:params]
+      data.merge(options[:params])
+    else
+      data
+    end
+  end
 end

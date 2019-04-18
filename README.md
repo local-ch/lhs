@@ -45,11 +45,14 @@ record.review # "Lunch was great
       * [Record](#record)
          * [Endpoints](#endpoints)
             * [Configure endpoint hosts](#configure-endpoint-hosts)
-            * [Ambiguous endpoints](#ambiguous-endpoints)
+            * [Endpoint priorities](#endpoint-priorities)
          * [Record inheritance](#record-inheritance)
          * [Find multiple records](#find-multiple-records)
+            * [fetch](#fetch)
             * [where](#where)
             * [Reuse/Dry where statements: Use scopes](#reusedry-where-statements-use-scopes)
+            * [all](#all)
+            * [all with unpaginated endpoints](#all-with-unpaginated-endpoints)
             * [Retrieve the amount of a collection of items: count vs. length](#retrieve-the-amount-of-a-collection-of-items-count-vs-length)
          * [Find single records](#find-single-records)
             * [find](#find)
@@ -65,6 +68,7 @@ record.review # "Lunch was great
                   * [has_one](#has_one)
             * [Unwrap nested items from the response body](#unwrap-nested-items-from-the-response-body)
             * [Determine collections from the response body](#determine-collections-from-the-response-body)
+            * [Load additional data based on retrieved data](#load-additional-data-based-on-retrieved-data)
          * [Chain complex queries](#chain-complex-queries)
             * [Chain where queries](#chain-where-queries)
             * [Expand plain collections of links: expanded](#expand-plain-collections-of-links-expanded)
@@ -224,9 +228,11 @@ class Record < LHS::Record
 end
 ```
 
-#### Ambiguous endpoints
+#### Endpoint Priorities
 
-If you try to setup a Record with ambiguous endpoints, LHS will immediately raise an exception:
+LHS uses endpoint configurations to determine what endpoint to use when data is requested, in a similiar way, routes are identified in Rails to map requests to controllers.
+
+If they are ambiguous, LHS will always use the first one found:
 
 ```ruby
 # app/models/record.rb
@@ -237,9 +243,18 @@ class Record < LHS::Record
   endpoint '{+service}/bananas'
 
 end
-
-# raises: Ambiguous endpoints
 ```
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.fetch
+```
+```
+GET https://service.example.com/records
+```
+
+**Be aware that, if you configure ambigious endpoints accross multiple classes, the order of things is not deteministic. Ambigious endpoints accross multiple classes need to be avoided.**
 
 ### Record inheritance
 
@@ -739,6 +754,33 @@ search_result.first.address # Bahnhofstrasse 5, 8000 Zürich
 ```
 GET https://service.example.com/search?q=Starbucks
 {... docs: [... {...  address: 'Bahnhofstrasse 5, 8000 Zürich' }] }
+```
+
+#### Load additional data based on retrieved data
+
+In order to load linked data from already retrieved data, you can use `load!` (or `reload!`).
+
+```ruby
+# app/controllers/some_controller.rb
+
+record = Record.find(1)
+record.associated_thing.load!
+```
+```
+GET https://things/4
+{ name: "Steve" }
+```
+```ruby
+# app/controllers/some_controller.rb
+record.associated_thing.name # Steve
+
+record.associated_thing.load! # Does NOT create another request, as it is already loaded
+record.associated_thing.reload! # Does request the data again from remote
+
+```
+```
+GET https://things/4
+{ name: "Steve" }
 ```
 
 ### Chain complex queries
@@ -1327,7 +1369,9 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 
 ##### create
 
-`create` will return false if persisting fails. `create!` instead will raise an exception.
+`create` will return the object in memory if persisting fails, providing validation errors in `.errors` (See [record validation](#record-validation)).
+
+`create!` instead will raise an exception.
 
 `create` always builds the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is build.
 

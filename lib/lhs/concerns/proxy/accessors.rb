@@ -12,6 +12,10 @@ class LHS::Proxy
 
     delegate :dig, :fetch, to: :_raw, allow_nil: true
 
+    def clear_cache!
+      @cache = nil
+    end
+
     private
 
     def set(name, args)
@@ -123,10 +127,6 @@ class LHS::Proxy
 
     def cache
       @cache ||= Concurrent::Map.new
-    end
-
-    def clear_cache!
-      @cache = nil
     end
   end
 end
