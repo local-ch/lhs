@@ -45,7 +45,7 @@ record.review # "Lunch was great
       * [Record](#record)
          * [Endpoints](#endpoints)
             * [Configure endpoint hosts](#configure-endpoint-hosts)
-            * [Ambiguous endpoints](#ambiguous-endpoints)
+            * [Endpoint priorities](#endpoint-priorities)
          * [Record inheritance](#record-inheritance)
          * [Find multiple records](#find-multiple-records)
             * [fetch](#fetch)
@@ -229,9 +229,11 @@ class Record < LHS::Record
 end
 ```
 
-#### Ambiguous endpoints
+#### Endpoint Priorities
 
-If you try to setup a Record with ambiguous endpoints, LHS will immediately raise an exception:
+LHS uses endpoint configurations to determine what endpoint to use when data is requested, in a similiar way, routes are identified in Rails to map requests to controllers.
+
+If they are ambiguous, LHS will always use the first one found:
 
 ```ruby
 # app/models/record.rb
@@ -242,9 +244,18 @@ class Record < LHS::Record
   endpoint '{+service}/bananas'
 
 end
-
-# raises: Ambiguous endpoints
 ```
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.fetch
+```
+```
+GET https://service.example.com/records
+```
+
+**Be aware that, if you configure ambigious endpoints accross multiple classes, the order of things is not deteministic. Ambigious endpoints accross multiple classes need to be avoided.**
 
 ### Record inheritance
 
