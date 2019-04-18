@@ -25,7 +25,6 @@ class LHS::Record
         self.endpoints = endpoints.clone
         validates_deprecation_check!(options)
         endpoint = LHC::Endpoint.new(url, options)
-        sanity_check(endpoint)
         endpoints.push(endpoint)
         LHS::Record::Endpoints.all ||= {}
         LHS::Record::Endpoints.all[url] = self
@@ -48,16 +47,6 @@ class LHS::Record
         endpoint ||= LHC::Endpoint.new(url) if url.present?
         endpoint ||= find_base_endpoint
         endpoint
-      end
-
-      # Prevent ambiguous endpoints
-      def sanity_check(new_endpoint)
-        endpoints.each do |existing_endpoint|
-          invalid = existing_endpoint.placeholders.sort == new_endpoint.placeholders.sort &&
-            existing_endpoint.url != new_endpoint.url
-          next unless invalid
-          raise "Ambiguous endpoints! Cannot differentiate between #{existing_endpoint.url} and #{new_endpoint.url}"
-        end
       end
 
       # Computes the url from params
@@ -112,7 +101,6 @@ class LHS::Record
           endpoint.placeholders.length
         end
         bases = endpoints[endpoints.keys.min]
-        raise 'Multiple base endpoints found' if bases.count > 1
         bases.first
       end
     end
