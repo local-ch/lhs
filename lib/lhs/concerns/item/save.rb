@@ -3,9 +3,15 @@
 require 'active_support'
 
 class LHS::Item < LHS::Proxy
+  autoload :EndpointLookup,
+    'lhs/concerns/item/endpoint_lookup'
 
   module Save
     extend ActiveSupport::Concern
+
+    included do
+      include EndpointLookup
+    end
 
     def save(options = nil)
       save!(options)
@@ -16,7 +22,7 @@ class LHS::Item < LHS::Proxy
     def save!(options = {})
       options = options.present? ? options.dup : {}
       data = _data._raw.dup
-      url = url_for_persistance!(options, data)
+      url = url_for_persistance!(data, options)
       create_and_merge_data!(
         apply_default_creation_options(options, url, data)
       )
@@ -44,22 +50,6 @@ class LHS::Item < LHS::Proxy
         _data.merge_raw!(location_data.unwrap(:item_created_key))
       end
       true
-    end
-
-    def endpoint_for_persistance(data, options)
-      record.find_endpoint(merge_data_with_options(data, options))
-    end
-
-    def url_for_persistance!(options, data)
-      return href if href.present?
-      endpoint = endpoint_for_persistance(data, options)
-      endpoint.compile(
-        merge_data_with_options(data, options)
-      ).tap do
-        endpoint.remove_interpolated_params!(data)
-        endpoint.remove_interpolated_params!(options.fetch(:params, {}))
-        options.merge!(endpoint.options.merge(options)) if endpoint.options
-      end
     end
   end
 end

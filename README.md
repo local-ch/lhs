@@ -1369,7 +1369,9 @@ The kaminari’s page parameter is in params[:page]. For example, you can use ka
 
 ##### create
 
-`create` will return false if persisting fails. `create!` instead will raise an exception.
+`create` will return the object in memory if persisting fails, providing validation errors in `.errors` (See [record validation](#record-validation)).
+
+`create!` instead will raise an exception.
 
 `create` always builds the data of the local object first, before it tries to sync with an endpoint. So even if persisting fails, the local object is build.
 

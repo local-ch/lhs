@@ -88,9 +88,14 @@ describe LHS::Item do
 
           class AppointmentProposal < LHS::Record
             endpoint 'http://bookings/bookings'
+            has_many :appointments
+
             def appointments_attributes=(attributes)
-              self.appointments = attributes.map { |attribute| { 'date_time': attribute[:date] } }
+              self.appointments = attributes.map { |attribute| Appointment.new('date_time': attribute[:date]) }
             end
+          end
+
+          class Appointment < LHS::Record
           end
         end
 
@@ -107,6 +112,40 @@ describe LHS::Item do
           item.appointment_proposal.update(appointments_attributes: [{ date: '2018-01-18' }])
           expect(item.appointment_proposal.appointments.as_json).to eq([{ 'date_time' => '2018-01-18' }])
         end
+      end
+    end
+
+    context 'with many placeholders' do
+      before do
+        class GrandChild < LHS::Record
+          endpoint 'http://host/v2/parents/{parent_id}/children/{child_id}/grand_children'
+          endpoint 'http://host/v2/parents/{parent_id}/children/{child_id}/grand_children/{id}'
+        end
+      end
+
+      let(:data) do
+        {
+          id: "aaa",
+          parent_id: "bbb",
+          child_id: 'ccc',
+          name: "Lorem"
+        }
+      end
+
+      let(:item) do
+        GrandChild.new(data)
+      end
+
+      it 'persists changes on the backend' do
+        stub_request(:get, 'http://host/v2/parents/bbb/children/ccc/grand_children/aaa')
+          .to_return(status: 200, body: data.to_json)
+        stub_request(:post, 'http://host/v2/parents/bbb/children/ccc/grand_children/aaa')
+          .with(body: { name: 'Steve' }.to_json)
+
+        grand_child = GrandChild.find(parent_id: 'bbb', child_id: 'ccc', id: 'aaa')
+        expect(grand_child.name).to eq('Lorem')
+        result = grand_child.update(name: 'Steve')
+        expect(result).to eq true
       end
     end
   end
