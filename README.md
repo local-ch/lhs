@@ -131,6 +131,7 @@ record.review # "Lunch was great
       * [Request Cycle Cache](#request-cycle-cache)
          * [Change store for LHS' request cycle cache](#change-store-for-lhs-request-cycle-cache)
          * [Disable request cycle cache](#disable-request-cycle-cache)
+      * [Request tracing](#request-tracing)
       * [Testing with LHS](#testing-with-lhs)
          * [Test helper for request cycle cache](#test-helper-for-request-cycle-cache)
          * [Test query chains](#test-query-chains)
@@ -2234,9 +2235,9 @@ The LHS Request Cycle Cache is opt-out, so it's enabled by default and will requ
 By default the LHS Request Cycle Cache will use `ActiveSupport::Cache::MemoryStore` as its cache store. Feel free to configure a cache that is better suited for your needs by:
 
 ```ruby
-# config/initializers/lhc.rb
+# config/initializers/lhs.rb
 
-LHC.configure do |config|
+LHS.configure do |config|
   config.request_cycle_cache = ActiveSupport::Cache::MemoryStore.new
 end
 ```
@@ -2246,11 +2247,63 @@ end
 If you want to disable the LHS Request Cycle Cache, simply disable it within configuration:
 
 ```ruby
-# config/initializers/lhc.rb
+# config/initializers/lhs.rb
 
-LHC.configure do |config|
+LHS.configure do |config|
   config.request_cycle_cache_enabled = false
 end
+```
+## Request tracing
+
+LHS supports tracing the source (in your application code) of http requests being made with methods like `find find_by find_by! first first! last last!`.
+
+Following links, and using `includes` are not traced (just yet).
+
+In order to enable tracing you need to enable it via LHS configuration:
+
+```ruby
+# config/initializers/lhs.rb
+
+LHS.configure do |config|
+  config.trace = Rails.env.development? || Rails.logger.level == 0 # debug
+end
+```
+
+```ruby
+# app/controllers/application_controller.rb
+
+code = Code.find(code: params[:code])
+```
+```
+Called from onboarding/app/controllers/concerns/access_code_concern.rb:11:in `access_code'
+```
+
+However, following links and includes won't get traced (just yet):
+
+```ruby
+# app/controllers/application_controller.rb
+
+code = Code.includes(:places).find(123)
+```
+
+```
+# Nothing is traced
+{
+  places: [...]
+}
+```
+
+```ruby
+code.places
+```
+```
+{ 
+  token: "XYZABCDEF",
+  places:
+    [
+      { href: "http://storage-stg.preprod-local.ch/v2/places/egZelgYhdlg" }
+    ]
+}
 ```
 
 ## Testing with LHS

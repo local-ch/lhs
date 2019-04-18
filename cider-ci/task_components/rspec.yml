@@ -9,6 +9,8 @@ ports:
 environment_variables:
   RUBY:
     read_and_replace_with: .ruby-version
+  BUNDLER:
+    read_and_replace_with: .bundler-version
 
 scripts:
   rspec:
@@ -17,7 +19,7 @@ scripts:
       set -eux
       mkdir -p tmp/cache
       export PATH=~/.rubies/$RUBY/bin:$PATH
-      if [ ! -z ${ACTIVESUPPORT:-} ]; then BUNDLE_GEMFILE=Gemfile.activesupport$ACTIVESUPPORT bundle exec rspec; else bundle exec rspec; fi
+      if [ ! -z ${ACTIVESUPPORT:-} ]; then BUNDLE_GEMFILE=Gemfile.activesupport$ACTIVESUPPORT bundle $BUNDLER exec rspec; else bundle exec rspec; fi
     
     start_when:
       'bundled':
