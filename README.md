@@ -128,6 +128,7 @@ record.review # "Lunch was great
             * [find_each](#find_each)
             * [find_in_batches](#find_in_batches)
          * [Convert/Cast specific record types: becomes](#convertcast-specific-record-types-becomes)
+         * [Assign attributes](#assign-attributes)
       * [Request Cycle Cache](#request-cycle-cache)
          * [Change store for LHS' request cycle cache](#change-store-for-lhs-request-cycle-cache)
          * [Disable request cycle cache](#disable-request-cycle-cache)
@@ -2186,6 +2187,17 @@ synchronization.save!
 ```
 ```
 POST https://service.example.com/location/1/sync { body: '{ ... }' }
+```
+
+### Assign attributes
+
+Allows you to set all the attributes by passing in a hash of attributes with
+keys matching the attribute names.
+
+```ruby
+entry = LocalEntry.new
+entry.assign_attributes(company_name: 'localsearch')
+entry.company_name # => 'localsearch'
 ```
 
 ## Request Cycle Cache
