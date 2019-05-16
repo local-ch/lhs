@@ -18,7 +18,6 @@ class LHS::Record
 
     included do
       extend ActiveModel::Naming
-      include ActiveModel::AttributeAssignment
     end
   end
 end

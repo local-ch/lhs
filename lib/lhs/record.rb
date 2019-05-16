@@ -39,6 +39,8 @@ class LHS::Record
     'lhs/concerns/record/scope'
   autoload :Tracing,
     'lhs/concerns/record/tracing'
+  autoload :AttributeAssignment,
+    'lhs/concerns/record/attribute_assignment'
 
   module RequestCycleCache
     autoload :RequestCycleThreadRegistry,
@@ -68,6 +70,7 @@ class LHS::Record
   include RequestCycleCache
   include Scope
   include Tracing
+  include AttributeAssignment
 
   delegate :_proxy, :_endpoint, :merge_raw!, :select, :becomes, :respond_to?, to: :_data
 

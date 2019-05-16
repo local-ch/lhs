@@ -2191,8 +2191,7 @@ POST https://service.example.com/location/1/sync { body: '{ ... }' }
 
 ### Assign attributes
 
-Allows you to set all the attributes by passing in a hash of attributes with
-keys matching the attribute names.
+Allows you to set the attributes by passing in a hash of attributes.
 
 ```ruby
 entry = LocalEntry.new
