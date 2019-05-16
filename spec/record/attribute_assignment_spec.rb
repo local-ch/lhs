@@ -24,4 +24,13 @@ describe LHS::Record do
       expect(entry.company_name).to eq 'localsearch'
     end
   end
+
+  context 'when not a hash was passed' do
+    it 'raises an error' do
+      entry = LocalEntry.new
+      expect do
+        entry.assign_attributes([:company_name, 'localsearch'])
+      end.to raise_error(ArgumentError)
+    end
+  end
 end

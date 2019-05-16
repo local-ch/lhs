@@ -11,7 +11,7 @@ class LHS::Record
       end
       return if new_attributes.empty?
 
-      _assign_attributes(new_attributes.stringify_keys)
+      _assign_attributes(new_attributes)
     end
     alias attributes= assign_attributes
 
