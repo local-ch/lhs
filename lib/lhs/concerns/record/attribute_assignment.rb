@@ -13,7 +13,6 @@ class LHS::Record
 
       _assign_attributes(new_attributes)
     end
-    alias attributes= assign_attributes
 
     private
 
