@@ -17,14 +17,6 @@ describe LHS::Record do
     end
   end
 
-  context '#attributes=' do
-    it 'sets the attributes' do
-      entry = LocalEntry.new
-      entry.attributes = { company_name: 'localsearch' }
-      expect(entry.company_name).to eq 'localsearch'
-    end
-  end
-
   context 'when not a hash was passed' do
     it 'raises an error' do
       entry = LocalEntry.new
