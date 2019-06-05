@@ -63,6 +63,34 @@ describe LHS::Item do
     end
   end
 
+  context 'with many placeholders' do
+    before do
+      class GrandChild < LHS::Record
+        endpoint 'http://host/v2/parents/{parent_id}/children/{child_id}/grand_children'
+        endpoint 'http://host/v2/parents/{parent_id}/children/{child_id}/grand_children/{id}'
+      end
+    end
+
+    let(:data) do
+      {
+        parent_id: "bbb",
+        child_id: 'ccc',
+        name: "Lorem"
+      }
+    end
+
+    let(:item) do
+      GrandChild.new(data)
+    end
+
+    it 'persists changes on the backend' do
+      stub_request(:post, 'http://host/v2/parents/bbb/children/ccc/grand_children')
+        .with(body: { name: "Lorem" }.to_json)
+
+      expect(item.save).to eq true
+    end
+  end
+
   context 'save!' do
     it 'raises if something goes wrong' do
       stub_request(:post, item.href)

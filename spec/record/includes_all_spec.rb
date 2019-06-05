@@ -523,4 +523,45 @@ describe LHS::Record do
       end
     end
   end
+
+  context 'includes collection trough single item' do
+
+    before do
+      class Place < LHS::Record
+        endpoint 'https://places/{id}'
+      end
+
+      stub_request(:get, 'https://places/1')
+        .to_return(
+          body: {
+            customer: { href: 'https://customers/1' }
+          }.to_json
+        )
+
+      stub_request(:get, 'https://customers/1?limit=100')
+        .to_return(
+          body: {
+            addresses: { 'href': 'https://customer/1/addresses' }
+          }.to_json
+        )
+
+      stub_request(:get, 'https://customer/1/addresses?limit=100')
+        .to_return(
+          body: {
+            items: [
+              { city: 'Zurich', no: 1 },
+              { city: 'Zurich', no: 2 }
+            ],
+            total: 2
+          }.to_json
+        )
+    end
+
+    it 'includes a collection trough a single item without exceptions' do
+      place = Place
+        .includes_all(customer: :addresses)
+        .find(1)
+      expect(place.customer.addresses.map(&:no)).to eq [1, 2]
+    end
+  end
 end

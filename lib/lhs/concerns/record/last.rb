@@ -9,6 +9,7 @@ class LHS::Record
 
     module ClassMethods
       def last(options = nil)
+        options = trace!(options)
         first_batch = find_by({}, options).parent
         if first_batch.paginated?
           pagination = first_batch._pagination
@@ -19,7 +20,7 @@ class LHS::Record
       end
 
       def last!(options = nil)
-        find_by!({}, options)
+        find_by!({}, trace!(options))
       end
     end
   end

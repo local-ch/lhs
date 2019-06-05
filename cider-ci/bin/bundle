@@ -42,10 +42,10 @@ if [ ! -f  $CACHE_SIGNATURE_FILE ] ; then
     fi
   else
     echo "bundle install"
-    bundle install
+    bundle $BUNDLER install
   fi
   touch $CACHE_SIGNATURE_FILE
 fi
 
 echo "bundle install"
-bundle install
+bundle $BUNDLER install

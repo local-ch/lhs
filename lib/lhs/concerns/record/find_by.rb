@@ -10,14 +10,14 @@ class LHS::Record
     module ClassMethods
       # Fetch some record by parameters
       def find_by(params = {}, options = nil)
-        _find_by(params, options)
+        _find_by(params, trace!(options))
       rescue LHC::NotFound
         nil
       end
 
       # Raise if no record was found
       def find_by!(params = {}, options = nil)
-        _find_by(params, options)
+        _find_by(params, trace!(options))
       end
 
       private

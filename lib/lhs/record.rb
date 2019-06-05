@@ -37,6 +37,10 @@ class LHS::Record
     'lhs/concerns/record/relations'
   autoload :Scope,
     'lhs/concerns/record/scope'
+  autoload :Tracing,
+    'lhs/concerns/record/tracing'
+  autoload :AttributeAssignment,
+    'lhs/concerns/record/attribute_assignment'
 
   module RequestCycleCache
     autoload :RequestCycleThreadRegistry,
@@ -65,6 +69,8 @@ class LHS::Record
   include Relations
   include RequestCycleCache
   include Scope
+  include Tracing
+  include AttributeAssignment
 
   delegate :_proxy, :_endpoint, :merge_raw!, :select, :becomes, :respond_to?, to: :_data
 
@@ -81,6 +87,12 @@ class LHS::Record
 
   def self.build(data = nil)
     new(data)
+  end
+
+  # Override Object#dup because it doesn't support copying any singleton
+  # methods, which leads to missing `_data` method when you execute `dup`.
+  def dup
+    clone
   end
 
   protected

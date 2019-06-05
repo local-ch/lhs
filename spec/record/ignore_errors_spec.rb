@@ -24,6 +24,16 @@ describe LHS::Record do
     end
   end
 
+  context 'ignore errors during create' do
+
+    it 'allows to ignore errors during create' do
+      stub_request(:post, 'http://local.ch/v2/records')
+        .to_return(status: 409)
+      record = Record.ignore(LHC::Conflict).create(name: 'Steve')
+      expect(record._raw).to eq(name: 'Steve')
+    end
+  end
+
   context 'multiple ignored errors' do
     it 'ignores error if first of them is specified' do
       stub_request(:get, "http://local.ch/v2/records?color=blue").to_return(status: 401)

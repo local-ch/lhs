@@ -9,11 +9,11 @@ class LHS::Record
 
     module ClassMethods
       def first(options = nil)
-        find_by({}, options)
+        find_by({}, trace!(options))
       end
 
       def first!(options = nil)
-        find_by!({}, options)
+        find_by!({}, trace!(options))
       end
     end
   end
