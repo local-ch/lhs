@@ -103,4 +103,36 @@ describe LHS::Data do
       end
     end
   end
+
+  context 'with attribute called attributes' do
+    let(:attributes) do
+      {
+        de: 'Bezahlung mit EC-Karte',
+        en: 'Accepts EC-Card',
+        fr: 'Paiement par carte EC',
+        it: 'Pagamento con carta EC'
+      }
+    end
+
+    let(:json) do
+      {
+        href: 'http://test.ch/place-attributes?&offset=0&limit=10',
+        items: [
+          {
+              attributes: attributes,
+              tag: 'accept_dd',
+              href: 'http://test.ch/place-attributes/accept_dd'
+          }
+        ],
+        total: 1,
+        offset: 0,
+        limit: 10
+      }.to_json
+    end
+
+    it 'is possible to return the attributes' do
+      #expect(item.as_json).to eq(json)
+      expect(item.attributes).to eq(attributes)
+    end
+  end
 end
