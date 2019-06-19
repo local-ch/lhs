@@ -27,6 +27,8 @@ class LHS::Record
     'lhs/concerns/record/last'
   autoload :Mapping,
     'lhs/concerns/record/mapping'
+  autoload :Merge,
+    'lhs/concerns/record/merge'
   autoload :Model,
     'lhs/concerns/record/model'
   autoload :Pagination,
@@ -63,6 +65,7 @@ class LHS::Record
   include Last
   include LHS::Inspect
   include Mapping
+  include Merge
   include Model
   include Pagination
   include Request
