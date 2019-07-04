@@ -1,22 +1,29 @@
 # frozen_string_literal: true
 
 class LHS::Pagination::Link < LHS::Pagination::Base
+  def total
+    data._raw.dig(*_record.items_key).count || 0
+  end
 
-  DEFAULT_OFFSET = 1
+  alias count total
+
+  def pages_left
+    pages_left? ? 1 : 0
+  end
+
+  def pages_left?
+    data._raw[:next].present? # TODO use configuration
+  end
+
+  def parallel?
+    false
+  end
+
+  def next_link
+    data._raw.dig(:next, :href)
+  end
 
   def current_page
-    cursor
-  end
 
-  def next_offset(step = 1)
-    self.class.next_offset(offset, limit, step)
-  end
-
-  def self.page_to_offset(page, limit = DEFAULT_LIMIT)
-    (page.to_i - 1) * limit.to_i + 1
-  end
-
-  def self.next_offset(offset, limit, step = 1)
-    offset.to_i + limit.to_i * step.to_i
   end
 end
