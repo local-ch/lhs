@@ -37,7 +37,12 @@ class LHS::Record
 
       # Checks if given raw is paginated or not
       def paginated?(raw)
-        !!(raw.is_a?(Hash) && raw.dig(*total_key))
+        case pagination_strategy.to_sym
+        when :link
+          !!(raw.is_a?(Hash) && raw.dig(:next)) # TODO make it configurable
+        else
+          !!(raw.is_a?(Hash) && raw.dig(*total_key))
+        end
       end
     end
   end
