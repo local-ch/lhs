@@ -1217,6 +1217,40 @@ In parallel:
   GET https://service.example.com/records?limit=100&startAt=201
 ```
 
+##### Pagination strategy: link
+
+In comparison to the `offset` strategy, the `link` strategy just increases by 1 (page) and on that page there is a link to the next page and so on until the last page which does not have any link to the next page anyomre.
+
+```ruby
+# app/models/record.rb
+
+class Search < LHS::Record
+  configuration pagination_strategy: 'link'
+
+  endpoint '{+service}/search'
+end
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.all
+
+```
+```
+GET https://service.example.com/records?limit=100
+{
+  items: [{...}, ...],
+  limit: 100,
+  next: {
+    href: 'https://service.example.com/records?from_record_id=p62qM5p0NK_qryO52Ze-eg&limit=100'
+  }
+}
+In recursive:
+  GET https://service.example.com/records?from_record_id=p62qM5p0NK_qryO52Ze-eg&limit=100
+  GET https://service.example.com/records?from_record_id=xcaoXBmuMyFFEcFDSgNgDQ&limit=100
+```
+
 #### Pagination keys
 
 ##### limit_key
