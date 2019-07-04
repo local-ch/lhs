@@ -288,7 +288,7 @@ describe LHS::Record do
   context 'pagination using links' do
     before do
       class Record < LHS::Record
-        configuration pagination_strategy: 'link', pagination_key: 'cursor'
+        configuration pagination_strategy: 'link'
         endpoint '{+datastore}/feedbacks'
       end
     end
