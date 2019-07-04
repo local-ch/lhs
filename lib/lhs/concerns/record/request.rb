@@ -277,13 +277,29 @@ class LHS::Record
       def load_and_merge_paginated_collection!(data, options)
         set_nested_data(data._raw, limit_key(:body), data.length) if data._raw.dig(*limit_key(:body)).blank? && !data.length.zero?
         pagination = data._record.pagination(data)
-        return data if pagination.pages_left.zero?
+        return data unless pagination.pages_left?
         record = data._record
+
+        if pagination.parallel?
+          load_and_merge_parallel_requests!(record, data, pagination, options)
+        else
+          load_and_merge_recursive_requests!(record, data, pagination, options)
+        end
+      end
+
+      def load_and_merge_parallel_requests!(record, data, pagination, options)
         record.request(
           options_for_next_batch(record, pagination, options)
         ).each do |batch_data|
           merge_batch_data_with_parent!(batch_data, data)
         end
+      end
+
+      def load_and_merge_recursive_requests!(record, data, pagination, options)
+        recursive_data = record.request(
+          options.merge(url: pagination.next_link)
+        )
+        merge_batch_data_with_parent!(recursive_data, data)
       end
 
       def load_and_merge_set_of_paginated_collections!(data, options)
@@ -292,7 +308,7 @@ class LHS::Record
           next if element.nil?
           record = data[index]._record
           pagination = record.pagination(data[index])
-          next if pagination.pages_left.zero?
+          next unless pagination.pages_left?
           options_for_next_batch.push(
             options_for_next_batch(record, pagination, options[index]).tap do |options|
               options.each do |option|
