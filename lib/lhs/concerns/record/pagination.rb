@@ -24,6 +24,8 @@ class LHS::Record
           LHS::Pagination::Page
         when :start
           LHS::Pagination::Start
+        when :link
+          LHS::Pagination::Link
         else
           LHS::Pagination::Offset
         end

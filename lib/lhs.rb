@@ -30,6 +30,8 @@ module LHS
       'lhs/pagination/page'
     autoload :Start,
       'lhs/pagination/start'
+    autoload :Link,
+      'lhs/pagination/link'
   end
   autoload :Problems,
     'lhs/problems/base'
