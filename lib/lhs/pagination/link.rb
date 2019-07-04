@@ -24,6 +24,5 @@ class LHS::Pagination::Link < LHS::Pagination::Base
   end
 
   def current_page
-
   end
 end
