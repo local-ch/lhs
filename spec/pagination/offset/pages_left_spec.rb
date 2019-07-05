@@ -12,12 +12,6 @@ describe LHS::Record do
 
   let(:pagination) { LHS::Pagination::Offset.new(data) }
 
-  before do
-    class Record < LHS::Record
-      endpoint '{+datastore}/v2/data'
-    end
-  end
-
   it 'responds to pages_left' do
     expect(pagination.pages_left).to eq(9)
   end
@@ -26,7 +20,6 @@ describe LHS::Record do
     let(:offset) { nil }
 
     it 'responds to pages_left' do
-      # TODO i now set the nil offset to zero. Is this ok or wrong?
       expect(pagination.pages_left).to eq(9)
     end
   end

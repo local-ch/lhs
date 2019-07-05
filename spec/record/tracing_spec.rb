@@ -77,7 +77,6 @@ describe LHS::Record do
         end
 
         it 'forwards tracing options to lhc' do
-          # binding.pry
           Place.last
         end
       end
