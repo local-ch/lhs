@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  let(:next_href) { "http://example.com/users?from_user_id=100&limit=100"}
+  let(:next_href) { 'http://example.com/users?from_user_id=100&limit=100' }
   let(:data_hash) do
     { items: 98.times.map { { foo: 'bar' } }, limit: 10, next: { href: next_href } }
   end
