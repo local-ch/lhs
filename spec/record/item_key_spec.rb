@@ -22,12 +22,12 @@ describe LHS::Record do
   end
 
   let(:stub_request_by_id) do
-    stub_request(:get, "http://uberall/location/1")
+    stub_request(:get, 'http://uberall/location/1')
       .to_return(body: location_response)
   end
 
   let(:stub_request_by_get_parameters) do
-    stub_request(:get, "http://uberall/location?identifier=1&limit=1")
+    stub_request(:get, 'http://uberall/location?identifier=1&limit=1')
       .to_return(body: location_response)
   end
 
@@ -49,12 +49,12 @@ describe LHS::Record do
     end
 
     let(:stub_location_by_id) do
-      stub_request(:get, "http://uberall/location/1")
+      stub_request(:get, 'http://uberall/location/1')
         .to_return(headers: { 'X-Custom-Header' => 'rspec' }, body: location_response)
     end
 
     let(:stub_account_by_id) do
-      stub_request(:get, "http://yext/account/1")
+      stub_request(:get, 'http://yext/account/1')
         .to_return(headers: { 'X-Custom-Header' => 'rspec' }, body: account_response)
     end
 
