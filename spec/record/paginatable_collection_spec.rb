@@ -321,5 +321,34 @@ describe LHS::Record do
       expect(all.count).to eq 300
       expect(all.last).to eq 300
     end
+
+    it 'fetches all, also if there is a rest and the total is not divideable trough the limit' do
+      stub_request(:get, "#{datastore}/feedbacks?limit=100")
+        .to_return(
+          status: 200,
+          body: { items: (1..100).to_a, limit: 100, next: { href: "#{datastore}/feedbacks?limit=100&cursor=x" } }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&cursor=x")
+        .to_return(
+          status: 200,
+          body: { items: (101..200).to_a, limit: 100, next: { href: "#{datastore}/feedbacks?limit=100&cursor=y" } }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&cursor=y")
+        .to_return(
+          status: 200,
+          body: { items: (201..300).to_a, limit: 100, next: { href: "#{datastore}/feedbacks?limit=100&cursor=z" } }.to_json
+        )
+      stub_request(:get, "#{datastore}/feedbacks?limit=100&cursor=z")
+        .to_return(
+          status: 200,
+          body: { items: [301], limit: 100 }.to_json
+        )
+      all = Record.all
+
+      expect(all).to be_kind_of Record
+      expect(all._data._proxy).to be_kind_of LHS::Collection
+      expect(all.count).to eq 301
+      expect(all.last).to eq 301
+    end
   end
 end
