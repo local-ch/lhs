@@ -32,7 +32,7 @@ describe LHS::Record do
     end
 
     context 'where with href' do
-      let(:return_body) { [ email: 'steve@local.ch' ].to_json }
+      let(:return_body) { [ email: 'steve@local.ch'].to_json }
 
       context 'chain initialization' do
         before do

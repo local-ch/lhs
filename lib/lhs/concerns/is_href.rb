@@ -7,7 +7,6 @@ module LHS
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       def href?(input)
         input.is_a?(String) && %r{^https?://}.match(input).present?
       end
