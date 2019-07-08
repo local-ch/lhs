@@ -30,5 +30,33 @@ describe LHS::Record do
       stub_request(:get, "#{datastore}/content-ads/123/feedbacks?campaign_id=456").to_return(status: 200, body: [].to_json)
       Record.where(campaign_id: '123', params: { campaign_id: '456' })
     end
+
+    context 'where with href' do
+      let(:return_body) { [ email: 'steve@local.ch' ].to_json }
+
+      context 'chain initialization' do
+        before do
+          stub_request(:get, "https://localch-accounts/?from_user_id=123")
+            .to_return(body: return_body)
+        end
+
+        it 'queries api with provided href' do
+          records = Record.where('https://localch-accounts?from_user_id=123').fetch
+          expect(records.first.email).to eq 'steve@local.ch'
+        end
+      end
+
+      context 'after chain initialization' do
+        before do
+          stub_request(:get, "https://localch-accounts/?color=blue&from_user_id=123")
+            .to_return(body: return_body)
+        end
+
+        it 'queries api with provided href also when passed after chain is initialized' do
+          records = Record.where(color: 'blue').where('https://localch-accounts?from_user_id=123').fetch
+          expect(records.first.email).to eq 'steve@local.ch'
+        end
+      end
+    end
   end
 end

@@ -19,6 +19,8 @@ module LHS
     'lhs/endpoint'
   autoload :Inspect,
     'lhs/concerns/inspect'
+  autoload :IsHref,
+    'lhs/concerns/is_href'
   autoload :Item,
     'lhs/item'
   autoload :Pagination,

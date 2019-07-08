@@ -62,6 +62,7 @@ class LHS::Record
   include Find
   include FindBy
   include First
+  include LHS::IsHref
   include Last
   include LHS::Inspect
   include Mapping
