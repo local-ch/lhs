@@ -328,7 +328,20 @@ Record.where(accociation_id: '12345')
 GET https://service.example.com/accociation/12345/records
 ```
 
-If the provided parameter – `accociation_id` in this case – is part of the endpoint path, it will be injected into the path:
+If the provided parameter – `accociation_id` in this case – is part of the endpoint path, it will be injected into the path.
+
+You can also provide hrefs to fetch multiple records:
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.where('https://service.example.com/accociation/12345/records')
+
+```
+```
+GET https://service.example.com/accociation/12345/records
+```
+
 
 #### Reuse/Dry where statements: Use scopes
 
