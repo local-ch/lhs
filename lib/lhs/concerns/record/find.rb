@@ -81,10 +81,6 @@ class LHS::Record
           options
         end
       end
-
-      def href?(str)
-        str.is_a?(String) && %r{^https?://}.match(str)
-      end
     end
   end
 end
