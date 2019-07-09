@@ -282,8 +282,8 @@ class LHS::Record
 
         if pagination.parallel?
           load_and_merge_parallel_requests!(record, data, pagination, options)
-        else
-          load_and_merge_recursive_requests!(record, data, pagination, options)
+        else # sequential
+          load_and_merge_recursive_requests!(record, data, options)
         end
       end
 
@@ -295,7 +295,7 @@ class LHS::Record
         end
       end
 
-      def load_and_merge_recursive_requests!(record, data, pagination, options)
+      def load_and_merge_recursive_requests!(record, data, options)
         recursive_data = record.request(
           options.merge(url: data._raw.dig(:next, :href))
         )
