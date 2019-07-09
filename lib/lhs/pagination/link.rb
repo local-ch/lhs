@@ -19,10 +19,6 @@ class LHS::Pagination::Link < LHS::Pagination::Base
     false
   end
 
-  def next_link
-    data._raw.dig(:next, :href)
-  end
-
   def current_page
   end
 end

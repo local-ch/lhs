@@ -297,7 +297,7 @@ class LHS::Record
 
       def load_and_merge_recursive_requests!(record, data, pagination, options)
         recursive_data = record.request(
-          options.merge(url: pagination.next_link)
+          options.merge(url: data._raw.dig(:next, :href))
         )
         merge_batch_data_with_parent!(recursive_data, data)
       end
