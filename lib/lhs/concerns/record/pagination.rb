@@ -38,7 +38,7 @@ class LHS::Record
       # Checks if given raw is paginated or not
       def paginated?(raw)
         raw.is_a?(Hash) && (
-          raw.dig(*total_key(:body)).present? ||
+          raw.dig(*total_key).present? ||
           raw.dig(*limit_key(:body)).present?
         )
       end
