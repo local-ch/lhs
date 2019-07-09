@@ -44,7 +44,7 @@ module LHS::Pagination
     end
 
     def current_page
-      raise 'to be implemented in subclass'
+      # should be implemented in subclass (optional)
     end
 
     def first_page

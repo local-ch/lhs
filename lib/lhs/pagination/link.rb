@@ -18,7 +18,4 @@ class LHS::Pagination::Link < LHS::Pagination::Base
   def parallel?
     false
   end
-
-  def current_page
-  end
 end
