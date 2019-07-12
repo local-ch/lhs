@@ -12,7 +12,7 @@ class LHS::Pagination::Link < LHS::Pagination::Base
   end
 
   def pages_left?
-    data._raw[:next].present? # TODO use configuration
+    data._raw[:next].present?
   end
 
   def parallel?
