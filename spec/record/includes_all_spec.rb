@@ -154,7 +154,7 @@ describe LHS::Record do
         .to_return(
           body: {
             items: [],
-            limit: 10,
+            limit: 10
           }.to_json
         )
     end
@@ -164,7 +164,7 @@ describe LHS::Record do
 
       expect(lambda do
         customer = Customer
-          .includes_all(:users, { contracts: :products })
+          .includes_all(:users, contracts: :products)
           .find(1)
       end).to output(
         %r{\[WARNING\] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! \(https://github.com/local-ch/lhs#pagination-strategy-link\).}
