@@ -24,6 +24,8 @@ class LHS::Record
           LHS::Pagination::Page
         when :start
           LHS::Pagination::Start
+        when :link
+          LHS::Pagination::Link
         else
           LHS::Pagination::Offset
         end
@@ -35,7 +37,10 @@ class LHS::Record
 
       # Checks if given raw is paginated or not
       def paginated?(raw)
-        !!(raw.is_a?(Hash) && raw.dig(*total_key))
+        raw.is_a?(Hash) && (
+          raw.dig(*total_key).present? ||
+          raw.dig(*limit_key(:body)).present?
+        )
       end
     end
   end

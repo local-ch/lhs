@@ -8,19 +8,32 @@ describe LHS::Record do
       class Customer < LHS::Record
         endpoint 'http://datastore/customers/{id}'
       end
+
+      class User < LHS::Record
+        configuration pagination_strategy: 'link'
+        endpoint 'http://datastore/users'
+      end
     end
 
     let(:amount_of_contracts) { 33 }
     let(:amount_of_products) { 22 }
+    let(:amount_of_users_1st_page) { 10 }
+    let(:amount_of_users_2nd_page) { 3 }
+    let(:amount_of_users) { amount_of_users_1st_page + amount_of_users_2nd_page }
 
     let!(:customer_request) do
       stub_request(:get, 'http://datastore/customers/1')
         .to_return(
           body: {
-            contracts: { href: 'http://datastore/customers/1/contracts' }
+            contracts: { href: 'http://datastore/customers/1/contracts' },
+            users: { href: 'http://datastore/users?limit=10' }
           }.to_json
         )
     end
+
+    #
+    # Contracts
+    #
 
     let!(:contracts_request) do
       stub_request(:get, "http://datastore/customers/1/contracts?limit=100")
@@ -66,6 +79,10 @@ describe LHS::Record do
       additional_contracts_request(30, 3)
     end
 
+    #
+    # Products
+    #
+
     let!(:products_request) do
       stub_request(:get, "http://datastore/products?limit=100")
         .to_return(
@@ -102,10 +119,58 @@ describe LHS::Record do
       additional_products_request(20, 2)
     end
 
+    #
+    # Users
+    #
+
+    let!(:users_request) do
+      stub_request(:get, 'http://datastore/users?limit=10')
+        .to_return(
+          body: {
+            items: amount_of_users_1st_page.times.map do
+              { name: 'Hans Muster' }
+            end,
+            limit: 10,
+            next: { href: 'http://datastore/users?for_user_id=10&limit=10' }
+          }.to_json
+        )
+    end
+
+    let!(:users_request_page_2) do
+      stub_request(:get, 'http://datastore/users?for_user_id=10&limit=10')
+        .to_return(
+          body: {
+            items: amount_of_users_2nd_page.times.map do
+              { name: 'Lisa Müller' }
+            end,
+            limit: 10,
+            next: { href: 'http://datastore/users?for_user_id=13&limit=10' }
+          }.to_json
+        )
+    end
+
+    let!(:users_request_page_3) do
+      stub_request(:get, 'http://datastore/users?for_user_id=13&limit=10')
+        .to_return(
+          body: {
+            items: [],
+            limit: 10
+          }.to_json
+        )
+    end
+
     it 'includes all linked business objects no matter pagination' do
-      customer = Customer
-        .includes_all(contracts: :products)
-        .find(1)
+      customer = nil
+
+      expect(lambda do
+        customer = Customer
+          .includes_all(:users, contracts: :products)
+          .find(1)
+      end).to output(
+        %r{\[WARNING\] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! \(https://github.com/local-ch/lhs#pagination-strategy-link\).}
+      ).to_stderr
+
+      expect(customer.users.length).to eq amount_of_users
       expect(customer.contracts.length).to eq amount_of_contracts
       expect(customer.contracts.first.products.length).to eq amount_of_products
       expect(customer_request).to have_been_requested.at_least_once
@@ -116,6 +181,9 @@ describe LHS::Record do
       expect(products_request).to have_been_requested.at_least_once
       expect(products_request_page_2).to have_been_requested.at_least_once
       expect(products_request_page_3).to have_been_requested.at_least_once
+      expect(users_request).to have_been_requested.at_least_once
+      expect(users_request_page_2).to have_been_requested.at_least_once
+      expect(users_request_page_3).to have_been_requested.at_least_once
     end
 
     context 'links already contain pagination parameters' do

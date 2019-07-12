@@ -35,12 +35,16 @@ module LHS::Pagination
       total_pages - current_page
     end
 
+    def pages_left?
+      pages_left > 0
+    end
+
     def next_offset(_step = 1)
       raise 'to be implemented in subclass'
     end
 
     def current_page
-      raise 'to be implemented in subclass'
+      # should be implemented in subclass (optional)
     end
 
     def first_page
@@ -49,6 +53,10 @@ module LHS::Pagination
 
     def last_page
       total_pages
+    end
+
+    def parallel?
+      true
     end
 
     def next?

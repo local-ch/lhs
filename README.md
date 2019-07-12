@@ -1230,6 +1230,44 @@ In parallel:
   GET https://service.example.com/records?limit=100&startAt=201
 ```
 
+##### Pagination strategy: link
+
+The `link` strategy continuously follows in-response embedded links to following pages until the last page is reached (indicated by no more `next` link).
+
+*WARNING*
+
+Loading all pages from a resource paginated with links only can result in very poor performance, as pages can only be loaded sequentially!
+
+```ruby
+# app/models/record.rb
+
+class Search < LHS::Record
+  configuration pagination_strategy: 'link'
+
+  endpoint '{+service}/search'
+end
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.all
+
+```
+```
+GET https://service.example.com/records?limit=100
+{
+  items: [{...}, ...],
+  limit: 100,
+  next: {
+    href: 'https://service.example.com/records?from_record_id=p62qM5p0NK_qryO52Ze-eg&limit=100'
+  }
+}
+Sequentially:
+  GET https://service.example.com/records?from_record_id=p62qM5p0NK_qryO52Ze-eg&limit=100
+  GET https://service.example.com/records?from_record_id=xcaoXBmuMyFFEcFDSgNgDQ&limit=100
+```
+
 #### Pagination keys
 
 ##### limit_key

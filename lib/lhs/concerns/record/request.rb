@@ -277,12 +277,31 @@ class LHS::Record
       def load_and_merge_paginated_collection!(data, options)
         set_nested_data(data._raw, limit_key(:body), data.length) if data._raw.dig(*limit_key(:body)).blank? && !data.length.zero?
         pagination = data._record.pagination(data)
-        return data if pagination.pages_left.zero?
+        return data unless pagination.pages_left?
         record = data._record
+        if pagination.parallel?
+          load_and_merge_parallel_requests!(record, data, pagination, options)
+        else
+          load_and_merge_sequential_requests!(record, data, options, data._raw.dig(:next, :href), pagination)
+        end
+      end
+
+      def load_and_merge_parallel_requests!(record, data, pagination, options)
         record.request(
           options_for_next_batch(record, pagination, options)
         ).each do |batch_data|
           merge_batch_data_with_parent!(batch_data, data)
+        end
+      end
+
+      def load_and_merge_sequential_requests!(record, data, options, next_link, pagination)
+        warn "[WARNING] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! (https://github.com/local-ch/lhs#pagination-strategy-link)."
+        while next_link.present?
+          page_data = record.request(
+            options.except(:all).merge(url: next_link)
+          )
+          next_link = page_data._raw.dig(:next, :href)
+          merge_batch_data_with_parent!(page_data, data, pagination)
         end
       end
 
@@ -292,7 +311,7 @@ class LHS::Record
           next if element.nil?
           record = data[index]._record
           pagination = record.pagination(data[index])
-          next if pagination.pages_left.zero?
+          next unless pagination.pages_left?
           options_for_next_batch.push(
             options_for_next_batch(record, pagination, options[index]).tap do |options|
               options.each do |option|
@@ -345,7 +364,8 @@ class LHS::Record
       # paginates itself to ensure all records are fetched
       def load_all_included!(record, options)
         data = record.request(options)
-        load_and_merge_remaining_objects!(data: data, options: options)
+        pagination = data._record.pagination(data)
+        load_and_merge_remaining_objects!(data: data, options: options) if pagination.parallel?
         data
       end
 
@@ -386,8 +406,9 @@ class LHS::Record
         options || {}
       end
 
-      def merge_batch_data_with_parent!(batch_data, parent_data)
+      def merge_batch_data_with_parent!(batch_data, parent_data, pagination = nil)
         parent_data.concat(input: parent_data._raw, items: batch_data.raw_items, record: self)
+        return if pagination.present? && pagination.is_a?(LHS::Pagination::Link)
         [limit_key(:body), total_key, pagination_key(:body)].each do |pagination_attribute|
           set_nested_data(
             parent_data._raw,
