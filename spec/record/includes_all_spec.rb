@@ -17,7 +17,9 @@ describe LHS::Record do
 
     let(:amount_of_contracts) { 33 }
     let(:amount_of_products) { 22 }
-    let(:amount_of_users) { 13 }
+    let(:amount_of_users_1st_page) { 10 }
+    let(:amount_of_users_2nd_page) { 3 }
+    let(:amount_of_users) { amount_of_users_1st_page + amount_of_users_2nd_page }
 
     let!(:customer_request) do
       stub_request(:get, 'http://datastore/customers/1')
@@ -125,7 +127,7 @@ describe LHS::Record do
       stub_request(:get, 'http://datastore/users?limit=10')
         .to_return(
           body: {
-            items: 10.times.map do
+            items: amount_of_users_1st_page.times.map do
               { name: 'Hans Muster' }
             end,
             limit: 10,
@@ -138,7 +140,7 @@ describe LHS::Record do
       stub_request(:get, 'http://datastore/users?for_user_id=10&limit=10')
         .to_return(
           body: {
-            items: 3.times.map do
+            items: amount_of_users_2nd_page.times.map do
               { name: 'Lisa Müller' }
             end,
             limit: 10,
