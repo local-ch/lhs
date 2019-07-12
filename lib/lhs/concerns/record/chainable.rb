@@ -14,8 +14,12 @@ class LHS::Record
     end
 
     module ClassMethods
-      def where(hash = nil)
-        Chain.new(self, Parameter.new(hash))
+      def where(args = nil)
+        if href?(args)
+          Chain.new(self, Option.new(url: args))
+        else
+          Chain.new(self, Parameter.new(args))
+        end
       end
 
       def fetch
@@ -200,8 +204,12 @@ class LHS::Record
       end
       alias validate valid?
 
-      def where(hash = nil)
-        push(Parameter.new(hash))
+      def where(args = nil)
+        if LHS::Record.href?(args)
+          push(Option.new(url: args))
+        else
+          push(Parameter.new(args))
+        end
       end
 
       def all(hash = nil)
