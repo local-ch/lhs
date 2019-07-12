@@ -322,8 +322,7 @@ describe LHS::Record do
       expect(all.last).to eq 300
     end
 
-    # TODO Do we want to support the case when the API doesn’t provide a next link but send items?
-    xit 'fetches all, also if there is a rest and the total is not divideable trough the limit' do
+    it 'fetches all, also if there is a rest and the total is not divideable trough the limit' do
       stub_request(:get, "#{datastore}/feedbacks?limit=100")
         .to_return(
           status: 200,

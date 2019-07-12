@@ -1219,7 +1219,11 @@ In parallel:
 
 ##### Pagination strategy: link
 
-In comparison to the `offset` strategy, the `link` strategy just increases by 1 (page) and on that page there is a link to the next page and so on until the last page which does not have any link to the next page anyomre.
+The `link` strategy continuously follows in-response embedded links to following pages until the last page is reached (indicated by no more `next` link).
+
+*WARNING*
+
+Loading all pages from a resource paginated with links only can result in very poor performance, as pages can only be loaded sequentially!
 
 ```ruby
 # app/models/record.rb
@@ -1246,7 +1250,7 @@ GET https://service.example.com/records?limit=100
     href: 'https://service.example.com/records?from_record_id=p62qM5p0NK_qryO52Ze-eg&limit=100'
   }
 }
-In recursive:
+Sequentially:
   GET https://service.example.com/records?from_record_id=p62qM5p0NK_qryO52Ze-eg&limit=100
   GET https://service.example.com/records?from_record_id=xcaoXBmuMyFFEcFDSgNgDQ&limit=100
 ```
