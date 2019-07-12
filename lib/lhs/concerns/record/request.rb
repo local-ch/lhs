@@ -295,7 +295,7 @@ class LHS::Record
       end
 
       def load_and_merge_sequential_requests!(record, data, options, next_link, pagination)
-        warn "[WARNING] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints)."
+        warn "[WARNING] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! (https://github.com/local-ch/lhs#pagination-strategy-link)."
         while next_link.present?
           page_data = record.request(
             options.except(:all).merge(url: next_link)

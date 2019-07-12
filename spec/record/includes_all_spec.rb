@@ -160,9 +160,16 @@ describe LHS::Record do
     end
 
     it 'includes all linked business objects no matter pagination' do
-      customer = Customer
-        .includes_all(:users, { contracts: :products })
-        .find(1)
+      customer = nil
+
+      expect(lambda do
+        customer = Customer
+          .includes_all(:users, { contracts: :products })
+          .find(1)
+      end).to output(
+        %r{\[WARNING\] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! \(https://github.com/local-ch/lhs#pagination-strategy-link\).}
+      ).to_stderr
+
       expect(customer.users.length).to eq amount_of_users
       expect(customer.contracts.length).to eq amount_of_contracts
       expect(customer.contracts.first.products.length).to eq amount_of_products

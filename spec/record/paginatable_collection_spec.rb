@@ -343,7 +343,13 @@ describe LHS::Record do
           status: 200,
           body: { items: [301], limit: 100 }.to_json
         )
-      all = Record.all
+
+      all = nil
+      expect(lambda do
+        all = Record.all.fetch
+      end).to output(
+        %r{\[WARNING\] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! \(https://github.com/local-ch/lhs#pagination-strategy-link\).}
+      ).to_stderr
 
       expect(all).to be_kind_of Record
       expect(all._data._proxy).to be_kind_of LHS::Collection
