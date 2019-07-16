@@ -1,2 +1,15 @@
 ---
   request_reviews: true
+  ci:
+    - name: 'Rubocop'
+      command: bundle exec rubocop
+    - name: 'RSpec'
+      command: bundle exec rspec
+    - name: 'RSpec (Activesupport 4)'
+      command: bundle exec rspec
+      docker:
+        file: Dockerfile.activesupport4.ci
+    - name: 'RSpec (Activesupport 5)'
+      command: bundle exec rspec
+      docker:
+        file: Dockerfile.activesupport5.ci
