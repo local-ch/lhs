@@ -3,7 +3,6 @@
 require 'active_support'
 
 module LHS
-
   module OptionBlocks
     extend ActiveSupport::Concern
 
@@ -15,7 +14,6 @@ module LHS
     end
 
     module ClassMethods
-
       def options(options, &block)
         CurrentOptionBlock.options = options
         block.call

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Option Blocks' do
+describe LHS::OptionBlocks do
   let(:status) { 200 }
 
   before do
@@ -35,8 +35,10 @@ describe 'Option Blocks' do
     it 'ensures that option blocks are reset when an exception occures in the block' do
       expect(LHS::OptionBlocks::CurrentOptionBlock.options).to eq nil
       LHS.options(headers: { 'Tracking-Id': 1 }) do
-        Record.find(1234)
-      rescue => e
+        begin
+          Record.find(1234)
+        rescue LHC::Error
+        end
       end
       expect(LHS::OptionBlocks::CurrentOptionBlock.options).to eq nil
     end

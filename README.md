@@ -2315,6 +2315,25 @@ LHS.configure do |config|
   config.request_cycle_cache_enabled = false
 end
 ```
+
+## Option Blocks
+
+In order to apply options to all requests performed in a give block, LHS provides options blocks.
+
+```ruby
+# app/controllers/application_controller.rb
+
+LHS.options(headers: { 'Tracking-Id' => 123 }) do
+  Record.find(1)
+end
+
+Record.find(2)
+```
+```
+GET https://records/1 { headers: { 'Tracking-Id' => '123' } }
+GET https://records/2 { headers: { } }
+```
+
 ## Request tracing
 
 LHS supports tracing the source (in your application code) of http requests being made with methods like `find find_by find_by! first first! last last!`.
