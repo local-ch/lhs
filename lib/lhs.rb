@@ -23,6 +23,8 @@ module LHS
     'lhs/concerns/is_href'
   autoload :Item,
     'lhs/item'
+  autoload :OptionBlocks,
+    'lhs/concerns/option_blocks'
   autoload :Pagination,
     'lhs/pagination/base'
   module Pagination
@@ -59,12 +61,12 @@ module LHS
     'lhs/proxy'
   autoload :Record,
     'lhs/record'
-
   autoload :Unprocessable,
     'lhs/unprocessable'
 
   include Configuration
   include AutoloadRecords if defined?(Rails)
+  include OptionBlocks
 
   require 'lhs/record' # as lhs records in an application are directly inheriting it
 

@@ -11,6 +11,7 @@ class LHS::Record
     module ClassMethods
       def request(options)
         options ||= {}
+        options = deep_merge_with_option_blocks(options)
         options = options.freeze
         if options.is_a?(Array)
           multiple_requests(
@@ -22,6 +23,11 @@ class LHS::Record
       end
 
       private
+
+      def deep_merge_with_option_blocks(options)
+        return options if LHS::OptionBlocks::CurrentOptionBlock.options.blank?
+        options.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options)
+      end
 
       def single_request_load_and_merge_remaining_objects!(data, options, endpoint)
         return if options[:all].blank? || !paginated
