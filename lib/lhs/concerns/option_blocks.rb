@@ -17,7 +17,6 @@ module LHS
       def options(options, &block)
         CurrentOptionBlock.options = options
         block.call
-        CurrentOptionBlock.options = nil
       ensure
         CurrentOptionBlock.options = nil
       end
