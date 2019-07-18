@@ -2323,7 +2323,7 @@ end
 In order to apply options to all requests performed in a give block, LHS provides option blocks.
 
 ```ruby
-# app/controllers/application_controller.rb
+# app/controllers/records_controller.rb
 
 LHS.options(headers: { 'Tracking-Id' => 123 }) do
   Record.find(1)
