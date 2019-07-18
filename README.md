@@ -2320,7 +2320,7 @@ end
 
 ## Option Blocks
 
-In order to apply options to all requests performed in a give block, LHS provides options blocks.
+In order to apply options to all requests performed in a give block, LHS provides option blocks.
 
 ```ruby
 # app/controllers/application_controller.rb
