@@ -495,7 +495,9 @@ class LHS::Record
         options[:ignored_errors] = ignored_errors if ignored_errors.present?
         options[:params]&.deep_symbolize_keys!
         options[:error_handler] = merge_error_handlers(options[:error_handler]) if options[:error_handler]
-        options = (endpoint.options || {}).deep_merge(options)
+        options = (provider_options || {})
+          .deep_merge(endpoint.options || {})
+          .deep_merge(options)
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
         merge_explicit_params!(options[:params])
         options.delete(:params) if options[:params]&.empty?

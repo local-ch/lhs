@@ -33,6 +33,8 @@ class LHS::Record
     'lhs/concerns/record/model'
   autoload :Pagination,
     'lhs/concerns/record/pagination'
+  autoload :Provider,
+    'lhs/concerns/record/provider'
   autoload :Request,
     'lhs/concerns/record/request'
   autoload :Relations,
@@ -69,6 +71,7 @@ class LHS::Record
   include Merge
   include Model
   include Pagination
+  include Provider
   include Request
   include Relations
   include RequestCycleCache

@@ -46,6 +46,7 @@ record.review # "Lunch was great
          * [Endpoints](#endpoints)
             * [Configure endpoint hosts](#configure-endpoint-hosts)
             * [Endpoint Priorities](#endpoint-priorities)
+         * [Provider](#provider)
          * [Record inheritance](#record-inheritance)
          * [Find multiple records](#find-multiple-records)
             * [fetch](#fetch)
@@ -259,6 +260,44 @@ GET https://service.example.com/records
 ```
 
 **Be aware that, if you configure ambigious endpoints accross multiple classes, the order of things is not deteministic. Ambigious endpoints accross multiple classes need to be avoided.**
+
+### Provider
+
+Providers in LHS allow you to group shared endpoint options under a common provider.
+
+```ruby
+# app/models/provider/base_record.rb
+
+module Provider
+  class BaseRecord < LHS::Record
+    provider params: { api_key: 123 }
+  end
+end
+```
+
+Now every record, part of that particular provider can inherit the provider's `BaseRecord`.
+
+```ruby
+# app/models/provider/account.rb
+
+module Provider
+  class Account < BaseRecord
+    endpoint '{+host}/records'
+    endpoint '{+host}/records/{id}'
+  end
+end
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+Provider::Account.find(1)
+```
+```
+GET https://provider/records/1?api_key=123
+```
+
+And requests made via those provider records apply the common provider options.
 
 ### Record inheritance
 
