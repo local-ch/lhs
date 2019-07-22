@@ -26,7 +26,11 @@ class LHS::Record
 
       def deep_merge_with_option_blocks(options)
         return options if LHS::OptionBlocks::CurrentOptionBlock.options.blank?
-        options.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options)
+        if options.is_a?(Hash)
+          options.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options)
+        elsif options.is_a?(Array)
+          options.map { |option| option.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options) }
+        end
       end
 
       def single_request_load_and_merge_remaining_objects!(data, options, endpoint)

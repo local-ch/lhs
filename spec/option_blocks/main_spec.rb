@@ -43,4 +43,13 @@ describe LHS::OptionBlocks do
       expect(LHS::OptionBlocks::CurrentOptionBlock.options).to eq nil
     end
   end
+
+  context 'parallel requests' do
+
+    it 'does not fail merging option blocks for parallel requests' do
+      LHS.options(headers: { 'Tracking-Id': 1 }) do
+        Record.find(1234, 1234)
+      end
+    end
+  end
 end
