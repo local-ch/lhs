@@ -84,7 +84,7 @@ class LHS::Record
       def values_from_get_params(url, options)
         uri = parse_uri(url, options)
         return {} if uri.query.blank?
-        params = Rack::Utils.parse_nested_query(uri.query)
+        params = Rack::Utils.parse_nested_query(uri.query).deep_symbolize_keys
         params
       end
 
