@@ -632,4 +632,62 @@ describe LHS::Record do
       expect(place.customer.addresses.map(&:no)).to eq [1, 2]
     end
   end
+
+  context 'does not fail including all linked resources' do
+
+    before do
+      class CustomerOnboardingToken < LHS::Record
+        endpoint 'https://token/{id}'
+      end
+
+      class Place < LHS::Record
+        endpoint 'https://places/{id}'
+      end
+
+      class AvailableAsset < LHS::Record
+        endpoint 'https://assets'
+      end
+
+      stub_request(:get, 'https://token/1')
+        .to_return(
+          body: {
+            places: [{ href: 'https://places/1' }]
+          }.to_json
+        )
+
+      stub_request(:get, 'https://places/1?limit=100')
+        .to_return(
+          body: {
+            available_assets: { 'href': 'https://assets?limit=10&offset=0' }
+          }.to_json
+        )
+
+      stub_request(:get, 'https://assets?limit=10&offset=0')
+        .to_return(
+          body: {
+            items: 10.times.map { { asset_code: 'CATEGORIES' } },
+            total: 17,
+            offset: 0,
+            limit: 10
+          }.to_json
+        )
+
+      stub_request(:get, 'https://assets?limit=10&offset=10')
+        .to_return(
+          body: {
+            items: 7.times.map { { asset_code: 'CATEGORIES' } },
+            total: 17,
+            offset: 0,
+            limit: 10
+          }.to_json
+        )
+    end
+
+    it 'includes a collection trough a single item without exceptions' do
+      token = CustomerOnboardingToken
+        .includes_all(places: :available_assets)
+        .find(1)
+      expect(token.places.first.available_assets.length).to eq 17
+    end
+  end
 end
