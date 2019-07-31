@@ -606,4 +606,28 @@ describe LHS::Record do
       expect(sector.services.first.key).to eq 'my_service_service_1'
     end
   end
+
+  context 'includes with endpoint options' do
+
+    before do
+      class Place < LHS::Record
+        endpoint 'https://data/places/{id}'
+      end
+
+      class Category < LHS::Record
+        endpoint 'https://data/categories/{id}', params: { key: 'me' }
+      end
+
+      stub_request(:get, 'https://data/places/1')
+        .to_return(body: { category: { href: 'https://data/categories/2' } }.to_json)
+
+      stub_request(:get, "https://data/categories/2?key=me")
+        .to_return(body: { name: 'Bakery' }.to_json)
+    end
+
+    it 'uses endpoint options also for includes' do
+      place = Place.includes(:category).find(1)
+      expect(place.category.name).to eq 'Bakery'
+    end
+  end
 end
