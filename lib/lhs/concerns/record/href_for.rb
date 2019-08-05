@@ -8,7 +8,6 @@ class LHS::Record
     extend ActiveSupport::Concern
 
     module ClassMethods
-
       def href_for(args = nil)
         return unless [Integer, String].include?(args.class)
         params = { id: args }
