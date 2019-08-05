@@ -23,6 +23,8 @@ class LHS::Record
     'lhs/concerns/record/find_by'
   autoload :First,
     'lhs/concerns/record/first'
+  autoload :HrefFor,
+    'lhs/concerns/record/href_for'
   autoload :Last,
     'lhs/concerns/record/last'
   autoload :Mapping,
@@ -64,6 +66,7 @@ class LHS::Record
   include Find
   include FindBy
   include First
+  include HrefFor
   include LHS::IsHref
   include Last
   include LHS::Inspect
