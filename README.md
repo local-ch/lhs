@@ -2020,6 +2020,21 @@ With `includes` or `includes_all` (to enforce fetching all remote objects for pa
 
 Including linked resources/records is heavily influenced by [https://guides.rubyonrails.org/active_record_querying.html](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glory.
 
+#### Generate links from parameters
+
+Sometimes you need to generate full hrefs/urls for records but you just have parameters that describe that record, like the ID.
+
+For those usecases you can use `href_for(params)`:
+
+```ruby
+# app/controllers/some_controller.rb
+
+Presence.create(place: { href: Place.href_for(123) })
+```
+```
+POST '/presences' { place: { href: "http://datastore/places/123" } }
+```
+
 #### Ensure the whole linked collection is included: includes_all
 
 In case endpoints are paginated and you are certain that you'll need all objects of a set and not only the first page/batch, use `includes_all`.

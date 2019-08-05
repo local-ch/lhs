@@ -14,6 +14,12 @@ describe LHS::Record do
 
     it 'injects variables and returns href' do
       expect(Record.href_for(1)).to eq 'http://datastore/records/1'
+      expect(Record.href_for('vmasd241')).to eq 'http://datastore/records/vmasd241'
+    end
+
+    it 'also works with url_for (alias)' do
+      expect(Record.url_for(1)).to eq 'http://datastore/records/1'
+      expect(Record.url_for('vmasd241')).to eq 'http://datastore/records/vmasd241'
     end
   end
 end
