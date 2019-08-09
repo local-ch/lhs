@@ -3,14 +3,11 @@
 require 'active_support'
 
 module LHS
-
   module Interceptors
-
     module ExtendedRollbar
       extend ActiveSupport::Concern
 
       class Interceptor < LHC::Interceptor
-
         def after_response
           return unless LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log
           LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log.push(

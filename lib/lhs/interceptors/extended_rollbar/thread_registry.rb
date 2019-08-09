@@ -3,9 +3,7 @@
 require 'active_support'
 
 module LHS
-
   module Interceptors
-
     module ExtendedRollbar
       extend ActiveSupport::Concern
 

@@ -3,9 +3,7 @@
 require 'active_support'
 
 module LHS
-
   module Interceptors
-
     module RequestCycleCache
       extend ActiveSupport::Concern
 

@@ -1,9 +1,8 @@
+# frozen_string_literal: true
+
 module LHS
-
   module Interceptors
-
     module ExtendedRollbar
-      
       class Handler
 
         def self.init
@@ -15,7 +14,6 @@ module LHS
         end
 
         module ExtendedLogging
-
           def log(level, *args)
             args[2] = {} if args[2].nil?
             args[2][:lhs] = LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log.map do |entry|
