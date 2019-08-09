@@ -119,6 +119,7 @@ record.review # "Lunch was great
             * [Record setters](#record-setters)
             * [Record getters](#record-getters)
          * [Include linked resources (hyperlinks and hypermedia)](#include-linked-resources-hyperlinks-and-hypermedia)
+            * [Generate links from parameters](#generate-links-from-parameters)
             * [Ensure the whole linked collection is included: includes_all](#ensure-the-whole-linked-collection-is-included-includes_all)
             * [Include the first linked page or single item is included: include](#include-the-first-linked-page-or-single-item-is-included-include)
             * [Include various levels of linked data](#include-various-levels-of-linked-data)
@@ -136,6 +137,7 @@ record.review # "Lunch was great
          * [Disable request cycle cache](#disable-request-cycle-cache)
       * [Option Blocks](#option-blocks)
       * [Request tracing](#request-tracing)
+      * [Extended Rollbar Logging](#extended-rollbar-logging)
       * [Testing with LHS](#testing-with-lhs)
          * [Test helper for request cycle cache](#test-helper-for-request-cycle-cache)
          * [Test query chains](#test-query-chains)
@@ -2441,6 +2443,26 @@ code.places
       { href: "http://storage-stg.preprod-local.ch/v2/places/egZelgYhdlg" }
     ]
 }
+```
+
+## Extended Rollbar Logging
+
+In order to log all requests/responses prior to an exception reported by Rollbar in addition to the exception itself, use the `LHS::ExtendedRollbar` interceptor in combination with the rollbar processor/handler:
+
+```ruby
+# config/initializers/lhc.rb
+
+LHC.configure do |config|
+  config.interceptors = [LHS::ExtendedRollbar]
+end
+```
+
+```ruby
+# config/initializers/rollbar.rb
+
+Rollbar.configure do |config|
+  config.before_process << LHS::Interceptors::ExtendedRollbar::Handler.init
+end
 ```
 
 ## Testing with LHS
