@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop', '~> 0.57.1'
   s.add_development_dependency 'rubocop-rspec', '~> 1.26.0'
   s.add_development_dependency 'webmock'
+  s.add_development_dependency 'rollbar'
 
   s.license = 'GPL-3'
 end
