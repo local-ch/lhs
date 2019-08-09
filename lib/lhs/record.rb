@@ -48,13 +48,6 @@ class LHS::Record
   autoload :AttributeAssignment,
     'lhs/concerns/record/attribute_assignment'
 
-  module RequestCycleCache
-    autoload :RequestCycleThreadRegistry,
-      'lhs/concerns/record/request_cycle_cache/request_cycle_thread_registry'
-    autoload :Interceptor,
-      'lhs/concerns/record/request_cycle_cache/interceptor'
-  end
-
   include Batch
   include Chainable
   include Configuration
@@ -77,7 +70,6 @@ class LHS::Record
   include Provider
   include Request
   include Relations
-  include RequestCycleCache
   include Scope
   include Tracing
   include AttributeAssignment

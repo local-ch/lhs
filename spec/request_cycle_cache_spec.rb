@@ -37,7 +37,7 @@ describe 'Request Cycle Cache', type: :request do
     expect(lambda do
       get '/request_cycle_cache/no_caching_interceptor'
     end).to output(
-      %r{\[WARNING\] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
+      %r{\[WARNING\] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
     ).to_stderr
     expect(request).to have_been_made.times(2)
   end
@@ -52,11 +52,11 @@ describe 'Request Cycle Cache', type: :request do
   it 'sets different uniq request ids as base for request cycle caching for different requests',
   dummy_models: true, request_cycle_cache: true do
     get '/request_cycle_cache/simple'
-    first_request_id = LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id
+    first_request_id = LHS::Interceptors::RequestCycleCache::ThreadRegistry.request_id
     second_request_id = nil
     thread = Thread.new do
       get '/request_cycle_cache/simple'
-      second_request_id = LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id
+      second_request_id = LHS::Interceptors::RequestCycleCache::ThreadRegistry.request_id
     end
     thread.join
     expect(first_request_id).not_to be_nil
@@ -70,7 +70,7 @@ describe 'Request Cycle Cache', type: :request do
       expect(lambda do
         get '/request_cycle_cache/no_caching_interceptor'
       end).not_to output(
-        %r{\[WARNING\] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
+        %r{\[WARNING\] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
       ).to_stderr
       expect(request).to have_been_made.times(2)
     end

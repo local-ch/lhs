@@ -19,6 +19,14 @@ module LHS
     'lhs/endpoint'
   autoload :Inspect,
     'lhs/concerns/inspect'
+  module Interceptors
+    module RequestCycleCache
+      autoload :ThreadRegistry,
+        'lhs/interceptors/request_cycle_cache'
+      autoload :Interceptor,
+        'lhs/interceptors/request_cycle_cache'
+    end
+  end
   autoload :IsHref,
     'lhs/concerns/is_href'
   autoload :Item,
