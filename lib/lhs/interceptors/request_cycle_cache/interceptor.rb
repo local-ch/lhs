@@ -13,7 +13,7 @@ module LHS
         CACHED_METHODS = [:get].freeze
 
         def before_request
-          request.options = request.options.merge({
+          request.options = {
             cache: {
               expires_in: 5.minutes,
               race_condition_ttl: 5.seconds,
@@ -21,7 +21,7 @@ module LHS
               methods: CACHED_METHODS,
               use: LHS.config.request_cycle_cache
             }
-          }.merge(request.options))
+          }.merge(request.options)
         end
 
         private
