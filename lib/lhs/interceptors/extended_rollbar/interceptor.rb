@@ -14,6 +14,7 @@ module LHS
             request: request,
             response: response
           )
+          puts "LOG: #{LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log.to_json}"
         end
       end
     end
