@@ -10,11 +10,7 @@ module LHS
       class Interceptor < LHC::Interceptor
         def after_response
           return unless LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log
-          LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log.push(
-            request: request,
-            response: response
-          )
-          puts "LOG: #{LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log.to_json}"
+          LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log.push(request: request, response: response)
         end
       end
     end

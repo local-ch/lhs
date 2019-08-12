@@ -59,7 +59,6 @@ describe 'Extended Rollbar', type: :request do
 
   it 'extends default rollbar logging by adding information about the requests made during a request/response cycle',
   dummy_models: true do
-    puts "BEFORE /extended_rollbar"
     get '/extended_rollbar'
     expect(records_request_1).to have_been_requested
     expect(records_request_2).to have_been_requested
