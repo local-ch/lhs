@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'rails', '>= 4.2.11'
+  s.add_development_dependency 'rollbar'
   s.add_development_dependency 'rspec-rails', '>= 3.7.0'
   s.add_development_dependency 'rubocop', '~> 0.57.1'
   s.add_development_dependency 'rubocop-rspec', '~> 1.26.0'

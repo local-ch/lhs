@@ -15,10 +15,28 @@ module LHS
     'lhs/config'
   autoload :Data,
     'lhs/data'
+  autoload :ExtendedRollbar,
+    'lhs/interceptors/extended_rollbar/interceptor'
   autoload :Endpoint,
     'lhs/endpoint'
   autoload :Inspect,
     'lhs/concerns/inspect'
+  module Interceptors
+    module RequestCycleCache
+      autoload :ThreadRegistry,
+        'lhs/interceptors/request_cycle_cache/thread_registry'
+      autoload :Interceptor,
+        'lhs/interceptors/request_cycle_cache/interceptor'
+    end
+    module ExtendedRollbar
+      autoload :ThreadRegistry,
+        'lhs/interceptors/extended_rollbar/thread_registry'
+      autoload :Interceptor,
+        'lhs/interceptors/extended_rollbar/interceptor'
+      autoload :Handler,
+        'lhs/interceptors/extended_rollbar/handler'
+    end
+  end
   autoload :IsHref,
     'lhs/concerns/is_href'
   autoload :Item,

@@ -16,4 +16,7 @@ Rails.application.routes.draw do
   # Option Blocks
   get 'option_blocks/first' => 'option_blocks#first'
   get 'option_blocks/second' => 'option_blocks#second'
+
+  # Extended Rollbar
+  get 'extended_rollbar' => 'extended_rollbar#extended_rollbar'
 end

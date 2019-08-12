@@ -8,6 +8,7 @@ module LHS
         def initialize
           prepare_lhs_request_cycle_cache
           reset_option_blocks
+          reset_extended_rollbar_request_logs
           super
         end
 
@@ -15,11 +16,17 @@ module LHS
 
         def prepare_lhs_request_cycle_cache
           return unless LHS.config.request_cycle_cache_enabled
-          LHS::Record::RequestCycleCache::RequestCycleThreadRegistry.request_id = [Time.now.to_f, request.object_id].join('#')
+          LHS::Interceptors::RequestCycleCache::ThreadRegistry.request_id = [Time.now.to_f, request.object_id].join('#')
         end
 
         def reset_option_blocks
           LHS::OptionBlocks::CurrentOptionBlock.options = nil
+        end
+
+        def reset_extended_rollbar_request_logs
+          return unless defined?(::Rollbar)
+          return unless LHC.config.interceptors.include?(LHS::Interceptors::ExtendedRollbar::Interceptor)
+          LHS::Interceptors::ExtendedRollbar::ThreadRegistry.log = []
         end
       end
     end
