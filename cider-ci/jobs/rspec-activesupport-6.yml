@@ -13,7 +13,7 @@ rspec-active-support-v6:
 
     task_defaults:
       environment_variables:
-        ACTIVESUPPORT: '5'
+        ACTIVESUPPORT: '6'
       max_trials: 2
       dispatch_storm_delay_duration: 1 Seconds
       include:
