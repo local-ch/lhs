@@ -38,6 +38,8 @@ module LHS
 
     def _collect_parents_for_inspect!(path, current)
       module_parent = respond_to?(:module_parent) ? current.module_parent : current.parent
+      return unless module_parent
+
       parent_raw = module_parent._raw
       if parent_raw.is_a?(Array)
         parent_raw.each_with_index do |element, index|
