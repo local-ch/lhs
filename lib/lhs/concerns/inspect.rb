@@ -37,8 +37,8 @@ module LHS
     end
 
     def _collect_parents_for_inspect!(path, current)
-      return unless current.parent
-      parent_raw = current.parent._raw
+      return unless current.module_parent
+      parent_raw = current.module_parent._raw
       if parent_raw.is_a?(Array)
         parent_raw.each_with_index do |element, index|
           path.push(index) if element == current._raw
@@ -48,7 +48,7 @@ module LHS
           path.push(key) if value == current._raw
         end
       end
-      _collect_parents_for_inspect!(path, current.parent)
+      _collect_parents_for_inspect!(path, current.module_parent)
     end
 
     def pretty_raw
