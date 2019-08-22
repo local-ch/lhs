@@ -1629,6 +1629,15 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
 
+You can also pass explicit request options to `update`, by passing two explicit hashes:
+
+```ruby
+# app/controllers/some_controller.rb
+
+record.update({ recommended: true }, { method: 'put' })
+
+```
+
 ##### partial_update
 
 `partial_update` updates just the provided parameters.
@@ -1659,6 +1668,15 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 ```
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
+
+You can also pass explicit request options to `partial_update`, by passing two explicit hashes:
+
+```ruby
+# app/controllers/some_controller.rb
+
+record.partial_update({ recommended: true }, { method: 'put' })
+
+```
 
 #### Endpoint url parameter injection during record creation/change
 
