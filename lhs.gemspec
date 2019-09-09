@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'json', '>=  1.8.2'
+  s.add_development_dependency 'local_uri'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'rails', '>= 4.2.11'
