@@ -139,7 +139,9 @@ record.review # "Lunch was great
       * [Request tracing](#request-tracing)
       * [Extended Rollbar Logging](#extended-rollbar-logging)
       * [Testing with LHS](#testing-with-lhs)
-         * [Test helper for request cycle cache](#test-helper-for-request-cycle-cache)
+         * [Test helper](#test-helper)
+            * [Stub](#stub)
+               * [Stub All](#stub-all)
          * [Test query chains](#test-query-chains)
             * [By explicitly resolving the chain: fetch](#by-explicitly-resolving-the-chain-fetch)
             * [Without resolving the chain: where_values_hash](#without-resolving-the-chain-where_values_hash)
@@ -2532,6 +2534,32 @@ require 'lhs/rspec'
 
 This e.g. will prevent running into caching issues during your tests, when (request cycle cache)[#request-cycle-cache] is enabled.
 It will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
+
+#### Stub
+
+LHS offers stub helpers that simplify stubbing https request to your apis.
+
+##### Stub All
+
+`LHS.stub.all(url, items, additional_options)`
+
+```ruby
+# your_spec.rb
+
+before do
+  LHS.stub.all(
+    'https://records',
+    200.times.map{ |index| { name: "Item #{index}" } },
+    headers: {
+      'Authorization' => 'Bearer 123'
+    }
+  )
+end
+```
+```
+GET https://records?limit=100
+GET https://records?limit=100&offset=100
+```
 
 ### Test query chains
 

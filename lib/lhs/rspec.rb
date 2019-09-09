@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'lhs'
+require 'lhs/test/stub'
 
 RSpec.configure do |config|
   config.before(:each) do
