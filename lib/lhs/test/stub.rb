@@ -3,29 +3,32 @@ require 'webmock'
 
 module LHS
 
-  def stub
-    @stub ||= Stub
-  end
-
   module Test
 
     class Stub
+      extend WebMock::API
+      DEFAULT_LIMIT = LHS::Pagination::Base::DEFAULT_LIMIT
 
       def self.all(url, items, options = {})
-        items.each_slice(LHS::Pagination::DEFAULT_LIMIT).with_index do |(*batch), index|
-        uri = LocalUri::URI.new(url)
-        uri.query.merge!(limit: LHS::Pagination::DEFAULT_LIMIT)
-        uri.query.merge!(offset: LHS::Pagination::DEFAULT_LIMIT * index) unless index.zero?
-        stub_request(:get, uri.to_s)
-          .with(options)
-          .to_return(
-            body: {
-              items: batch,
-              offset: index * DEFAULT_LIMIT,
-              total: items.length
-            }.to_json
-          )
+        items.each_slice(DEFAULT_LIMIT).with_index do |(*batch), index|
+          uri = LocalUri::URI.new(url)
+          uri.query.merge!(limit: DEFAULT_LIMIT)
+          uri.query.merge!(offset: DEFAULT_LIMIT * index) unless index.zero?
+          stub_request(:get, uri.to_s)
+            .with(options)
+            .to_return(
+              body: {
+                items: batch,
+                offset: index * DEFAULT_LIMIT,
+                total: items.length
+              }.to_json
+            )
+        end
       end
     end
+  end
+
+  def self.stub
+    @stub ||= Test::Stub
   end
 end
