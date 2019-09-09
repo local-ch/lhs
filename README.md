@@ -2520,17 +2520,18 @@ it 'displays contracts' do
 end
 ```
 
-### Test helper for request cycle cache
+### Test helper
 
-In order to not run into caching issues during your tests, when (request cycle cache)[#request-cycle-cache] is enabled, simply require the following helper in your tests:
+In order to load LHS test helpers into your tests, add the following to your spec helper:
 
 ```ruby
 # spec/spec_helper.rb
 
-require 'lhs/test/request_cycle_cache_helper'
+require 'lhs/rspec'
 ```
 
-This will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
+This e.g. will prevent running into caching issues during your tests, when (request cycle cache)[#request-cycle-cache] is enabled.
+It will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
 
 ### Test query chains
 
