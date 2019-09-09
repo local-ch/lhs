@@ -12,7 +12,7 @@ describe LHS::Test::Stub do
 
     LHS.stub.all(
       'https://records',
-      200.times.map{ |index| { name: "Item #{index}" } },
+      200.times.map { |index| { name: "Item #{index}" } },
       headers: {
         'Authorization' => 'Bearer 123'
       }

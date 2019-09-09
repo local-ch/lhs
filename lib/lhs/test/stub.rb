@@ -1,10 +1,9 @@
+# frozen_string_literal: true
+
 require 'local_uri'
 require 'webmock'
-
 module LHS
-
   module Test
-
     class Stub
       extend WebMock::API
       DEFAULT_LIMIT = LHS::Pagination::Base::DEFAULT_LIMIT
