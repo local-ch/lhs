@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'lhs/rspec'
 
-describe LHS::Test::Stub do
+describe LHS do
 
   before do
     class Record < LHS::Record

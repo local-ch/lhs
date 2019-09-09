@@ -26,8 +26,4 @@ module LHS
       end
     end
   end
-
-  def self.stub
-    @stub ||= Test::Stub
-  end
 end
