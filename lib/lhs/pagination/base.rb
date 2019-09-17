@@ -23,12 +23,12 @@ module LHS::Pagination
     alias count total
 
     def limit
-      limit_value = data._raw.dig(*_record.limit_key(:body))
-      requested_limit = data._request.params.dig(*_record.limit_key(:params))
-      if requested_limit && limit_value && limit_value < requested_limit
+      response_limit = data._raw.dig(*_record.limit_key(:body))
+      requested_limit = data._request.params.dig(*_record.limit_key(:params)).to_i if data&._request&.params.present?
+      if  requested_limit && response_limit && last_page?(response_limit, requested_limit) && response_limit < requested_limit
         requested_limit
       else
-        limit_value || DEFAULT_LIMIT
+        response_limit || DEFAULT_LIMIT
       end
     end
 
@@ -51,6 +51,10 @@ module LHS::Pagination
 
     def current_page
       # should be implemented in subclass (optional)
+    end
+
+    def last_page?
+      raise 'to be implemented in subclass'
     end
 
     def first_page

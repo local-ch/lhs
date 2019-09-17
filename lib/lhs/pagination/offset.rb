@@ -12,6 +12,10 @@ class LHS::Pagination::Offset < LHS::Pagination::Base
     self.class.next_offset(offset, limit, step)
   end
 
+  def last_page?(response_limit, requested_limit)
+    offset + response_limit >= total
+  end
+
   def self.page_to_offset(page, limit = DEFAULT_LIMIT)
     (page.to_i - 1) * limit.to_i
   end
