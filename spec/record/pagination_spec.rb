@@ -82,7 +82,7 @@ describe LHS::Record do
             size: 4,
             totalResult: 14,
             start: 11,
-            items: [11,12,13,14]
+            items: [11, 12, 13, 14]
           }.to_json)
 
         results = Search.page(2).limit(10).fetch
