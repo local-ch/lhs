@@ -25,7 +25,7 @@ module LHS::Pagination
     def limit
       limit_value = data._raw.dig(*_record.limit_key(:body))
       requested_limit = data._request.params.dig(*_record.limit_key(:params))
-      if limit_value < requested_limit
+      if requested_limit && limit_value && limit_value < requested_limit
         requested_limit
       else
         limit_value || DEFAULT_LIMIT
