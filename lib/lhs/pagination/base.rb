@@ -23,7 +23,13 @@ module LHS::Pagination
     alias count total
 
     def limit
-      data._raw.dig(*_record.limit_key(:body)) || DEFAULT_LIMIT
+      limit_value = data._raw.dig(*_record.limit_key(:body))
+      requested_limit = data._request.params.dig(*_record.limit_key(:params))
+      if limit_value < requested_limit
+        requested_limit
+      else
+        limit_value || DEFAULT_LIMIT
+      end
     end
 
     def offset

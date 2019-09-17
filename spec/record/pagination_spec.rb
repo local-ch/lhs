@@ -67,5 +67,27 @@ describe LHS::Record do
         expect(record.total_pages).to eq(28)
       end
     end
+
+    context 'total_pages calculation for last page' do
+      before do
+        class Search < LHS::Record
+          configuration pagination_strategy: :start, total_key: :totalResult, pagination_key: :start, limit_key: { body: :size, parameter: :limit }
+          endpoint 'https://search'
+        end
+      end
+
+      it 'provides the correct number of total pages for the last page' do
+        stub_request(:get, "https://search/?limit=10&start=11")
+          .to_return(body: {
+            size: 4,
+            totalResult: 14,
+            start: 11,
+            items: [11,12,13,14]
+          }.to_json)
+
+        results = Search.page(2).limit(10).fetch
+        expect(results.total_pages).to eq 2
+      end
+    end
   end
 end
