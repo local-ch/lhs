@@ -7,6 +7,9 @@ require "lhs/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
+  s.metadata['allowed_push_host'] = 'https://gem.fury.io/localsearch'
+
+
   s.name        = "lhs"
   s.version     = LHS::VERSION
   s.authors     = ['https://github.com/local-ch/lhs/graphs/contributors']
