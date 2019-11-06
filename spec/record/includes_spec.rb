@@ -606,4 +606,34 @@ describe LHS::Record do
       expect(sector.services.first.key).to eq 'my_service_service_1'
     end
   end
+
+  context 'include for POST/create' do
+
+    before do
+      class Record < LHS::Record
+        endpoint 'https://records'
+      end
+      stub_request(:post, 'https://records/')
+        .with(body: { color: 'blue' }.to_json)
+        .to_return(
+          body: {
+            color: 'blue',
+            alternative_categories: [
+              { href: 'https://categories/blue' }
+            ]
+          }.to_json
+        )
+      stub_request(:get, 'https://categories/blue')
+        .to_return(
+          body: {
+            name: 'blue'
+          }.to_json
+        )
+    end
+
+    it 'includes the resources from the post response' do
+      records = Record.includes(:alternative_categories).create(color: 'blue')
+      expect(records.alternative_categories.first.name).to eq 'blue'
+    end
+  end
 end
