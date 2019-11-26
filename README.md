@@ -2537,7 +2537,7 @@ It will initialize a MemoryStore cache for LHC::Caching interceptor and resets t
 
 #### Stub
 
-LHS offers stub helpers that simplify stubbing https request to your apis trough your Records.
+LHS offers stub helpers that simplify stubbing https request to your apis through your defined Records.
 
 ##### stub_all
 
