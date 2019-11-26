@@ -13,15 +13,15 @@ module LHS
           uri = LocalUri::URI.new(url)
           uri.query.merge!(limit: DEFAULT_LIMIT)
           uri.query.merge!(offset: DEFAULT_LIMIT * index) unless index.zero?
-          stub_request(:get, uri.to_s)
-            .with(options)
-            .to_return(
-              body: {
-                items: batch,
-                offset: index * DEFAULT_LIMIT,
-                total: items.length
-              }.to_json
-            )
+          request_stub = stub_request(:get, uri.to_s)
+          request_stub.with(options) if options.present?
+          request_stub.to_return(
+            body: {
+              items: batch,
+              offset: index * DEFAULT_LIMIT,
+              total: items.length
+            }.to_json
+          )
         end
       end
     end
