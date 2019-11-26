@@ -14,10 +14,12 @@ class LHS::Record
       uri.query.merge!(
         limit_key(:parameter) => DEFAULT_LIMIT
       )
-      offset = pagination_class.page_to_offset(index+1, DEFAULT_LIMIT)
-      uri.query.merge!(
-        pagination_key(:parameter) => offset
-      ) unless index.zero?
+      offset = pagination_class.page_to_offset(index + 1, DEFAULT_LIMIT)
+      unless index.zero?
+        uri.query.merge!(
+          pagination_key(:parameter) => offset
+        )
+      end
       request_stub = stub_request(:get, uri.to_s)
       request_stub.with(options) if options.present?
       request_stub.to_return(
