@@ -16,12 +16,12 @@ module LHS
           request_stub = stub_request(:get, uri.to_s)
           request_stub.with(options) if options.present?
           request_stub.to_return(
-              body: {
-                items: batch,
-                offset: index * DEFAULT_LIMIT,
-                total: items.length
-              }.to_json
-            )
+            body: {
+              items: batch,
+              offset: index * DEFAULT_LIMIT,
+              total: items.length
+            }.to_json
+          )
         end
       end
     end
