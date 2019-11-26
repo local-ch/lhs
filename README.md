@@ -2537,17 +2537,21 @@ It will initialize a MemoryStore cache for LHC::Caching interceptor and resets t
 
 #### Stub
 
-LHS offers stub helpers that simplify stubbing https request to your apis.
+LHS offers stub helpers that simplify stubbing https request to your apis through your defined Records.
 
-##### Stub All
+##### stub_all
 
-`LHS.stub.all(url, items, additional_options)`
+`Record.stub_all(url, items, additional_options)`
 
 ```ruby
 # your_spec.rb
 
 before do
-  LHS.stub.all(
+  class Record < LHS::Record
+    endpoint 'https://records'
+  end
+
+  Record.stub_all(
     'https://records',
     200.times.map{ |index| { name: "Item #{index}" } },
     headers: {
@@ -2559,6 +2563,28 @@ end
 ```
 GET https://records?limit=100
 GET https://records?limit=100&offset=100
+```
+
+LHS also uses Record configuration when stubbing all.
+```ruby
+# your_spec.rb
+
+before do
+  class Record < LHS::Record
+    configuration limit_key: :per_page, pagination_strategy: :page, pagination_key: :page
+
+    endpoint 'https://records'
+  end
+
+  Record.stub_all(
+    'https://records',
+    200.times.map{ |index| { name: "Item #{index}" } }
+  )
+end
+```
+```
+GET https://records?per_page=100
+GET https://records?per_page=100&page=2
 ```
 
 ### Test query chains
