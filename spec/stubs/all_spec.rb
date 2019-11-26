@@ -25,4 +25,25 @@ describe LHS do
     expect(records.length).to eq 200
     expect(records.first.name).to eq 'Item 0'
   end
+
+  context 'without conditions' do
+
+    before do
+      class Record < LHS::Record
+        endpoint 'https://records'
+      end
+
+      LHS.stub.all(
+        'https://records',
+        200.times.map { |index| { name: "Item #{index}" } }
+      )
+    end
+
+    it 'stubs all requests without a webmock "with"' do
+      records = Record.all.fetch
+      expect(records.count).to eq 200
+      expect(records.length).to eq 200
+      expect(records.first.name).to eq 'Item 0'
+    end
+  end
 end
