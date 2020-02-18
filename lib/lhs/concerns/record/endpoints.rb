@@ -27,7 +27,7 @@ class LHS::Record
         endpoint = LHC::Endpoint.new(url, options)
         endpoints.push(endpoint)
         LHS::Record::Endpoints.all ||= {}
-        LHS::Record::Endpoints.all[url] = self
+        LHS::Record::Endpoints.all[url] ||= self
       end
 
       def for_url(url)
