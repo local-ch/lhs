@@ -32,7 +32,7 @@ class LHS::Record
 
       def for_url(url)
         return unless url
-        _template, record = LHS::Record::Endpoints.all.detect do |template, _|
+        _template, record = LHS::Record::Endpoints.all.dup.detect do |template, _|
           LHC::Endpoint.match?(url, template)
         end
         record
