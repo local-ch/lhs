@@ -47,6 +47,8 @@ class LHS::Record
     'lhs/concerns/record/tracing'
   autoload :AttributeAssignment,
     'lhs/concerns/record/attribute_assignment'
+  autoload :NestedAttributes,
+    'lhs/concerns/record/nested_attributes'
 
   include Batch
   include Chainable
@@ -73,6 +75,7 @@ class LHS::Record
   include Scope
   include Tracing
   include AttributeAssignment
+  include NestedAttributes
 
   delegate :_proxy, :_endpoint, :merge_raw!, :select, :becomes, :respond_to?, to: :_data
 
