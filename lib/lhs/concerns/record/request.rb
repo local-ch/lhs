@@ -180,12 +180,20 @@ class LHS::Record
       end
 
       def handle_include(included, data, sub_includes = nil, reference = nil)
-        return if data.blank? || skip_loading_includes?(data, included)
-        options = options_for_data(data, included)
-        options = extend_with_reference(options, reference)
-        addition = load_include(options, data, sub_includes, reference)
-        extend_raw_data!(data, addition, included)
-        expand_addition!(data, included, options) if no_expanded_data?(addition)
+        if data.blank? || skip_loading_includes?(data, included)
+          handle_skip_include(included, data, sub_includes, reference)
+        else
+          options = options_for_data(data, included)
+          options = extend_with_reference(options, reference)
+          addition = load_include(options, data, sub_includes, reference)
+          extend_raw_data!(data, addition, included)
+          expand_addition!(data, included, options) if no_expanded_data?(addition)
+        end
+      end
+
+      def handle_skip_include(included, data, sub_includes = nil, reference = nil)
+        return if sub_includes.blank?
+        handle_includes(sub_includes, data[included], reference)
       end
 
       def options_for_data(data, included = nil)
@@ -238,6 +246,8 @@ class LHS::Record
       def skip_loading_includes?(data, included)
         if data.collection?
           data.to_a.none? { |item| item[included].present? }
+        elsif data[included].href.blank?
+          true
         else
           !data._raw.key?(included)
         end
