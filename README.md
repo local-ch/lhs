@@ -1631,6 +1631,15 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
 
+You can use `update` and the end of query-chains:
+
+```ruby
+# app/controllers/some_controller.rb
+
+record.options(method: :put).update(recommended: true)
+
+```
+
 You can also pass explicit request options to `update`, by passing two explicit hashes:
 
 ```ruby
@@ -1670,6 +1679,15 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 ```
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
+
+You can use `partial_update` at the end of query-chains:
+
+```ruby
+# app/controllers/some_controller.rb
+
+record.options(method: :put).partial_update(recommended: true)
+
+```
 
 You can also pass explicit request options to `partial_update`, by passing two explicit hashes:
 

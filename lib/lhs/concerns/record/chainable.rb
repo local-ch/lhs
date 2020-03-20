@@ -198,6 +198,16 @@ class LHS::Record
         @record.update!(data, resolved_options.merge(options))
       end
 
+      def partial_update(data = {}, options = nil)
+        options ||= {}
+        @record.update(data, resolved_options.merge(options), true)
+      end
+
+      def partial_update!(data = {}, options = nil)
+        options ||= {}
+        @record.update!(data, resolved_options.merge(options), true)
+      end
+
       def valid?(options = nil)
         options ||= {}
         @record.valid?(resolved_options.merge(options))
