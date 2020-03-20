@@ -1680,7 +1680,7 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
 
-You can use `partial_update` and the end of query-chains:
+You can use `partial_update` at the end of query-chains:
 
 ```ruby
 # app/controllers/some_controller.rb
