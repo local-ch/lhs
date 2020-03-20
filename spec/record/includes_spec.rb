@@ -636,4 +636,33 @@ describe LHS::Record do
       expect(records.alternative_categories.first.name).to eq 'blue'
     end
   end
+
+  context 'nested within another structure' do
+    before do
+      class Place < LHS::Record
+        endpoint 'https://places/{id}'
+      end
+      stub_request(:get, "https://places/1")
+        .to_return(body: {
+          customer: {
+            salesforce: {
+              href: 'https://salesforce/customers/1'
+            }
+          }
+        }.to_json)
+    end
+
+    let!(:nested_request) do
+      stub_request(:get, "https://salesforce/customers/1")
+        .to_return(body: {
+          name: 'Steve'
+        }.to_json)
+    end
+
+    it 'includes data that has been nested in an additional structure' do
+      place = Place.includes(customer: :salesforce).find(1)
+      expect(nested_request).to have_been_requested
+      expect(place.customer.salesforce.name).to eq 'Steve'
+    end
+  end
 end
