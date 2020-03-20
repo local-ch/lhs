@@ -27,12 +27,12 @@ class LHS::Record
         endpoint = LHC::Endpoint.new(url, options)
         endpoints.push(endpoint)
         LHS::Record::Endpoints.all ||= {}
-        LHS::Record::Endpoints.all[url] = self
+        LHS::Record::Endpoints.all[url] ||= self
       end
 
       def for_url(url)
         return unless url
-        _template, record = LHS::Record::Endpoints.all.detect do |template, _|
+        _template, record = LHS::Record::Endpoints.all.dup.detect do |template, _|
           LHC::Endpoint.match?(url, template)
         end
         record

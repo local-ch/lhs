@@ -18,8 +18,15 @@ class LHS::Proxy
 
     private
 
-    def set(name, value)
+    def set(name, args)
       clear_cache!
+      return set_attribute_directly(name, args.try(:first)) if name != :[]=
+      key = args[0]
+      value = args[1]
+      _data._raw[key.to_sym] = value
+    end
+
+    def set_attribute_directly(name, value)
       key = name.to_s.gsub(/=$/, '')
       _data._raw[key.to_sym] = value
     end

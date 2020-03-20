@@ -24,7 +24,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'activemodel'
   s.add_dependency 'activesupport', '>= 4.2.11'
-  s.add_dependency 'lhc', '~> 10.2'
+  s.add_dependency 'lhc', '>= 10', '< 12'
+  s.add_dependency 'local_uri'
 
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'json', '>=  1.8.2'
@@ -35,6 +36,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails', '>= 3.7.0'
   s.add_development_dependency 'rubocop', '~> 0.57.1'
   s.add_development_dependency 'rubocop-rspec', '~> 1.26.0'
+  s.add_development_dependency 'sprockets', '< 4'
   s.add_development_dependency 'webmock'
 
   s.license = 'GPL-3'

@@ -139,7 +139,9 @@ record.review # "Lunch was great
       * [Request tracing](#request-tracing)
       * [Extended Rollbar Logging](#extended-rollbar-logging)
       * [Testing with LHS](#testing-with-lhs)
-         * [Test helper for request cycle cache](#test-helper-for-request-cycle-cache)
+         * [Test helper](#test-helper)
+            * [Stub](#stub)
+               * [Stub All](#stub-all)
          * [Test query chains](#test-query-chains)
             * [By explicitly resolving the chain: fetch](#by-explicitly-resolving-the-chain-fetch)
             * [Without resolving the chain: where_values_hash](#without-resolving-the-chain-where_values_hash)
@@ -2020,6 +2022,38 @@ record = Record.new(ratings: { quality: 3 })
 record.ratings # [{ :name=>:quality, :value=>3 }]
 ```
 
+Setting attributes with other names:
+
+```ruby
+# app/models/booking.rb
+
+class Booking < LHS::Record
+
+  def appointments_attributes=(values)
+    self.appointments = values.map { |appointment| appointment[:id] }
+  end
+end
+```
+
+or 
+
+```ruby
+# app/models/booking.rb
+
+class Booking < LHS::Record
+
+  def appointments_attributes=(values)
+    self[:appointments] = values.map { |appointment| appointment[:id] }
+  end
+end
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+booking.update(params)
+```
+
 #### Record getters
 
 If you implement accompanying getter methods, the whole data conversion would be internal only:
@@ -2538,17 +2572,70 @@ it 'displays contracts' do
 end
 ```
 
-### Test helper for request cycle cache
+### Test helper
 
-In order to not run into caching issues during your tests, when (request cycle cache)[#request-cycle-cache] is enabled, simply require the following helper in your tests:
+In order to load LHS test helpers into your tests, add the following to your spec helper:
 
 ```ruby
 # spec/spec_helper.rb
 
-require 'lhs/test/request_cycle_cache_helper'
+require 'lhs/rspec'
 ```
 
-This will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
+This e.g. will prevent running into caching issues during your tests, when (request cycle cache)[#request-cycle-cache] is enabled.
+It will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
+
+#### Stub
+
+LHS offers stub helpers that simplify stubbing https request to your apis through your defined Records.
+
+##### stub_all
+
+`Record.stub_all(url, items, additional_options)`
+
+```ruby
+# your_spec.rb
+
+before do
+  class Record < LHS::Record
+    endpoint 'https://records'
+  end
+
+  Record.stub_all(
+    'https://records',
+    200.times.map{ |index| { name: "Item #{index}" } },
+    headers: {
+      'Authorization' => 'Bearer 123'
+    }
+  )
+end
+```
+```
+GET https://records?limit=100
+GET https://records?limit=100&offset=100
+```
+
+LHS also uses Record configuration when stubbing all.
+```ruby
+# your_spec.rb
+
+before do
+  class Record < LHS::Record
+    configuration limit_key: :per_page, pagination_strategy: :page, pagination_key: :page
+
+    endpoint 'https://records'
+  end
+
+  Record.stub_all(
+    'https://records',
+    200.times.map{ |index| { name: "Item #{index}" } }
+  )
+end
+```
+```
+GET https://records?per_page=100
+GET https://records?per_page=100&page=2
+```
 
 ### Test query chains
 
