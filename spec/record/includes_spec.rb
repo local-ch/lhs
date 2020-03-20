@@ -660,7 +660,7 @@ describe LHS::Record do
     end
 
     it 'includes data that has been nested in an additional structure' do
-      place = Place.includes({ customer: :salesforce }).find(1)
+      place = Place.includes(customer: :salesforce).find(1)
       expect(nested_request).to have_been_requested
       expect(place.customer.salesforce.name).to eq 'Steve'
     end
