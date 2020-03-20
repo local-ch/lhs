@@ -30,7 +30,6 @@ def reset_lhs
   LHS::Record::CHILDREN.each do |child|
     child.endpoints = [] if !child.name['LHS'] && defined?(child.endpoints)
     child.configuration({}) if !child.name['LHS']
-    Object.send(:remove_const, child.to_s.to_sym) if Object.constants.include?(child.to_s.to_sym)
   end
 end
 

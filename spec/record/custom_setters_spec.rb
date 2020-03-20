@@ -8,6 +8,7 @@ describe LHS::Record do
     context 'assigning values directly to other attributes' do
 
       before do
+        Object.send(:remove_const, :Booking) # make sure there is no other booking from previous tests around
         class Booking < LHS::Record
           endpoint 'https://bookings'
 
