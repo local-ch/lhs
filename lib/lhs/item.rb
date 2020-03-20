@@ -54,6 +54,6 @@ class LHS::Item < LHS::Proxy
     return _data unless _record.item_key
     nested_data = _data.dig(*_record.item_key)
     return _data unless nested_data
-    nested_data
+    LHS::Data.new(nested_data, _data._parent, _record, _data._request, _data._endpoint)
   end
 end

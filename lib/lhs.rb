@@ -15,12 +15,34 @@ module LHS
     'lhs/config'
   autoload :Data,
     'lhs/data'
+  autoload :ExtendedRollbar,
+    'lhs/interceptors/extended_rollbar/interceptor'
   autoload :Endpoint,
     'lhs/endpoint'
   autoload :Inspect,
     'lhs/concerns/inspect'
+  module Interceptors
+    module RequestCycleCache
+      autoload :ThreadRegistry,
+        'lhs/interceptors/request_cycle_cache/thread_registry'
+      autoload :Interceptor,
+        'lhs/interceptors/request_cycle_cache/interceptor'
+    end
+    module ExtendedRollbar
+      autoload :ThreadRegistry,
+        'lhs/interceptors/extended_rollbar/thread_registry'
+      autoload :Interceptor,
+        'lhs/interceptors/extended_rollbar/interceptor'
+      autoload :Handler,
+        'lhs/interceptors/extended_rollbar/handler'
+    end
+  end
+  autoload :IsHref,
+    'lhs/concerns/is_href'
   autoload :Item,
     'lhs/item'
+  autoload :OptionBlocks,
+    'lhs/concerns/option_blocks'
   autoload :Pagination,
     'lhs/pagination/base'
   module Pagination
@@ -30,6 +52,8 @@ module LHS
       'lhs/pagination/page'
     autoload :Start,
       'lhs/pagination/start'
+    autoload :Link,
+      'lhs/pagination/link'
   end
   autoload :Problems,
     'lhs/problems/base'
@@ -55,12 +79,12 @@ module LHS
     'lhs/proxy'
   autoload :Record,
     'lhs/record'
-
   autoload :Unprocessable,
     'lhs/unprocessable'
 
   include Configuration
   include AutoloadRecords if defined?(Rails)
+  include OptionBlocks
 
   require 'lhs/record' # as lhs records in an application are directly inheriting it
 

@@ -11,6 +11,7 @@ class LHS::Record
     module ClassMethods
       def request(options)
         options ||= {}
+        options = deep_merge_with_option_blocks(options)
         options = options.freeze
         if options.is_a?(Array)
           multiple_requests(
@@ -22,6 +23,15 @@ class LHS::Record
       end
 
       private
+
+      def deep_merge_with_option_blocks(options)
+        return options if LHS::OptionBlocks::CurrentOptionBlock.options.blank?
+        if options.is_a?(Hash)
+          options.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options)
+        elsif options.is_a?(Array)
+          options.map { |option| option.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options) }
+        end
+      end
 
       def single_request_load_and_merge_remaining_objects!(data, options, endpoint)
         return if options[:all].blank? || !paginated
@@ -74,7 +84,7 @@ class LHS::Record
       def values_from_get_params(url, options)
         uri = parse_uri(url, options)
         return {} if uri.query.blank?
-        params = Rack::Utils.parse_nested_query(uri.query)
+        params = Rack::Utils.parse_nested_query(uri.query).deep_symbolize_keys
         params
       end
 
@@ -277,12 +287,31 @@ class LHS::Record
       def load_and_merge_paginated_collection!(data, options)
         set_nested_data(data._raw, limit_key(:body), data.length) if data._raw.dig(*limit_key(:body)).blank? && !data.length.zero?
         pagination = data._record.pagination(data)
-        return data if pagination.pages_left.zero?
+        return data unless pagination.pages_left?
         record = data._record
+        if pagination.parallel?
+          load_and_merge_parallel_requests!(record, data, pagination, options)
+        else
+          load_and_merge_sequential_requests!(record, data, options, data._raw.dig(:next, :href), pagination)
+        end
+      end
+
+      def load_and_merge_parallel_requests!(record, data, pagination, options)
         record.request(
           options_for_next_batch(record, pagination, options)
         ).each do |batch_data|
           merge_batch_data_with_parent!(batch_data, data)
+        end
+      end
+
+      def load_and_merge_sequential_requests!(record, data, options, next_link, pagination)
+        warn "[WARNING] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! (https://github.com/local-ch/lhs#pagination-strategy-link)."
+        while next_link.present?
+          page_data = record.request(
+            options.except(:all).merge(url: next_link)
+          )
+          next_link = page_data._raw.dig(:next, :href)
+          merge_batch_data_with_parent!(page_data, data, pagination)
         end
       end
 
@@ -292,7 +321,7 @@ class LHS::Record
           next if element.nil?
           record = data[index]._record
           pagination = record.pagination(data[index])
-          next if pagination.pages_left.zero?
+          next unless pagination.pages_left?
           options_for_next_batch.push(
             options_for_next_batch(record, pagination, options[index]).tap do |options|
               options.each do |option|
@@ -345,7 +374,8 @@ class LHS::Record
       # paginates itself to ensure all records are fetched
       def load_all_included!(record, options)
         data = record.request(options)
-        load_and_merge_remaining_objects!(data: data, options: options)
+        pagination = data._record.pagination(data)
+        load_and_merge_remaining_objects!(data: data, options: options) if pagination.parallel?
         data
       end
 
@@ -386,8 +416,9 @@ class LHS::Record
         options || {}
       end
 
-      def merge_batch_data_with_parent!(batch_data, parent_data)
+      def merge_batch_data_with_parent!(batch_data, parent_data, pagination = nil)
         parent_data.concat(input: parent_data._raw, items: batch_data.raw_items, record: self)
+        return if pagination.present? && pagination.is_a?(LHS::Pagination::Link)
         [limit_key(:body), total_key, pagination_key(:body)].each do |pagination_attribute|
           set_nested_data(
             parent_data._raw,
@@ -468,7 +499,9 @@ class LHS::Record
         options[:ignored_errors] = ignored_errors if ignored_errors.present?
         options[:params]&.deep_symbolize_keys!
         options[:error_handler] = merge_error_handlers(options[:error_handler]) if options[:error_handler]
-        options = (endpoint.options || {}).deep_merge(options)
+        options = (provider_options || {})
+          .deep_merge(endpoint.options || {})
+          .deep_merge(options)
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
         merge_explicit_params!(options[:params])
         options.delete(:params) if options[:params]&.empty?
@@ -476,16 +509,16 @@ class LHS::Record
         options
       end
 
-      # Injects options into request, that enable the LHS::Record::RequestCycleCache::Interceptor
+      # Injects options into request, that enable the request cycle cache interceptor
       def inject_request_cycle_cache!(options)
         return unless LHS.config.request_cycle_cache_enabled
         interceptors = options[:interceptors] || LHC.config.interceptors
         if interceptors.include?(LHC::Caching)
-          # Ensure LHS::RequestCycleCache interceptor is prepend
-          interceptors = interceptors.unshift(LHS::Record::RequestCycleCache::Interceptor)
+          # Ensure interceptor is prepend
+          interceptors = interceptors.unshift(LHS::Interceptors::RequestCycleCache::Interceptor)
           options[:interceptors] = interceptors
         else
-          warn("[WARNING] Can't enable LHS::RequestCycleCache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor)!")
+          warn("[WARNING] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor)!")
         end
       end
 

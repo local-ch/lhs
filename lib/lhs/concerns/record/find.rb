@@ -11,6 +11,7 @@ class LHS::Record
       # Find a single uniqe record
       def find(*args)
         args, options = process_args(args)
+        options = trace!(options)
         raise(LHS::Unprocessable.new, 'Cannot find Record without an ID') if args.blank? && !args.is_a?(Array)
         data =
           if args.present? && args.is_a?(Array)
@@ -79,10 +80,6 @@ class LHS::Record
         else
           options
         end
-      end
-
-      def href?(str)
-        str.is_a?(String) && %r{^https?://}.match(str)
       end
     end
   end

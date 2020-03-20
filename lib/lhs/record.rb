@@ -23,27 +23,30 @@ class LHS::Record
     'lhs/concerns/record/find_by'
   autoload :First,
     'lhs/concerns/record/first'
+  autoload :HrefFor,
+    'lhs/concerns/record/href_for'
   autoload :Last,
     'lhs/concerns/record/last'
   autoload :Mapping,
     'lhs/concerns/record/mapping'
+  autoload :Merge,
+    'lhs/concerns/record/merge'
   autoload :Model,
     'lhs/concerns/record/model'
   autoload :Pagination,
     'lhs/concerns/record/pagination'
+  autoload :Provider,
+    'lhs/concerns/record/provider'
   autoload :Request,
     'lhs/concerns/record/request'
   autoload :Relations,
     'lhs/concerns/record/relations'
   autoload :Scope,
     'lhs/concerns/record/scope'
-
-  module RequestCycleCache
-    autoload :RequestCycleThreadRegistry,
-      'lhs/concerns/record/request_cycle_cache/request_cycle_thread_registry'
-    autoload :Interceptor,
-      'lhs/concerns/record/request_cycle_cache/interceptor'
-  end
+  autoload :Tracing,
+    'lhs/concerns/record/tracing'
+  autoload :AttributeAssignment,
+    'lhs/concerns/record/attribute_assignment'
 
   include Batch
   include Chainable
@@ -56,15 +59,20 @@ class LHS::Record
   include Find
   include FindBy
   include First
+  include HrefFor
+  include LHS::IsHref
   include Last
   include LHS::Inspect
   include Mapping
+  include Merge
   include Model
   include Pagination
+  include Provider
   include Request
   include Relations
-  include RequestCycleCache
   include Scope
+  include Tracing
+  include AttributeAssignment
 
   delegate :_proxy, :_endpoint, :merge_raw!, :select, :becomes, :respond_to?, to: :_data
 

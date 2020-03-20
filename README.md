@@ -45,7 +45,8 @@ record.review # "Lunch was great
       * [Record](#record)
          * [Endpoints](#endpoints)
             * [Configure endpoint hosts](#configure-endpoint-hosts)
-            * [Endpoint priorities](#endpoint-priorities)
+            * [Endpoint Priorities](#endpoint-priorities)
+         * [Provider](#provider)
          * [Record inheritance](#record-inheritance)
          * [Find multiple records](#find-multiple-records)
             * [fetch](#fetch)
@@ -81,6 +82,7 @@ record.review # "Lunch was great
                * [Pagination strategy: offset (default)](#pagination-strategy-offset-default)
                * [Pagination strategy: page](#pagination-strategy-page)
                * [Pagination strategy: start](#pagination-strategy-start)
+               * [Pagination strategy: link](#pagination-strategy-link)
             * [Pagination keys](#pagination-keys)
                * [limit_key](#limit_key)
                * [pagination_key](#pagination_key)
@@ -117,22 +119,29 @@ record.review # "Lunch was great
             * [Record setters](#record-setters)
             * [Record getters](#record-getters)
          * [Include linked resources (hyperlinks and hypermedia)](#include-linked-resources-hyperlinks-and-hypermedia)
+            * [Generate links from parameters](#generate-links-from-parameters)
             * [Ensure the whole linked collection is included: includes_all](#ensure-the-whole-linked-collection-is-included-includes_all)
             * [Include the first linked page or single item is included: include](#include-the-first-linked-page-or-single-item-is-included-include)
             * [Include various levels of linked data](#include-various-levels-of-linked-data)
             * [Identify and cast known records when including records](#identify-and-cast-known-records-when-including-records)
             * [Apply options for requests performed to fetch included records](#apply-options-for-requests-performed-to-fetch-included-records)
          * [Record batch processing](#record-batch-processing)
-            * [all](#all)
+            * [all](#all-1)
                * [Using all, when endpoint does not implement response pagination meta data](#using-all-when-endpoint-does-not-implement-response-pagination-meta-data)
             * [find_each](#find_each)
             * [find_in_batches](#find_in_batches)
          * [Convert/Cast specific record types: becomes](#convertcast-specific-record-types-becomes)
+         * [Assign attributes](#assign-attributes)
       * [Request Cycle Cache](#request-cycle-cache)
          * [Change store for LHS' request cycle cache](#change-store-for-lhs-request-cycle-cache)
          * [Disable request cycle cache](#disable-request-cycle-cache)
+      * [Option Blocks](#option-blocks)
+      * [Request tracing](#request-tracing)
+      * [Extended Rollbar Logging](#extended-rollbar-logging)
       * [Testing with LHS](#testing-with-lhs)
-         * [Test helper for request cycle cache](#test-helper-for-request-cycle-cache)
+         * [Test helper](#test-helper)
+            * [Stub](#stub)
+               * [Stub All](#stub-all)
          * [Test query chains](#test-query-chains)
             * [By explicitly resolving the chain: fetch](#by-explicitly-resolving-the-chain-fetch)
             * [Without resolving the chain: where_values_hash](#without-resolving-the-chain-where_values_hash)
@@ -256,6 +265,44 @@ GET https://service.example.com/records
 
 **Be aware that, if you configure ambigious endpoints accross multiple classes, the order of things is not deteministic. Ambigious endpoints accross multiple classes need to be avoided.**
 
+### Provider
+
+Providers in LHS allow you to group shared endpoint options under a common provider.
+
+```ruby
+# app/models/provider/base_record.rb
+
+module Provider
+  class BaseRecord < LHS::Record
+    provider params: { api_key: 123 }
+  end
+end
+```
+
+Now every record, part of that particular provider can inherit the provider's `BaseRecord`.
+
+```ruby
+# app/models/provider/account.rb
+
+module Provider
+  class Account < BaseRecord
+    endpoint '{+host}/records'
+    endpoint '{+host}/records/{id}'
+  end
+end
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+Provider::Account.find(1)
+```
+```
+GET https://provider/records/1?api_key=123
+```
+
+And requests made via those provider records apply the common provider options.
+
 ### Record inheritance
 
 You can inherit from previously defined records and also inherit endpoints that way:
@@ -326,7 +373,20 @@ Record.where(accociation_id: '12345')
 GET https://service.example.com/accociation/12345/records
 ```
 
-If the provided parameter – `accociation_id` in this case – is part of the endpoint path, it will be injected into the path:
+If the provided parameter – `accociation_id` in this case – is part of the endpoint path, it will be injected into the path.
+
+You can also provide hrefs to fetch multiple records:
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.where('https://service.example.com/accociation/12345/records')
+
+```
+```
+GET https://service.example.com/accociation/12345/records
+```
+
 
 #### Reuse/Dry where statements: Use scopes
 
@@ -1215,6 +1275,44 @@ In parallel:
   GET https://service.example.com/records?limit=100&startAt=201
 ```
 
+##### Pagination strategy: link
+
+The `link` strategy continuously follows in-response embedded links to following pages until the last page is reached (indicated by no more `next` link).
+
+*WARNING*
+
+Loading all pages from a resource paginated with links only can result in very poor performance, as pages can only be loaded sequentially!
+
+```ruby
+# app/models/record.rb
+
+class Search < LHS::Record
+  configuration pagination_strategy: 'link'
+
+  endpoint '{+service}/search'
+end
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.all
+
+```
+```
+GET https://service.example.com/records?limit=100
+{
+  items: [{...}, ...],
+  limit: 100,
+  next: {
+    href: 'https://service.example.com/records?from_record_id=p62qM5p0NK_qryO52Ze-eg&limit=100'
+  }
+}
+Sequentially:
+  GET https://service.example.com/records?from_record_id=p62qM5p0NK_qryO52Ze-eg&limit=100
+  GET https://service.example.com/records?from_record_id=xcaoXBmuMyFFEcFDSgNgDQ&limit=100
+```
+
 #### Pagination keys
 
 ##### limit_key
@@ -1533,6 +1631,15 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
 
+You can also pass explicit request options to `update`, by passing two explicit hashes:
+
+```ruby
+# app/controllers/some_controller.rb
+
+record.update({ recommended: true }, { method: 'put' })
+
+```
+
 ##### partial_update
 
 `partial_update` updates just the provided parameters.
@@ -1563,6 +1670,15 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 ```
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
+
+You can also pass explicit request options to `partial_update`, by passing two explicit hashes:
+
+```ruby
+# app/controllers/some_controller.rb
+
+record.partial_update({ recommended: true }, { method: 'put' })
+
+```
 
 #### Endpoint url parameter injection during record creation/change
 
@@ -1958,6 +2074,21 @@ With `includes` or `includes_all` (to enforce fetching all remote objects for pa
 
 Including linked resources/records is heavily influenced by [https://guides.rubyonrails.org/active_record_querying.html](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glory.
 
+#### Generate links from parameters
+
+Sometimes you need to generate full hrefs/urls for records but you just have parameters that describe that record, like the ID.
+
+For those usecases you can use `href_for(params)`:
+
+```ruby
+# app/controllers/some_controller.rb
+
+Presence.create(place: { href: Place.href_for(123) })
+```
+```
+POST '/presences' { place: { href: "http://datastore/places/123" } }
+```
+
 #### Ensure the whole linked collection is included: includes_all
 
 In case endpoints are paginated and you are certain that you'll need all objects of a set and not only the first page/batch, use `includes_all`.
@@ -2219,6 +2350,16 @@ synchronization.save!
 POST https://service.example.com/location/1/sync { body: '{ ... }' }
 ```
 
+### Assign attributes
+
+Allows you to set the attributes by passing in a hash of attributes.
+
+```ruby
+entry = LocalEntry.new
+entry.assign_attributes(company_name: 'localsearch')
+entry.company_name # => 'localsearch'
+```
+
 ## Request Cycle Cache
 
 By default, LHS does not perform the same http request multiple times during one request/response cycle.
@@ -2266,9 +2407,9 @@ The LHS Request Cycle Cache is opt-out, so it's enabled by default and will requ
 By default the LHS Request Cycle Cache will use `ActiveSupport::Cache::MemoryStore` as its cache store. Feel free to configure a cache that is better suited for your needs by:
 
 ```ruby
-# config/initializers/lhc.rb
+# config/initializers/lhs.rb
 
-LHC.configure do |config|
+LHS.configure do |config|
   config.request_cycle_cache = ActiveSupport::Cache::MemoryStore.new
 end
 ```
@@ -2278,10 +2419,101 @@ end
 If you want to disable the LHS Request Cycle Cache, simply disable it within configuration:
 
 ```ruby
+# config/initializers/lhs.rb
+
+LHS.configure do |config|
+  config.request_cycle_cache_enabled = false
+end
+```
+
+## Option Blocks
+
+In order to apply options to all requests performed in a give block, LHS provides option blocks.
+
+```ruby
+# app/controllers/records_controller.rb
+
+LHS.options(headers: { 'Tracking-Id' => 123 }) do
+  Record.find(1)
+end
+
+Record.find(2)
+```
+```
+GET https://records/1 { headers: { 'Tracking-Id' => '123' } }
+GET https://records/2 { headers: { } }
+```
+
+## Request tracing
+
+LHS supports tracing the source (in your application code) of http requests being made with methods like `find find_by find_by! first first! last last!`.
+
+Following links, and using `includes` are not traced (just yet).
+
+In order to enable tracing you need to enable it via LHS configuration:
+
+```ruby
+# config/initializers/lhs.rb
+
+LHS.configure do |config|
+  config.trace = Rails.env.development? || Rails.logger.level == 0 # debug
+end
+```
+
+```ruby
+# app/controllers/application_controller.rb
+
+code = Code.find(code: params[:code])
+```
+```
+Called from onboarding/app/controllers/concerns/access_code_concern.rb:11:in `access_code'
+```
+
+However, following links and includes won't get traced (just yet):
+
+```ruby
+# app/controllers/application_controller.rb
+
+code = Code.includes(:places).find(123)
+```
+
+```
+# Nothing is traced
+{
+  places: [...]
+}
+```
+
+```ruby
+code.places
+```
+```
+{ 
+  token: "XYZABCDEF",
+  places:
+    [
+      { href: "http://storage-stg.preprod-local.ch/v2/places/egZelgYhdlg" }
+    ]
+}
+```
+
+## Extended Rollbar Logging
+
+In order to log all requests/responses prior to an exception reported by Rollbar in addition to the exception itself, use the `LHS::ExtendedRollbar` interceptor in combination with the rollbar processor/handler:
+
+```ruby
 # config/initializers/lhc.rb
 
 LHC.configure do |config|
-  config.request_cycle_cache_enabled = false
+  config.interceptors = [LHS::ExtendedRollbar]
+end
+```
+
+```ruby
+# config/initializers/rollbar.rb
+
+Rollbar.configure do |config|
+  config.before_process << LHS::Interceptors::ExtendedRollbar::Handler.init
 end
 ```
 
@@ -2322,17 +2554,70 @@ it 'displays contracts' do
 end
 ```
 
-### Test helper for request cycle cache
+### Test helper
 
-In order to not run into caching issues during your tests, when (request cycle cache)[#request-cycle-cache] is enabled, simply require the following helper in your tests:
+In order to load LHS test helpers into your tests, add the following to your spec helper:
 
 ```ruby
 # spec/spec_helper.rb
 
-require 'lhs/test/request_cycle_cache_helper'
+require 'lhs/rspec'
 ```
 
-This will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
+This e.g. will prevent running into caching issues during your tests, when (request cycle cache)[#request-cycle-cache] is enabled.
+It will initialize a MemoryStore cache for LHC::Caching interceptor and resets the cache before every test.
+
+#### Stub
+
+LHS offers stub helpers that simplify stubbing https request to your apis through your defined Records.
+
+##### stub_all
+
+`Record.stub_all(url, items, additional_options)`
+
+```ruby
+# your_spec.rb
+
+before do
+  class Record < LHS::Record
+    endpoint 'https://records'
+  end
+
+  Record.stub_all(
+    'https://records',
+    200.times.map{ |index| { name: "Item #{index}" } },
+    headers: {
+      'Authorization' => 'Bearer 123'
+    }
+  )
+end
+```
+```
+GET https://records?limit=100
+GET https://records?limit=100&offset=100
+```
+
+LHS also uses Record configuration when stubbing all.
+```ruby
+# your_spec.rb
+
+before do
+  class Record < LHS::Record
+    configuration limit_key: :per_page, pagination_strategy: :page, pagination_key: :page
+
+    endpoint 'https://records'
+  end
+
+  Record.stub_all(
+    'https://records',
+    200.times.map{ |index| { name: "Item #{index}" } }
+  )
+end
+```
+```
+GET https://records?per_page=100
+GET https://records?per_page=100&page=2
+```
 
 ### Test query chains
 
