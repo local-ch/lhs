@@ -151,4 +151,20 @@ describe LHS::Item do
       end
     end
   end
+
+  context 'chainable' do
+    it 'allows to chain partial_update with options' do
+      stub_request(:put, item.href)
+        .with(body: { name: 'Steve' }.to_json)
+      result = item.options(method: :put).partial_update(name: 'Steve')
+      expect(result).to eq true
+    end
+
+    it 'allows to chain partial_update! with options' do
+      stub_request(:put, item.href)
+        .with(body: { name: 'Steve' }.to_json)
+      result = item.options(method: :put).partial_update!(name: 'Steve')
+      expect(result).to eq true
+    end
+  end
 end

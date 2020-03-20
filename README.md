@@ -1631,6 +1631,15 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
 
+You can use `update` and the end of query-chains:
+
+```ruby
+# app/controllers/some_controller.rb
+
+record.options(method: :put).update(recommended: true)
+
+```
+
 You can also pass explicit request options to `update`, by passing two explicit hashes:
 
 ```ruby
@@ -1670,6 +1679,15 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 ```
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
+
+You can use `partial_update` at the end of query-chains:
+
+```ruby
+# app/controllers/some_controller.rb
+
+record.options(method: :put).partial_update(recommended: true)
+
+```
 
 You can also pass explicit request options to `partial_update`, by passing two explicit hashes:
 
@@ -2002,6 +2020,38 @@ end
 
 record = Record.new(ratings: { quality: 3 })
 record.ratings # [{ :name=>:quality, :value=>3 }]
+```
+
+Setting attributes with other names:
+
+```ruby
+# app/models/booking.rb
+
+class Booking < LHS::Record
+
+  def appointments_attributes=(values)
+    self.appointments = values.map { |appointment| appointment[:id] }
+  end
+end
+```
+
+or 
+
+```ruby
+# app/models/booking.rb
+
+class Booking < LHS::Record
+
+  def appointments_attributes=(values)
+    self[:appointments] = values.map { |appointment| appointment[:id] }
+  end
+end
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+booking.update(params)
 ```
 
 #### Record getters
@@ -2537,17 +2587,21 @@ It will initialize a MemoryStore cache for LHC::Caching interceptor and resets t
 
 #### Stub
 
-LHS offers stub helpers that simplify stubbing https request to your apis.
+LHS offers stub helpers that simplify stubbing https request to your apis through your defined Records.
 
-##### Stub All
+##### stub_all
 
-`LHS.stub.all(url, items, additional_options)`
+`Record.stub_all(url, items, additional_options)`
 
 ```ruby
 # your_spec.rb
 
 before do
-  LHS.stub.all(
+  class Record < LHS::Record
+    endpoint 'https://records'
+  end
+
+  Record.stub_all(
     'https://records',
     200.times.map{ |index| { name: "Item #{index}" } },
     headers: {
@@ -2559,6 +2613,28 @@ end
 ```
 GET https://records?limit=100
 GET https://records?limit=100&offset=100
+```
+
+LHS also uses Record configuration when stubbing all.
+```ruby
+# your_spec.rb
+
+before do
+  class Record < LHS::Record
+    configuration limit_key: :per_page, pagination_strategy: :page, pagination_key: :page
+
+    endpoint 'https://records'
+  end
+
+  Record.stub_all(
+    'https://records',
+    200.times.map{ |index| { name: "Item #{index}" } }
+  )
+end
+```
+```
+GET https://records?per_page=100
+GET https://records?per_page=100&page=2
 ```
 
 ### Test query chains

@@ -41,7 +41,7 @@ class LHS::Item < LHS::Proxy
   protected
 
   def method_missing(name, *args, &_block)
-    return set(name, args.try(&:first)) if name.to_s[/=$/]
+    return set(name, args) if name.to_s[/=$/]
     get(name, *args)
   end
 

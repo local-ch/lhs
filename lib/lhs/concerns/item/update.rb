@@ -13,18 +13,15 @@ class LHS::Item < LHS::Proxy
       include EndpointLookup
     end
 
-    def update(params, options = nil)
-      update!(params, options)
+    def update(params, options = nil, partial_update = false)
+      update!(params, options, partial_update)
     rescue LHC::Error => e
       self.errors = LHS::Problems::Errors.new(e.response, record)
       false
     end
 
     def partial_update(params, options = nil)
-      update!(params, options, true)
-    rescue LHC::Error => e
-      self.errors = LHS::Problems::Errors.new(e.response, record)
-      false
+      update(params, options, true)
     end
 
     def partial_update!(params, options = nil)
