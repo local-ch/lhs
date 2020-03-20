@@ -2004,6 +2004,38 @@ record = Record.new(ratings: { quality: 3 })
 record.ratings # [{ :name=>:quality, :value=>3 }]
 ```
 
+Setting attributes with other names:
+
+```ruby
+# app/models/booking.rb
+
+class Booking < LHS::Record
+
+  def appointments_attributes=(values)
+    self.appointments = values.map { |appointment| appointment[:id] }
+  end
+end
+```
+
+or 
+
+```ruby
+# app/models/booking.rb
+
+class Booking < LHS::Record
+
+  def appointments_attributes=(values)
+    self[:appointments] = values.map { |appointment| appointment[:id] }
+  end
+end
+```
+
+```ruby
+# app/controllers/some_controller.rb
+
+booking.update(params)
+```
+
 #### Record getters
 
 If you implement accompanying getter methods, the whole data conversion would be internal only:
