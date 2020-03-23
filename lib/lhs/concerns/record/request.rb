@@ -176,7 +176,7 @@ class LHS::Record
         else
           handle_include(includes, data, nil, references[includes])
         end
-        data.clear_cache! # as we just included new nested resources
+        data.clear_cache! if data.present? # as we just included new nested resources
       end
 
       def handle_include(included, data, sub_includes = nil, reference = nil)
