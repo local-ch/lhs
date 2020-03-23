@@ -678,8 +678,8 @@ describe LHS::Record do
     end
 
     it 'skips includes when there is nothing and also does not raise an exception' do
-      expect(->{
-        Place.includes({ contracts: :product }).find(1)
+      expect(-> {
+        Place.includes(contracts: :product).find(1)
       }).not_to raise_exception
     end
   end
