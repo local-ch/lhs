@@ -43,7 +43,6 @@ RSpec.configure do |config|
   config.before do |spec|
     reset_lhc unless spec.metadata.key?(:reset_before) && spec.metadata[:reset_before] == false
     reset_lhs unless spec.metadata.key?(:reset_before) && spec.metadata[:reset_before] == false
-    next unless spec.metadata.key?(:dummy_models) && spec.metadata[:dummy_models] == true
     klasses = []
     Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file|
       next unless File.read(file).match('LHS::Record')
