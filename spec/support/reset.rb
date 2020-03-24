@@ -35,7 +35,6 @@ def reset_lhs
   LHS::Record::DESCENDANTS.each do |decendant|
     decendant.endpoints = [] if !decendant.name['LHS'] && defined?(decendant.endpoints)
     decendant.configuration({}) if !decendant.name['LHS']
-    # Object.send(:remove_const, decendant.name.deconstantize.to_sym) if Object.constants.include?(decendant.name.deconstantize.to_sym)
   end
 end
 
