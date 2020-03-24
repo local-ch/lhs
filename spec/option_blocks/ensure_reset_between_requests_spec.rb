@@ -13,7 +13,8 @@ describe 'Option Blocks', type: :request do
       .to_return(status: 200)
   end
 
-  it 'always ensures option blocks are always reset for new requests', dummy_models: true do
+  it 'always ensures option blocks are always reset for new requests',
+  dummy_models: true, reset_before: true do
     get '/option_blocks/first'
     expect(first_request).to have_been_made.once
     get '/option_blocks/second'

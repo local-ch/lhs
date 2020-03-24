@@ -27,10 +27,27 @@ module AutoloadRecords
           @app.call(env)
         end
 
-        def self.require_records
-          Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file|
-            require_dependency file if File.read(file).match('LHS::Record')
+        def self.model_files
+          Dir.glob(Rails.root.join('app', 'models', '**', '*.rb'))
+        end
+
+        def self.require_direct_inheritance
+          model_files.map do |file|
+            next unless File.read(file).match('LHS::Record')
+            require_dependency file
+            file.split('models/').last.gsub('.rb', '').classify
+          end.compact
+        end
+
+        def self.require_inheriting_records(parents)
+          model_files.each do |file|
+            next if parents.none? { |parent| File.read(file).match(parent) }
+            require_dependency file
           end
+        end
+
+        def self.require_records
+          require_inheriting_records(require_direct_inheritance)
         end
       end
     end

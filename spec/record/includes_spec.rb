@@ -664,6 +664,28 @@ describe LHS::Record do
       expect(nested_request).to have_been_requested
       expect(place.customer.salesforce.name).to eq 'Steve'
     end
+
+    context 'included data has a configured record endpoint option' do
+      before do
+        class SalesforceCustomer < LHS::Record
+          endpoint 'https://salesforce/customers/{id}', headers: { 'Authorization': 'Bearer 123' }
+        end
+      end
+
+      let!(:nested_request) do
+        stub_request(:get, "https://salesforce/customers/1")
+          .with(headers: { 'Authorization' => 'Bearer 123' })
+          .to_return(body: {
+            name: 'Steve'
+          }.to_json)
+      end
+
+      it 'includes data that has been nested in an additional structure' do
+        place = Place.includes(customer: :salesforce).find(1)
+        expect(nested_request).to have_been_requested
+        expect(place.customer.salesforce.name).to eq 'Steve'
+      end
+    end
   end
 
   context 'include empty structures' do
