@@ -12,10 +12,15 @@ end
 
 class LHS::Record
 
-  CHILDREN = []
+  DESCENDANTS = []
 
   def self.inherited(child)
-    CHILDREN.push(child)
+    DESCENDANTS.push(child)
+    child.singleton_class.class_eval do
+      define_method(:inherited) do |grand_child|
+        DESCENDANTS.push(grand_child)
+      end
+    end
     super
   end
 
@@ -27,9 +32,10 @@ end
 
 def reset_lhs
   LHS::Record::Endpoints.all = {}
-  LHS::Record::CHILDREN.each do |child|
-    child.endpoints = [] if !child.name['LHS'] && defined?(child.endpoints)
-    child.configuration({}) if !child.name['LHS']
+  LHS::Record::DESCENDANTS.each do |decendant|
+    decendant.endpoints = [] if !decendant.name['LHS'] && defined?(decendant.endpoints)
+    decendant.configuration({}) if !decendant.name['LHS']
+    # Object.send(:remove_const, decendant.name.deconstantize.to_sym) if Object.constants.include?(decendant.name.deconstantize.to_sym)
   end
 end
 
@@ -38,8 +44,15 @@ RSpec.configure do |config|
     reset_lhc unless spec.metadata.key?(:reset_before) && spec.metadata[:reset_before] == false
     reset_lhs unless spec.metadata.key?(:reset_before) && spec.metadata[:reset_before] == false
     next unless spec.metadata.key?(:dummy_models) && spec.metadata[:dummy_models] == true
+    klasses = []
     Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file|
-      load file if File.read(file).match('LHS::Record')
+      next unless File.read(file).match('LHS::Record')
+      load file
+      klasses << file.split('models/').last.gsub('.rb', '').classify
+    end
+    Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file|
+      next if klasses.none? { |klass| File.read(file).match(klass) }
+      load file
     end
   end
 end

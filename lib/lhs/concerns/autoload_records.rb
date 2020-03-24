@@ -41,7 +41,7 @@ module AutoloadRecords
           end
 
           Dir.glob(all_model_rb_files).each do |file|
-            next if klasses.none? {|klass|  File.read(file).match(klass)}
+            next if klasses.none? { |klass| File.read(file).match(klass) }
             require_dependency file
           end
         end

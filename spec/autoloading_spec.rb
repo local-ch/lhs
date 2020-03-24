@@ -6,17 +6,17 @@ describe LHS, type: :request do
   context 'autoloading' do
 
     let(:endpoints) { LHS::Record::Endpoints.all }
-    
+
     it "pre/re-loads all LHS classes initialy, because it's necessary for endpoint-to-record-class-discovery", reset_before: false do
-      
+
       expect(endpoints['http://datastore/v2/users']).to be_present
       expect(endpoints['http://datastore/v2/users/{id}']).to be_present
 
       expect(
-        User.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users' }
+        DummyUser.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users' }
       ).to be_present
       expect(
-        User.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users/{id}' }
+        DummyUser.endpoints.detect { |endpoint| endpoint.url == 'http://datastore/v2/users/{id}' }
       ).to be_present
     end
 
@@ -26,21 +26,21 @@ describe LHS, type: :request do
       expect(endpoints['http://customers/{id}']).to be_present
 
       expect(
-        Customer.endpoints.detect { |endpoint| endpoint.url == 'http://customers' }
+        DummyCustomer.endpoints.detect { |endpoint| endpoint.url == 'http://customers' }
       ).to be_present
       expect(
-        Customer.endpoints.detect { |endpoint| endpoint.url == 'http://customers/{id}' }
+        DummyCustomer.endpoints.detect { |endpoint| endpoint.url == 'http://customers/{id}' }
       ).to be_present
 
       customer_request = stub_request(:get, "http://customers/1")
         .with(
           headers: {
-            'Authorization'=>'token123'
+            'Authorization' => 'token123'
           }
         )
-        .to_return(body: { name: 'Steve'}.to_json)
+        .to_return(body: { name: 'Steve' }.to_json)
 
-      Customer.find(1)
+      DummyCustomer.find(1)
 
       expect(customer_request).to have_been_requested
     end
