@@ -27,9 +27,22 @@ module AutoloadRecords
           @app.call(env)
         end
 
+        def self.all_model_rb_files
+          Rails.root.join('app', 'models', '**', '*.rb')
+        end
+
         def self.require_records
-          Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file|
-            require_dependency file if File.read(file).match('LHS::Record')
+          klasses = []
+
+          Dir.glob(all_model_rb_files).each do |file|
+            next unless File.read(file).match('LHS::Record')
+            require_dependency file
+            klasses << file.split('models/').last.gsub('.rb', '').classify
+          end
+
+          Dir.glob(all_model_rb_files).each do |file|
+            next if klasses.none? {|klass|  File.read(file).match(klass)}
+            require_dependency file
           end
         end
       end
