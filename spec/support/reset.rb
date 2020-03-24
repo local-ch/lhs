@@ -39,20 +39,30 @@ def reset_lhs
   end
 end
 
+def model_files_to_reload
+  Dir.glob(Rails.root.join('app', 'models', '**', '*.rb'))
+end
+
+def reload_direct_inheritance
+  model_files_to_reload.map do |file|
+    next unless File.read(file).match('LHS::Record')
+    load file
+    file.split('models/').last.gsub('.rb', '').classify
+  end.compact
+end
+
+def reload_inheriting_records(parents)
+  model_files_to_reload.each do |file|
+    next if parents.none? { |parent| File.read(file).match(parent) }
+    load file
+  end
+end
+
 RSpec.configure do |config|
   config.before do |spec|
     reset_lhc unless spec.metadata.key?(:reset_before) && spec.metadata[:reset_before] == false
     reset_lhs unless spec.metadata.key?(:reset_before) && spec.metadata[:reset_before] == false
     next if !spec.metadata.key?(:dummy_models) || spec.metadata[:dummy_models] != true
-    klasses = []
-    Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file|
-      next unless File.read(file).match('LHS::Record')
-      load file
-      klasses << file.split('models/').last.gsub('.rb', '').classify
-    end
-    Dir.glob(Rails.root.join('app', 'models', '**', '*.rb')).each do |file|
-      next if klasses.none? { |klass| File.read(file).match(klass) }
-      load file
-    end
+    reload_inheriting_records(reload_direct_inheritance)
   end
 end
