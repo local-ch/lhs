@@ -246,7 +246,9 @@ class LHS::Record
       def skip_loading_includes?(data, included)
         if data.collection?
           data.to_a.none? { |item| item[included].present? }
-        elsif data[included].present? && data[included].item? && data[included].href.blank?
+        elsif data.dig(included).blank?
+          true
+        elsif data[included].item? && data[included][:href].blank?
           true
         else
           !data._raw.key?(included)

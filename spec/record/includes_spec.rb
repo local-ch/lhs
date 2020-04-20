@@ -705,4 +705,23 @@ describe LHS::Record do
       }).not_to raise_exception
     end
   end
+
+  context 'include partially empty structures' do
+    before do
+      class Place < LHS::Record
+        endpoint 'https://places/{id}'
+      end
+      stub_request(:get, "https://places/1")
+        .to_return(body: {
+          id: '123',
+          customer: {}
+        }.to_json)
+    end
+
+    it 'skips includes when there is nothing and also does not raise an exception' do
+      expect(-> {
+        Place.includes(customer: :salesforce).find(1)
+      }).not_to raise_exception
+    end
+  end
 end
