@@ -52,7 +52,7 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
 
     it 'makes sure it does not reuse tokens from previous request threads' do
       allow(LHS::Interceptors::AutoOauth::ThreadRegistry).to receive(:access_token=).and_call_original
-      expect(LHS::Interceptors::AutoOauth::ThreadRegistry).to receive(:access_token=).with nil
+      expect(LHS::Interceptors::AutoOauth::ThreadRegistry).to receive(:access_token=).with(nil).and_call_original
 
       get '/automatic_authentication/oauth', params: { access_token: token }
       expect(record_request).to have_been_requested
