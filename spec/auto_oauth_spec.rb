@@ -27,7 +27,7 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
       stub_request(:get, "http://datastore/v2/records_with_oauth?color=blue")
         .with(
           headers: { 'Authorization' => "Bearer #{ApplicationController::ACCESS_TOKEN}" }
-        ).to_return(status: 200, body: { items: [ { name: 'Record' } ] }.to_json)
+        ).to_return(status: 200, body: { items: [{ name: 'Record' }] }.to_json)
     end
 
     before do

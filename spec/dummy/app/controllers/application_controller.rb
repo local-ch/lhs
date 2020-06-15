@@ -2,7 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include LHS::OAuth
-  ACCESS_TOKEN = 'token-12345'.freeze
+  ACCESS_TOKEN = 'token-12345'
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
