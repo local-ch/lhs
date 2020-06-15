@@ -16,20 +16,18 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
   end
 
   context 'with LHC::Auth interceptor enabled' do
-    let(:token) { 'token-12345' }
-
     let(:record_request) do
       stub_request(:get, "http://datastore/v2/records_with_oauth/1")
         .with(
-          headers: { 'Authorization' => "Bearer #{token}" }
+          headers: { 'Authorization' => "Bearer #{ApplicationController::ACCESS_TOKEN}" }
         ).to_return(status: 200, body: { name: 'Record' }.to_json)
     end
 
     let(:records_request) do
       stub_request(:get, "http://datastore/v2/records_with_oauth?color=blue")
         .with(
-          headers: { 'Authorization' => "Bearer #{token}" }
-        ).to_return(status: 200, body: { items: [{ name: 'Record' }] }.to_json)
+          headers: { 'Authorization' => "Bearer #{ApplicationController::ACCESS_TOKEN}" }
+        ).to_return(status: 200, body: { items: [ { name: 'Record' } ] }.to_json)
     end
 
     before do
@@ -45,7 +43,7 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
     end
 
     it 'applies OAuth credentials for the individual request automatically' do
-      get '/automatic_authentication/oauth', params: { access_token: token }
+      get '/automatic_authentication/oauth'
       expect(record_request).to have_been_requested
       expect(records_request).to have_been_requested
     end
