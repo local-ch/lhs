@@ -522,19 +522,23 @@ class LHS::Record
       end
 
       def inject_interceptors!(options)
-        inject_interceptor!(
-          options,
-          LHS::Interceptors::RequestCycleCache::Interceptor,
-          LHC::Caching,
-          "[WARNING] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/README.md#caching-interceptor)!"
-        ) if LHS.config.request_cycle_cache_enabled
+        if LHS.config.request_cycle_cache_enabled
+          inject_interceptor!(
+            options,
+            LHS::Interceptors::RequestCycleCache::Interceptor,
+            LHC::Caching,
+            "[WARNING] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/README.md#caching-interceptor)!"
+          )
+        end
 
-        inject_interceptor!(
-          options,
-          LHS::Interceptors::AutoOauth::Interceptor,
-          LHC::Auth, 
-          "[WARNING] Can't enable auto oauth as LHC::Auth interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/README.md#authentication-interceptor)!"
-        ) if self.auto_oauth?
+        if auto_oauth?
+          inject_interceptor!(
+            options,
+            LHS::Interceptors::AutoOauth::Interceptor,
+            LHC::Auth,
+            "[WARNING] Can't enable auto oauth as LHC::Auth interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/README.md#authentication-interceptor)!"
+          )
+        end
       end
 
       def inject_interceptor!(options, interceptor, dependecy, warning)

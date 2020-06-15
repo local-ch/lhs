@@ -29,7 +29,7 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
       stub_request(:get, "http://datastore/v2/records_with_oauth?color=blue")
         .with(
           headers: { 'Authorization' => "Bearer #{token}" }
-        ).to_return(status: 200, body: { items: [ { name: 'Record' } ] }.to_json)
+        ).to_return(status: 200, body: { items: [{ name: 'Record' }] }.to_json)
     end
 
     before do
@@ -53,7 +53,7 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
     it 'makes sure it does not reuse tokens from previous request threads' do
       allow(LHS::Interceptors::AutoOauth::ThreadRegistry).to receive(:access_token=).and_call_original
       expect(LHS::Interceptors::AutoOauth::ThreadRegistry).to receive(:access_token=).with nil
-      
+
       get '/automatic_authentication/oauth', params: { access_token: token }
       expect(record_request).to have_been_requested
       expect(records_request).to have_been_requested
