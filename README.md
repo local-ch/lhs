@@ -2482,6 +2482,16 @@ class ApplicationController < ActionController::Base
 end
 ```
 
+4. Make sure you have the `LHC::Auth` interceptor enabled:
+
+```ruby
+# config/initializers/lhc.rb
+
+LHC.configure do |config|
+  config.interceptors = [LHC::Auth]
+end
+```
+
 Now you can perform requests based on the record that will be auto authenticated from now on:
 
 ```ruby

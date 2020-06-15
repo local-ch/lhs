@@ -4,8 +4,8 @@ class AutomaticAuthenticationController < ApplicationController
 
   def o_auth
     render json: {
-      record: DummyRecordWithOauth.find(1),
-      records: DummyRecordWithOauth.where(color: blue)
+      record: DummyRecordWithOauth.find(1).as_json,
+      records: DummyRecordWithOauth.where(color: 'blue').as_json
     }
   end
 end

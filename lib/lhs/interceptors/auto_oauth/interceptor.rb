@@ -10,8 +10,7 @@ module LHS
       class Interceptor < LHC::Interceptor
 
         def before_request
-          return unless LHS.config.auto_oauth
-          binding.pry
+          request.options[:auth] = { bearer: LHS::Interceptors::AutoOauth::ThreadRegistry.access_token }
         end
       end
     end
