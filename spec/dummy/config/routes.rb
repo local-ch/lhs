@@ -3,6 +3,10 @@
 Rails.application.routes.draw do
   root 'application#root'
 
+  # Automatic Authentication
+  get 'automatic_authentication/oauth' => 'automatic_authentication#o_auth'
+  get 'automatic_authentication/oauth_with_multiple_providers' => 'automatic_authentication#o_auth_with_multiple_providers'
+
   # Request Cycle Cache
   get 'request_cycle_cache/simple' => 'request_cycle_cache#simple'
   get 'request_cycle_cache/no_caching_interceptor' => 'request_cycle_cache#no_caching_interceptor'

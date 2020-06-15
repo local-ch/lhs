@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'lhc/test/cache_helper.rb'
+require 'lhc/rspec'
 
 describe 'Error handling with chains', type: :request do
   let!(:request) do

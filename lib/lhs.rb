@@ -22,6 +22,12 @@ module LHS
   autoload :Inspect,
     'lhs/concerns/inspect'
   module Interceptors
+    module AutoOauth
+      autoload :ThreadRegistry,
+        'lhs/interceptors/auto_oauth/thread_registry'
+      autoload :Interceptor,
+        'lhs/interceptors/auto_oauth/interceptor'
+    end
     module RequestCycleCache
       autoload :ThreadRegistry,
         'lhs/interceptors/request_cycle_cache/thread_registry'
@@ -41,6 +47,8 @@ module LHS
     'lhs/concerns/is_href'
   autoload :Item,
     'lhs/item'
+  autoload :OAuth,
+    'lhs/concerns/o_auth.rb'
   autoload :OptionBlocks,
     'lhs/concerns/option_blocks'
   autoload :Pagination,

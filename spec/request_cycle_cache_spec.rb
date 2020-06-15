@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'lhc/test/cache_helper.rb'
+require 'lhc/rspec'
 
 describe 'Request Cycle Cache', type: :request do
   let!(:request) do
@@ -37,7 +37,7 @@ describe 'Request Cycle Cache', type: :request do
     expect(lambda do
       get '/request_cycle_cache/no_caching_interceptor'
     end).to output(
-      %r{\[WARNING\] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
+      %r{\[WARNING\] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/README.md#caching-interceptor\)!}
     ).to_stderr
     expect(request).to have_been_made.times(2)
   end
@@ -70,7 +70,7 @@ describe 'Request Cycle Cache', type: :request do
       expect(lambda do
         get '/request_cycle_cache/no_caching_interceptor'
       end).not_to output(
-        %r{\[WARNING\] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor\)!}
+        %r{\[WARNING\] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured \(see https://github.com/local-ch/lhc/blob/master/README.md#caching-interceptor\)!}
       ).to_stderr
       expect(request).to have_been_made.times(2)
     end

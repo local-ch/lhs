@@ -5,7 +5,7 @@ require 'singleton'
 class LHS::Config
   include Singleton
 
-  attr_accessor :request_cycle_cache_enabled, :request_cycle_cache, :trace
+  attr_accessor :request_cycle_cache_enabled, :request_cycle_cache, :trace, :auto_oauth
 
   def initialize
     self.request_cycle_cache_enabled ||= true

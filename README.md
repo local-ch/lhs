@@ -39,113 +39,116 @@ record.review # "Lunch was great
 
 ## Table of contents
    * [LHS](#lhs)
-      * [Quickstart](#quickstart)
-      * [Table of contents](#table-of-contents)
-      * [Installation/Startup checklist](#installationstartup-checklist)
-      * [Record](#record)
-         * [Endpoints](#endpoints)
-            * [Configure endpoint hosts](#configure-endpoint-hosts)
-            * [Endpoint Priorities](#endpoint-priorities)
-         * [Provider](#provider)
-         * [Record inheritance](#record-inheritance)
-         * [Find multiple records](#find-multiple-records)
-            * [fetch](#fetch)
-            * [where](#where)
-            * [Reuse/Dry where statements: Use scopes](#reusedry-where-statements-use-scopes)
-            * [all](#all)
-            * [all with unpaginated endpoints](#all-with-unpaginated-endpoints)
-            * [Retrieve the amount of a collection of items: count vs. length](#retrieve-the-amount-of-a-collection-of-items-count-vs-length)
-         * [Find single records](#find-single-records)
-            * [find](#find)
-            * [find_by](#find_by)
-            * [first](#first)
-            * [last](#last)
-         * [Work with retrieved data](#work-with-retrieved-data)
-            * [Automatic detection/conversion of collections](#automatic-detectionconversion-of-collections)
-            * [Map complex data for easy access](#map-complex-data-for-easy-access)
-            * [Access and identify nested records](#access-and-identify-nested-records)
-               * [Relations / Associations](#relations--associations)
-                  * [has_many](#has_many)
-                  * [has_one](#has_one)
-            * [Unwrap nested items from the response body](#unwrap-nested-items-from-the-response-body)
-            * [Determine collections from the response body](#determine-collections-from-the-response-body)
-            * [Load additional data based on retrieved data](#load-additional-data-based-on-retrieved-data)
-         * [Chain complex queries](#chain-complex-queries)
-            * [Chain where queries](#chain-where-queries)
-            * [Expand plain collections of links: expanded](#expand-plain-collections-of-links-expanded)
-            * [Error handling with chains](#error-handling-with-chains)
-            * [Resolve chains: fetch](#resolve-chains-fetch)
-            * [Add request options to a query chain: options](#add-request-options-to-a-query-chain-options)
-            * [Control pagination within a query chain](#control-pagination-within-a-query-chain)
-         * [Record pagination](#record-pagination)
-            * [Pagination strategy](#pagination-strategy)
-               * [Pagination strategy: offset (default)](#pagination-strategy-offset-default)
-               * [Pagination strategy: page](#pagination-strategy-page)
-               * [Pagination strategy: start](#pagination-strategy-start)
-               * [Pagination strategy: link](#pagination-strategy-link)
-            * [Pagination keys](#pagination-keys)
-               * [limit_key](#limit_key)
-               * [pagination_key](#pagination_key)
-               * [total_key](#total_key)
-            * [Pagination links](#pagination-links)
-               * [next?](#next)
-               * [previous?](#previous)
-            * [Kaminari support (limited)](#kaminari-support-limited)
-         * [Build, create and update records](#build-create-and-update-records)
-            * [Create new records](#create-new-records)
-               * [create](#create)
-                  * [Unwrap nested data when creation response nests created record data](#unwrap-nested-data-when-creation-response-nests-created-record-data)
-                  * [Create records through associations: Nested sub resources](#create-records-through-associations-nested-sub-resources)
-            * [Start building new records](#start-building-new-records)
-            * [Change/Update existing records](#changeupdate-existing-records)
-               * [save](#save)
-               * [update](#update)
-               * [partial_update](#partial_update)
-            * [Endpoint url parameter injection during record creation/change](#endpoint-url-parameter-injection-during-record-creationchange)
-            * [Record validation](#record-validation)
-               * [Configure record validations](#configure-record-validations)
-               * [HTTP Status Codes for validation errors](#http-status-codes-for-validation-errors)
-               * [Reset validation errors](#reset-validation-errors)
-               * [Add validation errors](#add-validation-errors)
-               * [Validation errors for nested data](#validation-errors-for-nested-data)
-               * [Translation of validation errors](#translation-of-validation-errors)
-               * [Validation error types: errors vs. warnings](#validation-error-types-errors-vs-warnings)
-                  * [Persistance failed: errors](#persistance-failed-errors)
-                  * [Persistance succeeded: warnings](#persistance-succeeded-warnings)
-               * [Using ActiveModel::Validations none the less](#using-activemodelvalidations-none-the-less)
-            * [Use form_helper to create and update records](#use-form_helper-to-create-and-update-records)
-         * [Destroy records](#destroy-records)
-         * [Record getters and setters](#record-getters-and-setters)
-            * [Record setters](#record-setters)
-            * [Record getters](#record-getters)
-         * [Include linked resources (hyperlinks and hypermedia)](#include-linked-resources-hyperlinks-and-hypermedia)
-            * [Generate links from parameters](#generate-links-from-parameters)
-            * [Ensure the whole linked collection is included: includes_all](#ensure-the-whole-linked-collection-is-included-includes_all)
-            * [Include the first linked page or single item is included: include](#include-the-first-linked-page-or-single-item-is-included-include)
-            * [Include various levels of linked data](#include-various-levels-of-linked-data)
-            * [Identify and cast known records when including records](#identify-and-cast-known-records-when-including-records)
-            * [Apply options for requests performed to fetch included records](#apply-options-for-requests-performed-to-fetch-included-records)
-         * [Record batch processing](#record-batch-processing)
-            * [all](#all-1)
-               * [Using all, when endpoint does not implement response pagination meta data](#using-all-when-endpoint-does-not-implement-response-pagination-meta-data)
-            * [find_each](#find_each)
-            * [find_in_batches](#find_in_batches)
-         * [Convert/Cast specific record types: becomes](#convertcast-specific-record-types-becomes)
-         * [Assign attributes](#assign-attributes)
-      * [Request Cycle Cache](#request-cycle-cache)
-         * [Change store for LHS' request cycle cache](#change-store-for-lhs-request-cycle-cache)
-         * [Disable request cycle cache](#disable-request-cycle-cache)
-      * [Option Blocks](#option-blocks)
-      * [Request tracing](#request-tracing)
-      * [Extended Rollbar Logging](#extended-rollbar-logging)
-      * [Testing with LHS](#testing-with-lhs)
-         * [Test helper](#test-helper)
-            * [Stub](#stub)
-               * [Stub All](#stub-all)
-         * [Test query chains](#test-query-chains)
-            * [By explicitly resolving the chain: fetch](#by-explicitly-resolving-the-chain-fetch)
-            * [Without resolving the chain: where_values_hash](#without-resolving-the-chain-where_values_hash)
-      * [License](#license)
+  * [Quickstart](#quickstart)
+  * [Installation/Startup checklist](#installationstartup-checklist)
+  * [Record](#record)
+     * [Endpoints](#endpoints)
+        * [Configure endpoint hosts](#configure-endpoint-hosts)
+        * [Endpoint Priorities](#endpoint-priorities)
+     * [Provider](#provider)
+     * [Record inheritance](#record-inheritance)
+     * [Find multiple records](#find-multiple-records)
+        * [fetch](#fetch)
+        * [where](#where)
+        * [Reuse/Dry where statements: Use scopes](#reusedry-where-statements-use-scopes)
+        * [all](#all)
+        * [all with unpaginated endpoints](#all-with-unpaginated-endpoints)
+        * [Retrieve the amount of a collection of items: count vs. length](#retrieve-the-amount-of-a-collection-of-items-count-vs-length)
+     * [Find single records](#find-single-records)
+        * [find](#find)
+        * [find_by](#find_by)
+        * [first](#first)
+        * [last](#last)
+     * [Work with retrieved data](#work-with-retrieved-data)
+        * [Automatic detection/conversion of collections](#automatic-detectionconversion-of-collections)
+        * [Map complex data for easy access](#map-complex-data-for-easy-access)
+        * [Access and identify nested records](#access-and-identify-nested-records)
+           * [Relations / Associations](#relations--associations)
+              * [has_many](#has_many)
+              * [has_one](#has_one)
+        * [Unwrap nested items from the response body](#unwrap-nested-items-from-the-response-body)
+        * [Determine collections from the response body](#determine-collections-from-the-response-body)
+        * [Load additional data based on retrieved data](#load-additional-data-based-on-retrieved-data)
+     * [Chain complex queries](#chain-complex-queries)
+        * [Chain where queries](#chain-where-queries)
+        * [Expand plain collections of links: expanded](#expand-plain-collections-of-links-expanded)
+        * [Error handling with chains](#error-handling-with-chains)
+        * [Resolve chains: fetch](#resolve-chains-fetch)
+        * [Add request options to a query chain: options](#add-request-options-to-a-query-chain-options)
+        * [Control pagination within a query chain](#control-pagination-within-a-query-chain)
+     * [Record pagination](#record-pagination)
+        * [Pagination strategy](#pagination-strategy)
+           * [Pagination strategy: offset (default)](#pagination-strategy-offset-default)
+           * [Pagination strategy: page](#pagination-strategy-page)
+           * [Pagination strategy: start](#pagination-strategy-start)
+           * [Pagination strategy: link](#pagination-strategy-link)
+        * [Pagination keys](#pagination-keys)
+           * [limit_key](#limit_key)
+           * [pagination_key](#pagination_key)
+           * [total_key](#total_key)
+        * [Pagination links](#pagination-links)
+           * [next?](#next)
+           * [previous?](#previous)
+        * [Kaminari support (limited)](#kaminari-support-limited)
+     * [Build, create and update records](#build-create-and-update-records)
+        * [Create new records](#create-new-records)
+           * [create](#create)
+              * [Unwrap nested data when creation response nests created record data](#unwrap-nested-data-when-creation-response-nests-created-record-data)
+              * [Create records through associations: Nested sub resources](#create-records-through-associations-nested-sub-resources)
+        * [Start building new records](#start-building-new-records)
+        * [Change/Update existing records](#changeupdate-existing-records)
+           * [save](#save)
+           * [update](#update)
+           * [partial_update](#partial_update)
+        * [Endpoint url parameter injection during record creation/change](#endpoint-url-parameter-injection-during-record-creationchange)
+        * [Record validation](#record-validation)
+           * [Configure record validations](#configure-record-validations)
+           * [HTTP Status Codes for validation errors](#http-status-codes-for-validation-errors)
+           * [Reset validation errors](#reset-validation-errors)
+           * [Add validation errors](#add-validation-errors)
+           * [Validation errors for nested data](#validation-errors-for-nested-data)
+           * [Translation of validation errors](#translation-of-validation-errors)
+           * [Validation error types: errors vs. warnings](#validation-error-types-errors-vs-warnings)
+              * [Persistance failed: errors](#persistance-failed-errors)
+              * [Persistance succeeded: warnings](#persistance-succeeded-warnings)
+           * [Using ActiveModel::Validations none the less](#using-activemodelvalidations-none-the-less)
+        * [Use form_helper to create and update records](#use-form_helper-to-create-and-update-records)
+     * [Destroy records](#destroy-records)
+     * [Record getters and setters](#record-getters-and-setters)
+        * [Record setters](#record-setters)
+        * [Record getters](#record-getters)
+     * [Include linked resources (hyperlinks and hypermedia)](#include-linked-resources-hyperlinks-and-hypermedia)
+        * [Generate links from parameters](#generate-links-from-parameters)
+        * [Ensure the whole linked collection is included: includes_all](#ensure-the-whole-linked-collection-is-included-includes_all)
+        * [Include the first linked page or single item is included: include](#include-the-first-linked-page-or-single-item-is-included-include)
+        * [Include various levels of linked data](#include-various-levels-of-linked-data)
+        * [Identify and cast known records when including records](#identify-and-cast-known-records-when-including-records)
+        * [Apply options for requests performed to fetch included records](#apply-options-for-requests-performed-to-fetch-included-records)
+     * [Record batch processing](#record-batch-processing)
+        * [all](#all-1)
+           * [Using all, when endpoint does not implement response pagination meta data](#using-all-when-endpoint-does-not-implement-response-pagination-meta-data)
+        * [find_each](#find_each)
+        * [find_in_batches](#find_in_batches)
+     * [Convert/Cast specific record types: becomes](#convertcast-specific-record-types-becomes)
+     * [Assign attributes](#assign-attributes)
+  * [Request Cycle Cache](#request-cycle-cache)
+     * [Change store for LHS' request cycle cache](#change-store-for-lhs-request-cycle-cache)
+     * [Disable request cycle cache](#disable-request-cycle-cache)
+  * [Automatic Authentication (OAuth)](#automatic-authentication-oauth)
+     * [Configure multiple auth providers (even per endpoint)](#configure-multiple-auth-providers-even-per-endpoint)
+  * [Option Blocks](#option-blocks)
+  * [Request tracing](#request-tracing)
+  * [Extended Rollbar Logging](#extended-rollbar-logging)
+  * [Testing with LHS](#testing-with-lhs)
+     * [Test helper](#test-helper)
+        * [Stub](#stub)
+           * [stub_all](#stub_all)
+     * [Test query chains](#test-query-chains)
+        * [By explicitly resolving the chain: fetch](#by-explicitly-resolving-the-chain-fetch)
+        * [Without resolving the chain: where_values_hash](#without-resolving-the-chain-where_values_hash)
+  * [License](#license)
+
+
 
 ## Installation/Startup checklist
 
@@ -2441,6 +2444,104 @@ If you want to disable the LHS Request Cycle Cache, simply disable it within con
 
 LHS.configure do |config|
   config.request_cycle_cache_enabled = false
+end
+```
+
+## Automatic Authentication (OAuth)
+
+LHS provides a way to have records automatically fetch and use OAuth authentication when performing requests within Rails.
+
+In order to enable automatic oauth authentication, perform the following steps:
+
+1. Make sure LHS is configured to perform `auto_oauth`. Provide a block that, when executed in the controller context, returns a valid access_token/bearer_token.
+```ruby
+# config/initializers/lhs.rb
+
+LHS.configure do |config|
+  config.auto_oauth = -> { access_token }
+end
+```
+
+2. Opt-in records requiring oauth authentication:
+
+```ruby
+# app/models/record.rb
+
+class Record < LHS::Record
+  oauth
+  # ...
+end
+```
+
+3. Include the `LHS::OAuth` context into your application controller:
+
+```ruby
+# app/controllers/application_controller.rb
+
+class ApplicationController < ActionController::Base
+  include LHS::OAuth
+
+  # ...
+end
+```
+
+4. Make sure you have the `LHC::Auth` interceptor enabled:
+
+```ruby
+# config/initializers/lhc.rb
+
+LHC.configure do |config|
+  config.interceptors = [LHC::Auth]
+end
+```
+
+Now you can perform requests based on the record that will be auto authenticated from now on:
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.find(1)
+```
+```
+https://records/1
+Authentication: 'Bearer token-12345'
+```
+
+### Configure multiple auth providers (even per endpoint)
+
+In case you need to configure multiple auth provider access_tokens within your application,
+make sure you provide a proc returning a hash when configuring `auto_oauth`, 
+naming every single provider and the responsive method to retrieve the access_tokens in the controller context:
+
+```ruby
+# config/initializers/lhs.rb
+LHS.configure do |config|
+  config.auto_oauth = proc do
+    {
+      provider1: access_token_provider_1,
+      provider2: access_token_provider_2
+    }
+  end
+end
+```
+
+Then make sure you either define which provider to use on a record level:
+
+```ruby
+# model/record.rb
+class Record < LHS::Record
+  oauth(:provider1)
+  #...
+end
+```
+
+or on an endpoint level:
+
+```ruby
+# model/record.rb
+class Record < LHS::Record
+  endpoint 'https://service/records', oauth: :provider1
+  #...
 end
 ```
 

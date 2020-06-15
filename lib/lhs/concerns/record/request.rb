@@ -517,20 +517,39 @@ class LHS::Record
         options[:url] = compute_url!(options[:params]) unless options.key?(:url)
         merge_explicit_params!(options[:params])
         options.delete(:params) if options[:params]&.empty?
-        inject_request_cycle_cache!(options)
+        inject_interceptors!(options)
         options
       end
 
-      # Injects options into request, that enable the request cycle cache interceptor
-      def inject_request_cycle_cache!(options)
-        return unless LHS.config.request_cycle_cache_enabled
+      def inject_interceptors!(options)
+        if LHS.config.request_cycle_cache_enabled
+          inject_interceptor!(
+            options,
+            LHS::Interceptors::RequestCycleCache::Interceptor,
+            LHC::Caching,
+            "[WARNING] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/README.md#caching-interceptor)!"
+          )
+        end
+
+        endpoint = find_endpoint(options[:params], options.fetch(:url, nil))
+        if auto_oauth? || (endpoint.options&.dig(:oauth) && LHS.config.auto_oauth)
+          inject_interceptor!(
+            options.merge!(record: self),
+            LHS::Interceptors::AutoOauth::Interceptor,
+            LHC::Auth,
+            "[WARNING] Can't enable auto oauth as LHC::Auth interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/README.md#authentication-interceptor)!"
+          )
+        end
+      end
+
+      def inject_interceptor!(options, interceptor, dependecy, warning)
         interceptors = options[:interceptors] || LHC.config.interceptors
-        if interceptors.include?(LHC::Caching)
+        if interceptors.include?(dependecy)
           # Ensure interceptor is prepend
-          interceptors = interceptors.unshift(LHS::Interceptors::RequestCycleCache::Interceptor)
+          interceptors = interceptors.unshift(interceptor)
           options[:interceptors] = interceptors
         else
-          warn("[WARNING] Can't enable request cycle cache as LHC::Caching interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/docs/interceptors/caching.md#caching-interceptor)!")
+          warn(warning)
         end
       end
 
