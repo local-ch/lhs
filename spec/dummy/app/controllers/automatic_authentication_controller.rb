@@ -15,7 +15,7 @@ class AutomaticAuthenticationController < ApplicationController
       records: DummyRecordWithMultipleOauthProviders2.where(color: 'blue').as_json,
       per_endpoint: {
         record: DummyRecordWithMultipleOauthProvidersPerEndpoint.find(1).as_json,
-        records: DummyRecordWithMultipleOauthProvidersPerEndpoint.where(color: 'blue').as_json,
+        records: DummyRecordWithMultipleOauthProvidersPerEndpoint.where(color: 'blue').as_json
       }
     }
   end

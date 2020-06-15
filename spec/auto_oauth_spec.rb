@@ -6,7 +6,7 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
 
   context 'without LHC::Auth interceptor enabled' do
 
-    before do 
+    before do
       LHS.configure do |config|
         config.auto_oauth = -> { access_token }
       end
@@ -26,12 +26,6 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
     context 'with only one auth provider' do
 
       let(:token) { ApplicationController::ACCESS_TOKEN }
-      
-      before do 
-        LHS.configure do |config|
-          config.auto_oauth = -> { access_token }
-        end
-      end
 
       let(:record_request) do
         stub_request(:get, "http://datastore/v2/records_with_oauth/1")
@@ -48,6 +42,9 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
       end
 
       before do
+        LHS.configure do |config|
+          config.auto_oauth = -> { access_token }
+        end
         LHC.configure do |config|
           config.interceptors = [LHC::Auth]
         end
@@ -67,14 +64,23 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
     end
 
     context 'with multiple auth providers' do
-      
-      before do 
+
+      before do
         LHS.configure do |config|
-          config.auto_oauth = -> {{
-            provider1: access_token_provider_1,
-            provider2: access_token_provider_2
-          }}
+          config.auto_oauth = proc do
+            {
+              provider1: access_token_provider_1,
+              provider2: access_token_provider_2
+            }
+          end
         end
+        LHC.configure do |config|
+          config.interceptors = [LHC::Auth]
+        end
+        record_request_provider_1
+        records_request_provider_2
+        records_request_per_endpoint_provider_1
+        record_request_per_endpoint_provider_2
       end
 
       let(:token) { ApplicationController::ACCESS_TOKEN }
@@ -93,7 +99,6 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
           ).to_return(status: 200, body: { items: [{ name: 'Record' }] }.to_json)
       end
 
-
       let(:records_request_per_endpoint_provider_1) do
         stub_request(:get, "http://datastore/v2/records_with_multiple_oauth_providers_per_endpoint?color=blue")
           .with(
@@ -106,17 +111,6 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
           .with(
             headers: { 'Authorization' => "Bearer #{token}_provider_2" }
           ).to_return(status: 200, body: { name: 'Record' }.to_json)
-      end
-
-
-      before do
-        LHC.configure do |config|
-          config.interceptors = [LHC::Auth]
-        end
-        record_request_provider_1
-        records_request_provider_2
-        records_request_per_endpoint_provider_1
-        record_request_per_endpoint_provider_2
       end
 
       after do

@@ -2514,10 +2514,12 @@ naming every single provider and the responsive method to retrieve the access_to
 ```ruby
 # config/initializers/lhs.rb
 LHS.configure do |config|
-  config.auto_oauth = -> {{
-    provider1: access_token_provider_1,
-    provider2: access_token_provider_2
-  }}
+  config.auto_oauth = proc do
+    {
+      provider1: access_token_provider_1,
+      provider2: access_token_provider_2
+    }
+  end
 end
 ```
 
