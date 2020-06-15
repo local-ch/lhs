@@ -135,6 +135,7 @@ record.review # "Lunch was great
      * [Change store for LHS' request cycle cache](#change-store-for-lhs-request-cycle-cache)
      * [Disable request cycle cache](#disable-request-cycle-cache)
   * [Automatic Authentication (OAuth)](#automatic-authentication-oauth)
+     * [Configure providers](#configure-providers)
      * [Configure multiple auth providers (even per endpoint)](#configure-multiple-auth-providers-even-per-endpoint)
   * [Option Blocks](#option-blocks)
   * [Request tracing](#request-tracing)
@@ -147,6 +148,7 @@ record.review # "Lunch was great
         * [By explicitly resolving the chain: fetch](#by-explicitly-resolving-the-chain-fetch)
         * [Without resolving the chain: where_values_hash](#without-resolving-the-chain-where_values_hash)
   * [License](#license)
+
 
 
 
@@ -2505,6 +2507,22 @@ Record.find(1)
 ```
 https://records/1
 Authentication: 'Bearer token-12345'
+```
+
+### Configure providers
+
+If you're using LHS service providers, you can also configure auto auth on a provider level:
+
+```ruby
+# app/models/providers/localsearch.rb
+module Providers
+  class Localsearch < LHS::Record
+    
+    provider(
+      auto_oauth: true
+    )
+  end
+end
 ```
 
 ### Configure multiple auth providers (even per endpoint)

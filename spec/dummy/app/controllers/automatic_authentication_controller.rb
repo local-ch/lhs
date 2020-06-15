@@ -19,4 +19,11 @@ class AutomaticAuthenticationController < ApplicationController
       }
     }
   end
+
+  def o_auth_with_provider
+    render json: {
+      record: DummyRecordWithAutoOauthProvider.find(1).as_json,
+      records: DummyRecordWithAutoOauthProvider.where(color: 'blue').as_json
+    }
+  end
 end

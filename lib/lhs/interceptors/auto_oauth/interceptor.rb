@@ -21,6 +21,7 @@ module LHS
           if tokens.is_a?(Hash)
             tokens.dig(
               request.options[:oauth] ||
+              request.options[:auto_oauth] ||
               request.options[:record]&.auto_oauth
             )
           else
