@@ -16,17 +16,34 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
   end
 
   context 'with LHC::Auth interceptor enabled' do
+    let(:token) { 'token-12345' }
+    let(:alternative_token) { 'alternative_token-6789' }
+
     let(:record_request) do
       stub_request(:get, "http://datastore/v2/records_with_oauth/1")
         .with(
-          headers: { 'Authorization' => "Bearer #{ApplicationController::ACCESS_TOKEN}" }
+          headers: { 'Authorization' => "Bearer #{token}" }
         ).to_return(status: 200, body: { name: 'Record' }.to_json)
     end
 
     let(:records_request) do
       stub_request(:get, "http://datastore/v2/records_with_oauth?color=blue")
         .with(
-          headers: { 'Authorization' => "Bearer #{ApplicationController::ACCESS_TOKEN}" }
+          headers: { 'Authorization' => "Bearer #{token}" }
+        ).to_return(status: 200, body: { items: [ { name: 'Record' } ] }.to_json)
+    end
+
+    let(:record_request_with_alternative_token) do
+      stub_request(:get, "http://datastore/v2/records_with_oauth/1")
+        .with(
+          headers: { 'Authorization' => "Bearer #{alternative_token}" }
+        ).to_return(status: 200, body: { name: 'Record' }.to_json)
+    end
+
+    let(:records_request_with_alternative_token) do
+      stub_request(:get, "http://datastore/v2/records_with_oauth?color=blue")
+        .with(
+          headers: { 'Authorization' => "Bearer #{alternative_token}" }
         ).to_return(status: 200, body: { items: [ { name: 'Record' } ] }.to_json)
     end
 
@@ -43,9 +60,23 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
     end
 
     it 'applies OAuth credentials for the individual request automatically' do
-      get '/automatic_authentication/oauth'
+      get '/automatic_authentication/oauth', params: { access_token: token }
       expect(record_request).to have_been_requested
       expect(records_request).to have_been_requested
+    end
+
+    it 'makes sure it does not reuse tokens from previous request threads' do
+      get '/automatic_authentication/oauth', params: { access_token: token }
+      expect(record_request).to have_been_requested
+      expect(records_request).to have_been_requested
+
+      record_request_with_alternative_token
+      records_request_with_alternative_token
+      allow(LHS::Interceptors::AutoOauth::ThreadRegistry).to receive(:access_token=).and_call_original
+      expect(LHS::Interceptors::AutoOauth::ThreadRegistry).to receive(:access_token=).with nil
+      get '/automatic_authentication/oauth', params: { access_token: alternative_token }
+      expect(record_request_with_alternative_token).to have_been_requested
+      expect(records_request_with_alternative_token).to have_been_requested
     end
   end
 end
