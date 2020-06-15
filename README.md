@@ -2444,6 +2444,56 @@ LHS.configure do |config|
 end
 ```
 
+## Automatic Authentication (OAuth)
+
+LHS provides a way to have records automatically fetch and use OAuth authentication when performing requests within Rails.
+
+In order to enable automatic oauth authentication, perform the following steps:
+
+1. Make sure LHS is configured to perform `auto_oauth`. Provide a block that when executed in the controller context returns a valid access_token/bearer_token.
+```ruby
+# config/initializers/lhs.rb
+
+LHS.configure do |config|
+  config.auto_oauth = -> { access_token }
+end
+```
+
+2. Opt-in records requiring oauth authentication:
+
+```ruby
+# app/models/record.rb
+
+class Record < LHS::Record
+  oauth
+  # ...
+end
+```
+
+3. Include the `LHS::OAuth` context into your application controller:
+
+```ruby
+# app/controllers/application_controller.rb
+
+class ApplicationController < ActionController::Base
+  include LHS::OAuth
+
+  # ...
+end
+```
+
+Now you can perform requests based on the record that will be auto authenticated from now on:
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.find(1)
+```
+```
+https://records/1
+Authentication: 'Bearer token-12345'
+```
+
 ## Option Blocks
 
 In order to apply options to all requests performed in a give block, LHS provides option blocks.

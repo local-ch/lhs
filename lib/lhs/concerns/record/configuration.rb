@@ -13,7 +13,15 @@ class LHS::Record
 
     module ClassMethods
       def configuration(args)
-        @configuration = args.freeze || {}
+        @configuration = args || {}
+      end
+
+      def auto_oauth?
+        LHS.config.auto_oauth && @configuration && @configuration.fetch(:auto_oauth, false)
+      end
+
+      def oauth
+        @configuration.present? ? @configuration.merge!(auto_oauth: true) : configuration(auto_oauth: true)
       end
 
       def item_key
