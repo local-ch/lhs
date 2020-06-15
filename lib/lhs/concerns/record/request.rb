@@ -532,7 +532,7 @@ class LHS::Record
         end
 
         endpoint = find_endpoint(options[:params], options.fetch(:url, nil))
-        if auto_oauth? || (endpoint.options&.dig(:oauth) && LHS.config.auto_oauth) || options[:auto_oauth]
+        if auto_oauth? || (endpoint.options&.dig(:oauth) && LHS.config.auto_oauth) || options[:oauth]
           inject_interceptor!(
             options.merge!(record: self),
             LHS::Interceptors::AutoOauth::Interceptor,

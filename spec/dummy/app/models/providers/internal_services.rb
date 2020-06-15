@@ -2,6 +2,6 @@
 
 module Providers
   class InternalServices < LHS::Record
-    provider(auto_oauth: true)
+    provider(oauth: true)
   end
 end
