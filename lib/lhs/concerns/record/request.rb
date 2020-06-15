@@ -531,9 +531,10 @@ class LHS::Record
           )
         end
 
-        if auto_oauth?
+        endpoint = find_endpoint(options[:params], options.fetch(:url, nil))
+        if auto_oauth? || (endpoint.options && endpoint.options.dig(:oauth) && LHS.config.auto_oauth)
           inject_interceptor!(
-            options,
+            options.merge!(record: self),
             LHS::Interceptors::AutoOauth::Interceptor,
             LHC::Auth,
             "[WARNING] Can't enable auto oauth as LHC::Auth interceptor is not enabled/configured (see https://github.com/local-ch/lhc/blob/master/README.md#authentication-interceptor)!"

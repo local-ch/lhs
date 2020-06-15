@@ -15,4 +15,12 @@ class ApplicationController < ActionController::Base
   def access_token
     ACCESS_TOKEN
   end
+
+  def access_token_provider_1
+    "#{ACCESS_TOKEN}_provider_1"
+  end
+
+  def access_token_provider_2
+    "#{ACCESS_TOKEN}_provider_2"
+  end
 end

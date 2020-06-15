@@ -2505,6 +2505,42 @@ https://records/1
 Authentication: 'Bearer token-12345'
 ```
 
+### Configure multiple auth providers (even per endpoint)
+
+In case you need to configure multiple auth provider access_tokens within your application,
+make sure you provide a proc returning a hash when configuring `auto_oauth`, 
+naming every single provider and the responsive method to retrieve the access_tokens in the controller context:
+
+```ruby
+# config/initializers/lhs.rb
+LHS.configure do |config|
+  config.auto_oauth = -> {{
+    provider1: access_token_provider_1,
+    provider2: access_token_provider_2
+  }}
+end
+```
+
+Then make sure you either define which provider to use on a record level:
+
+```ruby
+# model/record.rb
+class Record < LHS::Record
+  oauth(:provider1)
+  #...
+end
+```
+
+or on an endpoint level:
+
+```ruby
+# model/record.rb
+class Record < LHS::Record
+  endpoint 'https://service/records', oauth: :provider1
+  #...
+end
+```
+
 ## Option Blocks
 
 In order to apply options to all requests performed in a give block, LHS provides option blocks.

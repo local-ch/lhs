@@ -17,11 +17,16 @@ class LHS::Record
       end
 
       def auto_oauth?
-        LHS.config.auto_oauth && @configuration && @configuration.fetch(:auto_oauth, false)
+        LHS.config.auto_oauth && @configuration && auto_oauth
       end
 
-      def oauth
-        @configuration.present? ? @configuration.merge!(auto_oauth: true) : configuration(auto_oauth: true)
+      def auto_oauth
+        @configuration.fetch(:auto_oauth, false)
+      end
+
+      def oauth(provider = nil)
+        value = provider || true
+        @configuration.present? ? @configuration.merge!(auto_oauth: value) : configuration(auto_oauth: value)
       end
 
       def item_key
