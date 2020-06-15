@@ -2450,7 +2450,7 @@ LHS provides a way to have records automatically fetch and use OAuth authenticat
 
 In order to enable automatic oauth authentication, perform the following steps:
 
-1. Make sure LHS is configured to perform `auto_oauth`. Provide a block that when executed in the controller context returns a valid access_token/bearer_token.
+1. Make sure LHS is configured to perform `auto_oauth`. Provide a block that, when executed in the controller context, returns a valid access_token/bearer_token.
 ```ruby
 # config/initializers/lhs.rb
 
