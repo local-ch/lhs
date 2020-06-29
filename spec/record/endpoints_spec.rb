@@ -88,7 +88,7 @@ describe LHS::Record do
         stub_request(:get, "#{datastore}/products/LBC")
           .to_return(body: { name: 'Local Business Card' }.to_json)
         expect(lambda {
-          Contract.includes(:product).where(entry_id: '123').all.first
+          Contract.includes_first_page(:product).where(entry_id: '123').all.first
         }).not_to raise_error # Multiple base endpoints found
       end
     end

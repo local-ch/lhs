@@ -92,7 +92,7 @@ describe LHS::Record do
         .to_return(body: place_hash.to_json)
       place = Place
         .options(auth: { bearer: 'XYZ' })
-        .includes_all(:available_assets)
+        .includes(:available_assets)
         .find(place_id)
       expect(place.available_assets.first).to be_a(AvailableAsset)
     end
@@ -102,7 +102,7 @@ describe LHS::Record do
         .to_return(body: place_hash.to_json)
       place = Place
         .options(auth: { bearer: 'XYZ' })
-        .includes_all(:available_assets)
+        .includes(:available_assets)
         .where(id: place_id)
       expect(place.available_assets.first).to be_a(AvailableAsset)
     end
@@ -112,7 +112,7 @@ describe LHS::Record do
         .to_return(body: place_hash.to_json)
       place = Place
         .options(auth: { bearer: 'XYZ' })
-        .includes_all(:available_assets)
+        .includes(:available_assets)
         .find_by(id: place_id)
       expect(place.available_assets.first).to be_a(AvailableAsset)
     end

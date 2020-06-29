@@ -108,7 +108,7 @@ describe LHS::Record do
     end
 
     it 'explicit association configuration overrules href class casting' do
-      place = Place.includes(:category).find(1)
+      place = Place.includes_first_page(:category).find(1)
       expect(place.category).to be_kind_of NewCategory
       expect(place.category.name).to eq('Pizza')
     end

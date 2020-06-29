@@ -75,7 +75,7 @@ describe LHS::Record do
         status: 200, body: { 'href' => preceding_agb_url }.to_json, headers: {}
       )
 
-      agb = Agb.includes(:preceding_agb).first!
+      agb = Agb.includes_first_page(:preceding_agb).first!
       expect(agb.pdf_url).to be == 'de'
     end
 
@@ -94,7 +94,7 @@ describe LHS::Record do
       stub_request(:get, "#{datastore}/favorites/1")
         .to_return(body: { local_entry: { href: "#{datastore}/local-entries/1" } }.to_json)
 
-      favorite = Favorite.includes(:local_entry).find(1)
+      favorite = Favorite.includes_first_page(:local_entry).find(1)
       expect(favorite.local_entry).to be_kind_of LocalEntry
       expect(favorite.local_entry.name).to eq 'local.ch'
     end

@@ -56,7 +56,7 @@ describe LHS::Item do
           .to_return(status: 200, body: data.to_json)
         stub_request(:get, "#{datastore}/v2/restaurants/1")
           .to_return(status: 200, body: { name: 'Casa Ferlin' }.to_json)
-        item = Record.includes(:restaurant).find(1)
+        item = Record.includes_first_page(:restaurant).find(1)
         item.destroy
       end
     end
