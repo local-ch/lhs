@@ -3,413 +3,319 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  let(:datastore) { 'http://local.ch/v2' }
-  before { LHC.config.placeholder('datastore', datastore) }
-
-  let(:stub_campaign_request) do
-    stub_request(:get, "#{datastore}/content-ads/51dfc5690cf271c375c5a12d")
-      .to_return(body: {
-        'href' => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d",
-        'entry' => { 'href' => "#{datastore}/local-entries/lakj35asdflkj1203va" },
-        'user' => { 'href' => "#{datastore}/users/lakj35asdflkj1203va" }
-      }.to_json)
-  end
-
-  let(:stub_entry_request) do
-    stub_request(:get, "#{datastore}/local-entries/lakj35asdflkj1203va")
-      .to_return(body: { 'name' => 'Casa Ferlin' }.to_json)
-  end
-
-  let(:stub_user_request) do
-    stub_request(:get, "#{datastore}/users/lakj35asdflkj1203va")
-      .to_return(body: { 'name' => 'Mario' }.to_json)
-  end
-
-  context 'singlelevel includes' do
-    before do
-      class LocalEntry < LHS::Record
-        endpoint '{+datastore}/local-entries'
-        endpoint '{+datastore}/local-entries/{id}'
-      end
-      class User < LHS::Record
-        endpoint '{+datastore}/users'
-        endpoint '{+datastore}/users/{id}'
-      end
-      class Favorite < LHS::Record
-        endpoint '{+datastore}/favorites'
-        endpoint '{+datastore}/favorites/{id}'
-      end
-      stub_request(:get, "#{datastore}/local-entries/1")
-        .to_return(body: { company_name: 'local.ch' }.to_json)
-      stub_request(:get, "#{datastore}/users/1")
-        .to_return(body: { name: 'Mario' }.to_json)
-      stub_request(:get, "#{datastore}/favorites/1")
-        .to_return(body: {
-          local_entry: { href: "#{datastore}/local-entries/1" },
-          user: { href: "#{datastore}/users/1" }
-        }.to_json)
-    end
-
-    it 'includes a resource' do
-      favorite = Favorite.includes(:local_entry).find(1)
-      expect(favorite.local_entry.company_name).to eq 'local.ch'
-    end
-
-    it 'duplicates a class' do
-      expect(Favorite.object_id).not_to eq(Favorite.includes(:local_entry).object_id)
-    end
-
-    it 'includes a list of resources' do
-      favorite = Favorite.includes(:local_entry, :user).find(1)
-      expect(favorite.local_entry).to be_kind_of LocalEntry
-      expect(favorite.local_entry.company_name).to eq 'local.ch'
-      expect(favorite.user.name).to eq 'Mario'
-    end
-
-    it 'includes an array of resources' do
-      favorite = Favorite.includes([:local_entry, :user]).find(1)
-      expect(favorite.local_entry.company_name).to eq 'local.ch'
-      expect(favorite.user.name).to eq 'Mario'
-    end
-  end
-
-  context 'multilevel includes' do
-    before do
-      class Feedback < LHS::Record
-        endpoint '{+datastore}/feedbacks'
-        endpoint '{+datastore}/feedbacks/{id}'
-      end
-      stub_campaign_request
-      stub_entry_request
-      stub_user_request
-    end
-
-    it 'includes linked resources while fetching multiple resources from one service' do
-      stub_request(:get, "#{datastore}/feedbacks?has_reviews=true")
-        .to_return(status: 200, body: {
-          items: [
-            {
-              'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
-              'campaign' => { 'href' => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d" }
-            }
-          ]
-        }.to_json)
-
-      feedbacks = Feedback.includes(campaign: :entry).where(has_reviews: true)
-      expect(feedbacks.first.campaign.entry.name).to eq 'Casa Ferlin'
-    end
-
-    it 'includes linked resources while fetching a single resource from one service' do
-      stub_request(:get, "#{datastore}/feedbacks/123")
-        .to_return(status: 200, body: {
-          'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
-          'campaign' => { 'href' => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d" }
-        }.to_json)
-
-      feedbacks = Feedback.includes(campaign: :entry).find(123)
-      expect(feedbacks.campaign.entry.name).to eq 'Casa Ferlin'
-    end
-
-    it 'includes linked resources with array while fetching a single resource from one service' do
-      stub_request(:get, "#{datastore}/feedbacks/123")
-        .to_return(status: 200, body: {
-          'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
-          'campaign' => { 'href' => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d" }
-        }.to_json)
-
-      feedbacks = Feedback.includes(campaign: [:entry, :user]).find(123)
-      expect(feedbacks.campaign.entry.name).to eq 'Casa Ferlin'
-      expect(feedbacks.campaign.user.name).to eq 'Mario'
-    end
-
-    it 'includes list of linked resources while fetching a single resource from one service' do
-      stub_request(:get, "#{datastore}/feedbacks/123")
-        .to_return(status: 200, body: {
-          'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
-          'campaign' => { 'href' => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d" },
-          'user' => { 'href' => "#{datastore}/users/lakj35asdflkj1203va" }
-        }.to_json)
-
-      feedbacks = Feedback.includes(:user, campaign: [:entry, :user]).find(123)
-      expect(feedbacks.campaign.entry.name).to eq 'Casa Ferlin'
-      expect(feedbacks.campaign.user.name).to eq 'Mario'
-      expect(feedbacks.user.name).to eq 'Mario'
-    end
-
-    context 'include objects from known services' do
-      let(:stub_feedback_request) do
-        stub_request(:get, "#{datastore}/feedbacks")
-          .to_return(status: 200, body: {
-            items: [
-              {
-                'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
-                'entry' => {
-                  'href' => "#{datastore}/local-entries/lakj35asdflkj1203va"
-                }
-              }
-            ]
-          }.to_json)
-      end
-
-      let(:interceptor) { spy('interceptor') }
-
-      before do
-        class Entry < LHS::Record
-          endpoint '{+datastore}/local-entries/{id}'
-        end
-        LHC.config.interceptors = [interceptor]
-      end
-
-      it 'uses interceptors for included links from known services' do
-        stub_feedback_request
-        stub_entry_request
-        expect(Feedback.includes(:entry).where.first.entry.name).to eq 'Casa Ferlin'
-        expect(interceptor).to have_received(:before_request).twice
-      end
-    end
-
-    context 'includes not present in response' do
-      before do
-        class Parent < LHS::Record
-          endpoint '{+datastore}/local-parents'
-          endpoint '{+datastore}/local-parents/{id}'
-        end
-
-        class OptionalChild < LHS::Record
-          endpoint '{+datastore}/local-children/{id}'
-        end
-      end
-
-      it 'handles missing but included fields in single object response' do
-        stub_request(:get, "#{datastore}/local-parents/1")
-          .to_return(status: 200, body: {
-            'href' => "#{datastore}/local-parents/1",
-            'name' => 'RspecName'
-          }.to_json)
-
-        parent = Parent.includes(:optional_children).find(1)
-        expect(parent).not_to be nil
-        expect(parent.name).to eq 'RspecName'
-        expect(parent.optional_children).to be nil
-      end
-
-      it 'handles missing but included fields in collection response' do
-        stub_request(:get, "#{datastore}/local-parents")
-          .to_return(status: 200, body: {
-            items: [
-              {
-                'href' => "#{datastore}/local-parents/1",
-                'name' => 'RspecParent'
-              }, {
-                'href'           => "#{datastore}/local-parents/2",
-                'name'           => 'RspecParent2',
-                'optional_child' => {
-                  'href' => "#{datastore}/local-children/1"
-                }
-              }
-            ]
-          }.to_json)
-
-        stub_request(:get, "#{datastore}/local-children/1")
-          .to_return(status: 200, body: {
-            href: "#{datastore}/local_children/1",
-            name: 'RspecOptionalChild1'
-          }.to_json)
-
-        child = Parent.includes(:optional_child).where[1].optional_child
-        expect(child).not_to be nil
-        expect(child.name).to eq 'RspecOptionalChild1'
-      end
-    end
-  end
-
-  context 'links pointing to nowhere' do
-    it 'sets nil for links that cannot be included' do
-      class Feedback < LHS::Record
-        endpoint '{+datastore}/feedbacks'
-        endpoint '{+datastore}/feedbacks/{id}'
-      end
-
-      stub_request(:get, "#{datastore}/feedbacks/123")
-        .to_return(status: 200, body: {
-          'href' => "#{datastore}/feedbacks/-Sc4_pYNpqfsudzhtivfkA",
-          'campaign' => { 'href' => "#{datastore}/content-ads/51dfc5690cf271c375c5a12d" }
-        }.to_json)
-
-      stub_request(:get, "#{datastore}/content-ads/51dfc5690cf271c375c5a12d")
-        .to_return(status: 404)
-
-      feedback = Feedback.includes(campaign: :entry).find(123)
-      expect(feedback.campaign._raw.keys.count).to eq 1
-      expect(feedback.campaign.href).to be_present
-    end
-  end
-
-  context 'modules' do
-    before do
-      module Services
-        class LocalEntry < LHS::Record
-          endpoint '{+datastore}/local-entries'
-        end
-
-        class Feedback < LHS::Record
-          endpoint '{+datastore}/feedbacks'
-        end
-      end
-      stub_request(:get, "http://local.ch/v2/feedbacks?id=123")
-        .to_return(body: [].to_json)
-    end
-
-    it 'works with modules' do
-      Services::Feedback.includes(campaign: :entry).find(123)
-    end
-  end
-
-  context 'arrays' do
-    before do
-      class Place < LHS::Record
-        endpoint '{+datastore}/place'
-        endpoint '{+datastore}/place/{id}'
-      end
-    end
-
-    let!(:place_request) do
-      stub_request(:get, "#{datastore}/place/1")
-        .to_return(body: {
-          'relations' => [
-            { 'href' => "#{datastore}/place/relations/2" },
-            { 'href' => "#{datastore}/place/relations/3" }
-          ]
-        }.to_json)
-    end
-
-    let!(:relation_request_1) do
-      stub_request(:get, "#{datastore}/place/relations/2")
-        .to_return(body: { name: 'Category' }.to_json)
-    end
-
-    let!(:relation_request_2) do
-      stub_request(:get, "#{datastore}/place/relations/3")
-        .to_return(body: { name: 'ZeFrank' }.to_json)
-    end
-
-    it 'includes items of arrays' do
-      place = Place.includes(:relations).find(1)
-      expect(place.relations.first.name).to eq 'Category'
-      expect(place.relations[1].name).to eq 'ZeFrank'
-    end
-
-    context 'parallel with empty links' do
-      let!(:place_request_2) do
-        stub_request(:get, "#{datastore}/place/2")
-          .to_return(body: {
-            'relations' => []
-          }.to_json)
-      end
-
-      it 'loads places in parallel and merges included data properly' do
-        place = Place.includes(:relations).find(2, 1)
-        expect(place[0].relations.empty?).to be true
-        expect(place[1].relations[0].name).to eq 'Category'
-        expect(place[1].relations[1].name).to eq 'ZeFrank'
-      end
-    end
-  end
-
-  context 'empty collections' do
-    it 'skips including empty collections' do
-      class Place < LHS::Record
-        endpoint '{+datastore}/place'
-        endpoint '{+datastore}/place/{id}'
-      end
-
-      stub_request(:get, "#{datastore}/place/1")
-        .to_return(body: {
-          'available_products' => {
-            "url" => "#{datastore}/place/1/products",
-            "items" => []
-          }
-        }.to_json)
-
-      place = Place.includes(:available_products).find(1)
-      expect(place.available_products.empty?).to eq true
-    end
-  end
-
-  context 'extend items with arrays' do
-    it 'extends base items with arrays' do
-      class Place < LHS::Record
-        endpoint '{+datastore}/place'
-        endpoint '{+datastore}/place/{id}'
-      end
-
-      stub_request(:get, "#{datastore}/place/1")
-        .to_return(body: {
-          'contracts' => {
-            'items' => [{ 'href' => "#{datastore}/place/1/contacts/1" }]
-          }
-        }.to_json)
-
-      stub_request(:get, "#{datastore}/place/1/contacts/1")
-        .to_return(body: {
-          'products' => { 'href' => "#{datastore}/place/1/contacts/1/products" }
-        }.to_json)
-
-      place = Place.includes(:contracts).find(1)
-      expect(place.contracts.first.products.href).to eq "#{datastore}/place/1/contacts/1/products"
-    end
-  end
-
-  context 'unexpanded response when requesting the included collection' do
+  context 'includes all' do
     before do
       class Customer < LHS::Record
-        endpoint '{+datastore}/customer/{id}'
+        endpoint 'http://datastore/customers/{id}'
+      end
+
+      class User < LHS::Record
+        configuration pagination_strategy: 'link'
+        endpoint 'http://datastore/users'
       end
     end
 
+    let(:amount_of_contracts) { 33 }
+    let(:amount_of_products) { 22 }
+    let(:amount_of_users_1st_page) { 10 }
+    let(:amount_of_users_2nd_page) { 3 }
+    let(:amount_of_users) { amount_of_users_1st_page + amount_of_users_2nd_page }
+
     let!(:customer_request) do
-      stub_request(:get, "#{datastore}/customer/1")
-        .to_return(body: {
-          places: {
-            href: "#{datastore}/places"
-          }
-        }.to_json)
+      stub_request(:get, 'http://datastore/customers/1')
+        .to_return(
+          body: {
+            contracts: { href: 'http://datastore/customers/1/contracts' },
+            users: { href: 'http://datastore/users?limit=10' }
+          }.to_json
+        )
     end
 
-    let!(:places_request) do
-      stub_request(:get, "#{datastore}/places")
-        .to_return(body: {
-          items: [{ href: "#{datastore}/places/1" }]
-        }.to_json)
+    #
+    # Contracts
+    #
+
+    let!(:contracts_request) do
+      stub_request(:get, "http://datastore/customers/1/contracts?limit=100")
+        .to_return(
+          body: {
+            items: 10.times.map do
+              {
+                products: { href: 'http://datastore/products' }
+              }
+            end,
+            limit: 10,
+            offset: 0,
+            total: amount_of_contracts
+          }.to_json
+        )
     end
 
-    let!(:place_request) do
-      stub_request(:get, "#{datastore}/places/1")
-        .to_return(body: {
-          name: 'Casa Ferlin'
-        }.to_json)
+    def additional_contracts_request(offset, amount)
+      stub_request(:get, "http://datastore/customers/1/contracts?limit=10&offset=#{offset}")
+        .to_return(
+          body: {
+            items: amount.times.map do
+              {
+                products: { href: 'http://datastore/products' }
+              }
+            end,
+            limit: 10,
+            offset: offset,
+            total: amount_of_contracts
+          }.to_json
+        )
     end
 
-    it 'loads the collection and the single items, if not already expanded' do
-      place = Customer.includes(:places).find(1).places.first
-      assert_requested(place_request)
-      expect(place.name).to eq 'Casa Ferlin'
+    let!(:contracts_request_page_2) do
+      additional_contracts_request(10, 10)
     end
 
-    context 'forwarding options' do
-      let!(:places_request) do
-        stub_request(:get, "#{datastore}/places")
-          .with(headers: { 'Authorization' => 'Bearer 123' })
+    let!(:contracts_request_page_3) do
+      additional_contracts_request(20, 10)
+    end
+
+    let!(:contracts_request_page_4) do
+      additional_contracts_request(30, 3)
+    end
+
+    #
+    # Products
+    #
+
+    let!(:products_request) do
+      stub_request(:get, "http://datastore/products?limit=100")
+        .to_return(
+          body: {
+            items: 10.times.map do
+              { name: 'LBC' }
+            end,
+            limit: 10,
+            offset: 0,
+            total: amount_of_products
+          }.to_json
+        )
+    end
+
+    def additional_products_request(offset, amount)
+      stub_request(:get, "http://datastore/products?limit=10&offset=#{offset}")
+        .to_return(
+          body: {
+            items: amount.times.map do
+              { name: 'LBC' }
+            end,
+            limit: 10,
+            offset: offset,
+            total: amount_of_products
+          }.to_json
+        )
+    end
+
+    let!(:products_request_page_2) do
+      additional_products_request(10, 10)
+    end
+
+    let!(:products_request_page_3) do
+      additional_products_request(20, 2)
+    end
+
+    #
+    # Users
+    #
+
+    let!(:users_request) do
+      stub_request(:get, 'http://datastore/users?limit=10')
+        .to_return(
+          body: {
+            items: amount_of_users_1st_page.times.map do
+              { name: 'Hans Muster' }
+            end,
+            limit: 10,
+            next: { href: 'http://datastore/users?for_user_id=10&limit=10' }
+          }.to_json
+        )
+    end
+
+    let!(:users_request_page_2) do
+      stub_request(:get, 'http://datastore/users?for_user_id=10&limit=10')
+        .to_return(
+          body: {
+            items: amount_of_users_2nd_page.times.map do
+              { name: 'Lisa Müller' }
+            end,
+            limit: 10,
+            next: { href: 'http://datastore/users?for_user_id=13&limit=10' }
+          }.to_json
+        )
+    end
+
+    let!(:users_request_page_3) do
+      stub_request(:get, 'http://datastore/users?for_user_id=13&limit=10')
+        .to_return(
+          body: {
+            items: [],
+            limit: 10
+          }.to_json
+        )
+    end
+
+    it 'includes all linked business objects no matter pagination' do
+      customer = nil
+
+      expect(lambda do
+        customer = Customer
+          .includes(:users, contracts: :products)
+          .find(1)
+      end).to output(
+        %r{\[WARNING\] You are loading all pages from a resource paginated with links only. As this is performed sequentially, it can result in very poor performance! \(https://github.com/local-ch/lhs#pagination-strategy-link\).}
+      ).to_stderr
+
+      expect(customer.users.length).to eq amount_of_users
+      expect(customer.contracts.length).to eq amount_of_contracts
+      expect(customer.contracts.first.products.length).to eq amount_of_products
+      expect(customer_request).to have_been_requested.at_least_once
+      expect(contracts_request).to have_been_requested.at_least_once
+      expect(contracts_request_page_2).to have_been_requested.at_least_once
+      expect(contracts_request_page_3).to have_been_requested.at_least_once
+      expect(contracts_request_page_4).to have_been_requested.at_least_once
+      expect(products_request).to have_been_requested.at_least_once
+      expect(products_request_page_2).to have_been_requested.at_least_once
+      expect(products_request_page_3).to have_been_requested.at_least_once
+      expect(users_request).to have_been_requested.at_least_once
+      expect(users_request_page_2).to have_been_requested.at_least_once
+      expect(users_request_page_3).to have_been_requested.at_least_once
+    end
+
+    context 'links already contain pagination parameters' do
+      let!(:customer_request) do
+        stub_request(:get, 'http://datastore/customers/1')
           .to_return(
             body: {
-              items: [{ href: "#{datastore}/places/1" }]
+              contracts: { href: 'http://datastore/customers/1/contracts?limit=5&offset=0' }
             }.to_json
           )
       end
 
-      let!(:place_request) do
-        stub_request(:get, "#{datastore}/places/1")
-          .with(headers: { 'Authorization' => 'Bearer 123' })
+      let!(:contracts_request) do
+        stub_request(:get, "http://datastore/customers/1/contracts?limit=100")
+          .to_return(
+            body: {
+              items: 10.times.map do
+                {
+                  products: { href: 'http://datastore/products' }
+                }
+              end,
+              limit: 10,
+              offset: 0,
+              total: amount_of_contracts
+            }.to_json
+          )
+      end
+
+      it 'overwrites existing pagination paramters if they are already contained in a string' do
+        expect(LHC).to receive(:request)
+          .with(url: "http://datastore/customers/1").and_call_original
+
+        expect(LHC).to receive(:request)
+          .with(url: "http://datastore/customers/1/contracts",
+                all: true,
+                params: { limit: 100 }).and_call_original
+
+        expect(LHC).to receive(:request)
+          .with([{ url: "http://datastore/customers/1/contracts",
+                   all: true,
+                   params: { limit: 10, offset: 10 } },
+                 { url: "http://datastore/customers/1/contracts",
+                   all: true,
+                   params: { limit: 10, offset: 20 } },
+                 { url: "http://datastore/customers/1/contracts",
+                   all: true,
+                   params: { limit: 10, offset: 30 } }]).and_call_original
+
+        customer = Customer
+          .includes(:contracts)
+          .find(1)
+        expect(customer.contracts.length).to eq amount_of_contracts
+      end
+    end
+
+    context 'includes for an empty array' do
+      before do
+        class Contract < LHS::Record
+          endpoint 'http://datastore/contracts/{id}'
+        end
+        stub_request(:get, %r{http://datastore/contracts/\d})
+          .to_return(body: {
+            options: nested_resources
+          }.to_json)
+      end
+
+      context 'empty array' do
+        let(:nested_resources) { [] }
+
+        it 'includes all in case of an empty array' do
+          expect(
+            -> { Contract.includes(:product).includes(:options).find(1) }
+          ).not_to raise_error
+          expect(
+            -> { Contract.includes(:product).includes(:options).find(1, 2) }
+          ).not_to raise_error
+        end
+      end
+
+      context 'weird array without hrefs' do
+        before do
+          stub_request(:get, "http://datastore/options/1?limit=100")
+            .to_return(body: { type: 'REACH_EXT' }.to_json)
+        end
+
+        let(:nested_resources) { [{ href: 'http://datastore/options/1' }, { type: 'E_COMMERCE' }] }
+
+        it 'includes in case of an unexpect objects within array' do
+          expect(
+            -> { Contract.includes(:product).includes(:options).find(1) }
+          ).not_to raise_error
+          expect(
+            -> { Contract.includes(:product).includes(:options).find(1, 2) }
+          ).not_to raise_error
+        end
+      end
+    end
+
+    context 'include a known/identifiable record' do
+      before do
+        class Contract < LHS::Record
+          endpoint 'http://datastore/contracts/{id}'
+        end
+
+        class Entry < LHS::Record
+          endpoint '{+datastore}/entry/v1/{id}.json'
+        end
+
+        LHC.config.placeholder(:datastore, 'http://datastore')
+      end
+
+      let!(:customer_request) do
+        stub_request(:get, %r{http://datastore/customers/\d+})
+          .to_return(
+            body: {
+              contracts: [{ href: 'http://datastore/contracts/1' }, { href: 'http://datastore/contracts/2' }]
+            }.to_json
+          )
+      end
+
+      let!(:contracts_request) do
+        stub_request(:get, %r{http://datastore/contracts/\d+})
+          .to_return(
+            body: {
+              type: 'contract',
+              entry: { href: 'http://datastore/entry/v1/1.json' }
+            }.to_json
+          )
+      end
+
+      let!(:entry_request) do
+        stub_request(:get, %r{http://datastore/entry/v1/\d+.json})
           .to_return(
             body: {
               name: 'Casa Ferlin'
@@ -417,311 +323,371 @@ describe LHS::Record do
           )
       end
 
-      it 'forwards options used to expand those unexpanded items' do
-        place = Customer
-          .includes(:places)
-          .references(places: { headers: { 'Authorization' => 'Bearer 123' } })
-          .find(1)
-          .places.first
-        assert_requested(place_request)
-        expect(place.name).to eq 'Casa Ferlin'
-      end
-    end
-  end
-
-  context 'includes with options' do
-    before do
-      class Customer < LHS::Record
-        endpoint '{+datastore}/customers/{id}'
-        endpoint '{+datastore}/customers'
-      end
-
-      class Place < LHS::Record
-        endpoint '{+datastore}/places'
-      end
-
-      stub_request(:get, "#{datastore}/places?forwarded_params=123")
-        .to_return(body: {
-          'items' => [{ id: 1 }]
-        }.to_json)
-    end
-
-    it 'forwards includes options to requests made for those includes' do
-      stub_request(:get, "#{datastore}/customers/1")
-        .to_return(body: {
-          'places' => {
-            'href' => "#{datastore}/places"
-          }
-        }.to_json)
-      customer = Customer
-        .includes(:places)
-        .references(places: { params: { forwarded_params: 123 } })
-        .find(1)
-      expect(customer.places.first.id).to eq 1
-    end
-
-    it 'is chain-able' do
-      stub_request(:get, "#{datastore}/customers?name=Steve")
-        .to_return(body: [
-          'places' => {
-            'href' => "#{datastore}/places"
-          }
-        ].to_json)
-      customers = Customer
-        .where(name: 'Steve')
-        .references(places: { params: { forwarded_params: 123 } })
-        .includes(:places)
-      expect(customers.first.places.first.id).to eq 1
-    end
-  end
-
-  context 'more complex examples' do
-    before do
-      class Place < LHS::Record
-        endpoint 'http://datastore/places/{id}'
+      it 'loads included identifiable records without raising exceptions' do
+        customer = Customer.includes(contracts: :entry).find(1, 2).first
+        expect(customer.contracts.first.href).to eq 'http://datastore/contracts/1'
+        expect(customer.contracts.first.type).to eq 'contract'
+        expect(customer.contracts.first.entry.name).to eq 'Casa Ferlin'
       end
     end
 
-    it 'forwards complex references' do
-      stub_request(:get, "http://datastore/places/123?limit=1&forwarded_params=for_place")
-        .to_return(body: {
-          'contracts' => {
-            'href' => "http://datastore/places/123/contracts"
-          }
-        }.to_json)
-      stub_request(:get, "http://datastore/places/123/contracts?forwarded_params=for_contracts")
-        .to_return(body: {
-          href: "http://datastore/places/123/contracts?forwarded_params=for_contracts",
-          items: [
-            { product: { 'href' => "http://datastore/products/llo" } }
-          ]
-        }.to_json)
-      stub_request(:get, "http://datastore/products/llo?forwarded_params=for_product")
-        .to_return(body: {
-          'href' => "http://datastore/products/llo",
-          'name' => 'Local Logo'
-        }.to_json)
-      place = Place
-        .options(params: { forwarded_params: 'for_place' })
-        .includes(contracts: :product)
-        .references(
-          contracts: {
-            params: { forwarded_params: 'for_contracts' },
-            product: { params: { forwarded_params: 'for_product' } }
-          }
-        )
-        .find_by(id: '123')
-      expect(
-        place.contracts.first.product.name
-      ).to eq 'Local Logo'
-    end
-
-    it 'expands empty arrays' do
-      stub_request(:get, "http://datastore/places/123")
-        .to_return(body: {
-          'contracts' => {
-            'href' => "http://datastore/places/123/contracts"
-          }
-        }.to_json)
-      stub_request(:get, "http://datastore/places/123/contracts")
-        .to_return(body: {
-          href: "http://datastore/places/123/contracts",
-          items: []
-        }.to_json)
-      place = Place.includes(:contracts).find('123')
-      expect(place.contracts.collection?).to eq true
-      expect(
-        place.contracts.as_json
-      ).to eq('href' => 'http://datastore/places/123/contracts', 'items' => [])
-      expect(place.contracts.to_a).to eq([])
-    end
-  end
-
-  context 'include and merge arrays when calling find in parallel' do
-    before do
-      class Place < LHS::Record
-        endpoint 'http://datastore/places/{id}'
-      end
-      stub_request(:get, 'http://datastore/places/1')
-        .to_return(body: {
-          category_relations: [{ href: 'http://datastore/category/1' }, { href: 'http://datastore/category/2' }]
-        }.to_json)
-      stub_request(:get, 'http://datastore/places/2')
-        .to_return(body: {
-          category_relations: [{ href: 'http://datastore/category/2' }, { href: 'http://datastore/category/1' }]
-        }.to_json)
-      stub_request(:get, "http://datastore/category/1").to_return(body: { name: 'Food' }.to_json)
-      stub_request(:get, "http://datastore/category/2").to_return(body: { name: 'Drinks' }.to_json)
-    end
-
-    it 'includes and merges linked resources in case of an array of links' do
-      places = Place
-        .includes(:category_relations)
-        .find(1, 2)
-      expect(places[0].category_relations[0].name).to eq 'Food'
-      expect(places[1].category_relations[0].name).to eq 'Drinks'
-    end
-  end
-
-  context 'single href with array response' do
-    it 'extends base items with arrays' do
-      class Sector < LHS::Record
-        endpoint '{+datastore}/sectors'
-        endpoint '{+datastore}/sectors/{id}'
-      end
-
-      stub_request(:get, "#{datastore}/sectors")
-        .with(query: hash_including(key: 'my_service'))
-        .to_return(body: [
-          {
-            href: "#{datastore}/sectors/1",
-            services: {
-              href: "#{datastore}/sectors/1/services"
-            },
-            keys: [
-              {
-                key: 'my_service',
-                language: 'de'
-              }
-            ]
-          }
-        ].to_json)
-
-      stub_request(:get, "#{datastore}/sectors/1/services")
-        .to_return(body: [
-          {
-            href: "#{datastore}/services/s1",
-            price_in_cents: 9900,
-            key: 'my_service_service_1'
-          },
-          {
-            href: "#{datastore}/services/s2",
-            price_in_cents: 19900,
-            key: 'my_service_service_2'
-          }
-        ].to_json)
-
-      sector = Sector.includes(:services).find_by(key: 'my_service')
-      expect(sector.services.length).to eq 2
-      expect(sector.services.first.key).to eq 'my_service_service_1'
-    end
-  end
-
-  context 'include for POST/create' do
-
-    before do
-      class Record < LHS::Record
-        endpoint 'https://records'
-      end
-      stub_request(:post, 'https://records/')
-        .with(body: { color: 'blue' }.to_json)
-        .to_return(
-          body: {
-            color: 'blue',
-            alternative_categories: [
-              { href: 'https://categories/blue' }
-            ]
-          }.to_json
-        )
-      stub_request(:get, 'https://categories/blue')
-        .to_return(
-          body: {
-            name: 'blue'
-          }.to_json
-        )
-    end
-
-    it 'includes the resources from the post response' do
-      records = Record.includes(:alternative_categories).create(color: 'blue')
-      expect(records.alternative_categories.first.name).to eq 'blue'
-    end
-  end
-
-  context 'nested within another structure' do
-    before do
-      class Place < LHS::Record
-        endpoint 'https://places/{id}'
-      end
-      stub_request(:get, "https://places/1")
-        .to_return(body: {
-          customer: {
-            salesforce: {
-              href: 'https://salesforce/customers/1'
-            }
-          }
-        }.to_json)
-    end
-
-    let!(:nested_request) do
-      stub_request(:get, "https://salesforce/customers/1")
-        .to_return(body: {
-          name: 'Steve'
-        }.to_json)
-    end
-
-    it 'includes data that has been nested in an additional structure' do
-      place = Place.includes(customer: :salesforce).find(1)
-      expect(nested_request).to have_been_requested
-      expect(place.customer.salesforce.name).to eq 'Steve'
-    end
-
-    context 'included data has a configured record endpoint option' do
+    context 'includes all for parallel loaded ids' do
       before do
-        class SalesforceCustomer < LHS::Record
-          endpoint 'https://salesforce/customers/{id}', headers: { 'Authorization': 'Bearer 123' }
+        class Place < LHS::Record
+          endpoint 'http://datastore/places/{id}'
         end
       end
 
-      let!(:nested_request) do
-        stub_request(:get, "https://salesforce/customers/1")
-          .with(headers: { 'Authorization' => 'Bearer 123' })
-          .to_return(body: {
-            name: 'Steve'
-          }.to_json)
+      let!(:place_request_1) do
+        stub_request(:get, %r{http://datastore/places/1})
+          .to_return(
+            body: {
+              category_relations: [
+                { href: 'http://datastore/category_relations/1' },
+                { href: 'http://datastore/category_relations/2' }
+              ]
+            }.to_json
+          )
       end
 
-      it 'includes data that has been nested in an additional structure' do
-        place = Place.includes(customer: :salesforce).find(1)
-        expect(nested_request).to have_been_requested
-        expect(place.customer.salesforce.name).to eq 'Steve'
+      let!(:place_request_2) do
+        stub_request(:get, %r{http://datastore/places/2})
+          .to_return(
+            body: {
+              category_relations: []
+            }.to_json
+          )
+      end
+
+      let!(:place_request_3) do
+        stub_request(:get, %r{http://datastore/places/3})
+          .to_return(
+            body: {
+              category_relations: [
+                { href: 'http://datastore/category_relations/1' },
+                { href: 'http://datastore/category_relations/3' }
+              ]
+            }.to_json
+          )
+      end
+
+      let!(:category_relation_request_1) do
+        stub_request(:get, %r{http://datastore/category_relations/1})
+          .to_return(
+            body: {
+              name: "Category 1"
+            }.to_json
+          )
+      end
+
+      let!(:category_relation_request_2) do
+        stub_request(:get, %r{http://datastore/category_relations/2})
+          .to_return(
+            body: {
+              name: "Category 2"
+            }.to_json
+          )
+      end
+
+      let!(:category_relation_request_3) do
+        stub_request(:get, %r{http://datastore/category_relations/3})
+          .to_return(
+            body: {
+              name: "Category 3"
+            }.to_json
+          )
+      end
+
+      let(:category_name) { 'Category Relation' }
+
+      it 'requests places in parallel and includes category relation' do
+        places = Place.includes(:category_relations).find(1, 2, 3)
+        expect(places[0].category_relations[0].name).to eq 'Category 1'
+        expect(places[0].category_relations[1].name).to eq 'Category 2'
+        expect(places[2].category_relations[0].name).to eq 'Category 1'
+        expect(places[2].category_relations[1].name).to eq 'Category 3'
       end
     end
   end
 
-  context 'include empty structures' do
+  context 'Linked resources' do
     before do
+      stub_request(:get, 'http://datastore/places/1/contracts?offset=0&limit=10')
+        .to_return(
+          body: {
+            href:  "http://datastore/v2/places/1/contracts?offset=0&limit=10",
+            items: [{ href: "http://datastore/v2/contracts/1" }],
+            offset: 0,
+            limit: 10,
+            total: 10
+          }.to_json
+        )
+
+      stub_request(:get, "http://datastore/v2/contracts/1")
+        .to_return(
+          body: {
+            customer: { name: 'Swisscom Directories AG' }
+          }.to_json
+        )
+
+      stub_request(:get, 'http://datastore/places/1?limit=1')
+        .to_return(
+          body: { href: 'http://datastore/places/1', contracts: { href: 'http://datastore/places/1/contracts?offset=0&limit=10' } }.to_json
+        )
+
       class Place < LHS::Record
-        endpoint 'https://places/{id}'
+        endpoint 'http://datastore/places/{id}'
       end
-      stub_request(:get, "https://places/1")
-        .to_return(body: {
-          id: '123'
-        }.to_json)
+
+      class Contract < LHS::Record
+        endpoint 'http://datastore/places/{place_id}/contracts'
+      end
     end
 
-    it 'skips includes when there is nothing and also does not raise an exception' do
-      expect(-> {
-        Place.includes(contracts: :product).find(1)
-      }).not_to raise_exception
+    it 'does not use the root record endpoints when including nested records' do
+      place = Place
+        .includes(:contracts)
+        .find_by(id: 1)
+      expect(place.contracts.first.customer.name).to eq 'Swisscom Directories AG'
     end
   end
 
-  context 'include partially empty structures' do
+  context 'nested includes all' do
+    context 'with optional children' do
+
+      let(:favorites_request_stub) do
+        stub_request(:get, %r{http://datastore/favorites})
+          .to_return(
+            body: {
+              items: [{
+                href: "http://datastore/favorites/1",
+                place: {
+                  href: "http://datastore/places/1"
+                }
+              }, {
+                href: "http://datastore/favorite/2",
+                place: {
+                  href: "http://datastore/places/2"
+                }
+              }, {
+                href: "http://datastore/favorite/3",
+                place: {
+                  href: "http://datastore/places/3"
+                }
+              }],
+              total: 3,
+              offset: 0,
+              limit: 100
+            }.to_json
+          )
+      end
+
+      let(:place1_request_stub) do
+        stub_request(:get, %r{http://datastore/places/1})
+          .to_return(
+            body: {
+              href: "http://datastore/places/1",
+              name: 'Place 1',
+              contracts: {
+                href: "http://datastore/places/1/contracts"
+              }
+            }.to_json
+          )
+      end
+
+      let(:place2_request_stub) do
+        stub_request(:get, %r{http://datastore/places/2})
+          .to_return(
+            body: {
+              href: "http://datastore/places/2",
+              name: 'Place 2'
+            }.to_json
+          )
+      end
+
+      let(:place3_request_stub) do
+        stub_request(:get, %r{http://datastore/places/3})
+          .to_return(
+            body: {
+              href: "http://datastore/places/3",
+              name: 'Place 3',
+              contracts: {
+                href: "http://datastore/places/3/contracts"
+              }
+            }.to_json
+          )
+      end
+
+      let(:contracts_request_for_place1_stub) do
+        stub_request(:get, %r{http://datastore/places/1/contracts})
+          .to_return(
+            body: {
+              items: [{
+                href: "http://datastore/places/1/contracts/1",
+                name: 'Contract 1'
+              }],
+              total: 1,
+              offset: 0,
+              limit: 10
+            }.to_json
+          )
+      end
+
+      let(:contracts_request_for_place3_stub) do
+        stub_request(:get, %r{http://datastore/places/3/contracts})
+          .to_return(
+            body: {
+              items: [{
+                href: "http://datastore/places/3/contracts/1",
+                name: 'Contract 3'
+              }],
+              total: 1,
+              offset: 0,
+              limit: 10
+            }.to_json
+          )
+      end
+
+      before do
+        class Favorite < LHS::Record
+          endpoint 'http://datastore/favorites'
+        end
+
+        class Place < LHS::Record
+          endpoint 'http://datastore/places/{id}'
+        end
+
+        class Contract < LHS::Record
+          endpoint 'http://datastore/places/{place_id}/contracts'
+        end
+
+        favorites_request_stub
+        place1_request_stub
+        place2_request_stub
+        place3_request_stub
+        contracts_request_for_place1_stub
+        contracts_request_for_place3_stub
+      end
+
+      it 'includes nested objects when they exist' do
+        favorites = Favorite.includes(:place).includes(place: :contracts).all
+
+        expect(favorites.first.place.name).to eq('Place 1')
+        expect(favorites.first.place.contracts.first.name).to eq('Contract 1')
+      end
+
+      it 'does not include nested objects when they are not there' do
+        favorites = Favorite.includes(:place).includes(place: :contracts).all
+
+        expect(favorites[1].place.name).to eq('Place 2')
+        expect(favorites[1].place.contracts).to be(nil)
+      end
+
+      it 'does include and merges objects after nil objects in collections' do
+        favorites = Favorite.includes(:place).includes(place: :contracts).all
+
+        expect(favorites.last.place.name).to eq('Place 3')
+        expect(favorites.last.place.contracts.first.name).to eq('Contract 3')
+      end
+    end
+  end
+
+  context 'includes collection trough single item' do
+
     before do
       class Place < LHS::Record
         endpoint 'https://places/{id}'
       end
-      stub_request(:get, "https://places/1")
-        .to_return(body: {
-          id: '123',
-          customer: {}
-        }.to_json)
+
+      stub_request(:get, 'https://places/1')
+        .to_return(
+          body: {
+            customer: { href: 'https://customers/1' }
+          }.to_json
+        )
+
+      stub_request(:get, 'https://customers/1?limit=100')
+        .to_return(
+          body: {
+            addresses: { 'href': 'https://customer/1/addresses' }
+          }.to_json
+        )
+
+      stub_request(:get, 'https://customer/1/addresses?limit=100')
+        .to_return(
+          body: {
+            items: [
+              { city: 'Zurich', no: 1 },
+              { city: 'Zurich', no: 2 }
+            ],
+            total: 2
+          }.to_json
+        )
     end
 
-    it 'skips includes when there is nothing and also does not raise an exception' do
-      expect(-> {
-        Place.includes(customer: :salesforce).find(1)
-      }).not_to raise_exception
+    it 'includes a collection trough a single item without exceptions' do
+      place = Place
+        .includes(customer: :addresses)
+        .find(1)
+      expect(place.customer.addresses.map(&:no)).to eq [1, 2]
+    end
+  end
+
+  context 'does not fail including all linked resources' do
+
+    before do
+      class CustomerOnboardingToken < LHS::Record
+        endpoint 'https://token/{id}'
+      end
+
+      class Place < LHS::Record
+        endpoint 'https://places/{id}'
+      end
+
+      class AvailableAsset < LHS::Record
+        endpoint 'https://assets'
+      end
+
+      stub_request(:get, 'https://token/1')
+        .to_return(
+          body: {
+            places: [{ href: 'https://places/1' }]
+          }.to_json
+        )
+
+      stub_request(:get, 'https://places/1?limit=100')
+        .to_return(
+          body: {
+            available_assets: { 'href': 'https://assets?limit=10&offset=0' }
+          }.to_json
+        )
+
+      stub_request(:get, 'https://assets?limit=10&offset=0')
+        .to_return(
+          body: {
+            items: 10.times.map { { asset_code: 'CATEGORIES' } },
+            total: 17,
+            offset: 0,
+            limit: 10
+          }.to_json
+        )
+
+      stub_request(:get, 'https://assets?limit=10&offset=10')
+        .to_return(
+          body: {
+            items: 7.times.map { { asset_code: 'CATEGORIES' } },
+            total: 17,
+            offset: 0,
+            limit: 10
+          }.to_json
+        )
+    end
+
+    it 'includes a collection trough a single item without exceptions' do
+      token = CustomerOnboardingToken
+        .includes(places: :available_assets)
+        .find(1)
+      expect(token.places.first.available_assets.length).to eq 17
     end
   end
 end

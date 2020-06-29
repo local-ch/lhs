@@ -27,7 +27,7 @@ describe LHS::Proxy do
         .to_return(body: {
           items: [{ review: 'Nice restaurant' }]
         }.to_json)
-      result = Search.where(what: 'Blumen').includes(place: :feedbacks)
+      result = Search.where(what: 'Blumen').includes_first_page(place: :feedbacks)
       expect(result.place.feedbacks).to be_kind_of Feedback
       expect(result.place.feedbacks.first.review).to eq 'Nice restaurant'
     end

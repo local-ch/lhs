@@ -40,7 +40,7 @@ describe LHS::Record do
 
     it 'uses the "references" hash for all symbols of the "including" array' do
       Customer
-        .includes(:electronic_addresses, :contact_addresses)
+        .includes_first_page(:electronic_addresses, :contact_addresses)
         .references(
           electronic_addresses: referencing_options,
           contact_addresses: referencing_options

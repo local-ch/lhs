@@ -52,7 +52,7 @@ describe LHS::Record do
       end
 
       it 'works in combination with include and includes' do
-        records = Record.includes(:product).includes_all(:options).all(color: 'blue')
+        records = Record.includes_first_page(:product).includes(:options).all(color: 'blue')
         expect(records.length).to eq total
         expect(first_page_request).to have_been_requested.times(1)
         expect(second_page_request).to have_been_requested.times(1)

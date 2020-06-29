@@ -2093,7 +2093,7 @@ In a service-oriented architecture using [hyperlinks](https://en.wikipedia.org/w
 
 When fetching records with LHS, you can specify in advance all the linked resources that you want to include in the results. 
 
-With `includes` or `includes_all` (to enforce fetching all remote objects for paginated endpoints), LHS ensures that all matching and explicitly linked resources are loaded and merged.
+With `includes` LHS ensures that all matching and explicitly linked resources are loaded and merged (even if the linked resources are paginated).
 
 Including linked resources/records is heavily influenced by [https://guides.rubyonrails.org/active_record_querying.html](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) and you should read it to understand this feature in all it's glory.
 
@@ -2112,16 +2112,16 @@ Presence.create(place: { href: Place.href_for(123) })
 POST '/presences' { place: { href: "http://datastore/places/123" } }
 ```
 
-#### Ensure the whole linked collection is included: includes_all
+#### Ensure the whole linked collection is included with includes
 
-In case endpoints are paginated and you are certain that you'll need all objects of a set and not only the first page/batch, use `includes_all`.
+In case endpoints are paginated and you are certain that you'll need all objects of a set and not only the first page/batch, use `includes`.
 
 LHS will ensure that all linked resources are around by loading all pages (parallelized/performance optimized).
 
 ```ruby
 # app/controllers/some_controller.rb
 
-customer = Customer.includes_all(contracts: :products).find(1)
+customer = Customer.includes(contracts: :products).find(1)
 ```
 ```
 > GET https://service.example.com/customers/1
@@ -2148,14 +2148,14 @@ customer.contracts.first.products.first.name # Local Business Card
 
 ```
 
-#### Include the first linked page or single item is included: include
+#### Include only the first linked page of a linked collection: includes_first_page
 
-`includes` includes the first page/response when loading the linked resource. **If the endpoint is paginated, only the first page will be included.**
+`includes_first_page` includes the first page/response when loading the linked resource. **If the endpoint is paginated, only the first page will be included.**
 
 ```ruby
 # app/controllers/some_controller.rb
 
-customer = Customer.includes(contracts: :products).find(1)
+customer = Customer.includes_first_page(contracts: :products).find(1)
 ```
 ```
 > GET https://service.example.com/customers/1
@@ -2179,7 +2179,7 @@ customer.contracts.first.products.first.name # Local Business Card
 
 #### Include various levels of linked data
 
-The method syntax of `includes` and `includes_all`, allows you include hyperlinks stored in deep nested data strutures:
+The method syntax of `includes` allows you include hyperlinks stored in deep nested data strutures:
 
 Some examples:
 
@@ -2199,7 +2199,7 @@ Record.includes(campaign: [:entry, :user])
 
 #### Identify and cast known records when including records
 
-When including linked resources with `includes` or `includes_all`, already defined records and their endpoints and configurations are used to make the requests to fetch the additional data.
+When including linked resources with `includes`, already defined records and their endpoints and configurations are used to make the requests to fetch the additional data.
 
 That also means that options for endpoints of linked resources are applied when requesting those in addition.
 

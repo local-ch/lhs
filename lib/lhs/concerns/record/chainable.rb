@@ -64,11 +64,11 @@ class LHS::Record
         chain
       end
 
-      def includes(*args)
+      def includes_first_page(*args)
         Chain.new(self, Include.new(Chain.unfold(args)))
       end
 
-      def includes_all(*args)
+      def includes(*args)
         chain = Chain.new(self, Include.new(Chain.unfold(args)))
         chain.include_all!(args)
         chain
@@ -259,11 +259,11 @@ class LHS::Record
         push(ErrorHandling.new(error_class => handler))
       end
 
-      def includes(*args)
+      def includes_first_page(*args)
         push(Include.new(Chain.unfold(args)))
       end
 
-      def includes_all(*args)
+      def includes(*args)
         chain = push(Include.new(Chain.unfold(args)))
         chain.include_all!(args)
         chain
