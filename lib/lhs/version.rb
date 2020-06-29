@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module LHS
-  VERSION = '21.3.1'
+  VERSION = '22.0.0'
 end
