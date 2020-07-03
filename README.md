@@ -1607,6 +1607,21 @@ POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbuck
 
 ##### update
 
+###### Directly via Record
+
+```ruby
+# app/controllers/some_controller.rb
+
+Record.update(id: '1z-5r1fkaj', name: 'Steve')
+
+```
+```
+GET https://service.example.com/records/1z-5r1fkaj
+{ name: 'Steve' }
+```
+
+###### per Instance
+
 `update` persists the whole object after new parameters are applied through arguments.
 
 `update` will return false if persisting fails. `update!` instead will raise an exception.
