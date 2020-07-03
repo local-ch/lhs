@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LHS::Record
+  autoload :AttributeAssignment,
+    'lhs/concerns/record/attribute_assignment'
   autoload :Batch,
     'lhs/concerns/record/batch'
   autoload :Chainable,
@@ -45,9 +47,10 @@ class LHS::Record
     'lhs/concerns/record/scope'
   autoload :Tracing,
     'lhs/concerns/record/tracing'
-  autoload :AttributeAssignment,
-    'lhs/concerns/record/attribute_assignment'
+  autoload :Update,
+    'lhs/concerns/record/update'
 
+  include AttributeAssignment
   include Batch
   include Chainable
   include Configuration
@@ -72,7 +75,7 @@ class LHS::Record
   include Relations
   include Scope
   include Tracing
-  include AttributeAssignment
+  include Update
 
   delegate :_proxy, :_endpoint, :merge_raw!, :select, :becomes, :respond_to?, to: :_data
 
