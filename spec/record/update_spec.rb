@@ -13,7 +13,7 @@ describe LHS::Record do
 
     it 'allows to directly update a record without fetching it first' do
       stub_request(:post, "http://datastore/records/123")
-        .with(body: {name: 'Steve'}.to_json)
+        .with(body: { name: 'Steve' }.to_json)
         .to_return(status: 200, body: {}.to_json)
 
       Record.update(
@@ -24,7 +24,7 @@ describe LHS::Record do
 
     it 'does not fail during an error with update' do
       stub_request(:post, "http://datastore/records/123")
-        .with(body: {name: 'Steve'}.to_json)
+        .with(body: { name: 'Steve' }.to_json)
         .to_return(status: 404, body: {}.to_json)
 
       record = Record.update(
@@ -35,9 +35,9 @@ describe LHS::Record do
       expect(record.errors.status_code).to eq 404
     end
 
-    it 'allows to directly update a record without fetching it first' do
+    it 'allows to directly update! a record without fetching it first' do
       stub_request(:post, "http://datastore/records/123")
-        .with(body: {name: 'Steve'}.to_json)
+        .with(body: { name: 'Steve' }.to_json)
         .to_return(status: 200)
 
       Record.update!(
@@ -46,12 +46,12 @@ describe LHS::Record do
       )
     end
 
-    it 'allows to directly update a record without fetching it first' do
+    it 'raises an error when trying to update! but retrieving an error status' do
       stub_request(:post, "http://datastore/records/123")
-        .with(body: {name: 'Steve'}.to_json)
+        .with(body: { name: 'Steve' }.to_json)
         .to_return(status: 404)
 
-      expect(->{
+      expect(-> {
         Record.update!(
           id: '123',
           name: 'Steve'
