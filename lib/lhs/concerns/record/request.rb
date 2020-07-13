@@ -205,7 +205,7 @@ class LHS::Record
       def expand_addition!(data, included, reference)
         addition = data[included]
         options = options_for_data(addition)
-        options = extend_with_reference(options, reference.except(:url))
+        options = extend_with_reference(options, reference)
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         expanded_data = record.request(options)
@@ -217,7 +217,7 @@ class LHS::Record
         if addition.item?
           (addition._raw.keys - [:href]).any?
         elsif addition.collection?
-          addition.all? do |item|
+          addition.any? do |item|
             next if item.blank?
             if item._raw.is_a?(Hash)
               (item._raw.keys - [:href]).any?
@@ -230,7 +230,8 @@ class LHS::Record
 
       # Extends request options with options provided for this reference
       def extend_with_reference(options, reference)
-        return options unless reference
+        return options if reference.blank?
+        referene = reference.except(:url)
         options ||= {}
         if options.is_a?(Array)
           options.map { |request_options| request_options.merge(reference) if request_options.present? }
