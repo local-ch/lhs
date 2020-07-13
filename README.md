@@ -2279,7 +2279,7 @@ In parallel:
   GET https://service.example.com/places/4 { headers: { 'Authentication': 'Bearer 123' } }
 ```
 
-Here is another example if you want to ignore errors occuring while you fetch included resources:
+Here is another example, if you want to ignore errors, that occure while you fetch included resources:
 
 ```ruby
 # app/controllers/some_controller.rb
