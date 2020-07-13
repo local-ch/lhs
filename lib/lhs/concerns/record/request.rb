@@ -346,7 +346,7 @@ class LHS::Record
       end
 
       # Load additional resources that are requested with include
-      def load_include(options, data, sub_includes, references)
+      def load_include(options, _data, sub_includes, references)
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         prepare_options_for_include_request!(options, sub_includes, references)
