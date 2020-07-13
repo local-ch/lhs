@@ -15,14 +15,14 @@ describe LHS::Record do
 
   it 'allows to chain error handling' do
     expect {
-      Record.where(color: 'blue').handle(LHC::Error, ->(_error) { handler.handle }).first
+      Record.where(color: 'blue').rescue(LHC::Error, ->(_error) { handler.handle }).first
     }.not_to raise_error
     expect(handler).to have_received(:handle)
   end
 
   it 'reraises in case chained error is not matched' do
     expect {
-      Record.where(color: 'blue').handle(LHC::Conflict, ->(_error) { handler.handle }).first
+      Record.where(color: 'blue').rescue(LHC::Conflict, ->(_error) { handler.handle }).first
     }.to raise_error(LHC::Error)
     expect(handler).not_to have_received(:handle)
   end
@@ -30,8 +30,8 @@ describe LHS::Record do
   it 'calls all the handlers' do
     expect {
       Record.where(color: 'blue')
-        .handle(LHC::Error, ->(_error) { handler.handle_1 })
-        .handle(LHC::Error, ->(_error) { handler.handle_2 })
+        .rescue(LHC::Error, ->(_error) { handler.handle_1 })
+        .rescue(LHC::Error, ->(_error) { handler.handle_2 })
         .first
     }.not_to raise_error
     expect(handler).to have_received(:handle_1)

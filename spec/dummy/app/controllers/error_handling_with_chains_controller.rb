@@ -6,7 +6,7 @@ class ErrorHandlingWithChainsController < ApplicationController
   # in the view (during render 'show')
   def fetch_in_view
     @records = DummyRecord
-      .handle(LHC::Error, ->(error) { handle_error(error) })
+      .rescue(LHC::Error, ->(error) { handle_error(error) })
       .where(color: 'blue')
     render 'show'
     render_error if @error
@@ -16,7 +16,7 @@ class ErrorHandlingWithChainsController < ApplicationController
   # before the view is rendered
   def fetch_in_controller
     @records = DummyRecord
-      .handle(LHC::Error, ->(error) { handle_error(error) })
+      .rescue(LHC::Error, ->(error) { handle_error(error) })
       .where(color: 'blue').fetch
     render 'show'
     render_error if @error
