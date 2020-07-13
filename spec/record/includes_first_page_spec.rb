@@ -251,7 +251,7 @@ describe LHS::Record do
         .includes_first_page(campaign: :entry)
         .references(campaign: { ignored_errors: [LHC::NotFound] })
         .find(123)
-      expect(feedback.campaign.first.keys.length).to eq 1
+      expect(feedback.campaign._raw.keys).to eq 1
     end
   end
 

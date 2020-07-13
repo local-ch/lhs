@@ -138,6 +138,7 @@ class LHS::Record
       end
 
       def extend_base_item!(data, addition, key)
+        return if addition.nil?
         if addition.collection?
           extend_base_item_with_collection!(data, addition, key)
         else # simple case merges hash into hash
@@ -231,7 +232,7 @@ class LHS::Record
       # Extends request options with options provided for this reference
       def extend_with_reference(options, reference)
         return options if reference.blank?
-        referene = reference.except(:url)
+        reference = reference.except(:url)
         options ||= {}
         if options.is_a?(Array)
           options.map { |request_options| request_options.merge(reference) if request_options.present? }
@@ -365,7 +366,7 @@ class LHS::Record
 
       def load_include_simple!(options, record)
         data = record.request(options)
-        warn "[WARNING] You included `#{options[:url]}`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints)." if paginated?(data._raw)
+        warn "[WARNING] You included `#{options[:url]}`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints)." if data && paginated?(data._raw)
         data
       end
 
