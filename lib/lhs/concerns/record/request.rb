@@ -138,6 +138,7 @@ class LHS::Record
       end
 
       def extend_base_item!(data, addition, key)
+        return if addition.nil?
         if addition.collection?
           extend_base_item_with_collection!(data, addition, key)
         else # simple case merges hash into hash
@@ -187,7 +188,7 @@ class LHS::Record
           options = extend_with_reference(options, reference)
           addition = load_include(options, data, sub_includes, reference)
           extend_raw_data!(data, addition, included)
-          expand_addition!(data, included, options) if no_expanded_data?(addition)
+          expand_addition!(data, included, options) unless expanded_data?(addition)
         end
       end
 
@@ -205,28 +206,24 @@ class LHS::Record
       def expand_addition!(data, included, reference)
         addition = data[included]
         options = options_for_data(addition)
-        options = extend_with_reference(options, reference.except(:url))
+        options = extend_with_reference(options, reference)
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
-        expanded_data = begin
-          record.request(options)
-        rescue LHC::NotFound
-          LHS::Data.new({}, data, record)
-        end
+        expanded_data = record.request(options)
         extend_raw_data!(data, expanded_data, included)
       end
 
-      def no_expanded_data?(addition)
+      def expanded_data?(addition)
         return false if addition.blank?
         if addition.item?
-          (addition._raw.keys - [:href]).empty?
+          (addition._raw.keys - [:href]).any?
         elsif addition.collection?
-          addition.all? do |item|
+          addition.any? do |item|
             next if item.blank?
             if item._raw.is_a?(Hash)
-              (item._raw.keys - [:href]).empty?
+              (item._raw.keys - [:href]).any?
             elsif item._raw.is_a?(Array)
-              item.any? { |item| (item._raw.keys - [:href]).empty? }
+              item.any? { |item| (item._raw.keys - [:href]).any? }
             end
           end
         end
@@ -234,7 +231,8 @@ class LHS::Record
 
       # Extends request options with options provided for this reference
       def extend_with_reference(options, reference)
-        return options unless reference
+        return options if reference.blank?
+        reference = reference.except(:url)
         options ||= {}
         if options.is_a?(Array)
           options.map { |request_options| request_options.merge(reference) if request_options.present? }
@@ -348,18 +346,14 @@ class LHS::Record
       end
 
       # Load additional resources that are requested with include
-      def load_include(options, data, sub_includes, references)
+      def load_include(options, _data, sub_includes, references)
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
-        begin
-          prepare_options_for_include_request!(options, sub_includes, references)
-          if references && references[:all] # include all linked resources
-            load_include_all!(options, record, sub_includes, references)
-          else # simply request first page/batch
-            load_include_simple!(options, record)
-          end
-        rescue LHC::NotFound
-          LHS::Data.new({}, data, record)
+        prepare_options_for_include_request!(options, sub_includes, references)
+        if references && references[:all] # include all linked resources
+          load_include_all!(options, record, sub_includes, references)
+        else # simply request first page/batch
+          load_include_simple!(options, record)
         end
       end
 
@@ -372,7 +366,7 @@ class LHS::Record
 
       def load_include_simple!(options, record)
         data = record.request(options)
-        warn "[WARNING] You included `#{options[:url]}`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints)." if paginated?(data._raw)
+        warn "[WARNING] You included `#{options[:url]}`, but this endpoint is paginated. You might want to use `includes_all` instead of `includes` (https://github.com/local-ch/lhs#includes_all-for-paginated-endpoints)." if data && paginated?(data._raw)
         data
       end
 

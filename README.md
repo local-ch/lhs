@@ -2279,6 +2279,17 @@ In parallel:
   GET https://service.example.com/places/4 { headers: { 'Authentication': 'Bearer 123' } }
 ```
 
+Here is another example, if you want to ignore errors, that occure while you fetch included resources:
+
+```ruby
+# app/controllers/some_controller.rb
+
+feedback = Feedback
+  .includes(campaign: :entry)
+  .references(campaign: { ignored_errors: [LHC::NotFound] })
+  .find(12345)
+```
+
 ### Record batch processing
 
 **Be careful using methods for batch processing. They could result in a lot of HTTP requests!**

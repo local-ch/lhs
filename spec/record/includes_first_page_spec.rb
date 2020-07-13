@@ -224,7 +224,7 @@ describe LHS::Record do
   end
 
   context 'links pointing to nowhere' do
-    it 'sets nil for links that cannot be included' do
+    before do
       class Feedback < LHS::Record
         endpoint '{+datastore}/feedbacks'
         endpoint '{+datastore}/feedbacks/{id}'
@@ -238,10 +238,20 @@ describe LHS::Record do
 
       stub_request(:get, "#{datastore}/content-ads/51dfc5690cf271c375c5a12d")
         .to_return(status: 404)
+    end
 
-      feedback = Feedback.includes_first_page(campaign: :entry).find(123)
-      expect(feedback.campaign._raw.keys.count).to eq 1
-      expect(feedback.campaign.href).to be_present
+    it 'raises LHC::NotFound for links that cannot be included' do
+      expect(-> {
+        Feedback.includes_first_page(campaign: :entry).find(123)
+      }).to raise_error LHC::NotFound
+    end
+
+    it 'ignores LHC::NotFound for links that cannot be included if configured so with reference options' do
+      feedback = Feedback
+        .includes_first_page(campaign: :entry)
+        .references(campaign: { ignored_errors: [LHC::NotFound] })
+        .find(123)
+      expect(feedback.campaign._raw.keys.length).to eq 1
     end
   end
 
