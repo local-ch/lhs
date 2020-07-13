@@ -99,6 +99,8 @@ record.review # "Lunch was great
         * [Change/Update existing records](#changeupdate-existing-records)
            * [save](#save)
            * [update](#update)
+              * [Directly via Record](#directly-via-record)
+              * [per Instance](#per-instance)
            * [partial_update](#partial_update)
         * [Endpoint url parameter injection during record creation/change](#endpoint-url-parameter-injection-during-record-creationchange)
         * [Record validation](#record-validation)
@@ -119,8 +121,8 @@ record.review # "Lunch was great
         * [Record getters](#record-getters)
      * [Include linked resources (hyperlinks and hypermedia)](#include-linked-resources-hyperlinks-and-hypermedia)
         * [Generate links from parameters](#generate-links-from-parameters)
-        * [Ensure the whole linked collection is included: includes_all](#ensure-the-whole-linked-collection-is-included-includes_all)
-        * [Include the first linked page or single item is included: include](#include-the-first-linked-page-or-single-item-is-included-include)
+        * [Ensure the whole linked collection is included with includes](#ensure-the-whole-linked-collection-is-included-with-includes)
+        * [Include only the first linked page of a linked collection: includes_first_page](#include-only-the-first-linked-page-of-a-linked-collection-includes_first_page)
         * [Include various levels of linked data](#include-various-levels-of-linked-data)
         * [Identify and cast known records when including records](#identify-and-cast-known-records-when-including-records)
         * [Apply options for requests performed to fetch included records](#apply-options-for-requests-performed-to-fetch-included-records)
@@ -148,6 +150,7 @@ record.review # "Lunch was great
         * [By explicitly resolving the chain: fetch](#by-explicitly-resolving-the-chain-fetch)
         * [Without resolving the chain: where_values_hash](#without-resolving-the-chain-where_values_hash)
   * [License](#license)
+
 
 
 
