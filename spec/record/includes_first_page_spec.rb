@@ -249,7 +249,7 @@ describe LHS::Record do
     it 'ignores LHC::NotFound for links that cannot be included if configured so with reference options' do
       feedback = Feedback
         .includes_first_page(campaign: :entry)
-        .references(campaign: { ignored_errors: [LHC::NotFound] })
+        .references(campaign: { ignore: [LHC::NotFound] })
         .find(123)
       expect(feedback.campaign._raw.keys.length).to eq 1
     end

@@ -979,7 +979,7 @@ If you need to render some different view in Rails based on an LHS error raised 
 
 def show
   @records = Record
-    .handle(LHC::Error, ->(error){ handle_error(error) })
+    .rescue(LHC::Error, ->(error){ rescue_from(error) })
     .where(color: 'blue')
   render 'show'
   render_error if @error
@@ -987,7 +987,7 @@ end
 
 private
 
-def handle_error(error)
+def rescue_from(error)
   @error = error
   nil
 end
@@ -1012,7 +1012,7 @@ If you want to inject values for the failing records, that might not have been f
 # app/controllers/some_controller.rb
 
 data = Record
-  .handle(LHC::Unauthorized, ->(response) { Record.new(name: 'unknown') })
+  .rescue(LHC::Unauthorized, ->(response) { Record.new(name: 'unknown') })
   .find(1, 2, 3)
 
 data[1].name # 'unknown'
@@ -2286,7 +2286,7 @@ Here is another example, if you want to ignore errors, that occure while you fet
 
 feedback = Feedback
   .includes(campaign: :entry)
-  .references(campaign: { ignored_errors: [LHC::NotFound] })
+  .references(campaign: { ignore: LHC::NotFound })
   .find(12345)
 ```
 

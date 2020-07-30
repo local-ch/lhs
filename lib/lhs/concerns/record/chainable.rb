@@ -52,7 +52,7 @@ class LHS::Record
         Chain.new(self, Pagination.new(per: argument))
       end
 
-      def handle(error_class, handler)
+      def rescue(error_class, handler)
         Chain.new(self, ErrorHandling.new(error_class => handler))
       end
 
@@ -255,7 +255,7 @@ class LHS::Record
         push(Pagination.new(per: argument))
       end
 
-      def handle(error_class, handler)
+      def rescue(error_class, handler)
         push(ErrorHandling.new(error_class => handler))
       end
 
@@ -348,8 +348,8 @@ class LHS::Record
       def resolved_options
         options = chain_options
         options = options.deep_merge(params: chain_parameters.merge(chain_pagination))
-        options = options.merge(error_handler: chain_error_handler) if chain_error_handler.present?
-        options = options.merge(ignored_errors: chain_ignored_errors) if chain_ignored_errors.present?
+        options = options.merge(rescue: chain_error_handler) if chain_error_handler.present?
+        options = options.merge(ignore: chain_ignored_errors) if chain_ignored_errors.present?
         options = options.merge(including: chain_includes) if chain_includes.present?
         options = options.merge(referencing: chain_references) if chain_references.present?
         options

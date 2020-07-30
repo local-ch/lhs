@@ -25,7 +25,7 @@ describe LHS::Record do
 
   it 'allows to pass error_handling for includes to LHC' do
     handler = ->(_) { return { deleted: true } }
-    record = Record.includes_first_page(:other).references(other: { error_handler: { LHC::NotFound => handler } }).find(id: 1)
+    record = Record.includes_first_page(:other).references(other: { rescue: { LHC::NotFound => handler } }).find(id: 1)
 
     expect(record.other.deleted).to be(true)
   end

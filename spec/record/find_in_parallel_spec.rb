@@ -33,7 +33,7 @@ describe LHS::Record do
     it 'applies error handlers from the chain and returns whatever the error handler returns' do
       stub_request(:get, "http://datastore/records/2").to_return(status: 401)
       data = Record
-        .handle(LHC::Unauthorized, ->(_response) { Record.new(name: 'unknown') })
+        .rescue(LHC::Unauthorized, ->(_response) { Record.new(name: 'unknown') })
         .find(1, 2, 3)
       expect(data[1].name).to eq 'unknown'
     end
