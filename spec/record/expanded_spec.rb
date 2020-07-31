@@ -37,9 +37,9 @@ describe LHS::Record do
     records = Record.where(color: 'blue').expanded(params: { via: 'collection' })
     expect(records[0].name).to eq 'Steve'
     expect(records[1].name).to eq 'John'
-    assert_requested request_collection
-    assert_requested request_item_1
-    assert_requested request_item_2
+    expect(request_collection).to have_been_requested.at_least_times(1)
+    expect(request_item_1).to have_been_requested.at_least_times(1)
+    expect(request_item_2).to have_been_requested.at_least_times(1)
   end
 
   context 'without options' do
@@ -61,9 +61,9 @@ describe LHS::Record do
       records = Record.where(color: 'blue').expanded
       expect(records[0].name).to eq 'Steve'
       expect(records[1].name).to eq 'John'
-      assert_requested request_collection
-      assert_requested request_item_1
-      assert_requested request_item_2
+      expect(request_collection).to have_been_requested.at_least_times(1)
+      expect(request_item_1).to have_been_requested.at_least_times(1)
+      expect(request_item_2).to have_been_requested.at_least_times(1)
     end
   end
 end
