@@ -253,14 +253,6 @@ describe LHS::Record do
         .find(123)
       expect(feedback.campaign._raw.keys.length).to eq 1
     end
-
-    it 'excludes LHC::NotFound for links that cannot be included if configured so with reference options' do
-      feedback = Feedback
-        .includes_first_page(campaign: :entry)
-        .references(campaign: { compact: [LHC::NotFound] })
-        .find(123)
-      expect(feedback.campaign._raw.keys.length).to eq 0
-    end
   end
 
   context 'modules' do
