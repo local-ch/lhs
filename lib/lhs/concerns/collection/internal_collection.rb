@@ -14,7 +14,7 @@ class LHS::Collection < LHS::Proxy
 
       attr_accessor :raw
       delegate :length, :size, :first, :last, :sample, :[], :present?, :blank?, :empty?,
-               :<<, :push, :compact, to: :raw
+               :<<, :push, to: :raw
 
       def initialize(raw, parent, record)
         self.raw = raw
@@ -34,6 +34,22 @@ class LHS::Collection < LHS::Proxy
             yield item
           end
         end
+      end
+
+      def compact
+        dup.tap do |collection|
+          collection.compact! if collection.raw.present?
+        end
+      end
+
+      def compact!
+        self.raw = raw.map do |item|
+          if item.is_a?(LHS::Data) && item._request && !item._request.response.success?
+            nil
+          else
+            item
+          end
+        end.compact
       end
 
       private

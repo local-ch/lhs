@@ -6,6 +6,8 @@ class LHS::Data
     'lhs/concerns/data/becomes'
   autoload :Equality,
     'lhs/concerns/data/equality'
+  autoload :Extend,
+    'lhs/concerns/data/extend'
   autoload :Json,
     'lhs/concerns/data/json'
   autoload :ToHash,
@@ -13,6 +15,7 @@ class LHS::Data
 
   include Becomes
   include Equality
+  include Extend
   include Json
   include ToHash
   include LHS::Inspect
@@ -30,6 +33,7 @@ class LHS::Data
     self._proxy = proxy_from_input(input)
     self._request = request
     self._endpoint = endpoint
+    preserve_input_requests!(input)
   end
 
   # merging data
@@ -96,6 +100,17 @@ class LHS::Data
   end
 
   private
+
+  def preserve_input_requests!(input)
+    if input.is_a?(LHS::Data)
+      _request = input._request if _request.nil?
+    elsif input.is_a?(Array) && input.first.is_a?(LHS::Data)
+      input.each_with_index do |item, index|
+        next if item.nil?
+        self[index]._request = item._request
+      end
+    end
+  end
 
   def collection_proxy?(input)
     (input.is_a?(Hash) && LHS::Collection.access(input: input, record: _record)) ||
