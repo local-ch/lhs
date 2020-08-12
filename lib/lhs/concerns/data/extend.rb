@@ -10,7 +10,6 @@ class LHS::Data
     # Extends already fetched data (self) with additionally 
     # fetched data (addition) using the given key
     def extend!(addition, key)
-      binding.pry
       if self.collection?
         extend_collection!(addition, key)
       elsif self[key]._raw.is_a? Array
@@ -67,8 +66,7 @@ class LHS::Data
     def extend_item_with_hash_containing_items!(target, addition)
       LHS::Collection.nest(input: target._raw, value: [], record: self) # inits the nested collection
       if LHS::Collection.access(input: target._raw, record: self).empty?
-
-        LHS::Collection.nest(input: target._raw, value: addition.compact.map(&:_raw), record: self)
+        LHS::Collection.nest(input: target._raw, value: addition.reject{|item| item.nil?}, record: self)
       else
         LHS::Collection.access(input: target._raw, record: self).each_with_index do |item, index|
           item.merge!(addition[index])
