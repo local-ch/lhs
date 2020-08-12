@@ -6,6 +6,8 @@ class LHS::Data
     'lhs/concerns/data/becomes'
   autoload :Equality,
     'lhs/concerns/data/equality'
+  autoload :Extend,
+    'lhs/concerns/data/extend'
   autoload :Json,
     'lhs/concerns/data/json'
   autoload :ToHash,
@@ -13,6 +15,7 @@ class LHS::Data
 
   include Becomes
   include Equality
+  include Extend
   include Json
   include ToHash
   include LHS::Inspect

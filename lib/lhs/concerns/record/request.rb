@@ -98,74 +98,6 @@ class LHS::Record
         )
       end
 
-      # Extends existing raw data with additionaly fetched data
-      def extend_raw_data!(data, addition, key)
-        if data.collection?
-          extend_base_collection!(data, addition, key)
-        elsif data[key]._raw.is_a? Array
-          extend_base_array!(data, addition, key)
-        elsif data.item?
-          extend_base_item!(data, addition, key)
-        end
-      end
-
-      def extend_base_collection!(data, addition, key)
-        data.map do |item|
-          item_raw = item._raw[key]
-          item_raw.blank? ? [nil] : item_raw
-        end
-          .flatten
-          .each_with_index do |item, index|
-            item_addition = addition[index]
-            next if item_addition.nil? || item.nil?
-            if item_addition._raw.is_a?(Array)
-              extend_base_collection_with_array!(item, item_addition._raw)
-            else
-              item.merge! item_addition._raw
-            end
-          end
-      end
-
-      def extend_base_collection_with_array!(item, addition)
-        item[items_key] ||= []
-        item[items_key].concat(addition)
-      end
-
-      def extend_base_array!(data, addition, key)
-        data[key].zip(addition) do |item, additional_item|
-          item._raw.merge!(additional_item._raw) if additional_item.present?
-        end
-      end
-
-      def extend_base_item!(data, addition, key)
-        return if addition.nil?
-        if addition.collection?
-          extend_base_item_with_collection!(data, addition, key)
-        else # simple case merges hash into hash
-          data._raw[key.to_sym].merge!(addition._raw)
-        end
-      end
-
-      def extend_base_item_with_collection!(data, addition, key)
-        target = data[key]
-        if target._raw.is_a? Array
-          data[key] = addition.map(&:_raw)
-        else # hash with items
-          extend_base_item_with_hash_of_items!(target, addition)
-        end
-      end
-
-      def extend_base_item_with_hash_of_items!(target, addition)
-        LHS::Collection.nest(input: target._raw, value: [], record: self)
-        if LHS::Collection.access(input: target._raw, record: self).empty?
-          LHS::Collection.nest(input: target._raw, value: addition.compact.map(&:_raw), record: self)
-        else
-          LHS::Collection.access(input: target._raw, record: self).each_with_index do |item, index|
-            item.merge!(addition[index])
-          end
-        end
-      end
-
       def handle_includes(includes, data, references = {})
         references ||= {}
         if includes.is_a? Hash
@@ -187,7 +119,7 @@ class LHS::Record
           options = options_for_data(data, included)
           options = extend_with_reference(options, reference)
           addition = load_include(options, data, sub_includes, reference)
-          extend_raw_data!(data, addition, included)
+          data.extend!(addition, included)
           expand_addition!(data, included, options) unless expanded_data?(addition)
         end
       end
@@ -210,7 +142,7 @@ class LHS::Record
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         expanded_data = record.request(options)
-        extend_raw_data!(data, expanded_data, included)
+        data.extend!(expanded_data, included)
       end
 
       def expanded_data?(addition)
