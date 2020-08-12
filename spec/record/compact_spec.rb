@@ -38,12 +38,12 @@ describe LHS::Record do
           status: 404,
           message: 'The requested resource does not exist.'
         }.to_json
-    )
+      )
 
   end
 
   let(:places) do
-    User 
+    User
       .includes(:places)
       .references(places: { ignore: LHC::NotFound })
       .find('123')

@@ -35,16 +35,16 @@ class LHS::Collection < LHS::Proxy
           end
         end
       end
-      
+
       def compact
-        self.dup.tap do |collection|
+        dup.tap do |collection|
           return if collection.raw.nil?
           collection.compact!
         end
       end
 
       def compact!
-        self.raw = self.raw.map do |item|
+        self.raw = raw.map do |item|
           if item.is_a?(LHS::Data) && item._request && !item._request.response.success?
             nil
           else

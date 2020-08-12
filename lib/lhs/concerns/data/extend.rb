@@ -7,14 +7,14 @@ class LHS::Data
   module Extend
     extend ActiveSupport::Concern
 
-    # Extends already fetched data (self) with additionally 
+    # Extends already fetched data (self) with additionally
     # fetched data (addition) using the given key
     def extend!(addition, key)
-      if self.collection?
+      if collection?
         extend_collection!(addition, key)
       elsif self[key]._raw.is_a? Array
         extend_array!(addition, key)
-      elsif self.item?
+      elsif item?
         extend_item!(addition, key)
       end
     end
@@ -22,7 +22,7 @@ class LHS::Data
     private
 
     def extend_collection!(addition, key)
-      self.map do |item|
+      map do |item|
         item_raw = item._raw[key]
         item_raw.blank? ? [nil] : item_raw
       end
@@ -50,7 +50,7 @@ class LHS::Data
       if addition.collection?
         extend_item_with_collection!(addition, key)
       else # simple case merges hash into hash
-        self._raw[key.to_sym].merge!(addition._raw)
+        _raw[key.to_sym].merge!(addition._raw)
       end
     end
 
@@ -66,7 +66,7 @@ class LHS::Data
     def extend_item_with_hash_containing_items!(target, addition)
       LHS::Collection.nest(input: target._raw, value: [], record: self) # inits the nested collection
       if LHS::Collection.access(input: target._raw, record: self).empty?
-        LHS::Collection.nest(input: target._raw, value: addition.reject{|item| item.nil?}, record: self)
+        LHS::Collection.nest(input: target._raw, value: addition.reject { |item| item.nil? }, record: self)
       else
         LHS::Collection.access(input: target._raw, record: self).each_with_index do |item, index|
           item.merge!(addition[index])
