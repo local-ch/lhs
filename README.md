@@ -1698,7 +1698,7 @@ record.partial_update(recommended: true)
 
 ```
 ```
-POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'name': 'Starbucks', 'recommended': true }" }
+POST https://service.example.com/records/1z-5r1fkaj { body: "{ 'recommended': true }" }
 ```
 
 -> See [record validation](#record-validation) for how to handle validation errors when updating records.
