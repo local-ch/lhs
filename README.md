@@ -2292,7 +2292,7 @@ feedback = Feedback
 
 #### compact: Remove included resources that didn't return any records
 
-In case you include nested data and ignored errors while including, you can get back a collection with data based on response errors:
+In case you include nested data and ignored errors while including, it can happen that you get back a collection that contains data based on response errors:
 
 ```ruby
 # app/controllers/some_controller.rb
@@ -2324,7 +2324,7 @@ GET http://service/places/2
 user.places[1] # { "status": 404, "error": "not found" }
 ```
 
-In order to exclude items from a collection that where not based on successful responses, use `.compact` or `.compact!`:
+In order to exclude items from a collection which where not based on successful responses, use `.compact` or `.compact!`:
 
 ```ruby
 # app/controllers/some_controller.rb
@@ -2337,7 +2337,6 @@ places = user.places.compact
 
 places # { "items": [ { "href": "http://service/places/1", "name": "Casa Ferlin" } ] }
 ```
-
 
 ### Record batch processing
 
