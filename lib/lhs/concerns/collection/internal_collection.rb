@@ -38,8 +38,7 @@ class LHS::Collection < LHS::Proxy
 
       def compact
         dup.tap do |collection|
-          return if collection.raw.nil?
-          collection.compact!
+          collection.compact! if collection.raw.present?
         end
       end
 
