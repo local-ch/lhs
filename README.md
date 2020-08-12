@@ -2290,6 +2290,55 @@ feedback = Feedback
   .find(12345)
 ```
 
+#### compact: Remove included resources that didn't return any records
+
+In case you include nested data and ignored errors while including, you can get back a collection with data based on response errors:
+
+```ruby
+# app/controllers/some_controller.rb
+
+user = User
+  .includes(:places)
+  .references(places: { ignore: LHC::NotFound })
+  .find(123)
+```
+
+```
+GET http://service/users/123
+{ "places": { "href": "http://service/users/123/places" } }
+
+GET http://service/users/123/places
+{ "items": [
+  { "href": "http://service/places/1" },
+  { "href": "http://service/places/2" }
+] }
+
+GET http://service/places/1
+200 { "name": "Casa Ferlin" }
+
+GET http://service/places/2
+404 { "status": 404, "error": "not found" }
+```
+
+```ruby
+user.places[1] # { "status": 404, "error": "not found" }
+```
+
+In order to exclude items from a collection that where not based on successful responses, use `.compact` or `.compact!`:
+
+```ruby
+# app/controllers/some_controller.rb
+
+user = User
+  .includes(:places)
+  .references(places: { ignore: LHC::NotFound })
+  .find(123)
+places = user.places.compact
+
+places # { "items": [ { "href": "http://service/places/1", "name": "Casa Ferlin" } ] }
+```
+
+
 ### Record batch processing
 
 **Be careful using methods for batch processing. They could result in a lot of HTTP requests!**
