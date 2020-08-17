@@ -11,6 +11,7 @@ describe LHS::Record do
 
       class User < LHS::Record
         endpoint 'http://datastore/users/{id}'
+        endpoint 'http://datastore/customers/{customer_id}/users/{id}'
         def reversed_name
           name.split.reverse.join(' ')
         end
