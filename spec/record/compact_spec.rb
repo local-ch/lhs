@@ -77,7 +77,7 @@ describe LHS::Record do
 
     it 'finds the right record class' do
       expect(places.first.display_name).to eq expected_display_name
-      expect(places.map(&:display_name)).to eq [expected_display_name]
+      expect(places.compact.map(&:display_name)).to eq [expected_display_name]
     end
   end
 

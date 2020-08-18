@@ -47,7 +47,7 @@ class LHS::Collection < LHS::Proxy
           if item.is_a?(LHS::Data) && item._request && !item._request.response.success?
             nil
           else
-            item
+            cast_item(item)
           end
         end.compact
       end
