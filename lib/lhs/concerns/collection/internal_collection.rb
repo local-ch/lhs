@@ -47,7 +47,7 @@ class LHS::Collection < LHS::Proxy
           if item.is_a?(LHS::Data) && item._request && !item._request.response.success?
             nil
           else
-            item
+            cast_item(item)
           end
         end.compact
       end
@@ -55,10 +55,18 @@ class LHS::Collection < LHS::Proxy
       private
 
       def cast_item(item)
-        record_by_href = LHS::Record.for_url(item[:href]) if item[:href]
         data = LHS::Data.new(item, @parent, @record)
-        return (record_by_href || @record).new(data) if record_by_href || @record
-        data
+        (record_by_href(item) || @record)&.new(data) || data
+      end
+
+      def record_by_href(item)
+        return if plain_value?(item) || item[:href].blank?
+
+        LHS::Record.for_url(item[:href])
+      end
+
+      def plain_value?(item)
+        item.is_a?(String) || item.is_a?(Numeric) || item.is_a?(TrueClass) || item.is_a?(FalseClass)
       end
     end
   end

@@ -6,6 +6,11 @@ describe LHS::Record do
   before do
     class Place < LHS::Record
       endpoint 'http://datastore/places/{id}'
+      endpoint 'http://datastore/users/{user_id}/places/{id}'
+
+      def display_name
+        "*#{name}*"
+      end
     end
 
     class User < LHS::Record
@@ -24,14 +29,24 @@ describe LHS::Record do
         items: [
           {
             href: 'http://datastore/users/123/places/789'
+          }, {
+            href: 'http://datastore/users/123/places/790'
           }
         ],
-        total: 4,
+        total: 2,
         offset: 0,
         limit: 10
       }.to_json)
 
     stub_request(:get, 'http://datastore/users/123/places/789?limit=100')
+      .to_return(
+        body: {
+          href: 'http://datastore/users/123/places/789?limit=100',
+          name: 'Mc Donalds'
+        }.to_json
+      )
+
+    stub_request(:get, 'http://datastore/users/123/places/790?limit=100')
       .to_return(
         status: 404,
         body: {
@@ -51,17 +66,25 @@ describe LHS::Record do
   end
 
   context '.compact' do
-
     it 'removes linked resouces which could not get fetched' do
-      expect(places.compact.length).to eq 0
-      expect(places.length).not_to eq 0 # leaves the original intact
+      expect(places.compact.length).to eq 1
+      expect(places.length).not_to eq 1 # leaves the original intact
+    end
+  end
+
+  context 'record casting' do
+    let(:expected_display_name) { '*Mc Donalds*' }
+
+    it 'finds the right record class' do
+      expect(places.first.display_name).to eq expected_display_name
+      expect(places.compact.map(&:display_name)).to eq [expected_display_name]
     end
   end
 
   context '.compact!' do
     it 'removes linked resouces which could not get fetched' do
-      expect(places.compact!.length).to eq 0
-      expect(places.length).to eq 0 # and changes the original intact
+      expect(places.compact!.length).to eq 1
+      expect(places.length).to eq 1 # and changes the original intact
     end
   end
 end
