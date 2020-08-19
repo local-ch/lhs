@@ -55,10 +55,18 @@ class LHS::Collection < LHS::Proxy
       private
 
       def cast_item(item)
-        record_by_href = LHS::Record.for_url(item[:href]) if item[:href]
         data = LHS::Data.new(item, @parent, @record)
-        return (record_by_href || @record).new(data) if record_by_href || @record
-        data
+        record_by_href(item)&.new(data) || data
+      end
+
+      def record_by_href(item)
+        return if json_value_type?(item) || (item[:href].blank? && @record.blank?)
+
+        LHS::Record.for_url(item[:href]) || @record
+      end
+
+      def json_value_type?(item)
+        item.is_a?(String) || item.is_a?(Numeric) || item.is_a?(TrueClass) || item.is_a?(FalseClass)
       end
     end
   end
