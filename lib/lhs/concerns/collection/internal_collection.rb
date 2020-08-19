@@ -56,13 +56,13 @@ class LHS::Collection < LHS::Proxy
 
       def cast_item(item)
         data = LHS::Data.new(item, @parent, @record)
-        record_by_href(item)&.new(data) || data
+        (record_by_href(item) || @record)&.new(data) || data
       end
 
       def record_by_href(item)
-        return if plain_value?(item) || (item[:href].blank? && @record.blank?)
+        return if plain_value?(item) || item[:href].blank?
 
-        LHS::Record.for_url(item[:href]) || @record
+        LHS::Record.for_url(item[:href])
       end
 
       def plain_value?(item)
