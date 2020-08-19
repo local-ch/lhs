@@ -60,12 +60,12 @@ class LHS::Collection < LHS::Proxy
       end
 
       def record_by_href(item)
-        return if json_value_type?(item) || (item[:href].blank? && @record.blank?)
+        return if plain_value?(item) || (item[:href].blank? && @record.blank?)
 
         LHS::Record.for_url(item[:href]) || @record
       end
 
-      def json_value_type?(item)
+      def plain_value?(item)
         item.is_a?(String) || item.is_a?(Numeric) || item.is_a?(TrueClass) || item.is_a?(FalseClass)
       end
     end
