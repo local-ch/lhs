@@ -38,7 +38,7 @@ describe LHS::Record do
         limit: 10
       }.to_json)
 
-    stub_request(:get, 'http://datastore/users/123/places/789?limit=100')
+    stub_request(:get, 'http://datastore/users/123/places/789')
       .to_return(
         body: {
           href: 'http://datastore/users/123/places/789?limit=100',
@@ -46,7 +46,7 @@ describe LHS::Record do
         }.to_json
       )
 
-    stub_request(:get, 'http://datastore/users/123/places/790?limit=100')
+    stub_request(:get, 'http://datastore/users/123/places/790')
       .to_return(
         status: 404,
         body: {
