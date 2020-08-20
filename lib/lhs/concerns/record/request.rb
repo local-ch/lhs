@@ -120,7 +120,7 @@ class LHS::Record
           options = extend_with_reference(options, reference)
           addition = load_include(options, data, sub_includes, reference)
           data.extend!(addition, included)
-          expand_addition!(data, included, options, reference) unless expanded_data?(addition)
+          expand_addition!(data, included, reference) unless expanded_data?(addition)
         end
       end
 
@@ -135,7 +135,7 @@ class LHS::Record
         url_option_for(data, included)
       end
 
-      def expand_addition!(data, included, options, reference)
+      def expand_addition!(data, included, reference)
         addition = data[included]
         options = options_for_data(addition)
         options = extend_with_reference(options, reference)

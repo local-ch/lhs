@@ -32,6 +32,6 @@ describe LHS::Record do
       expect(
         record.car.name
       ).to eq 'wrum wrum'
-    end  
+    end
   end
 end
