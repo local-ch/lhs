@@ -120,7 +120,8 @@ class LHS::Record
           options = extend_with_reference(options, reference)
           addition = load_include(options, data, sub_includes, reference)
           data.extend!(addition, included)
-          expand_addition!(data, included, options) unless expanded_data?(addition)
+          binding.pry
+          expand_addition!(data, included, reference) unless expanded_data?(addition)
         end
       end
 
