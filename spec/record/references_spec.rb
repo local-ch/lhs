@@ -76,7 +76,7 @@ describe LHS::Record do
           }.to_json
         )
 
-        stub_request(:get, 'http://datastore/customers/1/users/1?limit=100')
+        stub_request(:get, 'http://datastore/customers/1/users/1')
           .with(headers: { 'Authentication' => 'Bearer 123' })
           .to_return(body: { href: 'http://datastore/users/1', name: 'Elizabeth Baker' }.to_json)
       end
