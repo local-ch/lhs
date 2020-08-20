@@ -126,6 +126,7 @@ record.review # "Lunch was great
         * [Include various levels of linked data](#include-various-levels-of-linked-data)
         * [Identify and cast known records when including records](#identify-and-cast-known-records-when-including-records)
         * [Apply options for requests performed to fetch included records](#apply-options-for-requests-performed-to-fetch-included-records)
+        * [compact: Remove included resources that didn't return any records](#compact-remove-included-resources-that-didnt-return-any-records)
      * [Record batch processing](#record-batch-processing)
         * [all](#all-1)
            * [Using all, when endpoint does not implement response pagination meta data](#using-all-when-endpoint-does-not-implement-response-pagination-meta-data)
@@ -149,7 +150,10 @@ record.review # "Lunch was great
      * [Test query chains](#test-query-chains)
         * [By explicitly resolving the chain: fetch](#by-explicitly-resolving-the-chain-fetch)
         * [Without resolving the chain: where_values_hash](#without-resolving-the-chain-where_values_hash)
+  * [Extended developer documentation](#extended-developer-documentation)
+     * [Accessing data in LHS](#accessing-data-in-lhs)
   * [License](#license)
+
 
 
 
@@ -2877,6 +2881,12 @@ expect(
   records.where_values_hash
 ).to eq {color: 'red', available: true}
 ```
+
+## Extended developer documentation
+
+### Accessing data in LHS
+
+![diagram](docs/accessing-data-in-lhs.png)
 
 ## License
 
