@@ -41,7 +41,7 @@ module AutoloadRecords
 
         def self.require_inheriting_records(parents)
           model_files.each do |file|
-            next if parents.none? { |parent| File.read(file).match(parent) }
+            next if parents.none? { |parent| File.read(file).match(/\b#{parent}\b/) }
             require_dependency file
           end
         end
