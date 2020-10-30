@@ -32,7 +32,7 @@ module AutoloadRecords
         end
 
         def self.require_direct_inheritance
-          model_files.map do |file|
+          model_files.sort.map do |file|
             next unless File.read(file).match('LHS::Record')
             require_dependency file
             file.split('models/').last.gsub('.rb', '').classify
@@ -41,7 +41,9 @@ module AutoloadRecords
 
         def self.require_inheriting_records(parents)
           model_files.each do |file|
-            next if parents.none? { |parent| File.read(file).match(/\b#{parent}\b/) }
+            file_content = File.read(file)
+            next if parents.none? { |parent| file_content.match(/\b#{parent}\b/) }
+            next if file_content.match?('extend ActiveSupport::Concern')
             require_dependency file
           end
         end
