@@ -289,7 +289,7 @@ class LHS::Record
             next if item.present?
             loaded_includes.insert(index, {})
           end
-          return loaded_includes
+          loaded_includes
         else
           load_include(options, _data, sub_includes, references)
         end

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe LHS::Record do
-  
+
   context 'merge request options ' do
     before do
       class Record < LHS::Record
@@ -43,10 +43,10 @@ describe LHS::Record do
 
     context 'missing referenced options due to none existance of include' do
 
-      it 'should not raise when trying to merge options with the options block' do
+      it 'does not raise when trying to merge options with the options block' do
         LHS.options(throttle: { break: '80%' }) do
           record = Record
-            .references({ place_attributes: { group: { params: { status: 'active' } } } })
+            .references(place_attributes: { group: { params: { status: 'active' } } })
             .includes([{ place_attributes: :group }])
             .find(1)
           expect(record.place_attributes[0].group.name).to eq 'General'
