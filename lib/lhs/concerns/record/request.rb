@@ -281,7 +281,7 @@ class LHS::Record
       end
 
       def load_existing_includes(options, data, sub_includes, references)
-        if data.collection?
+        if data.collection? && data.any?(&:blank?)
           # filter only existing items
           loaded_includes = load_include(options.compact, data.compact, sub_includes, references)
           # fill up skipped items before returning
