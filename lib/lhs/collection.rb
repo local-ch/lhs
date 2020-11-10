@@ -14,7 +14,7 @@ class LHS::Collection < LHS::Proxy
 
   METHOD_NAMES_EXLCUDED_FROM_WRAPPING = %w(to_a to_ary map).freeze
 
-  delegate :select, :length, :size, to: :_collection
+  delegate :select, :length, :size, :insert, to: :_collection
   delegate :_record, :_raw, to: :_data
   delegate :limit, :count, :total, :offset, :current_page, :start,
            :next?, :previous?, to: :_pagination

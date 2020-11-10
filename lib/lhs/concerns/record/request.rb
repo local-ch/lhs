@@ -29,7 +29,10 @@ class LHS::Record
         if options.is_a?(Hash)
           options.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options)
         elsif options.is_a?(Array)
-          options.map { |option| option.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options) }
+          options.map do |option|
+            return LHS::OptionBlocks::CurrentOptionBlock.options unless option
+            option.deep_merge(LHS::OptionBlocks::CurrentOptionBlock.options)
+          end
         end
       end
 
@@ -118,7 +121,7 @@ class LHS::Record
         else
           options = options_for_data(data, included)
           options = extend_with_reference(options, reference)
-          addition = load_include(options, data, sub_includes, reference)
+          addition = load_existing_includes(options, data, sub_includes, reference)
           data.extend!(addition, included)
           expand_addition!(data, included, reference) unless expanded_data?(addition)
         end
@@ -274,6 +277,21 @@ class LHS::Record
         end
         data._record.request(options_for_next_batch.flatten).each do |batch_data|
           merge_batch_data_with_parent!(batch_data, data[batch_data._request.options[:merge_with_index]])
+        end
+      end
+
+      def load_existing_includes(options, data, sub_includes, references)
+        if data.collection? && data.any?(&:blank?)
+          # filter only existing items
+          loaded_includes = load_include(options.compact, data.compact, sub_includes, references)
+          # fill up skipped items before returning
+          data.each_with_index do |item, index|
+            next if item.present?
+            loaded_includes.insert(index, {})
+          end
+          loaded_includes
+        else
+          load_include(options, data, sub_includes, references)
         end
       end
 
