@@ -280,18 +280,18 @@ class LHS::Record
         end
       end
 
-      def load_existing_includes(options, _data, sub_includes, references)
-        if _data.collection?
+      def load_existing_includes(options, data, sub_includes, references)
+        if data.collection?
           # filter only existing items
-          loaded_includes = load_include(options.compact, _data.compact, sub_includes, references)
+          loaded_includes = load_include(options.compact, data.compact, sub_includes, references)
           # fill up skipped items before returning
-          _data.each_with_index do |item, index|
+          data.each_with_index do |item, index|
             next if item.present?
             loaded_includes.insert(index, {})
           end
           loaded_includes
         else
-          load_include(options, _data, sub_includes, references)
+          load_include(options, data, sub_includes, references)
         end
       end
 
