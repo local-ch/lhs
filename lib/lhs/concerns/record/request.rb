@@ -155,7 +155,6 @@ class LHS::Record
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         expanded_data = record.request(options)
-        addition.extend!(expanded_data)
         data.extend!(expanded_data, included)
       end
 
