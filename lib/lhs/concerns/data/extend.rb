@@ -9,7 +9,7 @@ class LHS::Data
 
     # Extends already fetched data (self) with additionally
     # fetched data (addition) using the given key
-    def extend!(addition, key=nil)
+    def extend!(addition, key = nil)
       addition = cast_relation_class_for_extension(addition, key)
       if collection?
         extend_collection!(addition, key)
@@ -22,7 +22,7 @@ class LHS::Data
 
     private
 
-    def cast_relation_class_for_extension(addition, key=nil)
+    def cast_relation_class_for_extension(addition, key = nil)
       return addition if _record.nil? || key.nil? || _record._relations.nil? || _record._relations[key].nil?
       addition.becomes(_record._relations[key][:record_class_name].constantize, errors: addition.errors, warnings: addition.warnings)
     end
@@ -45,13 +45,13 @@ class LHS::Data
         end
     end
 
-    def extend_array!(addition, key=nil)
+    def extend_array!(addition, key = nil)
       (key ? self[key] : self).zip(addition) do |item, additional_item|
         item._raw.merge!(additional_item._raw) if additional_item.present?
       end
     end
 
-    def extend_item!(addition, key=nil)
+    def extend_item!(addition, key = nil)
       return if addition.nil?
       if addition.collection?
         extend_item_with_collection!(addition, key)
@@ -60,7 +60,7 @@ class LHS::Data
       end
     end
 
-    def extend_item_with_collection!(addition, key=nil)
+    def extend_item_with_collection!(addition, key = nil)
       target = (key ? self[key] : self)
       if target._raw.is_a? Array
         self[key] = addition.map(&:_raw) if key

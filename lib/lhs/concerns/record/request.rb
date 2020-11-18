@@ -178,12 +178,12 @@ class LHS::Record
       # Extends request options with options provided for this references
       def extend_with_references(options, references)
         return options if references.blank?
-        reference = references.except(:url)
+        references_without_url = references.except(:url)
         options ||= {}
         if options.is_a?(Array)
-          options.map { |request_options| request_options.merge(references) if request_options.present? }
+          options.map { |request_options| request_options.merge(references_without_url) if request_options.present? }
         elsif options.present?
-          options.merge(references)
+          options.merge(references_without_url)
         end
       end
 

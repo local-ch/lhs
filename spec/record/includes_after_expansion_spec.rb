@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe LHS::Record do
   context 'includes records after expansion' do
-    
+
     before do
       class User < LHS::Record
         endpoint 'http://users/{id}'
