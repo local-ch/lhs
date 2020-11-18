@@ -9,7 +9,7 @@ class LHS::Data
 
     # Extends already fetched data (self) with additionally
     # fetched data (addition) using the given key
-    def extend!(addition, key)
+    def extend!(addition, key=nil)
       addition = cast_relation_class_for_extension(addition, key)
       if collection?
         extend_collection!(addition, key)
@@ -22,14 +22,14 @@ class LHS::Data
 
     private
 
-    def cast_relation_class_for_extension(addition, key)
-      return addition if _record.nil? || _record._relations.nil? || _record._relations[key].nil?
+    def cast_relation_class_for_extension(addition, key=nil)
+      return addition if _record.nil? || key.nil? || _record._relations.nil? || _record._relations[key].nil?
       addition.becomes(_record._relations[key][:record_class_name].constantize, errors: addition.errors, warnings: addition.warnings)
     end
 
-    def extend_collection!(addition, key)
+    def extend_collection!(addition, key = nil)
       map do |item|
-        item_raw = item._raw[key]
+        item_raw = key ? item._raw[key] : item._raw
         item_raw.blank? ? [nil] : item_raw
       end
         .flatten
@@ -45,25 +45,25 @@ class LHS::Data
         end
     end
 
-    def extend_array!(addition, key)
-      self[key].zip(addition) do |item, additional_item|
+    def extend_array!(addition, key=nil)
+      (key ? self[key] : self).zip(addition) do |item, additional_item|
         item._raw.merge!(additional_item._raw) if additional_item.present?
       end
     end
 
-    def extend_item!(addition, key)
+    def extend_item!(addition, key=nil)
       return if addition.nil?
       if addition.collection?
         extend_item_with_collection!(addition, key)
       else # simple case merges hash into hash
-        _raw[key.to_sym].merge!(addition._raw)
+        (key ? _raw[key.to_sym] : _raw).merge!(addition._raw)
       end
     end
 
-    def extend_item_with_collection!(addition, key)
-      target = self[key]
+    def extend_item_with_collection!(addition, key=nil)
+      target = (key ? self[key] : self)
       if target._raw.is_a? Array
-        self[key] = addition.map(&:_raw)
+        self[key] = addition.map(&:_raw) if key
       else # hash with items
         extend_item_with_hash_containing_items!(target, addition)
       end

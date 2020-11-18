@@ -115,21 +115,30 @@ class LHS::Record
         data.clear_cache! if data.present? # as we just included new nested resources
       end
 
-      def handle_include(included, data, sub_includes = nil, reference = nil)
+      def handle_include(included, data, sub_includes = nil, references = nil)
         if data.blank? || skip_loading_includes?(data, included)
-          handle_skip_include(included, data, sub_includes, reference)
+          handle_skip_include(included, data, sub_includes, references)
         else
           options = options_for_data(data, included)
-          options = extend_with_reference(options, reference)
-          addition = load_existing_includes(options, data, sub_includes, reference)
-          data.extend!(addition, included)
-          expand_addition!(data, included, reference) unless expanded_data?(addition)
+          options = extend_with_references(options, references)
+          extend_and_expand_addition!(
+            addition: load_existing_includes(
+              included,
+              options,
+              data,
+              sub_includes,
+              references
+            ),
+            data: data,
+            included: included,
+            references: references
+          )
         end
       end
 
-      def handle_skip_include(included, data, sub_includes = nil, reference = nil)
+      def handle_skip_include(included, data, sub_includes = nil, references = nil)
         return if sub_includes.blank?
-        handle_includes(sub_includes, data[included], reference)
+        handle_includes(sub_includes, data[included], references)
       end
 
       def options_for_data(data, included = nil)
@@ -138,13 +147,15 @@ class LHS::Record
         url_option_for(data, included)
       end
 
-      def expand_addition!(data, included, reference)
-        addition = data[included]
-        options = options_for_data(addition)
-        options = extend_with_reference(options, reference)
+      def extend_and_expand_addition!(addition:, data:, included:, references:)
+        data.extend!(addition, included)
+        return if expanded_data?(addition)
+        options = options_for_data(data[included])
+        options = extend_with_references(options, references)
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         expanded_data = record.request(options)
+        addition.extend!(expanded_data)
         data.extend!(expanded_data, included)
       end
 
@@ -164,15 +175,15 @@ class LHS::Record
         end
       end
 
-      # Extends request options with options provided for this reference
-      def extend_with_reference(options, reference)
-        return options if reference.blank?
-        reference = reference.except(:url)
+      # Extends request options with options provided for this references
+      def extend_with_references(options, references)
+        return options if references.blank?
+        reference = references.except(:url)
         options ||= {}
         if options.is_a?(Array)
-          options.map { |request_options| request_options.merge(reference) if request_options.present? }
+          options.map { |request_options| request_options.merge(references) if request_options.present? }
         elsif options.present?
-          options.merge(reference)
+          options.merge(references)
         end
       end
 
@@ -280,10 +291,10 @@ class LHS::Record
         end
       end
 
-      def load_existing_includes(options, data, sub_includes, references)
+      def load_existing_includes(included, options, data, sub_includes, references)
         if data.collection? && data.any?(&:blank?)
           # filter only existing items
-          loaded_includes = load_include(options.compact, data.compact, sub_includes, references)
+          loaded_includes = load_include(included, options.compact, data.compact, sub_includes, references)
           # fill up skipped items before returning
           data.each_with_index do |item, index|
             next if item.present?
@@ -291,27 +302,34 @@ class LHS::Record
           end
           loaded_includes
         else
-          load_include(options, data, sub_includes, references)
+          load_include(included, options, data, sub_includes, references)
         end
       end
 
       # Load additional resources that are requested with include
-      def load_include(options, _data, sub_includes, references)
+      def load_include(included, options, data, sub_includes, references)
         record = record_for_options(options) || self
         options = convert_options_to_endpoints(options) if record_for_options(options)
         prepare_options_for_include_request!(options, sub_includes, references)
         if references && references[:all] # include all linked resources
-          load_include_all!(options, record, sub_includes, references)
+          load_include_all!(included, options, data, record, sub_includes, references)
         else # simply request first page/batch
           load_include_simple!(options, record)
         end
       end
 
-      def load_include_all!(options, record, sub_includes, references)
+      def load_include_all!(included, options, data, record, sub_includes, references)
         prepare_options_for_include_all_request!(options)
-        data = load_all_included!(record, options)
+        addition = load_all_included!(record, options)
+        extend_and_expand_addition!(
+          addition: addition,
+          data: data,
+          included: included,
+          references: references
+        )
+
         references.delete(:all) # for this reference all remote objects have been fetched
-        continue_including(data, sub_includes, references)
+        continue_including(sub_includes, addition, references)
       end
 
       def load_include_simple!(options, record)
@@ -321,8 +339,9 @@ class LHS::Record
       end
 
       # Continues loading included resources after one complete batch/level has been fetched
-      def continue_including(data, including, referencing)
-        handle_includes(including, data, referencing) if including.present? && data.present?
+      def continue_including(includes, data, references)
+        return data if includes.blank? || data.blank?
+        handle_includes(includes, data, references)
         data
       end
 
