@@ -156,6 +156,7 @@ class LHS::Record
         options = convert_options_to_endpoints(options) if record_for_options(options)
         expanded_data = record.request(options)
         data.extend!(expanded_data, included)
+        expanded_data
       end
 
       def expanded_data?(addition)
@@ -320,7 +321,7 @@ class LHS::Record
       def load_include_all!(included, options, data, record, sub_includes, references)
         prepare_options_for_include_all_request!(options)
         addition = load_all_included!(record, options)
-        extend_and_expand_addition!(
+        expanded_addition = extend_and_expand_addition!(
           addition: addition,
           data: data,
           included: included,
@@ -328,25 +329,7 @@ class LHS::Record
         )
 
         references.delete(:all) # for this reference all remote objects have been fetched
-        continue_including(
-          sub_includes,
-          addition_after_merge(data, included, addition),
-          references
-        )
-      end
-
-      def addition_after_merge(data, included, addition)
-        if data.item?
-          data[included]
-        elsif data.collection?
-          LHS::Data.new(
-            data.map{|item| item[included] },
-            addition._parent,
-            addition._record,
-            addition._request,
-            addition._endpoint
-          )
-        end
+        continue_including(sub_includes, expanded_addition, references)
       end
 
       def load_include_simple!(options, record)
