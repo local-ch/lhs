@@ -13,7 +13,7 @@ class LHS::Data
       addition = cast_relation_class_for_extension(addition, key)
       if collection?
         extend_collection!(addition, key)
-      elsif self[key]._raw.is_a? Array
+      elsif self._raw.is_a?(Array) || self[key]._raw.is_a?(Array)
         extend_array!(addition, key)
       elsif item?
         extend_item!(addition, key)
