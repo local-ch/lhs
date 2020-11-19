@@ -328,7 +328,25 @@ class LHS::Record
         )
 
         references.delete(:all) # for this reference all remote objects have been fetched
-        continue_including(sub_includes, addition, references)
+        continue_including(
+          sub_includes,
+          addition_after_merge(data, included, addition),
+          references
+        )
+      end
+
+      def addition_after_merge(data, included, addition)
+        if data.item?
+          data[included]
+        elsif data.collection?
+          LHS::Data.new(
+            data.map{|item| item[included] },
+            addition._parent,
+            addition._record,
+            addition._request,
+            addition._endpoint
+          )
+        end
       end
 
       def load_include_simple!(options, record)
