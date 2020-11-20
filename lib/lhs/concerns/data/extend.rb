@@ -74,7 +74,7 @@ class LHS::Data
       if LHS::Collection.access(input: target._raw, record: self).empty?
         LHS::Collection.nest(
           input: target._raw,
-          value: addition.reject { |item| item.nil? }.as_json,
+          value: addition.reject { |item| item.nil? },
           record: self
         )
       else
