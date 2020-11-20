@@ -39,7 +39,7 @@ class LHS::Collection < LHS::Proxy
       def compact
         dup.tap do |collection|
           collection.compact! if collection.raw.present?
-        end
+        end.as_json # do not return an internal collection!
       end
 
       def compact!
