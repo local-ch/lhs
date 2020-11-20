@@ -66,6 +66,11 @@ describe LHS::Record do
   end
 
   context '.compact' do
+    
+    it 'does NOT return an internal data type, but the Record class' do
+      expect(places.compact.class).to eq User
+    end
+
     it 'removes linked resouces which could not get fetched' do
       expect(places.compact.length).to eq 1
       expect(places.length).not_to eq 1 # leaves the original intact
