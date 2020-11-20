@@ -328,7 +328,7 @@ class LHS::Record
         data
       end
 
-      def expand_data!(data, included, reference)
+      def expand_data!(data, _included, reference)
         options = options_for_data(data)
         options = extend_with_reference(options, reference)
         record = record_for_options(options) || self

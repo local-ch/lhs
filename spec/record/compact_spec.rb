@@ -66,7 +66,7 @@ describe LHS::Record do
   end
 
   context '.compact' do
-    
+
     it 'does NOT return an internal data type, but the Record class' do
       expect(places.compact.class).to eq User
     end
