@@ -321,9 +321,20 @@ class LHS::Record
       end
 
       # Continues loading included resources after one complete batch/level has been fetched
-      def continue_including(data, including, referencing)
-        handle_includes(including, data, referencing) if including.present? && data.present?
+      def continue_including(data, included, reference)
+        return data if included.blank? || data.blank?
+        expand_data!(data, included, reference) unless expanded_data?(data)
+        handle_includes(included, data, reference)
         data
+      end
+
+      def expand_data!(data, included, reference)
+        options = options_for_data(data)
+        options = extend_with_reference(options, reference)
+        record = record_for_options(options) || self
+        options = convert_options_to_endpoints(options) if record_for_options(options)
+        expanded_data = record.request(options)
+        data.extend!(expanded_data)
       end
 
       # Loads all included/linked resources,
