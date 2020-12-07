@@ -1,6 +1,0 @@
-jobs:
-  include:
-    - cider-ci/jobs/rspec-activesupport-4.yml
-    - cider-ci/jobs/rspec-activesupport-5.yml
-    - cider-ci/jobs/rspec-activesupport-latest.yml
-    - cider-ci/jobs/rubocop.yml

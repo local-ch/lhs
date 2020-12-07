@@ -1,0 +1,34 @@
+name: Test
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+steps:
+  - uses: actions/checkout@v2
+  - name: Set up Ruby
+    # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
+    # change this to (see https://github.com/ruby/setup-ruby#versioning):
+    # uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+      with:
+        ruby-version: 2.6.5
+  - name: Cache Ruby Gems
+    uses: actions/cache@v2
+    with:
+      path: vendor/bundle
+      key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+      restore-keys: |
+        ${{ runner.os }}-gems-
+  - name: Bundle Install
+    run: |
+      bundle config path vendor/bundle
+      bundle install --jobs 4 --retry 3
+  - name: Run Tests
+    env:
+      RAILS_ENV: test
+    run: |
+      bin/rails db:setup
+      bundle exec rake test
