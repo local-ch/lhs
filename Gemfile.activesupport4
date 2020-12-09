@@ -1,5 +1,0 @@
-source 'https://rubygems.org/'
-
-gemspec
-gem 'activesupport', '~> 4.2.11'
-gem 'bundler', '~> 1.17.3'

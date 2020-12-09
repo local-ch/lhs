@@ -15,9 +15,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /.tmp/vendor/bundle
-          key: ${{ runner.os }}-gems-v2-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-gems-latest-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-gems-v2-
+            ${{ runner.os }}-gems-latest-
       - name: Bundle Install
         run: |
           bundle config path /.tmp/vendor/bundle

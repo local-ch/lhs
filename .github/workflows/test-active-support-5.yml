@@ -1,9 +1,9 @@
-name: Rubocop
+name: Test ActiveSupport v5
 
 on: push
 
 jobs:
-  rubocop:
+  rspec:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,13 +15,13 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /.tmp/vendor/bundle
-          key: ${{ runner.os }}-gems-latest-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-gems-v5-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-gems-latest-
-      - name: Bundle Install
+            ${{ runner.os }}-gems-v5-
+      - name: Bundle Install ActiveSupport v5
         run: |
           bundle config path /.tmp/vendor/bundle
-          bundle install --jobs 4 --retry 3
-      - name: Run Rubocop
+          BUNDLE_GEMFILE=Gemfile.activesupport5 bundle install --jobs 4 --retry 3
+      - name: Run Tests
         run: |
-          bundle exec rubocop
+          BUNDLE_GEMFILE=Gemfile.activesupport5 bundle exec rspec
