@@ -1,1 +1,27 @@
-test-active-support-5.yml
+name: Test ActiveSupport v5
+
+on: push
+
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+      - name: Cache Ruby Gems
+        uses: actions/cache@v2
+        with:
+          path: /.tmp/vendor/bundle
+          key: ${{ runner.os }}-gems-v5-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-v5-
+      - name: Bundle Install ActiveSupport v5
+        run: |
+          bundle config path /.tmp/vendor/bundle
+          BUNDLE_GEMFILE=Gemfile.activesupport5 bundle install --jobs 4 --retry 3
+      - name: Run Tests
+        run: |
+          BUNDLE_GEMFILE=Gemfile.activesupport5 bundle exec rspec
