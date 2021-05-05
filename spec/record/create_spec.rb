@@ -135,25 +135,61 @@ describe LHS::Record do
     end
 
     context 'location header' do
-      before do
-        class ContactPerson < LHS::Record
-          endpoint 'http://datastore/contact_persons'
+      let(:created_at) { '2017-12-21' }
+      let(:location)   { 'http://datastore/contact_persons/1' }
+      let(:name)       { 'Sebastian' }
+
+      context 'without `followlocation` option' do
+        before do
+          class ContactPerson < LHS::Record
+            endpoint 'http://datastore/contact_persons'
+          end
+        end
+
+        it 'loads the data from the "Location" header after creation' do
+          stub_request(:post, "http://datastore/contact_persons")
+            .to_return(status: 204, headers: { Location: location })
+          stub_request(:get, "http://datastore/contact_persons/1")
+            .to_return(body: { href: location, name: name, created_at: created_at }.to_json)
+          contact_person = ContactPerson.create!(name: name)
+          expect(contact_person.href).to eq location
+          expect(contact_person.created_at).to eq Date.parse(created_at)
+          expect(contact_person.name).to eq name
         end
       end
 
-      let(:location)   { 'http://datastore/contact_persons/1' }
-      let(:created_at) { '2017-12-21' }
-      let(:name)       { 'Sebastian' }
+      context 'when `followlocation` is set to `true`' do
+        before do
+          class ContactPerson < LHS::Record
+            endpoint 'http://datastore/contact_persons', followlocation: true
+          end
+        end
 
-      it 'Loads the data from the "Location" header after creation' do
-        stub_request(:post, "http://datastore/contact_persons")
-          .to_return(status: 204, headers: { Location: location })
-        stub_request(:get, "http://datastore/contact_persons/1")
-          .to_return(body: { href: location, name: name, created_at: created_at }.to_json)
-        contact_person = ContactPerson.create!(name: name)
-        expect(contact_person.href).to eq location
-        expect(contact_person.created_at).to eq Date.parse(created_at)
-        expect(contact_person.name).to eq name
+        it 'loads the data from the "Location" header after creation' do
+          stub_request(:post, "http://datastore/contact_persons")
+            .to_return(status: 204, headers: { Location: location })
+          stub_request(:get, "http://datastore/contact_persons/1")
+            .to_return(body: { href: location, name: name, created_at: created_at }.to_json)
+          contact_person = ContactPerson.create!(name: name)
+          expect(contact_person.href).to eq location
+          expect(contact_person.created_at).to eq Date.parse(created_at)
+          expect(contact_person.name).to eq name
+        end
+      end
+
+      context 'when `followlocation` is set to `false`' do
+        before do
+          class ContactPerson < LHS::Record
+            endpoint 'http://datastore/contact_persons', followlocation: false
+          end
+        end
+
+        it 'does not load the data from the "Location" header after creation' do
+          stub_request(:post, "http://datastore/contact_persons")
+            .to_return(status: 204, headers: { Location: location })
+          contact_person = ContactPerson.create!(name: name)
+          expect(contact_person.name).to eq name
+        end
       end
     end
   end
