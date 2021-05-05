@@ -85,7 +85,7 @@ describe 'Request Cycle Cache', type: :request do
   context 'headers' do
     it 'considers the request headers when setting the cache key',
     dummy_models: true, request_cycle_cache: true do
-      get '/request_cycle_cache/headers'
+      get '/request_cycle_cache/different_headers'
       expect(request).to have_been_made.times(2)
     end
   end
