@@ -138,6 +138,14 @@ describe LHS::Record do
       let(:created_at) { '2017-12-21' }
       let(:location)   { 'http://datastore/contact_persons/1' }
       let(:name)       { 'Sebastian' }
+      let!(:create_contact_person_request) do
+        stub_request(:post, "http://datastore/contact_persons")
+          .to_return(status: 204, headers: { Location: location })
+      end
+      let!(:fetch_contact_person_request) do
+        stub_request(:get, "http://datastore/contact_persons/1")
+          .to_return(body: { href: location, name: name, created_at: created_at }.to_json)
+      end
 
       context 'without `followlocation` option' do
         before do
@@ -147,11 +155,9 @@ describe LHS::Record do
         end
 
         it 'loads the data from the "Location" header after creation' do
-          stub_request(:post, "http://datastore/contact_persons")
-            .to_return(status: 204, headers: { Location: location })
-          stub_request(:get, "http://datastore/contact_persons/1")
-            .to_return(body: { href: location, name: name, created_at: created_at }.to_json)
           contact_person = ContactPerson.create!(name: name)
+          expect(create_contact_person_request).to have_been_made.once
+          expect(fetch_contact_person_request).to have_been_made.once
           expect(contact_person.href).to eq location
           expect(contact_person.created_at).to eq Date.parse(created_at)
           expect(contact_person.name).to eq name
@@ -166,11 +172,9 @@ describe LHS::Record do
         end
 
         it 'loads the data from the "Location" header after creation' do
-          stub_request(:post, "http://datastore/contact_persons")
-            .to_return(status: 204, headers: { Location: location })
-          stub_request(:get, "http://datastore/contact_persons/1")
-            .to_return(body: { href: location, name: name, created_at: created_at }.to_json)
           contact_person = ContactPerson.create!(name: name)
+          expect(create_contact_person_request).to have_been_made.once
+          expect(fetch_contact_person_request).to have_been_made.once
           expect(contact_person.href).to eq location
           expect(contact_person.created_at).to eq Date.parse(created_at)
           expect(contact_person.name).to eq name
@@ -185,9 +189,9 @@ describe LHS::Record do
         end
 
         it 'does not load the data from the "Location" header after creation' do
-          stub_request(:post, "http://datastore/contact_persons")
-            .to_return(status: 204, headers: { Location: location })
           contact_person = ContactPerson.create!(name: name)
+          expect(create_contact_person_request).to have_been_made.once
+          expect(fetch_contact_person_request).not_to have_been_made
           expect(contact_person.name).to eq name
         end
       end
