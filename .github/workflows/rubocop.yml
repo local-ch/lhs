@@ -4,24 +4,13 @@ on: push
 
 jobs:
   rubocop:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.2
-      - name: Cache Ruby Gems
-        uses: actions/cache@v2
-        with:
-          path: /.tmp/vendor/bundle
-          key: ${{ runner.os }}-gems-latest-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-latest-
-      - name: Bundle Install
-        run: |
-          bundle config path /.tmp/vendor/bundle
-          bundle install --jobs 4 --retry 3
+          bundler-cache: true
       - name: Run Rubocop
         run: |
           bundle exec rubocop
