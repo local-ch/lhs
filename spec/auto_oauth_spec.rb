@@ -165,5 +165,46 @@ describe 'Auto OAuth Authentication', type: :request, dummy_models: true do
         expect(records_request).to have_been_requested
       end
     end
+
+    context 'overriding auth options with provider enabled for auto oauth' do
+
+      let(:token) { ApplicationController::ACCESS_TOKEN }
+      let(:overridden_token) { 'ACCESS_TOKEN' }
+
+      let(:record_request) do
+        stub_request(:get, "http://internalservice/v2/records/1")
+          .with(
+            headers: { 'Authorization' => "Bearer #{overridden_token}" }
+          ).to_return(status: 200, body: { name: 'Record' }.to_json)
+      end
+
+      let(:records_request) do
+        stub_request(:get, "http://internalservice/v2/records?color=blue")
+          .with(
+            headers: { 'Authorization' => "Bearer #{overridden_token}" }
+          ).to_return(status: 200, body: { items: [{ name: 'Record' }] }.to_json)
+      end
+
+      before do
+        LHS.configure do |config|
+          config.auto_oauth = -> { access_token }
+        end
+        LHC.configure do |config|
+          config.interceptors = [LHC::Auth]
+        end
+        record_request
+        records_request
+      end
+
+      after do
+        LHC.config.reset
+      end
+
+      it 'applies OAuth credentials for the individual request automatically' do
+        get '/automatic_authentication/oauth_with_provider_override', params: { access_token: overridden_token }
+        expect(record_request).to have_been_requested
+        expect(records_request).to have_been_requested
+      end
+    end
   end
 end
