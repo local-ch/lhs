@@ -10,7 +10,7 @@ module LHS
       class Interceptor < LHC::Interceptor
 
         def before_request
-          request.options[:auth] = { bearer: token }
+          request.options[:auth] ||= { bearer: token }
         end
 
         def tokens

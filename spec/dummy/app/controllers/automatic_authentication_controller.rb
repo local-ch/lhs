@@ -26,4 +26,11 @@ class AutomaticAuthenticationController < ApplicationController
       records: DummyRecordWithAutoOauthProvider.where(color: 'blue').as_json
     }
   end
+
+  def o_auth_with_provider_override
+    render json: {
+      record: DummyRecordWithAutoOauthProvider.options(auth: { bearer: params[:access_token] }).find(1).as_json,
+      records: DummyRecordWithAutoOauthProvider.options(auth: { bearer: params[:access_token] }).where(color: 'blue').as_json
+    }
+  end
 end

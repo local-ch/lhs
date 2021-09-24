@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'automatic_authentication/oauth' => 'automatic_authentication#o_auth'
   get 'automatic_authentication/oauth_with_multiple_providers' => 'automatic_authentication#o_auth_with_multiple_providers'
   get 'automatic_authentication/oauth_with_provider' => 'automatic_authentication#o_auth_with_provider'
+  get 'automatic_authentication/oauth_with_provider_override' => 'automatic_authentication#o_auth_with_provider_override'
 
   # Request Cycle Cache
   get 'request_cycle_cache/simple' => 'request_cycle_cache#simple'
