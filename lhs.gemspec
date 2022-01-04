@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails', '>= 3.7.0'
   s.add_development_dependency 'rubocop', '~> 0.57.1'
   s.add_development_dependency 'rubocop-rspec', '~> 1.26.0'
-  s.add_development_dependency 'sprockets', '< 4'
+  s.add_development_dependency 'sprockets-rails'
   s.add_development_dependency 'webmock'
 
   s.license = 'GPL-3.0'
