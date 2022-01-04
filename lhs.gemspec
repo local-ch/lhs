@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.3.0'
 
   s.add_dependency 'activemodel'
-  s.add_dependency 'activesupport', '>= 4.2.11'
+  s.add_dependency 'activesupport', '>= 5.2'
   s.add_dependency 'lhc', '>= 12.1.1', '< 16'
   s.add_dependency 'local_uri'
 
