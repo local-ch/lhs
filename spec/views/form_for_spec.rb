@@ -12,7 +12,7 @@ describe 'form_for helper' do
   end
 
   it 'supported by LHS' do
-    render template: 'form_for.html'
+    render template: 'form_for'
     expect(rendered).to have_selector('form')
     expect(rendered).to have_selector('input[name="feedback[name]"]')
     expect(rendered).to have_selector('textarea[name="feedback[text]"]')
