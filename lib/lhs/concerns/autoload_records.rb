@@ -18,6 +18,8 @@ module AutoloadRecords
       end
 
       class Middleware
+        MODEL_FILES = 'app/models/**/*.rb'
+
         def initialize(app)
           @app = app
         end
@@ -32,7 +34,7 @@ module AutoloadRecords
         end
 
         def self.require_direct_inheritance
-          model_files.sort.map do |file|
+          Dir.glob(Rails.root.join(MODEL_FILES)).each do |file|
             next unless File.read(file).match('LHS::Record')
             require_dependency file
             file.split('models/').last.gsub('.rb', '').classify
@@ -40,11 +42,13 @@ module AutoloadRecords
         end
 
         def self.require_inheriting_records(parents)
-          model_files.each do |file|
-            file_content = File.read(file)
-            next if parents.none? { |parent| file_content.match(/\b#{parent}\b/) }
-            next if file_content.match?('extend ActiveSupport::Concern')
-            require_dependency file
+          Rails.application.reloader.to_prepare do
+            Dir.glob(Rails.root.join(MODEL_FILES)).each do |file|
+              file_content = File.read(file)
+              next if parents.none? { |parent| file_content.match(/\b#{parent}\b/) }
+              next if file_content.match?('extend ActiveSupport::Concern')
+              require_dependency file
+            end
           end
         end
 
