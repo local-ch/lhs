@@ -34,7 +34,7 @@ class LHS::Item < LHS::Proxy
     private
 
     def apply_default_creation_options(options, url, data)
-      options = options.merge(method: :post, url: url, body: data)
+      options = options.merge(method: options.fetch(:method, :post), url: url, body: data)
       options[:headers] ||= {}
       options
     end
