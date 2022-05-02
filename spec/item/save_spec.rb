@@ -112,4 +112,14 @@ describe LHS::Item do
       expect(request).to have_been_requested
     end
   end
+
+  context 'chainable' do
+    it 'allows to chain save with options' do
+      stub_request(:put, item.href).with(body: item._raw.merge(name: 'Steve').to_json)
+      item.name = 'Steve'
+      result = item.options(method: :put).save
+
+      expect(result).to eq true
+    end
+  end
 end
