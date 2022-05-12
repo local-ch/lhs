@@ -171,7 +171,7 @@ record.review # "Lunch was great
 
 ### Endpoints
 
-> Endpoint, the entry point to a service, a process, or a queue or topic destination in service-oriented architecture
+> Endpoint, the entry point to a service, a process, a queue or a topic in a service-oriented architecture
 
 Start a record with configuring one or multiple endpoints.
 
@@ -251,7 +251,7 @@ end
 
 #### Endpoint Priorities
 
-LHS uses endpoint configurations to determine what endpoint to use when data is requested, in a similiar way, routes are identified in Rails to map requests to controllers.
+LHS uses endpoint configurations to determine what endpoint to use when data is requested, in a similar way, routes are identified in Rails to map requests to controllers.
 
 If they are ambiguous, LHS will always use the first one found:
 
@@ -275,7 +275,7 @@ Record.fetch
 GET https://service.example.com/records
 ```
 
-**Be aware that, if you configure ambigious endpoints accross multiple classes, the order of things is not deteministic. Ambigious endpoints accross multiple classes need to be avoided.**
+**Be aware that, if you configure ambiguous endpoints across multiple classes, the order of things is not deterministic. Ambiguous endpoints across multiple classes need to be avoided.**
 
 ### Provider
 
@@ -479,7 +479,7 @@ The different behavior of `count` and `length` is based on ActiveRecord's behavi
 
 `count` The total number of items available remotly via the provided endpoint/api, communicated via pagination meta data.
 
-`length` The number of items already loaded from the endpoint/api and kept in memmory right now. In case of a paginated endpoint this can differ to what `count` returns, as it depends on how many pages have been loaded already.
+`length` The number of items already loaded from the endpoint/api and kept in memory right now. In case of a paginated endpoint this can differ to what `count` returns, as it depends on how many pages have been loaded already.
 
 ### Find single records
 
@@ -593,7 +593,7 @@ How to configure endpoints for automatic collection detection?
 
 LHS detects automatically if the responded data is a single business object or a set of business objects (collection).
 
-Conventionally, when the responds contains an `items` key `{ items: [] }` it's treated as a collection, but also if the responds contains a plain raw array: `[{ href: '' }]` it's also treated as a collection.
+Conventionally, when the respons contains an `items` key `{ items: [] }` it's treated as a collection, but also if the respons contains a plain raw array: `[{ href: '' }]` it's also treated as a collection.
 
 If you need to configure the attribute of the response providing the collection, configure `items_key` as explained here: [Determine collections from the response body](#determine-collections-from-the-response-body)
 
@@ -782,7 +782,7 @@ end
 
 #### Unwrap nested items from the response body
 
-If the actual item data is mixed with meta data in the response body, LHS allows you to configure a record in a way to automatically unwrap items from within nested response data.
+If the actual item data is mixed with metadata in the response body, LHS allows you to configure a record in a way to automatically unwrap items from within nested response data.
 
 `item_key` is used to unwrap the actual object from within the response body.
 
@@ -1058,7 +1058,7 @@ records = Record.where(color: 'blue').fetch
 
 #### Add request options to a query chain: options
 
-You can apply options to the request chain. Those options will be forwarded to the request perfomed by the chain/query:
+You can apply options to the request chain. Those options will be forwarded to the request performed by the chain/query:
 
 ```ruby
 # app/controllers/some_controller.rb
@@ -1178,7 +1178,7 @@ Record.page(3).per(20).where(color: 'blue')
 GET https://service.example.com/records?offset=40&limit=20&color=blue
 ```
 
-The applied pagination strategy depends on whats configured for the particular record: See [Record pagination](#record-pagination)
+The applied pagination strategy depends on what's configured for the particular record: See [Record pagination](#record-pagination)
 
 ### Record pagination
 
@@ -1330,7 +1330,7 @@ Sequentially:
 ##### limit_key
 
 `limit_key` sets the key used to indicate how many items you want to retrieve per page e.g. `size`, `limit`, etc.
-In case the `limit_key` parameter differs for how it needs to be requested from how it's provided in the reponse, use `body` and `parameter` subkeys.
+In case the `limit_key` parameter differs for how it needs to be requested from how it's provided in the response, use `body` and `parameter` subkeys.
 
 ```ruby
 # app/models/record.rb
@@ -1359,7 +1359,7 @@ GET https://service.example.com/records?color=blue&max=100
 ##### pagination_key
 
 `pagination_key` defines which key to use to paginate a page (e.g. `offset`, `page`, `startAt` etc.).
-In case the `limit_key` parameter differs for how it needs to be requested from how it's provided in the reponse, use `body` and `parameter` subkeys.
+In case the `limit_key` parameter differs for how it needs to be requested from how it's provided in the response, use `body` and `parameter` subkeys.
 
 ```ruby
 # app/models/record.rb
@@ -1584,7 +1584,7 @@ POST https://service.example.com/records { body: "{ 'name' : 'Starbucks' }" }
 
 ##### save
 
-`save` persist the whole object in it's current state. 
+`save` persist the whole object in its current state. 
 
 `save` will return `false` if persisting fails. `save!` instead will raise an exception.
 
@@ -2023,7 +2023,7 @@ DELETE https://service.example.com/records?name='Steve'
 
 ### Record getters and setters
 
-Sometimes it is neccessary to implement custom getters and setters and convert data to a processable (endpoint) format behind the scenes.
+Sometimes it is necessary to implement custom getters and setters and convert data to a processable (endpoint) format behind the scenes.
 
 #### Record setters
 
@@ -2201,7 +2201,7 @@ customer.contracts.first.products.first.name # Local Business Card
 
 #### Include various levels of linked data
 
-The method syntax of `includes` allows you include hyperlinks stored in deep nested data strutures:
+The method syntax of `includes` allows you to include hyperlinks stored in deep nested data structures:
 
 Some examples:
 
@@ -2283,7 +2283,7 @@ In parallel:
   GET https://service.example.com/places/4 { headers: { 'Authentication': 'Bearer 123' } }
 ```
 
-Here is another example, if you want to ignore errors, that occure while you fetch included resources:
+Here is another example, if you want to ignore errors, that occur while you fetch included resources:
 
 ```ruby
 # app/controllers/some_controller.rb
