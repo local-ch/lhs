@@ -123,7 +123,15 @@ class LHS::Record
           options = extend_with_reference(options, reference)
           addition = load_existing_includes(options, data, sub_includes, reference)
           data.extend!(addition, included)
-          expand_addition!(data, included, reference) unless expanded_data?(addition)
+          unless expanded_data?(addition)
+            if data.collection?
+              data.each do |item|
+                expand_addition!(item, included, reference)
+              end
+            else
+              expand_addition!(data, included, reference)
+            end
+          end
         end
       end
 
